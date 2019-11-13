@@ -12,16 +12,16 @@ BBLAYERS ?= " \
   ##COREBASE##/meta-yocto-bsp \
   ##COREBASE##/meta-gplv2 \
   ##COREBASE##/meta-freescale \
-  ##COREBASE##/meta-oe-warrior/meta-filesystems \
-  ##COREBASE##/meta-oe-warrior/meta-gnome \
-  ##COREBASE##/meta-oe-warrior/meta-initramfs \
-  ##COREBASE##/meta-oe-warrior/meta-networking \
-  ##COREBASE##/meta-oe-warrior/meta-oe \
-  ##COREBASE##/meta-oe-warrior/meta-python \
-  ##COREBASE##/meta-oe-warrior/meta-webserver \
-  ##COREBASE##/meta-oe-warrior/meta-xfce \
-  ##COREBASE##/meta-oe-warrior/meta-perl \
-  ##COREBASE##/meta-oe-warrior/meta-multimedia \
+  ##COREBASE##/meta-oe-zeus/meta-filesystems \
+  ##COREBASE##/meta-oe-zeus/meta-gnome \
+  ##COREBASE##/meta-oe-zeus/meta-initramfs \
+  ##COREBASE##/meta-oe-zeus/meta-networking \
+  ##COREBASE##/meta-oe-zeus/meta-oe \
+  ##COREBASE##/meta-oe-zeus/meta-python \
+  ##COREBASE##/meta-oe-zeus/meta-webserver \
+  ##COREBASE##/meta-oe-zeus/meta-xfce \
+  ##COREBASE##/meta-oe-zeus/meta-perl \
+  ##COREBASE##/meta-oe-zeus/meta-multimedia \
   ##COREBASE##/meta-cgl/meta-cgl-common \
   ##COREBASE##/meta-cloud-services \
   ##COREBASE##/meta-cloud-services/meta-openstack \
@@ -40,12 +40,12 @@ BBLAYERS_NON_REMOVABLE ?= " \
   ##COREBASE##/meta \
   ##COREBASE##/meta-yocto \
   "
-LAYERSERIES_COMPAT_ubinux = "thud warrior"
-LAYERSERIES_COMPAT_core = "thud warrior"
-LAYERSERIES_COMPAT_measured = "thud warrior"
-LAYERSERIES_COMPAT_selinux = "master"
-LAYERSERIES_COMPAT_gplv2 = "thud warrior"
-LAYERSERIES_COMPAT_cloud-services = "thud warrior"
-LAYERSERIES_COMPAT_spdxscanner = "thud warrior"
+LAYERSERIES_COMPAT_ubinux = "zeus"
+LAYERSERIES_COMPAT_core = "zeus"
+LAYERSERIES_COMPAT_measured = "zeus"
+LAYERSERIES_COMPAT_selinux = "zeus"
+LAYERSERIES_COMPAT_gplv2 = "zeus"
+LAYERSERIES_COMPAT_cloud-services = "zeus"
+LAYERSERIES_COMPAT_spdxscanner = "zeus"
 LAYERSERIES_COMPAT_openstack = "master"
-LAYERSERIES_COMPAT_cgl-common = "thud warrior"
+LAYERSERIES_COMPAT_cgl-common = "zeus"
