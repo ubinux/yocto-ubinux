@@ -1,0 +1,46 @@
+# GPLv3 Packages, these packages are used at toolchain.
+bison
+^cpp
+g++
+^gcc
+gcov
+
+# GPLv3 Packages, target's packages
+libmpfr
+
+##arch毎の制限機能
+#x86
+mcelog-.*i586.rpm
+#x86_64
+#e500mc
+#oprofile-.*ppce500mc.rpm
+#iputils-ifenslave-.*ppce500mc.rpm
+trousers-.*ppce500mc.rpm
+#e500v2
+#valgrind-.*ppce500v2.rpm
+#e300
+#armv7
+#oprofile-.*armv7a_vfp_neon.rpm
+#valgrind-.*armv7a_vfp_neon.rpm
+#iputils-ifenslave-.*armv7a_vfp_neon.rpm
+trousers-.*armv7a_vfp_neon.rpm
+#xrestop-.*armv7a_vfp_neon.rpm
+libsegfault-.*armv7a_vfp_neon.rpm
+lmsensors-.*pandaboard.rpm
+
+###other : toolchain and kernel
+cross-canadian
+nativesdk
+kernel
+^chkconfig-alternatives
+
+###other : 
+^lxc-
+^grub
+qt-demo-init
+^sysvinit
+
+###知財相談
+libphonone
+libssp
+util-linux-lscpu	

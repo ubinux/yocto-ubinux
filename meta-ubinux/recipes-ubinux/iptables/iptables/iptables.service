@@ -1,0 +1,17 @@
+[Unit]
+Description=IPv4 firewall with iptables
+After=syslog.target
+ConditionPathExists=/etc/default/iptables
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/libexec/iptables/iptables.init start
+ExecStop=/usr/libexec/iptables/iptables.init stop
+Environment=BOOTUP=serial
+Environment=CONSOLETYPE=serial
+StandardOutput=syslog
+StandardError=syslog
+
+[Install]
+WantedBy=basic.target

@@ -1,0 +1,51 @@
+# LAYER_CONF_VERSION is increased each time build/conf/bblayers.conf
+# changes incompatibly
+LCONF_VERSION = "6"
+
+BBPATH = "${TOPDIR}"
+BBFILES ?= ""
+
+BBLAYERS ?= " \
+  ##COREBASE##/meta-ubinux \
+  ##COREBASE##/meta \
+  ##COREBASE##/meta-poky \
+  ##COREBASE##/meta-yocto-bsp \
+  ##COREBASE##/meta-gplv2 \
+  ##COREBASE##/meta-freescale \
+  ##COREBASE##/meta-oe-warrior/meta-filesystems \
+  ##COREBASE##/meta-oe-warrior/meta-gnome \
+  ##COREBASE##/meta-oe-warrior/meta-initramfs \
+  ##COREBASE##/meta-oe-warrior/meta-networking \
+  ##COREBASE##/meta-oe-warrior/meta-oe \
+  ##COREBASE##/meta-oe-warrior/meta-python \
+  ##COREBASE##/meta-oe-warrior/meta-webserver \
+  ##COREBASE##/meta-oe-warrior/meta-xfce \
+  ##COREBASE##/meta-oe-warrior/meta-perl \
+  ##COREBASE##/meta-oe-warrior/meta-multimedia \
+  ##COREBASE##/meta-cgl/meta-cgl-common \
+  ##COREBASE##/meta-cloud-services \
+  ##COREBASE##/meta-cloud-services/meta-openstack \
+  ##COREBASE##/meta-virtualization \
+  ##COREBASE##/meta-selinux \
+  ##COREBASE##/meta-measured \
+  ##COREBASE##/meta-security \
+  ##COREBASE##/meta-security/meta-security-compliance \
+  ##COREBASE##/meta-qt5 \
+  ##COREBASE##/meta-swupdate \
+  ##COREBASE##/meta-linaro/meta-linaro  \
+  ##COREBASE##/meta-spdxscanner \
+  "
+BBLAYERS_NON_REMOVABLE ?= " \
+  ##COREBASE##/meta-ubinux \
+  ##COREBASE##/meta \
+  ##COREBASE##/meta-yocto \
+  "
+LAYERSERIES_COMPAT_ubinux = "thud warrior"
+LAYERSERIES_COMPAT_core = "thud warrior"
+LAYERSERIES_COMPAT_measured = "thud warrior"
+LAYERSERIES_COMPAT_selinux = "master"
+LAYERSERIES_COMPAT_gplv2 = "thud warrior"
+LAYERSERIES_COMPAT_cloud-services = "thud warrior"
+LAYERSERIES_COMPAT_spdxscanner = "thud warrior"
+LAYERSERIES_COMPAT_openstack = "master"
+LAYERSERIES_COMPAT_cgl-common = "thud warrior"

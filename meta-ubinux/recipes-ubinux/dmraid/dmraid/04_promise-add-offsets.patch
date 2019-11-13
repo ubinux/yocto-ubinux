@@ -1,0 +1,13 @@
+Author: Luke Yelavich <themuso@ubuntu.com>
+Description: Add extra offsets where promise metadata can be found.
+--- 1.0.0.rc16.orig/lib/format/ataraid/pdc.h
++++ 1.0.0.rc16/lib/format/ataraid/pdc.h
+@@ -13,7 +13,7 @@
+ 
+ #include <stdint.h>
+ 
+-#define PDC_CONFIGOFFSETS	63,255,256,16,399,591,675,735,974,991
++#define PDC_CONFIGOFFSETS	63,255,256,16,399,591,675,735,974,991,911,951
+ #define	PDC_DATAOFFSET 0
+ 
+ /*

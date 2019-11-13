@@ -1,0 +1,273 @@
+From: Stefan Bader <stefan.bader@canonical.com>
+Date: Mon, 13 Jan 2014 14:39:29 +0100
+Subject: Convert dmraid to use dm-raid module for RAID4 and RAID5
+
+The dmraid library used the dm-raid45 target for RAID4 and RAID5 sets.
+This module however was never upstream and is suffering constant issues
+when the Linux kernel changes.
+Upstream introduced the dm-raid/raid module/target in 2.6.38. This can be
+used to create device-mapper targets which use the MD RAID disciplines
+(though not showing up in /proc/mdstat).
+
+Most of the table constructor arguments can be mapped, only the member
+devices may not have an offset.
+
+From the old code it seems that RAID5 would always be build by set
+elements which will not have an offset. So potentially only RAID4
+could cause issues. That could be worked around if needed by creating
+additional linear mappings.
+
+NOTE: The event code is only compile tested. But we seem to have never
+shipped the dmraid event tool which is needed to use this feature. And
+we are about to remove support for ISW from dmraid (in favour of mdadm)
+anyway.
+
+Signed-off-by: Stefan Bader <stefan.bader@canonical.com>
+
+Index: 1.0.0.rc16/lib/activate/activate.c
+===================================================================
+--- 1.0.0.rc16.orig/lib/activate/activate.c	2014-01-14 15:41:29.872372693 +0100
++++ 1.0.0.rc16/lib/activate/activate.c	2014-01-14 15:41:59.692518476 +0100
+@@ -118,6 +118,17 @@ _dm_path_offset(struct lib_context *lc,
+ 		     valid ? path : lc->path.error, offset);
+ }
+ 
++/* Push metadata and data device path onto a table */
++static int
++_dm_meta_data_path(struct lib_context *lc, char **table, int valid,
++		   const char *meta, const char *path)
++
++{
++	return p_fmt(lc, table, " %s %s",
++		     meta ? meta : "-",
++		     valid ? path : lc->path.error);
++}
++
+ /*
+  * Create dm table for linear mapping.
+  */
+@@ -537,9 +548,10 @@ err:
+ /* Push begin of line onto a RAID5 table. */
+ /* FIXME: persistent dirty log. */
+ static int
+-_dm_raid45_bol(struct lib_context *lc, char **table, struct raid_set *rs,
++_dm_raid_bol(struct lib_context *lc, char **table, struct raid_set *rs,
+ 	       uint64_t sectors, unsigned int members)
+ {
++	int rc;
+ 	int need_sync = rs_need_sync(rs);
+ 	struct handler_info rebuild_drive;
+ 
+@@ -548,13 +560,31 @@ _dm_raid45_bol(struct lib_context *lc, c
+ 	if (need_sync && !get_rebuild_drive(lc, rs, &rebuild_drive))
+ 		return 0;
+ 
+-	return p_fmt(lc, table, "0 %U %s core 2 %u %s %s 1 %u %u %d",
+-		     sectors, get_dm_type(lc, rs->type),
+-		     calc_region_size(lc,
+-				      total_sectors(lc, rs) /
+-				      _dm_raid_devs(lc, rs, 0)),
+-		     (need_sync) ? "sync" : "nosync", get_type(lc, rs->type),
+-		     rs->stride, members, rebuild_drive.data.i32);
++	if (rebuild_drive.data.i32 < 0) {
++		rc = p_fmt(lc, table,
++		           "0 %U %s %s 4 %u %s region_size %u %u",
++			   sectors,
++			   get_dm_type(lc, rs->type),
++			   get_type(lc, rs->type),
++			   rs->stride,
++			   (need_sync) ? "sync" : "nosync",
++			   calc_region_size(lc, total_sectors(lc, rs) /
++					    _dm_raid_devs(lc, rs, 0)),
++			   members);
++	} else {
++		rc = p_fmt(lc, table,
++			   "0 %U %s %s 6 %u %s rebuild %d region_size %u %u",
++			   sectors,
++			   get_dm_type(lc, rs->type),
++			   get_type(lc, rs->type),
++			   rs->stride,
++			   (need_sync) ? "sync" : "nosync",
++			   rebuild_drive.data.i32,
++			   calc_region_size(lc, total_sectors(lc, rs) /
++					    _dm_raid_devs(lc, rs, 0)),
++			   members);
++	}
++	return rc;
+ }
+ 
+ /* Create "error target" name based on raid set name. */
+@@ -669,7 +699,7 @@ err:
+ }
+ 
+ static int
+-dm_raid45(struct lib_context *lc, char **table, struct raid_set *rs)
++dm_raid(struct lib_context *lc, char **table, struct raid_set *rs)
+ {
+ 	int ret;
+ 	uint64_t sectors = 0;
+@@ -749,7 +779,7 @@ dm_raid45(struct lib_context *lc, char *
+ 	 */
+ 	sectors *= members - 1;
+ 
+-	if (!_dm_raid45_bol(lc, table, rs, sectors, members))
++	if (!_dm_raid_bol(lc, table, rs, sectors, members))
+ 		goto err;
+ 
+ 	/* Stacked RAID sets (for RAID50 etc.) */
+@@ -759,7 +789,8 @@ dm_raid45(struct lib_context *lc, char *
+ 		if (!(path = mkdm_path(lc, r->name)))
+ 			goto err;
+ 
+-		ret = _dm_path_offset(lc, table, valid_rs(r), path, 0);
++		log_dbg(lc, "%s: raid set device %s", __func__, path);
++		ret = _dm_meta_data_path(lc, table, valid_rs(r), NULL, path);
+ 		dbg_free(path);
+ 
+ 		if (!ret)
+@@ -768,8 +799,11 @@ dm_raid45(struct lib_context *lc, char *
+ 
+ 	/* Lowest level RAID devices. */
+ 	list_for_each_entry(rd, &rs->devs, devs) {
+-		if (!_dm_path_offset(lc, table, valid_rd(rd), 
+-				     rd->di->path, rd->offset))
++		if (rd->offset)
++			goto err;
++		log_dbg(lc, "%s: low level dev %s", __func__, rd->di->path);
++		if (!_dm_meta_data_path(lc, table, valid_rd(rd), NULL,
++					rd->di->path))
+ 			goto err;
+ 	}
+ 
+@@ -802,11 +836,11 @@ static struct type_handler {
+ 	{ t_linear, dm_linear },
+ 	{ t_raid0, dm_raid0 },
+ 	{ t_raid1, dm_raid1 },
+-	{ t_raid4, dm_raid45 },
+-	{ t_raid5_ls, dm_raid45 },
+-	{ t_raid5_rs, dm_raid45 },
+-	{ t_raid5_la, dm_raid45 },
+-	{ t_raid5_ra, dm_raid45 },
++	{ t_raid4, dm_raid },
++	{ t_raid5_ls, dm_raid },
++	{ t_raid5_rs, dm_raid },
++	{ t_raid5_la, dm_raid },
++	{ t_raid5_ra, dm_raid },
+ 	/* RAID types below not supported (yet) */
+ 	{ t_raid6, dm_unsup },
+ };
+Index: 1.0.0.rc16.orig/lib/metadata/metadata.c
+===================================================================
+--- 1.0.0.rc16.orig/lib/metadata/metadata.c	2014-01-14 15:41:29.908372863 +0100
++++ 1.0.0.rc16/lib/metadata/metadata.c	2014-01-14 15:41:59.692518476 +0100
+@@ -31,11 +31,11 @@ static const struct {
+ 	{ t_linear, "linear", "linear"},
+ 	{ t_raid0, "stripe", "striped"},
+ 	{ t_raid1, "mirror", "mirror"},
+-	{ t_raid4, "raid4", "raid45"},
+-	{ t_raid5_ls, "raid5_ls", "raid45"},
+-	{ t_raid5_rs, "raid5_rs", "raid45"},
+-	{ t_raid5_la, "raid5_la", "raid45"},
+-	{ t_raid5_ra, "raid5_ra", "raid45"},
++	{ t_raid4, "raid4", "raid"},
++	{ t_raid5_ls, "raid5_ls", "raid"},
++	{ t_raid5_rs, "raid5_rs", "raid"},
++	{ t_raid5_la, "raid5_la", "raid"},
++	{ t_raid5_ra, "raid5_ra", "raid"},
+ 	{ t_raid6, "raid6", NULL},
+ };
+ 
+Index: 1.0.0.rc16/lib/events/libdmraid-events-isw.c
+===================================================================
+--- 1.0.0.rc16.orig/lib/events/libdmraid-events-isw.c	2014-01-14 10:20:23.598184676 +0100
++++ 1.0.0.rc16/lib/events/libdmraid-events-isw.c	2014-01-14 15:41:59.696518490 +0100
+@@ -502,7 +502,7 @@ static int _get_num_devs_from_status(cha
+ 	int ret;
+ 
+ 	for (ret = 0; *status; status++) {
+-		if (*status == 'A' || *status == 'D')
++		if (*status == 'A' || *status == 'a' || *status == 'D')
+ 			ret++;
+ 	}
+ 
+@@ -1258,8 +1258,8 @@ err:
+ 	return D_IGNORE;
+ }
+ 
+-/* Get the raid45 device(s) that caused the trigger. */
+-static enum disk_state_type _process_raid45_event(struct dm_task *dmt,
++/* Get the raid device(s) that caused the trigger. */
++static enum disk_state_type _process_raid_event(struct dm_task *dmt,
+ 						  char *params)
+ {
+ 	int argc, i, num_devs, dead, ret = D_INSYNC;
+@@ -1272,32 +1272,34 @@ static enum disk_state_type _process_rai
+ 		return D_IGNORE;
+ 
+ 	/*
+-	 * dm core parms (NOT provided in @params):  	0 976783872 raid45 
+-	 *
+-	 * raid45 device parms:     	3 253:4 253:5 253:6
+-	 * raid45 device status:	1 AAA
++	 * raid device status:	<type> 3 AAA <synced/total> <action> <rmm>
+ 	 */
+ 
++	/* Skip over the raid type */
++	if(!dm_split_words(params, 1, 0, &p))
++		goto err;
++	p += strlen(p) + 1;
++
+ 	/* Number of devices. */
+ 	num_devs = _get_num_devs(params, &p);
+ 	if (!num_devs)
+ 		goto err;
+ 
+-	/* Devices names + "1" + "AA". */
+-	argc = num_devs + 2;
++	/* AAA + <completeness> <action> <resync mismatches> */
++	argc = 4;
+ 	args = dm_malloc(argc * sizeof(*args));
+ 	if (!args ||
+ 	    dm_split_words(p, argc, 0, args) != argc)
+ 		goto err;
+ 
+-	dev_status_str = args[num_devs + 1];
++	dev_status_str = args[0];
+ 
+ 	/* Consistency check on num_devs and status chars. */
+ 	i = _get_num_devs_from_status(dev_status_str);
+ 	if (i != num_devs)
+ 		goto err;
+ 
+-	/* Check for bad raid45 devices. */
++	/* Check for bad raid devices. */
+ 	for (i = 0, p = dev_status_str; i < rs->num_devs; i++) {
+ 		/* Skip past any non active/dead identifiers. */
+ 		dead = *(p++) == 'D';
+@@ -1324,7 +1326,7 @@ static enum disk_state_type _process_rai
+ 	return ret;
+ 
+ err:
+-	_event_cleanup_and_log(args, "raid45");
++	_event_cleanup_and_log(args, "raid");
+ 	return D_IGNORE;
+ }
+ 
+@@ -1341,7 +1343,7 @@ static void _process_event(char *target_
+ 	} *proc,  process[] = {
+ 		{ "striped", _process_stripe_event, 0 },
+ 		{ "mirror",  _process_mirror_event, 1 },
+-		{ "raid45",  _process_raid45_event, 1 },
++		{ "raid",    _process_raid_event, 1 },
+ 	};
+ #ifdef	_LIBDMRAID_DSO_TESTING
+ 	struct dso_raid_set *rs;
+@@ -1352,7 +1354,7 @@ static void _process_event(char *target_
+ 	 * stripe (raid 0),
+ 	 * mirror (raid 1)
+ 	 * or
+-	 * raid45 (raid 4/5).
++	 * raid   (raid 4/5).
+ 	 */
+ 	for (proc = process; proc < ARRAY_END(process); proc++) {
+ 		if (!strcmp(target_type, proc->target_type))
