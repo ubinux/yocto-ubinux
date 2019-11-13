@@ -1,6 +1,6 @@
 [DEPEND_META]
 metas=meta-gplv2
- meta-oe-warrior
+ meta-oe-zeus
  meta-freescale
  meta-cgl
  meta-cloud-services
@@ -15,8 +15,8 @@ metas=meta-gplv2
 
 [meta-gplv2]
 GITURL=ssh://10.24.14.171/home/owllinfilesrv/yocto/meta-gplv2 
-BRANCH=warrior
-HEADID=460ba027fd79b99151f95c826446f3aead5d17ff
+BRANCH=zeus
+HEADID=0f4eecc000f66d114ad258fa31aed66afa292166
 FILES=conf/
  recipes-core/readline/
  recipes-core/coreutils/
@@ -33,10 +33,10 @@ FILES=conf/
  recipes-extended/grep/
  recipes-support/gdbm/
 
-[meta-oe-warrior]
+[meta-oe-zeus]
 GITURL=ssh://10.24.14.171/home/owllinfilesrv/yocto/meta-openembedded.git
-BRANCH=warrior
-HEADID=0afee3eacfd18a9962013830028f9e54b4973657
+BRANCH=zeus
+HEADID=aad5b3d070cd8c58828b0975cf861d8ebc90f460
 FILES=meta-oe/conf/
  meta-oe/COPYING.MIT
  meta-oe/licenses/
@@ -371,8 +371,8 @@ FILES=meta-oe/conf/
 
 [meta-freescale]
 GITURL=ssh://10.24.14.171/home/owllinfilesrv/yocto/meta-freescale
-BRANCH=warrior
-HEADID=b08e5e574aae50540b0581672337ce44a8d4d844
+BRANCH=zeus
+HEADID=188be007393760d8238725a9bb8903fc383a2028
 FILES=conf/layer.conf
  licenses/
  classes/
@@ -385,8 +385,8 @@ FILES=conf/layer.conf
 
 [meta-cgl]
 GITURL=ssh://10.24.14.171/home/owllinfilesrv/yocto/meta-cgl.git
-BRANCH=warrior
-HEADID=691457f7a25cc01d2aa70ca4d1242d041c0889e3
+BRANCH=master
+HEADID=fe28a226377697639d18a9c671dd5f9004be0ba0
 FILES=meta-cgl-common/conf/layer.conf
  meta-cgl-common/conf/distro/include/cgl_common_security_flags.inc
  meta-cgl-common/recipes-cgl/cluster-glue/
@@ -402,8 +402,8 @@ FILES=meta-cgl-common/conf/layer.conf
 
 [meta-cloud-services]
 GITURL=ssh://10.24.14.171/home/owllinfilesrv/yocto/meta-cloud-services
-BRANCH=warrior
-HEADID=43ca2e54a87be30b718654e0e47d57605d841237
+BRANCH=zeus
+HEADID=fcf43a2b0a9ca101dd0c4b3d3f7b9fe0278e7173
 FILES=conf/layer.conf
  classes/
  meta-openstack/classes/default_configs.bbclass
@@ -461,8 +461,8 @@ FILES=conf/layer.conf
 
 [meta-virtualization]
 GITURL=ssh://10.24.14.171/home/owllinfilesrv/yocto/meta-virtualization
-BRANCH=warrior
-HEADID=2c6f451aa2b954c0cab2052d4f4635618050f648
+BRANCH=zeus
+HEADID=062d9f1f4faf2ca8a1fe78b7c7365e6378c15836
 FILES=conf/layer.conf
  classes/
  conf/distro/include/virt_security_flags.inc
@@ -478,8 +478,8 @@ FILES=conf/layer.conf
 
 [meta-selinux]
 GITURL=ssh://10.24.14.171/home/owllinfilesrv/yocto/meta-selinux
-BRANCH=warrior
-HEADID=154654a6fe12206a6b9ad6d8c36a4dbe672bcc46
+BRANCH=zeus
+HEADID=44d760413920ba440439b8bc7c2a71ca26cd7a2d
 FILES=conf/layer.conf
  recipes-security/audit/
 
@@ -492,8 +492,8 @@ FILES=conf/
 
 [meta-security]
 GITURL=ssh://10.24.14.171/home/owllinfilesrv/yocto/meta-security.git
-BRANCH=warrior
-HEADID=4f7be0d252f68d8e8d442a7ed8c6e8a852872d28
+BRANCH=zeus
+HEADID=27ddb455543b670097e252ba0d0ad5b7e4101748
 FILES=conf
  recipes-ids/samhain
  recipes-perl/
@@ -512,8 +512,8 @@ FILES=conf
 
 [meta-qt5]
 GITURL=ssh://10.24.14.171/home/owllinfilesrv/yocto/meta-qt5
-BRANCH=warrior
-HEADID=2a5f9415e48a38f6f4eb0cf375737a2d8438e2fe
+BRANCH=zeus
+HEADID=432ad2aa6c3a13253fefc909faba368851d21fb1
 FILES=conf/layer.conf
  recipes-qt/qt5/qttools_git.bb
  recipes-qt/qt5/qt5-git.inc
@@ -550,15 +550,15 @@ FILES=conf/layer.conf
 [meta-spdxscanner]
 GITURL=ssh://10.24.14.171/home/owllinfilesrv/yocto/meta-spdxscanner
 BRANCH=master
-HEADID=d0489844bebff0e9291fefbaab5a419059ee202c
+HEADID=5854fdf615de9712ae98d7365547577902219e7f
 FILES=conf/layer.conf
  classes
 
 
 [meta-swupdate]
 GITURL=ssh://10.24.14.171/home/owllinfilesrv/yocto/meta-swupdate
-BRANCH=warrior
-HEADID=8799e48a61c3dbf843f6e0675e0c8edb4ce5130c
+BRANCH=zeus
+HEADID=9915253064a1698c778b57f1f9cd70b614016845
 FILES=conf/layer.conf
  recipes-support/swupdate/
  recipes-devtools/mtd/
@@ -566,7 +566,7 @@ FILES=conf/layer.conf
 
 [meta-linaro]
 GITURL=ssh://10.24.14.171/home/owllinfilesrv/yocto/meta-linaro
-BRANCH=warrior
-HEADID=853e8e05e55e1bce7cef94ad7515e37e9485f745
+BRANCH=master
+HEADID=14a8a62dca7a2c70d91578fc79e71911bc670253
 FILES=meta-linaro/conf/layer.conf
  meta-linaro/recipes-kernel/trace-cmd
