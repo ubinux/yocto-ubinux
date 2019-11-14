@@ -549,8 +549,8 @@ FILES=conf/layer.conf
 
 [meta-spdxscanner]
 GITURL=ssh://10.24.14.171/home/owllinfilesrv/yocto/meta-spdxscanner
-BRANCH=master
-HEADID=5854fdf615de9712ae98d7365547577902219e7f
+BRANCH=zeus
+HEADID=8c64c85289c0479cf102ae825b54945392019fc7
 FILES=conf/layer.conf
  classes
 
