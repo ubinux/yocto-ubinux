@@ -53,14 +53,14 @@ FILES=meta-oe/conf/
  meta-oe/recipes-graphics/tslib/
  meta-oe/recipes-graphics/xorg-app/xlsfonts_1.0.6.bb
  meta-oe/recipes-graphics/xorg-app/xrdb_1.2.0.bb
- meta-oe/recipes-graphics/xorg-app/xterm_330.bb
+ meta-oe/recipes-graphics/xorg-app/xterm_349.bb
  meta-oe/recipes-graphics/xorg-app/xwd_1.0.7.bb
  meta-oe/recipes-graphics/xorg-app/iceauth_1.0.8.bb
- meta-oe/recipes-graphics/xorg-app/setxkbmap_1.3.1.bb
+ meta-oe/recipes-graphics/xorg-app/setxkbmap_1.3.2.bb
  meta-oe/recipes-graphics/xorg-data/
  meta-oe/recipes-graphics/xorg-driver/xf86-input-void_1.4.1.bb
  meta-oe/recipes-graphics/xorg-lib/libxaw_1.0.13.bb
- meta-oe/recipes-graphics/xorg-app/sessreg_1.1.1.bb
+ meta-oe/recipes-graphics/xorg-app/sessreg_1.1.2.bb
  meta-oe/recipes-graphics/xorg-app/sessreg/
  
  meta-oe/recipes-support/ccid/
@@ -87,7 +87,7 @@ FILES=meta-oe/conf/
  meta-oe/recipes-support/syslog-ng/
  meta-oe/recipes-support/bash-completion/
  meta-oe/recipes-dbs/postgresql/ 
- meta-oe/recipes-support/sg3-utils/sg3-utils_1.42.bb
+ meta-oe/recipes-support/sg3-utils/sg3-utils_1.44.bb
  meta-oe/recipes-support/sg3-utils/
 
  meta-oe/recipes-support/ctapi-common/ctapi-common_1.1-14.bb 
@@ -110,7 +110,7 @@ FILES=meta-oe/conf/
  meta-oe/recipes-support/anthy/anthy/ 
  meta-oe/recipes-support/anthy/anthy_9100h.bb
  meta-oe/recipes-support/uim/uim/
- meta-oe/recipes-support/uim/uim_1.8.6.bb
+ meta-oe/recipes-support/uim/uim_1.8.8.bb
  meta-oe/recipes-support/opensc/
  meta-oe/recipes-support/libestr/
  meta-oe/recipes-support/augeas/
@@ -187,7 +187,7 @@ FILES=meta-oe/conf/
  meta-oe/recipes-benchmark/iperf3/
  meta-oe/recipes-benchmark/fio/
  
- meta-oe/recipes-graphics/xorg-app/xrdb_1.2.0	.bb
+ meta-oe/recipes-graphics/xorg-app/xrdb_1.2.0.bb
  meta-oe/recipes-graphics/xorg-app/xsetroot_1.1.2.bb
  meta-oe/recipes-graphics/xorg-app/twm_1.0.10.bb
  meta-oe/recipes-graphics/xorg-app/setxkbmap_1.3.1.bb
@@ -253,7 +253,7 @@ FILES=meta-oe/conf/
  meta-networking/recipes-connectivity/networkmanager
  meta-networking/recipes-support/ifenslave/
  meta-networking/recipes-support/wireshark/
- meta-networking/recipes-support/tcpdump/tcpdump_4.9.2.bb
+ meta-networking/recipes-support/tcpdump/tcpdump_4.9.3.bb
  meta-networking/recipes-support/tcpdump/tcpdump/
  meta-networking/recipes-support/netcf/
  meta-networking/recipes-support/stunnel/
@@ -358,7 +358,7 @@ FILES=meta-oe/conf/
  meta-perl/recipes-perl/libdigest/files/
  meta-perl/recipes-perl/libdigest/
  meta-perl/recipes-perl/libhtml/libhtml-parser-perl_3.72.bb
- meta-perl/recipes-perl/libnet/libnet-dns-perl_1.19.bb
+ meta-perl/recipes-perl/libnet/libnet-dns-perl_1.21.bb
  meta-perl/recipes-perl/libnet/libnet-dns-sec-perl_1.10.bb
  meta-perl/recipes-perl/libproc/
  meta-perl/recipes-perl/libmime/files/
