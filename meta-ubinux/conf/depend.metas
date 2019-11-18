@@ -62,7 +62,7 @@ FILES=meta-oe/conf/
  meta-oe/recipes-graphics/xorg-app/sessreg_1.1.2.bb
  meta-oe/recipes-graphics/xorg-app/sessreg/
  meta-oe/recipes-graphics/libsdl/libsdl_1.2.15.bb
- meta-oe/recipes-graphics/libsdl/libsdl/
+ meta-oe/recipes-graphics/libsdl/libsdl-1.2.15/
  
  meta-oe/recipes-support/ccid/
  meta-oe/recipes-crypto/cryptsetup/
