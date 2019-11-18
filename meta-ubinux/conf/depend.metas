@@ -189,6 +189,7 @@ FILES=meta-oe/conf/
  meta-oe/recipes-devtools/python/python-pytoml_0.1.21.bb
  meta-oe/recipes-devtools/python/python-which_1.1.0.bb
  meta-oe/recipes-devtools/python/python-futures_3.3.0.bb
+ meta-oe/recipes-devtools/dnf-plugin-tui
  
  meta-oe/recipes-connectivity/libnet/
  meta-oe/recipes-connectivity/krb5/
