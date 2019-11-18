@@ -60,7 +60,6 @@ UBINUX_PKGS = " \
 	dialog \
 	dosfstools \
 	edac-utils \
-	eggdbus \
 	encodings \
 	expat-bin \
 	fatresize \
@@ -144,7 +143,6 @@ UBINUX_PKGS = " \
 	libxt \
 	libxtst \
 	libxv \
-	libxxf86misc \
 	libxxf86vm \
 	libzip \
 	linux-libc-headers-dev \
@@ -385,7 +383,6 @@ UBINUX_PKGS = " \
 	tftp-hpa-server \
 	tk \
 	tomoyo-tools \
-	umip \
 	vlan \
 	vsftpd \
 	wireshark \
@@ -603,7 +600,7 @@ UBINUX_PKGS = " \
 	python-dbus \
 	python-linecache2 \
 	python-pywbem \
-	python-scapy \
+	python3-scapy \
 	python-pycodestyle \
 	python-stevedore \
 	python-traceback2 \

@@ -41,7 +41,6 @@ UBINUX_PKGS = " \
 	dialog \
 	dmxproto-dev \
 	dri2proto-dev \
-	eggdbus \
 	encodings \
 	expat-bin \
 	fixesproto-dev \
@@ -119,7 +118,6 @@ UBINUX_PKGS = " \
 	libxt \
 	libxtst \
 	libxv \
-	libxxf86misc \
 	libxxf86vm \
 	linux-libc-headers-dev \
 	lksctp-tools \
@@ -362,7 +360,6 @@ UBINUX_PKGS = " \
 	tftp-hpa-server \
 	tk \
 	tomoyo-tools \
-	umip \
 	vlan \
 	vsftpd \
 	wireshark \
