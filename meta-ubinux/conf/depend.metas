@@ -47,7 +47,6 @@ FILES=meta-oe/conf/
  meta-oe/recipes-support/uhubctl/
  meta-oe/classes/autotools-bootstrap.bbclass
  meta-oe/classes/waf-samba.bbclass
- meta-oe/recipes-core/eggdbus
  meta-oe/recipes-core/ell
  meta-oe/recipes-graphics/xorg-app/bdftopcf_1.1.bb
  meta-oe/recipes-graphics/tslib/
@@ -62,6 +61,8 @@ FILES=meta-oe/conf/
  meta-oe/recipes-graphics/xorg-lib/libxaw_1.0.13.bb
  meta-oe/recipes-graphics/xorg-app/sessreg_1.1.2.bb
  meta-oe/recipes-graphics/xorg-app/sessreg/
+ meta-oe/recipes-graphics/libsdl/libsdl_1.2.15.bb
+ meta-oe/recipes-graphics/libsdl/libsdl/
  
  meta-oe/recipes-support/ccid/
  meta-oe/recipes-crypto/cryptsetup/
@@ -77,6 +78,7 @@ FILES=meta-oe/conf/
  meta-oe/recipes-security/passwdqc/
  meta-oe/recipes-security/tomoyo-tools/
  meta-oe/recipes-security/nmap/
+ meta-oe/recipes-security/keyutils/
  meta-oe/recipes-support/libol/
  meta-oe/recipes-support/libsmi/
  meta-oe/recipes-support/libssh2/
@@ -150,6 +152,7 @@ FILES=meta-oe/conf/
  meta-oe/recipes-extended/tiptop/
  meta-oe/recipes-extended/mailx/
  meta-oe/recipes-extended/nana/
+ meta-oe/recipes-extended/jansson/
  meta-networking/recipes-extended/corosync
  meta-oe/recipes-extended/openwsman/
  meta-oe/recipes-extended/sblim-sfcb/
@@ -180,6 +183,12 @@ FILES=meta-oe/conf/
  meta-oe/recipes-devtools/uw-imap/
  meta-oe/recipes-devtools/iptraf/
  meta-oe/recipes-devtools/protobuf/
+ meta-oe/recipes-devtools/python/python-six_1.12.0.bb
+ meta-oe/recipes-devtools/python/python-jsmin_2.2.2.bb
+ meta-oe/recipes-devtools/python/python-pytoml.inc
+ meta-oe/recipes-devtools/python/python-pytoml_0.1.21.bb
+ meta-oe/recipes-devtools/python/python-which_1.1.0.bb
+ meta-oe/recipes-devtools/python/python-futures_3.3.0.bb
  
  meta-oe/recipes-connectivity/libnet/
  meta-oe/recipes-connectivity/krb5/
@@ -304,7 +313,6 @@ FILES=meta-oe/conf/
  meta-networking/recipes-support/strongswan/
  meta-networking/recipes-support/ipsec-tools/
  meta-networking/recipes-connectivity/wireless-regdb
- meta-networking/recipes-connectivity/umip/
  meta-networking/recipes-connectivity/firewalld/
 
  meta-filesystems/conf/
@@ -326,6 +334,8 @@ FILES=meta-oe/conf/
  meta-python/recipes-devtools/python/
 
  meta-oe/recipes-gnome/gnome-common/
+ meta-oe/recipes-gnome/gtk+/
+ meta-oe/recipes-gnome/gnome-themes/
  meta-gnome/recipes-gnome/nautilus
  meta-gnome/recipes-gnome/gnome-desktop
 
@@ -358,6 +368,7 @@ FILES=meta-oe/conf/
  meta-perl/recipes-perl/libdigest/files/
  meta-perl/recipes-perl/libdigest/
  meta-perl/recipes-perl/libhtml/libhtml-parser-perl_3.72.bb
+ meta-perl/recipes-perl/libhtml/libhtml-tagset-perl_3.20.bb
  meta-perl/recipes-perl/libnet/libnet-dns-perl_1.21.bb
  meta-perl/recipes-perl/libnet/libnet-dns-sec-perl_1.10.bb
  meta-perl/recipes-perl/libproc/
