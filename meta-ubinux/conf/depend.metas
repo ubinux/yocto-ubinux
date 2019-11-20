@@ -315,6 +315,7 @@ FILES=meta-oe/conf/
  meta-networking/recipes-support/ipsec-tools/
  meta-networking/recipes-connectivity/wireless-regdb
  meta-networking/recipes-connectivity/firewalld/
+ meta-networking/recipes-connectivity/adcli/
 
  meta-filesystems/conf/
  meta-filesystems/COPYING.MIT
