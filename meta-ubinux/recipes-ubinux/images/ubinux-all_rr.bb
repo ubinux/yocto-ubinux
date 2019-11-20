@@ -14,7 +14,6 @@ BASE_PKG_GROUPS = " \
 
 LSB_PKG_GROUPS = " \
 	packagegroup-core-full-cmdline \
-	packagegroup-core-lsb \
 "
 
 IMAGE_INSTALL = " \
@@ -36,10 +35,12 @@ UBINUX_PKGS = " \
 	bdftopcf \
 	bind \
 	bind-utils \
+	babeld \
 	blktool \
 	bluez5 \
 	bmap-tools \
 	boost \
+	byacc \
 	pbzip2 \
 	busybox-httpd \
 	cairo \
@@ -54,6 +55,7 @@ UBINUX_PKGS = " \
 	crash \
 	cryptodev-linux \
 	czmq \
+	daq \
 	devmem2 \
 	dfu-util \
 	dhcp-server \
@@ -70,6 +72,7 @@ UBINUX_PKGS = " \
 	font-util \
 	fontconfig \
 	freetype \
+	f2fs-tools \
 	fscryptctl \
 	geoip \
 	geoipupdate \
@@ -78,8 +81,10 @@ UBINUX_PKGS = " \
 	gconf \
 	gdb \
 	glib-2.0-utils \
+	gmime \
 	gnutls \
 	gobject-introspection \
+	grpc \
 	gtk+ \
 	hdf5 \
 	hexedit \
@@ -91,9 +96,11 @@ UBINUX_PKGS = " \
 	iputils-clockdiff \
 	irqbalance \
 	ifenslave \
+	iozone3 \
 	ipc-run \
 	iptraf-ng \
 	libjpeg-turbo \
+	libhugetlbfs \
 	iwd \
 	kbd \
 	kexec-tools \

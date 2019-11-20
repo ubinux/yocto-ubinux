@@ -72,6 +72,7 @@ FILES=meta-oe/conf/
  meta-oe/recipes-support/eject/
  meta-oe/recipes-support/eventlog/
  meta-oe/recipes-support/fbset/
+ meta-oe/recipes-support/gflags/
  meta-oe/recipes-support/hwdata/
  meta-oe/recipes-dbs/libdbi/libdbi_0.9.0.bb
  meta-oe/recipes-dbs/libdbi/libdbi.inc
@@ -116,6 +117,8 @@ FILES=meta-oe/conf/
  meta-oe/recipes-support/opensc/
  meta-oe/recipes-support/libestr/
  meta-oe/recipes-support/augeas/
+ meta-oe/recipes-support/pidgin/gmime_3.2.3.bb
+ meta-oe/recipes-support/pidgin/gmime/
 
  meta-oe/recipes-dbs/mysql/mariadb.inc
  meta-oe/recipes-dbs/mysql/mariadb/
@@ -130,6 +133,7 @@ FILES=meta-oe/conf/
  meta-oe/recipes-support/nano/
  meta-oe/recipes-support/xorg-xrdp
  
+ meta-oe/recipes-extended/byacc/
  meta-oe/recipes-extended/hexedit/
  meta-oe/recipes-extended/libconfig/
  meta-oe/recipes-extended/dialog/
@@ -194,8 +198,11 @@ FILES=meta-oe/conf/
  meta-oe/recipes-connectivity/libnet/
  meta-oe/recipes-connectivity/krb5/
  meta-networking/recipes-connectivity/samba/
+ meta-networking/recipes-connectivity/daq/
  meta-oe/recipes-benchmark/iperf3/
  meta-oe/recipes-benchmark/fio/
+ meta-oe/recipes-benchmark/iozone3/
+ meta-oe/recipes-benchmark/libhugetlbfs/
  
  meta-oe/recipes-graphics/xorg-app/xrdb_1.2.0.bb
  meta-oe/recipes-graphics/xorg-app/xsetroot_1.1.2.bb
@@ -290,12 +297,15 @@ FILES=meta-oe/conf/
  meta-networking/recipes-support/openipmi/
  meta-networking/recipes-daemons/opensaf
  meta-networking/recipes-daemons/postfix/
+ meta-networking/recipes-devtools/grpc/
+ meta-oe/recipes-test/googletest/
 
  meta-networking/recipes-protocols/net-snmp/
  meta-networking/recipes-protocols/quagga/
  meta-networking/recipes-protocols/rp-pppoe/
  meta-networking/recipes-protocols/radiusclient-ng
  meta-networking/recipes-protocols/openl2tp
+ meta-networking/recipes-protocols/babeld/
  meta-networking/recipes-connectivity/vlan/
  meta-networking/recipes-connectivity/crda/
  meta-networking/recipes-netkit/netkit-rsh/
@@ -315,6 +325,7 @@ FILES=meta-oe/conf/
  meta-networking/recipes-support/ipsec-tools/
  meta-networking/recipes-connectivity/firewalld/
  meta-networking/recipes-connectivity/adcli/
+ meta-networking/recipes-connectivity/libdnet/
 
  meta-filesystems/conf/
  meta-filesystems/COPYING.MIT
@@ -323,6 +334,7 @@ FILES=meta-oe/conf/
  meta-filesystems/recipes-utils/xfsprogs/
  meta-filesystems/recipes-filesystems/logfsprogs/
  meta-filesystems/recipes-utils/fatresize/
+ meta-filesystems/recipes-utils/f2fs-tools
  
  meta-initramfs/conf/
  meta-initramfs/COPYING.MIT
