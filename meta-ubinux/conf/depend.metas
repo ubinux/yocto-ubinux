@@ -132,6 +132,7 @@ FILES=meta-oe/conf/
  meta-oe/recipes-support/xrdp/
  meta-oe/recipes-support/nano/
  meta-oe/recipes-support/xorg-xrdp
+ meta-oe/recipes-support/xmlsec1/
  
  meta-oe/recipes-extended/byacc/
  meta-oe/recipes-extended/hexedit/
@@ -253,6 +254,7 @@ FILES=meta-oe/conf/
  meta-oe/recipes-extended/libzip/
  meta-oe/recipes-connectivity/zeromq
  meta-oe/recipes-connectivity/iwd/
+ meta-oe/recipes-connectivity/paho-mqtt-c/
 
  meta-networking/classes/ 
  meta-networking/licenses/
@@ -286,6 +288,7 @@ FILES=meta-oe/conf/
  meta-networking/recipes-support/openvpn/
  meta-networking/recipes-support/ntp/
  meta-networking/recipes-support/netcf/
+ meta-networking/recipes-support/mtr/
  meta-networking/recipes-daemons/cyrus-sasl/
  meta-networking/recipes-daemons/vsftpd/
  meta-networking/recipes-daemons/ptpd/

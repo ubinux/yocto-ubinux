@@ -164,6 +164,7 @@ UBINUX_PKGS = " \
 	mkfontscale \
 	mmc-utils \
 	mpfr \
+	mtr \
 	esmtp \
 	mtd-utils \
 	mtd-utils-jffs2 \
@@ -175,6 +176,7 @@ UBINUX_PKGS = " \
 	openhpi \
 	openssh \
 	paxctl \
+	paho-mqtt-c \
 	pango \
 	pbzip2 \
 	pcregrep \
@@ -225,6 +227,7 @@ UBINUX_PKGS = " \
 	xkbcomp \
 	xkeyboard-config \
 	xmodmap \
+	xmlsec1 \
 	xorg-minimal-fonts \
 	xorgxrdp \
 	xprop \
@@ -607,7 +610,6 @@ UBINUX_PKGS = " \
 	python-dbus \
 	python-linecache2 \
 	python-pywbem \
-	python3-scapy \
 	python-pycodestyle \
 	python-stevedore \
 	python-traceback2 \
