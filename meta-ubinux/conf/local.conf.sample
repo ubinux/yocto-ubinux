@@ -308,6 +308,9 @@ PREFERRED_VERSION_time = "1.7"
 PREFERRED_VERSION_bash = "3.2.57"
 PREFERRED_VERSION_grep = "2.5.1a"
 PREFERRED_VERSION_gdbm = "1.8.3"
+
+# Fix installation confilt since 2020.01,so use python-pika provided by meta-openstack
+PREFERRED_VERSION_python-pika = "0.10.0+gitAUTOINC+b907f91415"
 ##################################################################
 ## Patch handling.
 ##################################################################
