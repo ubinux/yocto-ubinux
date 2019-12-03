@@ -1,7 +1,4 @@
 RDEPENDS_${PN} += "\
-    nativesdk-libnewt-python \
+    nativesdk-dnf-plugin-tui \
     nativesdk-createrepo-c \
-    nativesdk-gpgme \
-    nativesdk-update-rc.d \
     "
-
