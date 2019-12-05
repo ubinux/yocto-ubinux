@@ -258,7 +258,7 @@ ENABLE_BINARY_LOCALE_GENERATION = "1"
 # # NOTE: If removing en_US.UTF-8 you will also need to uncomment, and set
 # # appropriate values for IMAGE_LINGUAS and LIMIT_BUILT_LOCALES
 # # WARNING: this may break localisation!
-GLIBC_GENERATE_LOCALES = "en_GB.UTF-8 en_US.UTF-8"
+#GLIBC_GENERATE_LOCALES = "en_GB.UTF-8 en_US.UTF-8"
 
 # # See message above as to whether setting these is required
 # #IMAGE_LINGUAS ?= "en-gb"
