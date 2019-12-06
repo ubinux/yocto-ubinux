@@ -338,6 +338,7 @@ FILES=meta-oe/conf/
  meta-filesystems/recipes-filesystems/logfsprogs/
  meta-filesystems/recipes-utils/fatresize/
  meta-filesystems/recipes-utils/f2fs-tools
+ meta-filesystems/recipes-support/fuse/
  
  meta-initramfs/conf/
  meta-initramfs/COPYING.MIT

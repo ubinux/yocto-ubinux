@@ -46,6 +46,7 @@ UBINUX_PKGS = " \
 	cairo \
 	ccs-tools \
 	checksec \
+	chkconfig \
 	cifs-utils \
 	cluster-glue \
 	cluster-glue-plugin-interfacemgr \
@@ -71,22 +72,28 @@ UBINUX_PKGS = " \
 	font-alias \
 	font-util \
 	fontconfig \
+	foomatic-filters \
 	freetype \
 	f2fs-tools \
 	fscryptctl \
+	fuse3 \
 	geoip \
 	geoipupdate \
 	geoip-database \
 	gcc \
 	gconf \
 	gdb \
+	gdbserver \
+	ghostscript \
 	glib-2.0-utils \
 	gmime \
 	gnutls \
 	gobject-introspection \
+	groff \
 	grpc \
 	gtk+ \
 	hdf5 \
+	hdparm \
 	hexedit \
 	hicolor-icon-theme \
 	icu \
@@ -104,6 +111,7 @@ UBINUX_PKGS = " \
 	iwd \
 	kbd \
 	kexec-tools \
+	less \
 	libcap-ng \
 	libdmx \
 	libdrm \
@@ -117,6 +125,7 @@ UBINUX_PKGS = " \
 	libnl \
 	libnss-nis \
 	libpcap \
+	libpipeline \
 	libpciaccess \
 	libpeas \
 	libpng \
@@ -141,6 +150,7 @@ UBINUX_PKGS = " \
 	libxi \
 	libxinerama \
 	libxkbfile \
+	libxml-perl \
 	libxmu \
 	libxpm \
 	libxrandr \
@@ -155,10 +165,15 @@ UBINUX_PKGS = " \
 	linux-libc-headers-dev \
 	lksctp-tools \
 	ltp \
+	lrzsz \
+	lsof \
 	lxc \
 	lynis \
+	man-db \
+	man-pages \
 	makedumpfile \
 	mesa-demos \
+	minicom \
 	mingetty \
 	mmc-utils \
 	mkfontscale \
@@ -199,6 +214,8 @@ UBINUX_PKGS = " \
 	rgb \
 	rsync \
 	samba \
+	screen \
+	setserial \
 	setxkbmap \
 	slang \
 	spitools \
@@ -207,9 +224,13 @@ UBINUX_PKGS = " \
 	stunnel \
 	subversion \
 	sysprof \
+	sysstat \
 	tiff \
 	udev \
 	util-macros \
+	usbutils \
+	watchdog \
+	xdg-utils \
 	wpa-supplicant \
 	xauth \
 	xcb-proto-dev \
