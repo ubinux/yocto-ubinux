@@ -36,7 +36,7 @@ FILES=conf/
 [meta-oe-zeus]
 GITURL=ssh://10.24.14.171/home/owllinfilesrv/yocto/meta-openembedded.git
 BRANCH=zeus
-HEADID=aad5b3d070cd8c58828b0975cf861d8ebc90f460
+HEADID=0d16b31c3d96e0797d3335d44545412996c48c9a
 FILES=meta-oe/conf/
  meta-oe/COPYING.MIT
  meta-oe/licenses/
@@ -120,10 +120,7 @@ FILES=meta-oe/conf/
  meta-oe/recipes-support/pidgin/gmime_3.2.3.bb
  meta-oe/recipes-support/pidgin/gmime/
 
- meta-oe/recipes-dbs/mysql/mariadb.inc
- meta-oe/recipes-dbs/mysql/mariadb/
- meta-oe/recipes-dbs/mysql/mariadb_10.3.16.bb
- meta-oe/recipes-dbs/mysql/mariadb-native_10.3.16.bb
+ meta-oe/recipes-dbs/mysql/
  meta-oe/recipes-support/gnulib/ 
  meta-oe/recipes-support/thin-provisioning-tools/
  meta-oe/recipes-support/hwdata/
@@ -400,7 +397,7 @@ FILES=meta-oe/conf/
 [meta-freescale]
 GITURL=ssh://10.24.14.171/home/owllinfilesrv/yocto/meta-freescale
 BRANCH=zeus
-HEADID=188be007393760d8238725a9bb8903fc383a2028
+HEADID=0be39721cea6e04c589a419f4bb07fabd0da6704
 FILES=conf/layer.conf
  licenses/
  classes/
@@ -431,7 +428,7 @@ FILES=meta-cgl-common/conf/layer.conf
 [meta-cloud-services]
 GITURL=ssh://10.24.14.171/home/owllinfilesrv/yocto/meta-cloud-services
 BRANCH=zeus
-HEADID=fcf43a2b0a9ca101dd0c4b3d3f7b9fe0278e7173
+HEADID=b8c25f63ab9124fe911165205d17808b9a7dead0
 FILES=conf/layer.conf
  classes/
  meta-openstack/classes/default_configs.bbclass
@@ -490,7 +487,7 @@ FILES=conf/layer.conf
 [meta-virtualization]
 GITURL=ssh://10.24.14.171/home/owllinfilesrv/yocto/meta-virtualization
 BRANCH=zeus
-HEADID=062d9f1f4faf2ca8a1fe78b7c7365e6378c15836
+HEADID=f4262ab75d36a06c528cc1630b48b817fb0acf8f
 FILES=conf/layer.conf
  classes/
  conf/distro/include/virt_security_flags.inc
@@ -578,7 +575,7 @@ FILES=conf/layer.conf
 [meta-spdxscanner]
 GITURL=ssh://10.24.14.171/home/owllinfilesrv/yocto/meta-spdxscanner
 BRANCH=zeus
-HEADID=32864ac0d51142e7a10fd2bfad77ad5632325bd6
+HEADID=1097573bbbeb7a6a60ffb44737176ca08408535c
 FILES=conf/layer.conf
  classes
 
@@ -586,7 +583,7 @@ FILES=conf/layer.conf
 [meta-swupdate]
 GITURL=ssh://10.24.14.171/home/owllinfilesrv/yocto/meta-swupdate
 BRANCH=zeus
-HEADID=9915253064a1698c778b57f1f9cd70b614016845
+HEADID=ae3be5af32322293e9118570dde8dec117a83222
 FILES=conf/layer.conf
  recipes-support/swupdate/
  recipes-devtools/mtd/
