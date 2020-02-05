@@ -219,6 +219,7 @@ UBINUX_PKGS = " \
 	setxkbmap \
 	slang \
 	spitools \
+	strace \
 	stress \
 	strongswan \
 	stunnel \
