@@ -298,7 +298,6 @@ FILES=meta-oe/conf/
  meta-networking/recipes-daemons/opensaf
  meta-networking/recipes-daemons/postfix/
  meta-networking/recipes-devtools/grpc/
- meta-oe/recipes-test/googletest/
 
  meta-networking/recipes-protocols/net-snmp/
  meta-networking/recipes-protocols/quagga/
@@ -397,7 +396,7 @@ FILES=meta-oe/conf/
 [meta-freescale]
 GITURL=ssh://10.24.14.171/home/owllinfilesrv/yocto/meta-freescale
 BRANCH=zeus
-HEADID=0be39721cea6e04c589a419f4bb07fabd0da6704
+HEADID=4af1824f3daa13bd2bceafe8de7f371b35e0dfce
 FILES=conf/layer.conf
  licenses/
  classes/
@@ -485,7 +484,8 @@ FILES=conf/layer.conf
  recipes-support/nss-pam-ldapd/
 
 [meta-virtualization]
-GITURL=ssh://10.24.14.171/home/owllinfilesrv/yocto/meta-virtualization
+#GITURL=ssh://10.24.14.171/home/owllinfilesrv/yocto/meta-virtualization
+GITURL=ssh://192.168.250.207/yocto/work002/fnst/leimh/community/meta-virtualization
 BRANCH=zeus
 HEADID=f4262ab75d36a06c528cc1630b48b817fb0acf8f
 FILES=conf/layer.conf
@@ -511,7 +511,7 @@ FILES=conf/layer.conf
 [meta-measured]
 GITURL=ssh://10.24.14.171/home/owllinfilesrv/yocto/meta-measured
 BRANCH=master
-HEADID=9851bedd272322fb60122e02bef83e2e6129678a
+HEADID=a110355f087ce0ad1c90a3080878de3206fe0079
 FILES=conf/
  recipes-tpm/trousers/
 
@@ -575,7 +575,7 @@ FILES=conf/layer.conf
 [meta-spdxscanner]
 GITURL=ssh://10.24.14.171/home/owllinfilesrv/yocto/meta-spdxscanner
 BRANCH=zeus
-HEADID=1097573bbbeb7a6a60ffb44737176ca08408535c
+HEADID=051a87f5e2396d63ab36d86f5d8a772fd868e490
 FILES=conf/layer.conf
  classes
 
