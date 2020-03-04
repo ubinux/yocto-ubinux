@@ -1,0 +1,121 @@
+Author: Luke Yelavich <themuso@ubuntu.com>
+Description: Fix library symbolic link creation and library linking.
+--- 1.0.0.rc16.orig/configure
++++ 1.0.0.rc16/configure
+@@ -693,6 +693,7 @@ DEBUG_MALLOC
+ DMRAID_TEST
+ DMRAID_VERSION
+ DMRAID_LIB_VERSION
++DMRAID_LIB_MAJOR_VERSION
+ DIETLIBC
+ GROUP
+ JOBS
+@@ -5767,8 +5768,10 @@ fi
+ 
+ if test "-f lib/version.h"; then
+   DMRAID_LIB_VERSION="`sed --quiet 's/^.*\(DMRAID_LIB_VERSION\)[^_].*"\(.*\)"/\2/p' lib/version.h`"
++  DMRAID_LIB_MAJOR_VERSION="`grep DMRAID_LIB_MAJOR_VERSION lib/version.h | tr '\t' ' ' | cut -f 3 -d ' '`"
+ else
+   DMRAID_LIB_VERSION="Unknown"
++  DMRAID_LIB_MAJOR_VERSION="Unknown"
+ fi
+ 
+ 
+--- 1.0.0.rc16.orig/configure.in
++++ 1.0.0.rc16/configure.in
+@@ -178,7 +178,7 @@ if test x$DEBUG_MALLOC = xyes; then
+ fi
+ 
+ dnl Mess with default exec_prefix
+-if [[ "x$exec_prefix" = xNONE -a "x$prefix" = xNONE ]];
++if [ "x$exec_prefix" = xNONE -a "x$prefix" = xNONE ];
+  then  exec_prefix="";
+ fi;
+ 
+@@ -220,8 +220,10 @@ fi
+ 
+ if test "-f lib/version.h"; then
+   DMRAID_LIB_VERSION="`sed --quiet 's/^.*\(DMRAID_LIB_VERSION\)[[^_]].*"\(.*\)"/\2/p' lib/version.h`"
++  DMRAID_LIB_MAJOR_VERSION="`grep DMRAID_LIB_MAJOR_VERSION lib/version.h | tr '\t' ' ' | cut -f 3 -d ' '`"
+ else
+   DMRAID_LIB_VERSION="Unknown"
++  DMRAID_LIB_MAJOR_VERSION="Unknown"
+ fi
+ 
+ AC_SUBST(CC)
+@@ -232,6 +234,7 @@ AC_SUBST(DEBUG_MALLOC)
+ AC_SUBST(DMRAID_TEST)
+ AC_SUBST(DMRAID_VERSION)
+ AC_SUBST(DMRAID_LIB_VERSION)
++AC_SUBST(DMRAID_LIB_MAJOR_VERSION)
+ AC_SUBST(DIETLIBC)
+ AC_SUBST(GROUP)
+ AC_SUBST(JOBS)
+--- 1.0.0.rc16.orig/lib/Makefile.in
++++ 1.0.0.rc16/lib/Makefile.in
+@@ -65,6 +65,11 @@ ifeq ("@KLIBC@", "no")
+ 		LIB_EVENTS_SHARED=$(top_srcdir)/lib/$(LIB_EVENTS_NAME).so
+ 		TARGETS += $(LIB_SHARED) $(LIB_EVENTS_SHARED)
+ 		INSTALL_TARGETS += $(LIB_SHARED) $(LIB_EVENTS_SHARED)
++		ifeq ("@DIETLIBC@", "yes")
++			LIBDMRAIDLIBS += -ldevmapper_dietc
++		else
++			LIBDMRAIDLIBS += -ldevmapper
++		endif
+ 	endif
+ endif
+ 
+@@ -82,10 +87,11 @@ install_dmraid_libs: $(INSTALL_TARGETS)
+ 	for f in $(INSTALL_TARGETS); \
+ 	do \
+ 		n=$$(basename $${f}) ; \
+-		if [[ "$$n" =~ '.so$$' ]]; then \
++		if echo "$$n" | grep -q '.so$$'; then \
+ 			$(INSTALL) -m 555 $(STRIP) \
+ 				$$f $(libdir)/$${n}.@DMRAID_LIB_VERSION@; \
+-			$(LN_S) -f $${n}.@DMRAID_LIB_VERSION@ $(libdir)/$${n}; \
++			mkdir -p $(prefix)/lib; \
++			cd $(prefix)/lib/ && $(LN_S) -f /lib/$${n}.@DMRAID_LIB_VERSION@ $${n}; \
+ 		else \
+ 			$(INSTALL) -m 555 $(STRIP) $$f $(libdir)/$${n}; \
+ 		fi \
+--- 1.0.0.rc16.orig/make.tmpl.in
++++ 1.0.0.rc16/make.tmpl.in
+@@ -44,6 +44,7 @@ endif
+ OWNER = @OWNER@
+ GROUP = @GROUP@
+ DMRAID_LIB_VERSION = @DMRAID_LIB_VERSION@
++DMRAID_LIB_MAJOR_VERSION = @DMRAID_LIB_MAJOR_VERSION@
+ 
+ # The number of jobs to run, if blank, defaults to the make standard
+ ifndef MAKEFLAGS
+@@ -136,7 +137,7 @@ $(TARGETS): $(OBJECTS)
+ 
+ %.so: $(OBJECTS)
+ 	$(CC) -shared -Wl,-soname,$(notdir $@).$(DMRAID_LIB_VERSION) \
+-	-Wl,--version-script,.export.sym $(OBJECTS) -o $@ -ldevmapper-event
++	-Wl,--version-script,.export.sym $(OBJECTS) $(LIBDMRAIDLIBS) -o $@ -ldevmapper-event
+ 
+ $(LIB_STATIC): $(OBJECTS)
+ 	$(RM) $@
+--- 1.0.0.rc16.orig/tools/Makefile.in
++++ 1.0.0.rc16/tools/Makefile.in
+@@ -34,12 +34,16 @@ ifeq ("@KLIBC@", "yes")
+ 	DMRAIDLIBS += -ldevmapper_klibc
+ else
+ 	ifeq ("@DIETLIBC@", "yes")
+-		DMRAIDLIBS += -ldevmapper_dietc
++		ifeq ("@LIB_SO@", "no")
++			DMRAIDLIBS += -ldevmapper_dietc
++		endif
+ 		ifeq ("@STATIC_LINK@", "no")
+ 			DMEVENTTOOLLIBS = -ldevmapper-event_dietc
+ 		endif
+ 	else
+-		DMRAIDLIBS += -ldevmapper
++		ifeq ("@LIB_SO@", "no")
++			DMRAIDLIBS += -ldevmapper
++		endif
+ 		ifeq ("@STATIC_LINK@", "no")
+ 			DMEVENTTOOLLIBS = -ldevmapper-event
+ 		endif

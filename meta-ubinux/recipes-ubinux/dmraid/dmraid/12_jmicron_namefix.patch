@@ -1,0 +1,20 @@
+From: Phillip Susi <psusi@cfl.rr.com>
+Author: Danny Wood <danwood76@gmail.com>
+Subject: Fix jmicron names again
+Bug-Ubuntu: http://launchpad.net/bugs/576289
+Last-Update: 2011-03-08
+Description: Uninitialized variable prevented code from working
+ as intended.
+Index: 1.0.0.rc16/lib/format/ataraid/jm.c
+===================================================================
+--- 1.0.0.rc16.orig/lib/format/ataraid/jm.c
++++ 1.0.0.rc16/lib/format/ataraid/jm.c
+@@ -25,7 +25,7 @@
+ static char *
+ name(struct lib_context *lc, struct raid_dev *rd, unsigned int subset)
+ {
+-	size_t i, len;
++	size_t i = JM_NAME_LEN - 1, len;
+ 	struct jm *jm = META(rd, jm);
+ 	char *ret, *name = (char *) jm->name;
+ 	char buf[JM_NAME_LEN + 1] = { '\0' };

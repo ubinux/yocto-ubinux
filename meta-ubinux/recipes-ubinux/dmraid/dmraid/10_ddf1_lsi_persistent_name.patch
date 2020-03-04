@@ -1,0 +1,20 @@
+Using a dummy string for the timestamp in the LSI metadata
+--- 1.0.0.rc16.orig/lib/format/ddf/ddf1.c
++++ 1.0.0.rc16/lib/format/ddf/ddf1.c
+@@ -696,6 +696,16 @@ name(struct lib_context *lc, struct ddf1
+ 			sprintf(b, "%02x%02x%02x%02x",
+ 				vd->guid[i], vd->guid[i + 1],
+ 				vd->guid[i + 2], vd->guid[i + 3]);
++
++		/*
++		 * Because the LSI bios changes the timestamp in the
++		 * metadata on every boot, we have to neutralize it
++		 * in order to allow for persistent names.
++		 *
++		 * Using a dummy string "47114711" for that.
++		 */
++		if (!strncmp((char *) vd->guid, "LSI", 3))
++			strncpy(buf + prefix + 32, "47114711", 8);
+ 	}
+ 
+ out:

@@ -1,0 +1,596 @@
+[DEPEND_META]
+metas=meta-gplv2
+ meta-oe-zeus
+ meta-freescale
+ meta-cgl
+ meta-cloud-services
+ meta-virtualization
+ meta-selinux
+ meta-measured
+ meta-security
+ meta-qt5
+ meta-swupdate
+ meta-spdxscanner
+ meta-linaro
+
+[meta-gplv2]
+GITURL=https://git.yoctoproject.org/git/meta-gplv2 
+BRANCH=zeus
+HEADID=0f4eecc000f66d114ad258fa31aed66afa292166
+FILES=conf/
+ recipes-core/readline/
+ recipes-core/coreutils/
+ recipes-extended/groff/
+ recipes-extended/sed/
+ recipes-extended/cpio/
+ recipes-extended/diffutils/
+ recipes-extended/which/
+ recipes-extended/findutils/
+ recipes-extended/gzip/
+ recipes-extended/gawk/
+ recipes-extended/time/
+ recipes-extended/bash/
+ recipes-extended/grep/
+ recipes-support/gdbm/
+
+[meta-oe-zeus]
+GITURL=http://git.openembedded.org/meta-openembedded
+BRANCH=zeus
+HEADID=0d16b31c3d96e0797d3335d44545412996c48c9a
+FILES=meta-oe/conf/
+ meta-oe/COPYING.MIT
+ meta-oe/licenses/
+ meta-oe/recipes-support/multipath-tools
+ meta-oe/recipes-support/libusb/
+ meta-oe/recipes-support/itstool/
+ meta-oe/recipes-support/numactl/
+ meta-oe/recipes-support/uhubctl/
+ meta-oe/classes/autotools-bootstrap.bbclass
+ meta-oe/classes/waf-samba.bbclass
+ meta-oe/recipes-core/ell
+ meta-oe/recipes-graphics/xorg-app/bdftopcf_1.1.bb
+ meta-oe/recipes-graphics/tslib/
+ meta-oe/recipes-graphics/xorg-app/xlsfonts_1.0.6.bb
+ meta-oe/recipes-graphics/xorg-app/xrdb_1.2.0.bb
+ meta-oe/recipes-graphics/xorg-app/xterm_349.bb
+ meta-oe/recipes-graphics/xorg-app/xwd_1.0.7.bb
+ meta-oe/recipes-graphics/xorg-app/iceauth_1.0.8.bb
+ meta-oe/recipes-graphics/xorg-app/setxkbmap_1.3.2.bb
+ meta-oe/recipes-graphics/xorg-data/
+ meta-oe/recipes-graphics/xorg-driver/xf86-input-void_1.4.1.bb
+ meta-oe/recipes-graphics/xorg-lib/libxaw_1.0.13.bb
+ meta-oe/recipes-graphics/xorg-app/sessreg_1.1.2.bb
+ meta-oe/recipes-graphics/xorg-app/sessreg/
+ meta-oe/recipes-graphics/libsdl/libsdl_1.2.15.bb
+ meta-oe/recipes-graphics/libsdl/libsdl-1.2.15/
+ 
+ meta-oe/recipes-support/ccid/
+ meta-oe/recipes-crypto/cryptsetup/
+ meta-oe/recipes-crypto/libkcapi/
+ meta-oe/recipes-crypto/libsodium/
+ meta-oe/recipes-support/dfu-util/
+ meta-oe/recipes-support/eject/
+ meta-oe/recipes-support/eventlog/
+ meta-oe/recipes-support/fbset/
+ meta-oe/recipes-support/gflags/
+ meta-oe/recipes-support/hwdata/
+ meta-oe/recipes-dbs/libdbi/libdbi_0.9.0.bb
+ meta-oe/recipes-dbs/libdbi/libdbi.inc
+ meta-oe/recipes-security/passwdqc/
+ meta-oe/recipes-security/tomoyo-tools/
+ meta-oe/recipes-security/nmap/
+ meta-oe/recipes-security/keyutils/
+ meta-oe/recipes-support/libol/
+ meta-oe/recipes-support/libsmi/
+ meta-oe/recipes-support/libssh2/
+ meta-oe/recipes-support/lvm2/
+ meta-oe/recipes-support/numactl/
+ meta-oe/recipes-support/openldap/
+ meta-oe/recipes-support/pcsc-lite/
+ meta-oe/recipes-support/syslog-ng/
+ meta-oe/recipes-support/bash-completion/
+ meta-oe/recipes-dbs/postgresql/ 
+ meta-oe/recipes-support/sg3-utils/sg3-utils_1.44.bb
+ meta-oe/recipes-support/sg3-utils/
+
+ meta-oe/recipes-support/ctapi-common/ctapi-common_1.1-14.bb 
+ meta-oe/recipes-support/daemontools
+ meta-oe/recipes-support/pps-tools/
+ meta-oe/recipes-crypto/pkcs11-helper/
+ meta-oe/recipes-support/openct/
+ meta-oe/recipes-support/system-config-keyboard/
+ meta-oe/recipes-support/mailcap/
+ meta-oe/recipes-support/dstat/
+ meta-oe/recipes-support/mcelog/
+ meta-oe/recipes-support/smem/
+ meta-oe/recipes-support/procmail
+ meta-oe/recipes-support/libutempter
+ meta-oe/recipes-support/gradm
+ meta-oe/recipes-support/libjs/
+ meta-oe/recipes-support/libp11/
+ meta-oe/recipes-support/libmcrypt/
+ meta-oe/recipes-support/mcelog/mce-inject_git.bb
+ meta-oe/recipes-support/anthy/anthy/ 
+ meta-oe/recipes-support/anthy/anthy_9100h.bb
+ meta-oe/recipes-support/uim/uim/
+ meta-oe/recipes-support/uim/uim_1.8.8.bb
+ meta-oe/recipes-support/opensc/
+ meta-oe/recipes-support/libestr/
+ meta-oe/recipes-support/augeas/
+ meta-oe/recipes-support/pidgin/gmime_3.2.3.bb
+ meta-oe/recipes-support/pidgin/gmime/
+
+ meta-oe/recipes-dbs/mysql/
+ meta-oe/recipes-support/gnulib/ 
+ meta-oe/recipes-support/thin-provisioning-tools/
+ meta-oe/recipes-support/hwdata/
+
+ meta-oe/recipes-support/inotify-tools/
+ meta-oe/recipes-support/xrdp/
+ meta-oe/recipes-support/nano/
+ meta-oe/recipes-support/xorg-xrdp
+ meta-oe/recipes-support/xmlsec1/
+ 
+ meta-oe/recipes-extended/byacc/
+ meta-oe/recipes-extended/hexedit/
+ meta-oe/recipes-extended/libconfig/
+ meta-oe/recipes-extended/dialog/
+ meta-oe/recipes-extended/polkit/
+ meta-oe/recipes-extended/rrdtool/
+ meta-oe/recipes-extended/liblockfile/
+ meta-oe/recipes-extended/smartmontools/
+ meta-oe/recipes-extended/snappy/
+ meta-oe/recipes-shells/tcsh/
+ meta-oe/recipes-extended/indent/
+ meta-oe/recipes-shells/dash/
+ meta-oe/recipes-extended/libqb/
+ meta-perl/recipes-extended/logcheck/
+ meta-perl/recipes-extended/mime-construct/
+ meta-perl/recipes-perl/libcurses/
+ meta-oe/recipes-extended/logwatch/
+ meta-oe/recipes-extended/lockfile-progs/
+ meta-oe/recipes-extended/nicstat/
+ meta-oe/recipes-extended/rarpd
+ meta-oe/recipes-extended/tiptop/
+ meta-oe/recipes-extended/mailx/
+ meta-oe/recipes-extended/nana/
+ meta-oe/recipes-extended/jansson/
+ meta-networking/recipes-extended/corosync
+ meta-oe/recipes-extended/openwsman/
+ meta-oe/recipes-extended/sblim-sfcb/
+ meta-oe/recipes-extended/sblim-sfcc/
+ meta-oe/recipes-extended/sgpio/
+ meta-oe/recipes-extended/openlmi/
+ meta-oe/recipes-extended/sysdig/
+ meta-oe/recipes-extended/cmpi-bindings/
+ meta-python/recipes-extended/pywbem
+ meta-oe/recipes-extended/konkretcmpi/
+ meta-oe/recipes-extended/sblim-cmpi-devel/
+ meta-oe/recipes-extended/sblim-sfc-common/
+ meta-oe/recipes-extended/sblim-sfcb/
+ meta-oe/recipes-extended/liblogging/
+ meta-oe/recipes-extended/mraa/
+
+ meta-oe/recipes-devtools/libedit/
+ meta-oe/recipes-devtools/ltrace/
+ meta-oe/recipes-devtools/mcpp/
+ meta-oe/recipes-devtools/tcltk/
+ meta-oe/recipes-devtools/luajit/
+ meta-oe/recipes-devtools/lua/
+ meta-oe/recipes-devtools/nodejs/ 
+ meta-oe/recipes-devtools/yajl/
+ meta-oe/recipes-devtools/lemon/
+ meta-oe/recipes-devtools/perl/ipc-run_20180523.0.bb
+ meta-oe/recipes-devtools/php/
+ meta-oe/recipes-devtools/uw-imap/
+ meta-oe/recipes-devtools/iptraf/
+ meta-oe/recipes-devtools/protobuf/
+ meta-oe/recipes-devtools/python/python-six_1.12.0.bb
+ meta-oe/recipes-devtools/python/python-jsmin_2.2.2.bb
+ meta-oe/recipes-devtools/python/python-pytoml.inc
+ meta-oe/recipes-devtools/python/python-pytoml_0.1.21.bb
+ meta-oe/recipes-devtools/python/python-which_1.1.0.bb
+ meta-oe/recipes-devtools/python/python-futures_3.3.0.bb
+ meta-oe/recipes-devtools/dnf-plugin-tui
+ 
+ meta-oe/recipes-connectivity/libnet/
+ meta-oe/recipes-connectivity/krb5/
+ meta-networking/recipes-connectivity/samba/
+ meta-networking/recipes-connectivity/daq/
+ meta-oe/recipes-benchmark/iperf3/
+ meta-oe/recipes-benchmark/fio/
+ meta-oe/recipes-benchmark/iozone3/
+ meta-oe/recipes-benchmark/libhugetlbfs/
+ 
+ meta-oe/recipes-graphics/xorg-app/xrdb_1.2.0.bb
+ meta-oe/recipes-graphics/xorg-app/xsetroot_1.1.2.bb
+ meta-oe/recipes-graphics/xorg-app/twm_1.0.10.bb
+ meta-oe/recipes-graphics/xorg-app/setxkbmap_1.3.1.bb
+ meta-oe/recipes-graphics/xorg-app/xgamma_1.0.6.bb
+ meta-oe/recipes-graphics/xorg-app/xkbevd_1.1.4.bb
+ meta-oe/recipes-graphics/xorg-app/xkbprint_1.0.4.bb
+ meta-oe/recipes-graphics/xorg-app/xkbutils_1.0.4.bb
+ meta-oe/recipes-graphics/xorg-app/xlsatoms_1.1.3.bb
+ meta-oe/recipes-graphics/xorg-app/xlsclients_1.1.4.bb
+ meta-oe/recipes-graphics/xorg-app/xrefresh_1.0.6.bb
+ meta-oe/recipes-graphics/xorg-app/xsetmode_1.0.0.bb
+ meta-oe/recipes-graphics/xorg-app/xsetroot_1.1.2.bb
+ meta-oe/recipes-graphics/xorg-app/xstdcmap_1.0.4.bb
+ meta-oe/recipes-graphics/xorg-app/xwud_1.0.5.bb
+ meta-oe/recipes-graphics/takao-fonts/
+
+ meta-oe/recipes-bsp/lm_sensors/
+ meta-oe/recipes-bsp/pointercal/
+ meta-oe/recipes-bsp/pcmciautils/ 
+ meta-oe/recipes-extended/mozjs/
+ meta-oe/recipes-connectivity/hostapd/
+ meta-oe/recipes-kernel/ktap/
+ meta-oe/recipes-kernel/crash/
+ meta-oe/recipes-kernel/ktap/
+ meta-oe/recipes-kernel/bpftool/
+ meta-oe/recipes-kernel/kpatch/
+ meta-oe/recipes-extended/iotop
+ meta-oe/recipes-connectivity/zabbix/
+ meta-oe/recipes-connectivity/libndp/
+ meta-oe/recipes-graphics/ttf-fonts/
+ meta-oe/recipes-support/libnih/
+ meta-oe/recipes-extended/libgxim/
+ meta-oe/recipes-bsp/cpufrequtils/
+ meta-oe/recipes-devtools/uftrace/
+ meta-oe/recipes-devtools/iptraf/
+ meta-oe/recipes-support/spitools/
+ meta-oe/recipes-bsp/edac-utils/
+ meta-oe/recipes-extended/upm/
+ meta-oe/recipes-extended/libuio/
+ meta-oe/recipes-support/devmem2/
+ meta-oe/recipes-kernel/makedumpfile/
+ meta-oe/recipes-support/xdelta/
+ meta-oe/recipes-devtools/octave/
+ meta-oe/recipes-gnome/libpeas/
+ meta-oe/recipes-support/hdf5/
+ meta-oe/recipes-extended/libzip/
+ meta-oe/recipes-connectivity/zeromq
+ meta-oe/recipes-connectivity/iwd/
+ meta-oe/recipes-connectivity/paho-mqtt-c/
+
+ meta-networking/classes/ 
+ meta-networking/licenses/
+ meta-networking/COPYING.MIT
+ meta-networking/conf/
+ meta-networking/files/
+ meta-networking/recipes-support/bridge-utils/
+ meta-networking/recipes-support/cim-schema/
+ meta-networking/recipes-support/cifs/
+ meta-networking/recipes-support/c-ares/
+ meta-networking/recipes-support/netcat/
+ meta-networking/recipes-support/dnsmasq/
+ meta-networking/recipes-support/dovecot/
+ meta-networking/recipes-support/fetchmail/
+ meta-networking/recipes-connectivity/networkmanager
+ meta-networking/recipes-support/ifenslave/
+ meta-networking/recipes-support/wireshark/
+ meta-networking/recipes-support/tcpdump/tcpdump_4.9.3.bb
+ meta-networking/recipes-support/tcpdump/tcpdump/
+ meta-networking/recipes-support/netcf/
+ meta-networking/recipes-support/stunnel/
+ meta-networking/recipes-support/drbd
+ meta-networking/recipes-support/esmtp/
+ meta-networking/recipes-support/geoip/files/
+ meta-networking/recipes-support/geoip/geoip_1.6.12.bb
+ meta-networking/recipes-support/geoip/geoipupdate_2.5.0.bb
+ meta-networking/recipes-support/geoip/geoipupdate-2.5.0/
+ meta-networking/recipes-support/libesmtp
+ meta-networking/recipes-support/linux-atm
+ meta-networking/recipes-support/lksctp-tools/
+ meta-networking/recipes-support/openvpn/
+ meta-networking/recipes-support/ntp/
+ meta-networking/recipes-support/netcf/
+ meta-networking/recipes-support/mtr/
+ meta-networking/recipes-daemons/cyrus-sasl/
+ meta-networking/recipes-daemons/vsftpd/
+ meta-networking/recipes-daemons/ptpd/
+ meta-networking/recipes-daemons/radvd/
+ meta-networking/recipes-daemons/tftp-hpa/
+ meta-networking/recipes-daemons/lldpd/
+ meta-networking/recipes-daemons/ncftp/
+ meta-networking/recipes-daemons/openhpi/
+ meta-networking/recipes-support/openipmi/
+ meta-networking/recipes-daemons/opensaf
+ meta-networking/recipes-daemons/postfix/
+ meta-networking/recipes-devtools/grpc/
+
+ meta-networking/recipes-protocols/net-snmp/
+ meta-networking/recipes-protocols/quagga/
+ meta-networking/recipes-protocols/rp-pppoe/
+ meta-networking/recipes-protocols/radiusclient-ng
+ meta-networking/recipes-protocols/openl2tp
+ meta-networking/recipes-protocols/babeld/
+ meta-networking/recipes-connectivity/vlan/
+ meta-networking/recipes-connectivity/crda/
+ meta-networking/recipes-netkit/netkit-rsh/
+ meta-networking/recipes-filter/ebtables/
+ meta-networking/recipes-filter/libnftnl/
+ meta-networking/recipes-filter/nftables/
+ 
+ meta-networking/recipes-netkit/netkit-telnet/
+ meta-networking/recipes-daemons/postfix/
+ meta-networking/recipes-support/libldb/
+ meta-networking/recipes-support/libtevent/
+ meta-networking/recipes-support/libtdb/
+ meta-networking/recipes-support/libtalloc/
+ meta-networking/recipes-support/ipvsadm/
+ meta-networking/recipes-daemons/opensaf/
+ meta-networking/recipes-support/strongswan/
+ meta-networking/recipes-support/ipsec-tools/
+ meta-networking/recipes-connectivity/firewalld/
+ meta-networking/recipes-connectivity/adcli/
+ meta-networking/recipes-connectivity/libdnet/
+
+ meta-filesystems/conf/
+ meta-filesystems/COPYING.MIT
+ meta-filesystems/recipes-support/fuse/
+ meta-filesystems/recipes-filesystems/sshfs-fuse/
+ meta-filesystems/recipes-utils/xfsprogs/
+ meta-filesystems/recipes-filesystems/logfsprogs/
+ meta-filesystems/recipes-utils/fatresize/
+ meta-filesystems/recipes-utils/f2fs-tools
+ meta-filesystems/recipes-support/fuse/
+ 
+ meta-initramfs/conf/
+ meta-initramfs/COPYING.MIT
+ meta-initramfs/recipes-devtools/dracut
+ 
+ meta-python/conf
+ meta-python/COPYING.MIT
+ meta-python/README
+ meta-python/classes
+ meta-python/recipes-devtools/python/
+
+ meta-oe/recipes-gnome/gnome-common/
+ meta-oe/recipes-gnome/gtk+/
+ meta-oe/recipes-gnome/gnome-themes/
+ meta-gnome/recipes-gnome/nautilus
+ meta-gnome/recipes-gnome/gnome-desktop
+
+ meta-gnome/conf/
+ meta-gnome/classes/
+ meta-gnome/recipes-support/libuser/
+ 
+ meta-webserver/conf/
+ meta-webserver/recipes-httpd/apache2
+
+ meta-xfce/conf/
+ meta-xfce/classes/
+ meta-xfce/README
+ meta-xfce/recipes-xfce/xfconf/
+ meta-xfce/recipes-xfce/libxfce4util/
+ meta-xfce/recipes-xfce/xfce4-dev-tools/
+ meta-xfce/recipes-extended/imsettings/
+
+ meta-multimedia/licenses/
+ meta-multimedia/COPYING.MIT
+ meta-multimedia/conf/
+
+ meta-perl/conf/
+ meta-perl/README
+ meta-perl/COPYING.MIT
+ meta-oe/recipes-devtools/perl/libdbi-perl_1.642.bb
+ meta-oe/recipes-devtools/perl/libdbd-mysql-perl_4.050.bb
+ meta-oe/recipes-devtools/perl/libdev-checklib-perl_1.13.bb
+ meta-oe/recipes-devtools/perl/libdev-checklib-perl/
+ meta-perl/recipes-perl/libdigest/files/
+ meta-perl/recipes-perl/libdigest/
+ meta-perl/recipes-perl/libhtml/libhtml-parser-perl_3.72.bb
+ meta-perl/recipes-perl/libhtml/libhtml-tagset-perl_3.20.bb
+ meta-perl/recipes-perl/libnet/libnet-dns-perl_1.21.bb
+ meta-perl/recipes-perl/libnet/libnet-dns-sec-perl_1.10.bb
+ meta-perl/recipes-perl/libproc/
+ meta-perl/recipes-perl/libmime/files/
+ meta-perl/recipes-perl/libmime/libmime-types-perl_2.17.bb
+ meta-perl/recipes-perl/libipc/
+ 
+
+ meta-systemd/oe-core/recipes-core/dbus/
+ meta-systemd/oe-core/recipes-core/util-linux/
+
+[meta-freescale]
+GITURL=https://git.yoctoproject.org/git/meta-freescale
+BRANCH=zeus
+HEADID=4af1824f3daa13bd2bceafe8de7f371b35e0dfce
+FILES=conf/layer.conf
+ licenses/
+ classes/
+ recipes-devtools/cst/
+ recipes-kernel/linux/
+ recipes-core/udev/
+ conf/
+ README/
+
+
+[meta-cgl]
+GITURL=https://git.yoctoproject.org/git/meta-cgl
+BRANCH=master
+HEADID=fe28a226377697639d18a9c671dd5f9004be0ba0
+FILES=meta-cgl-common/conf/layer.conf
+ meta-cgl-common/conf/distro/include/cgl_common_security_flags.inc
+ meta-cgl-common/recipes-cgl/cluster-glue/
+ meta-cgl-common/recipes-cgl/heartbeat/
+ meta-cgl-common/recipes-cgl/ocfs2-tools/
+ meta-cgl-common/recipes-cgl/ocfs2-tools/
+ meta-cgl-common/recipes-cgl/cluster/
+ meta-cgl-common/recipes-cgl/cluster-resource-agents/
+ meta-cgl-common/recipes-cgl/corosync
+ meta-cgl-common/recipes-perl/perl/
+ meta-cgl-common/recipes-cgl/pacemaker/
+ meta-cgl-common/recipes-cgl/monit/
+
+[meta-cloud-services]
+GITURL=http://git.yoctoproject.org/git/meta-cloud-services
+BRANCH=zeus
+HEADID=b8c25f63ab9124fe911165205d17808b9a7dead0
+FILES=conf/layer.conf
+ classes/
+ meta-openstack/classes/default_configs.bbclass
+ meta-openstack/classes/hosts.bbclass
+ meta-openstack/classes/identity.bbclass
+ meta-openstack/classes/monitor.bbclass
+ meta-openstack/classes/openstackchef.bbclass
+ meta-openstack/classes/openstackchef_inc.bbclass
+ meta-openstack/conf/layer.conf
+ meta-openstack/recipes-devtools/perl/libconfig-general-perl_2.63.bb
+ meta-openstack/recipes-devtools/python/
+
+ meta-openstack/recipes-devtools/ruby/rack_git.bb
+ meta-openstack/recipes-devtools/ruby/rest-client_git.bb
+ meta-openstack/recipes-devtools/ruby/mixlib-cli_git.bb
+ meta-openstack/recipes-devtools/ruby/ohai_git.bb
+ meta-openstack/recipes-devtools/ruby/net-ssh-gateway_git.bb
+ meta-openstack/recipes-devtools/ruby/pry/
+ meta-openstack/recipes-devtools/ruby/mixlib-config_git.bb
+ meta-openstack/recipes-devtools/ruby/mixlib-shellout_git.bb
+ meta-openstack/recipes-devtools/ruby/hashie_git.bb
+ meta-openstack/recipes-devtools/ruby/ipaddress_git.bb
+ meta-openstack/recipes-devtools/ruby/diff-lcs_git.bb
+ meta-openstack/recipes-devtools/ruby/mixlib-authentication_git.bb
+ meta-openstack/recipes-devtools/ruby/pry_git.bb
+ meta-openstack/recipes-devtools/ruby/net-ssh-multi
+ meta-openstack/recipes-devtools/ruby/slop_git.bb
+ meta-openstack/recipes-devtools/ruby/highline_git.bb
+ meta-openstack/recipes-devtools/ruby/net-ssh
+ meta-openstack/recipes-devtools/ruby/systemu_git.bb
+ meta-openstack/recipes-devtools/ruby/method-source_git.bb
+ meta-openstack/recipes-devtools/ruby/json_git.bb
+ meta-openstack/recipes-devtools/ruby/yajl-ruby/
+ meta-openstack/recipes-devtools/ruby/yajl-ruby_git.bb
+ meta-openstack/recipes-devtools/ruby/method-source
+ meta-openstack/recipes-devtools/ruby/chef-zero_git.bb
+ meta-openstack/recipes-devtools/ruby/net-ssh-gateway
+ meta-openstack/recipes-devtools/ruby/mime-types_git.bb
+ meta-openstack/recipes-devtools/ruby/yard_git.bb
+ meta-openstack/recipes-devtools/ruby/net-ssh-multi_git.bb
+ meta-openstack/recipes-devtools/ruby/coderay_git.bb
+ meta-openstack/recipes-devtools/ruby/net-ssh_git.bb
+ meta-openstack/recipes-devtools/ruby/mixlib-log_git.bb
+ meta-openstack/recipes-devtools/ruby/erubis_git.bb
+
+ meta-openstack/recipes-extended/libpam/
+ meta-openstack/recipes-extended/qpid/
+ meta-openstack/recipes-support/tgt/
+ meta-openstack/recipes-support/postgresql/
+ meta-openstack/recipes-support/chef/
+ meta-openstack/recipes-support/deploychef/
+ meta-openstack/recipes-connectivity/open-iscsi/files/
+ meta-openstack/recipes-connectivity/open-iscsi/open-iscsi-user_2.0-873.bb
+ recipes-support/nss-pam-ldapd/
+
+[meta-virtualization]
+GITURL=http://git.yoctoproject.org/git/meta-virtualization
+BRANCH=zeus
+HEADID=f4262ab75d36a06c528cc1630b48b817fb0acf8f
+FILES=conf/layer.conf
+ classes/
+ conf/distro/include/virt_security_flags.inc
+ recipes-networking/openvswitch/
+ recipes-extended/libvirt/
+ recipes-extended/irqbalance/
+ recipes-containers/lxc/
+ recipes-containers/criu/
+ recipes-devtools/python/python-flask_0.10.1.bb
+ recipes-devtools/python/python-werkzeug_0.10.4.bb
+ recipes-devtools/python/python-sphinx_1.7.8.bb
+ recipes-devtools/python/python-webob_1.8.5.bb
+
+[meta-selinux]
+GITURL=http://git.yoctoproject.org/git/meta-selinux
+BRANCH=zeus
+HEADID=44d760413920ba440439b8bc7c2a71ca26cd7a2d
+FILES=conf/layer.conf
+ recipes-security/audit/
+
+[meta-measured]
+GITURL=https://github.com/flihp/meta-measured.git
+BRANCH=master
+HEADID=a110355f087ce0ad1c90a3080878de3206fe0079
+FILES=conf/
+ recipes-tpm/trousers/
+
+[meta-security]
+GITURL=http://git.yoctoproject.org/git/meta-security
+BRANCH=zeus
+HEADID=27ddb455543b670097e252ba0d0ad5b7e4101748
+FILES=conf
+ recipes-ids/samhain
+ recipes-perl/
+ recipes-security/ecryptfs-utils/
+ recipes-security/keyutils/
+ recipes-security/bastille
+ recipes-mac/ccs-tools/
+ recipes-security/checksec/
+ recipes-security/fscryptctl/
+ meta-security-compliance/recipes-auditors/lynis/
+ recipes-security/paxctl/
+ recipes-security/fail2ban/
+ recipes-security/scapy/
+ recipes-mac/smack/
+ 
+
+[meta-qt5]
+GITURL=https://github.com/meta-qt5/meta-qt5.git
+BRANCH=zeus
+HEADID=432ad2aa6c3a13253fefc909faba368851d21fb1
+FILES=conf/layer.conf
+ recipes-qt/qt5/qttools_git.bb
+ recipes-qt/qt5/qt5-git.inc
+ recipes-qt/qt5/qt5-ptest.inc
+ recipes-qt/qt5/qttools
+ recipes-qt/qt5/qtquickcontrols
+ recipes-qt/qtchooser/
+ recipes-qt/qt5/qtwebsockets_git.bb
+ recipes-qt/qt5/qtmultimedia_git.bb
+ recipes-qt/qt5/qtbase-native_git.bb
+ recipes-qt/qt5/qtwebchannel_git.bb
+ recipes-qt/qt5/qtscript_git.bb
+ recipes-qt/qt5/qtdeclarative
+ recipes-qt/qt5/qtquick1_git.bb
+ recipes-qt/qt5/qtmultimedia
+ recipes-qt/qt5/qtsensors_git.bb
+ recipes-qt/qt5/qtlocation_git.bb
+ recipes-qt/qt5/qtquickcontrols_git.bb
+ recipes-qt/qt5/qtsvg
+ recipes-qt/qt5/qtsvg_git.bb
+ recipes-qt/qt5/qtbase
+ recipes-qt/qt5/qt5-native.inc
+ recipes-qt/qt5/qtbase_git.bb
+ recipes-qt/qt5/qtxmlpatterns_git.bb
+ recipes-qt/qt5/qt5.inc
+ recipes-qt/qt5/qtdeclarative_git.bb
+ recipes-qt/qt5/qtwebkit_git.bb
+ recipes-qt/qt5/qtwebkit
+ recipes-qt/qt5/qtscript
+ recipes-qt/qt5/ptest/
+ classes/
+ licenses/
+
+[meta-spdxscanner]
+GITURL=https://github.com/dl9pf/meta-spdxscanner.git
+BRANCH=zeus
+HEADID=051a87f5e2396d63ab36d86f5d8a772fd868e490
+FILES=conf/layer.conf
+ classes
+
+
+[meta-swupdate]
+GITURL=https://github.com/sbabic/meta-swupdate.git
+BRANCH=zeus
+HEADID=ae3be5af32322293e9118570dde8dec117a83222
+FILES=conf/layer.conf
+ recipes-support/swupdate/
+ recipes-devtools/mtd/
+ recipes-bsp/u-boot/
+
+[meta-linaro]
+GITURL=https://git.linaro.org/openembedded/meta-linaro.git
+BRANCH=master
+HEADID=14a8a62dca7a2c70d91578fc79e71911bc670253
+FILES=meta-linaro/conf/layer.conf
+ meta-linaro/recipes-kernel/trace-cmd
