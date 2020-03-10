@@ -36,7 +36,7 @@ FILES=conf/
 [meta-oe-zeus]
 GITURL=ssh://10.24.14.171/home/owllinfilesrv/yocto/meta-openembedded.git
 BRANCH=zeus
-HEADID=0d16b31c3d96e0797d3335d44545412996c48c9a
+HEADID=bb65c27a772723dfe2c15b5e1b27bcc1a1ed884c
 FILES=meta-oe/conf/
  meta-oe/COPYING.MIT
  meta-oe/licenses/
@@ -396,7 +396,7 @@ FILES=meta-oe/conf/
 [meta-freescale]
 GITURL=ssh://10.24.14.171/home/owllinfilesrv/yocto/meta-freescale
 BRANCH=zeus
-HEADID=4af1824f3daa13bd2bceafe8de7f371b35e0dfce
+HEADID=db6cdd204764228a2f45f45c346dc026a70c6423
 FILES=conf/layer.conf
  licenses/
  classes/
@@ -487,7 +487,7 @@ FILES=conf/layer.conf
 #GITURL=ssh://10.24.14.171/home/owllinfilesrv/yocto/meta-virtualization
 GITURL=ssh://192.168.250.207/yocto/work002/fnst/leimh/community/meta-virtualization
 BRANCH=zeus
-HEADID=f4262ab75d36a06c528cc1630b48b817fb0acf8f
+HEADID=561b597d4ba91dd36147e1af81bd1edc2d6636db
 FILES=conf/layer.conf
  classes/
  conf/distro/include/virt_security_flags.inc
@@ -518,7 +518,7 @@ FILES=conf/
 [meta-security]
 GITURL=ssh://10.24.14.171/home/owllinfilesrv/yocto/meta-security.git
 BRANCH=zeus
-HEADID=27ddb455543b670097e252ba0d0ad5b7e4101748
+HEADID=ecd8c30af6b1b957b4fa814d3f25c40f060b3ac1
 FILES=conf
  recipes-ids/samhain
  recipes-perl/
@@ -538,7 +538,7 @@ FILES=conf
 [meta-qt5]
 GITURL=ssh://10.24.14.171/home/owllinfilesrv/yocto/meta-qt5
 BRANCH=zeus
-HEADID=432ad2aa6c3a13253fefc909faba368851d21fb1
+HEADID=0bdbb344bc0a7261d76d715e570ddc2ecfefae58
 FILES=conf/layer.conf
  recipes-qt/qt5/qttools_git.bb
  recipes-qt/qt5/qt5-git.inc
@@ -583,7 +583,7 @@ FILES=conf/layer.conf
 [meta-swupdate]
 GITURL=ssh://10.24.14.171/home/owllinfilesrv/yocto/meta-swupdate
 BRANCH=zeus
-HEADID=ae3be5af32322293e9118570dde8dec117a83222
+HEADID=8ad6a75e1778cdda671b3d6aea2a9692613020ec
 FILES=conf/layer.conf
  recipes-support/swupdate/
  recipes-devtools/mtd/
@@ -591,7 +591,7 @@ FILES=conf/layer.conf
 
 [meta-linaro]
 GITURL=ssh://10.24.14.171/home/owllinfilesrv/yocto/meta-linaro
-BRANCH=master
-HEADID=14a8a62dca7a2c70d91578fc79e71911bc670253
+BRANCH=zeus
+HEADID=7603aadcc0c1544588203b6a13ecbf28c50d158d
 FILES=meta-linaro/conf/layer.conf
  meta-linaro/recipes-kernel/trace-cmd
