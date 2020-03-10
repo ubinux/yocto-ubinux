@@ -8,7 +8,7 @@ LIC_FILES_CHKSUM = "file://Copying;md5=5b122a36d0f6dc55279a0ebc69f3c60b \
 
 
 SRC_URI = "https://www.cpan.org/src/5.0/perl-${PV}.tar.gz;name=perl \
-           https://github.com/arsv/perl-cross/releases/download/1.3/perl-cross-1.3.tar.gz;name=perl-cross \
+           https://github.com/arsv/perl-cross/releases/download/1.3.1/perl-cross-1.3.1.tar.gz;name=perl-cross \
            file://perl-rdepends.txt \
            file://0001-configure_tool.sh-do-not-quote-the-argument-to-comma.patch \
            file://0001-ExtUtils-MakeMaker-add-LDFLAGS-when-linking-binary-m.patch \
@@ -18,18 +18,23 @@ SRC_URI = "https://www.cpan.org/src/5.0/perl-${PV}.tar.gz;name=perl \
            file://0001-perl-cross-add-LDFLAGS-when-linking-libperl.patch \
            file://perl-dynloader.patch \
            file://0001-configure_path.sh-do-not-hardcode-prefix-lib-as-libr.patch \
-           file://fix-setgroup.patch \
            file://0001-enc2xs-Add-environment-variable-to-suppress-comments.patch \
            file://0002-Constant-Fix-up-shebang.patch \
+           file://0001-tests-adjust-to-correctly-exclude-unbuilt-extensions.patch \
+           file://determinism.patch  \
+           file://racefix.patch \
            "
 SRC_URI_append_class-native = " \
            file://perl-configpm-switch.patch \
 "
+SRC_URI_append_class-target = " \
+           file://encodefix.patch \
+"
 
-SRC_URI[perl.md5sum] = "9770584cdf9b5631c38097645ce33549"
-SRC_URI[perl.sha256sum] = "851213c754d98ccff042caa40ba7a796b2cee88c5325f121be5cbb61bbf975f2"
-SRC_URI[perl-cross.md5sum] = "4dda3daf9c4fe42b3d6a5dd052852a48"
-SRC_URI[perl-cross.sha256sum] = "49edea1ea2cd6c5c47386ca71beda8d150c748835781354dbe7f75b1df27e703"
+SRC_URI[perl.md5sum] = "6438eb7b8db9bbde28e01086de376a46"
+SRC_URI[perl.sha256sum] = "bf3d25571ff1ee94186177c2cdef87867fd6a14aa5a84f0b1fb7bf798f42f964"
+SRC_URI[perl-cross.md5sum] = "1e463b105cfa56d251a86979af23e3a7"
+SRC_URI[perl-cross.sha256sum] = "edce0b0c2f725e2db3f203d6d8e9f3f7161256f5d1590551e40694f21200141d"
 
 S = "${WORKDIR}/perl-${PV}"
 
@@ -112,6 +117,14 @@ print(datetime.fromtimestamp($SOURCE_DATE_EPOCH, timezone.utc).strftime('%a %b %
 
 do_compile() {
     oe_runmake
+    # This isn't generated reliably so delete and re-generate.
+    # https://github.com/arsv/perl-cross/issues/86
+
+    if [ -e pod/perltoc.pod ]; then
+        bbnote Rebuilding perltoc.pod
+        rm -f pod/perltoc.pod
+        oe_runmake pod/perltoc.pod
+    fi
 }
 
 do_install() {
@@ -135,6 +148,9 @@ do_install_append_class-target() {
     # This is used to substitute target configuration when running native perl via perl-configpm-switch.patch
     ln -s Config_heavy.pl ${D}${libdir}/perl5/${PV}/${TARGET_ARCH}-linux/Config_heavy-target.pl
 
+    # This contains host-specific information used for building miniperl (a helper executable built with host compiler)
+    # and therefore isn't reproducible. I believe the file isn't actually needed on target.
+    rm ${D}${libdir}/perl5/${PV}/${TARGET_ARCH}-linux/CORE/xconfig.h
 }
 
 do_install_append_class-nativesdk() {
@@ -198,6 +214,7 @@ require perl-ptest.inc
 FILES_${PN} = "${bindir}/perl ${bindir}/perl.real ${bindir}/perl${PV} ${libdir}/libperl.so* \
                ${libdir}/perl5/site_perl \
                ${libdir}/perl5/${PV}/Config.pm \
+               ${libdir}/perl5/${PV}/${TARGET_ARCH}-linux/Config.pm \
                ${libdir}/perl5/${PV}/*/Config_git.pl \
                ${libdir}/perl5/${PV}/*/Config_heavy-target.pl \
                ${libdir}/perl5/config.sh \
@@ -206,6 +223,9 @@ FILES_${PN} = "${bindir}/perl ${bindir}/perl.real ${bindir}/perl${PV} ${libdir}/
                ${libdir}/perl5/${PV}/warnings \
                ${libdir}/perl5/${PV}/vars.pm \
                ${libdir}/perl5/site_perl \
+               ${libdir}/perl5/${PV}/ExtUtils/MANIFEST.SKIP \
+               ${libdir}/perl5/${PV}/ExtUtils/xsubpp \
+               ${libdir}/perl5/${PV}/ExtUtils/typemap \
                "
 RPROVIDES_${PN} += "perl-module-strict perl-module-vars perl-module-config perl-module-warnings \
                     perl-module-warnings-register"
@@ -216,9 +236,6 @@ FILES_${PN}-dev_append = " ${libdir}/perl5/${PV}/*/CORE"
 
 FILES_${PN}-doc_append = " ${libdir}/perl5/${PV}/Unicode/Collate/*.txt \
                            ${libdir}/perl5/${PV}/*/.packlist \
-                           ${libdir}/perl5/${PV}/ExtUtils/MANIFEST.SKIP \
-                           ${libdir}/perl5/${PV}/ExtUtils/xsubpp \
-                           ${libdir}/perl5/${PV}/ExtUtils/typemap \
                            ${libdir}/perl5/${PV}/Encode/encode.h \
                          "
 PACKAGES += "${PN}-misc"

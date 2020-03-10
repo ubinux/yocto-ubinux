@@ -1,5 +1,7 @@
 require glibc_${PV}.bb
 
+EXCLUDE_FROM_WORLD = "1"
+
 # handle PN differences
 FILESEXTRAPATHS_prepend := "${THISDIR}/glibc:"
 
@@ -58,3 +60,4 @@ addtask do_check after do_compile
 
 inherit nopackages
 deltask do_stash_locale
+deltask do_install

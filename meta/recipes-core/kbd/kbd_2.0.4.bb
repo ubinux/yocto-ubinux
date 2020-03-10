@@ -13,6 +13,7 @@ RCONFLICTS_${PN} = "console-tools"
 SRC_URI = "${KERNELORG_MIRROR}/linux/utils/${BPN}/${BP}.tar.xz \
            file://run-ptest \
            ${@bb.utils.contains('DISTRO_FEATURES', 'ptest', 'file://set-proper-path-of-resources.patch', '', d)} \
+           file://0001-configure.ac-Fix-logic-of-vlock-configure-switch.patch \
           "
 
 SRC_URI[md5sum] = "c1635a5a83b63aca7f97a3eab39ebaa6"
@@ -58,7 +59,8 @@ RDEPENDS_${PN}-ptest = "make"
 
 inherit update-alternatives
 
-ALTERNATIVE_${PN} = "chvt deallocvt fgconsole openvt showkey"
+ALTERNATIVE_${PN} = "chvt deallocvt fgconsole openvt showkey \
+                     ${@bb.utils.contains('DISTRO_FEATURES', 'pam', 'vlock','', d)}"
 ALTERNATIVE_PRIORITY = "100"
 
 BBCLASSEXTEND = "native"
