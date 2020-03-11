@@ -8,7 +8,7 @@ Like RHEL, Fedora and Ubuntu, ubinux is a solution of embedded platform operatin
 
 Currently yocto-ubinux is managed on Github. You can get from there.
 ```
-      $ git clone https://github.com/ubinux/yocto-ubinux.git      
+$ git clone https://github.com/ubinux/yocto-ubinux.git      
 ```
 
 ## 2.2 Build environment
