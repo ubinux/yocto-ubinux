@@ -344,6 +344,7 @@ FILES=meta-oe/conf/
  meta-python/COPYING.MIT
  meta-python/README
  meta-python/classes
+ meta-python/licenses
  meta-python/recipes-devtools/python/
 
  meta-oe/recipes-gnome/gnome-common/
@@ -357,6 +358,7 @@ FILES=meta-oe/conf/
  meta-gnome/recipes-support/libuser/
  
  meta-webserver/conf/
+ meta-webserver/licenses
  meta-webserver/recipes-httpd/apache2
 
  meta-xfce/conf/
@@ -398,7 +400,7 @@ GITURL=ssh://10.24.14.171/home/owllinfilesrv/yocto/meta-freescale
 BRANCH=zeus
 HEADID=db6cdd204764228a2f45f45c346dc026a70c6423
 FILES=conf/layer.conf
- licenses/
+ custom-licenses/
  classes/
  recipes-devtools/cst/
  recipes-kernel/linux/
@@ -410,7 +412,7 @@ FILES=conf/layer.conf
 [meta-cgl]
 GITURL=ssh://10.24.14.171/home/owllinfilesrv/yocto/meta-cgl.git
 BRANCH=master
-HEADID=fe28a226377697639d18a9c671dd5f9004be0ba0
+HEADID=cd6489d3348f802273a317ec7b8ad0310594e3ad
 FILES=meta-cgl-common/conf/layer.conf
  meta-cgl-common/conf/distro/include/cgl_common_security_flags.inc
  meta-cgl-common/recipes-cgl/cluster-glue/
@@ -437,6 +439,7 @@ FILES=conf/layer.conf
  meta-openstack/classes/openstackchef.bbclass
  meta-openstack/classes/openstackchef_inc.bbclass
  meta-openstack/conf/layer.conf
+ meta-openstack/licenses
  meta-openstack/recipes-devtools/perl/libconfig-general-perl_2.63.bb
  meta-openstack/recipes-devtools/python/
 
@@ -484,12 +487,12 @@ FILES=conf/layer.conf
  recipes-support/nss-pam-ldapd/
 
 [meta-virtualization]
-#GITURL=ssh://10.24.14.171/home/owllinfilesrv/yocto/meta-virtualization
-GITURL=ssh://192.168.250.207/yocto/work002/fnst/leimh/community/meta-virtualization
+GITURL=ssh://10.24.14.171/home/owllinfilesrv/yocto/meta-virtualization
 BRANCH=zeus
 HEADID=561b597d4ba91dd36147e1af81bd1edc2d6636db
 FILES=conf/layer.conf
  classes/
+ files/
  conf/distro/include/virt_security_flags.inc
  recipes-networking/openvswitch/
  recipes-extended/libvirt/
@@ -574,8 +577,8 @@ FILES=conf/layer.conf
 
 [meta-spdxscanner]
 GITURL=ssh://10.24.14.171/home/owllinfilesrv/yocto/meta-spdxscanner
-BRANCH=zeus
-HEADID=051a87f5e2396d63ab36d86f5d8a772fd868e490
+BRANCH=master
+HEADID=9a2392d61de70fca1adccf860eacb95be5d0d9c0
 FILES=conf/layer.conf
  classes
 
