@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env python2.7
 import ConfigParser
 import string, os, sys
 import getpass
