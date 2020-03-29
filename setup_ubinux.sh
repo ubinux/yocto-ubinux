@@ -13,7 +13,7 @@ fi
 
 MACHINE=$1
 BUILD=$2
-DOWNLOADS=/yocto/work001/common/downloads-ubinux202004
+DOWNLOADS=/ubinux-dev/common/downloads/downloads-ubinux202004
 export TEMPLATECONF="meta-ubinux/conf"
 
 #. trunk/poky-ubinux/oe-init-build-env ${BUILD}
