@@ -1,0 +1,31 @@
+From: Phillip Susi <psusi@cfl.rr.com>
+Last-Update: 2011-03-08
+Description: dmraid was changed at one point to insert a 'p' between
+ the base device name and the partition number.  For some time
+ debian and ubuntu reversed this change.  This patch modifies the
+ behavior to add the 'p' iff the last character of the base name is
+ a digit.  This makes dmraid comply with the behavior used by
+ kpartx and "by linux since the dawn of time".
+Forwarded: Yes
+
+Index: 1.0.0.rc16/lib/format/partition/dos.c
+===================================================================
+--- 1.0.0.rc16.orig/lib/format/partition/dos.c
++++ 1.0.0.rc16/lib/format/partition/dos.c
+@@ -31,8 +31,14 @@
+ {
+ 	const char *base = get_basename(lc, rd->di->path);
+ 
+-	return type ? snprintf(str, len, "%s%s%u", base, OPT_STR_PARTCHAR(lc),
+-			       partition) : snprintf(str, len, "%s", base);
++	if (type)
++	{
++		if (isdigit(base[strlen(base) - 1]))
++			return snprintf(str, len, "%s%s%u", base,
++					OPT_STR_PARTCHAR(lc), partition);
++		else return snprintf(str, len, "%s%u", base, partition);
++	}
++	else return snprintf(str, len, "%s", base);
+ }
+ 
+ static char *

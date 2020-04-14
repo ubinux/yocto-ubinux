@@ -1,0 +1,76 @@
+From: Phillip Susi <psusi@ubuntu.com>
+Subject: Change uuid for partitions and internal devices
+Description: Change the uuid for internal devices ( like
+ each half of a raid10 ) so that the rest of the system
+ can recognize that the internal device should not be
+ probed for partitions or filesystems or mounted.  Also
+ change partition's uuid to have the same "partNN-"
+ prefix that kpartx gives them.
+
+Index: 1.0.0.rc16/lib/activate/devmapper.c
+===================================================================
+--- 1.0.0.rc16.orig/lib/activate/devmapper.c
++++ 1.0.0.rc16/lib/activate/devmapper.c
+@@ -171,8 +171,18 @@ dmraid_uuid(struct lib_context *lc, stru
+ 	/* Clear garbage data from uuid string */
+ 	memset(uuid, 0, uuid_len);
+ 
+-	/* Create UUID string from subsystem prefix and RAID set name. */
+-	r = snprintf(uuid, uuid_len, "DMRAID-%s", name) < uuid_len;
++	/* Create UUID string from subsystem prefix and RAID set name.  *
++	 * Prefix partitions with "partNN-" and add an 'I' for internal *
++	 * for stacked devices ( each half of a raid10 )                */
++
++	if (rs->type & t_partition) {
++		char *part;
++		for (part = name + strlen(name) - 1; isdigit(*part); part--);
++		part++;
++		r = snprintf(uuid, uuid_len, "part%s-DMRAID-%S", part, name) < uuid_len;
++	} else if (rs->flags & f_subset)
++		r = snprintf(uuid, uuid_len, "DMRAIDI-%s", name) < uuid_len;
++	else r = snprintf(uuid, uuid_len, "DMRAID-%s", name) < uuid_len;
+ 	return r < 0 ? 0 : (r < uuid_len);
+ }
+ 
+Index: 1.0.0.rc16/include/dmraid/metadata.h
+===================================================================
+--- 1.0.0.rc16.orig/include/dmraid/metadata.h
++++ 1.0.0.rc16/include/dmraid/metadata.h
+@@ -177,6 +177,7 @@ enum flags {
+ 	f_maximize = 0x01,	/* If set, maximize set capacity,
+ 				   if not set, limit to smallest device. */
+ 	f_partitions = 0x02,	/* Set has partitions. */
++	f_subset = 0x04,	/* Set is an internal subset ( half of raid10 ) */
+ };
+ 
+ #define	F_MAXIMIZE(rs)		((rs)->flags & f_maximize)
+Index: 1.0.0.rc16/lib/format/ataraid/isw.c
+===================================================================
+--- 1.0.0.rc16.orig/lib/format/ataraid/isw.c
++++ 1.0.0.rc16/lib/format/ataraid/isw.c
+@@ -877,7 +877,8 @@ group_rd(struct lib_context *lc,
+ 				free_raid_dev(lc, &rd);
+ 				return NULL;
+ 			}
+-
++			if (is_raid10(dev))
++				rs->flags |= f_subset;
+ 			rs->status = s_ok;
+ 
+ 			/* Save and set to enable dev_sort(). */
+Index: 1.0.0.rc16/lib/format/format.c
+===================================================================
+--- 1.0.0.rc16.orig/lib/format/format.c
++++ 1.0.0.rc16/lib/format/format.c
+@@ -649,9 +649,10 @@ join_superset(struct lib_context *lc,
+ 	if ((n = f_name(lc, rd, 0))) {
+ 		if ((ret = find_or_alloc_raid_set(lc, n, FIND_TOP, NO_RD,
+ 						  LC_RS(lc), f_create, rd)) &&
+-		    !find_set(lc, &ret->sets, rs->name, FIND_TOP))
++		    !find_set(lc, &ret->sets, rs->name, FIND_TOP)) {
+ 			list_add_sorted(lc, &ret->sets, &rs->list, f_set_sort);
+-
++			rs->flags |= f_subset;
++		}
+ 		dbg_free(n);
+ 	}

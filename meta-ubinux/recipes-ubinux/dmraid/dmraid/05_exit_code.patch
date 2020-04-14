@@ -1,0 +1,22 @@
+Author: Giuseppe Iuculano <giuseppe@iuculano.it>
+Description: Fix exit-code for "No RAID disks" and "no block devices found" errors (LP: #300825)
+--- 1.0.0.rc16.orig/lib/metadata/metadata.c
++++ 1.0.0.rc16/lib/metadata/metadata.c
+@@ -2096,7 +2096,7 @@ get_metadata(struct lib_context *lc, enu
+ 
+ 	if (!count_devices(lc, DEVICE)) {
+ 		log_print(lc, "no block devices found");
+-		return 1;
++		return 0;
+ 	}
+ 
+ 	if (!(M_RAID & p->metadata))
+@@ -2118,7 +2118,7 @@ get_metadata(struct lib_context *lc, enu
+ 	if (!OPT_HOT_SPARE_SET(lc) && !OPT_CREATE(lc)
+ 	    && !count_devices(lc, RAID)) {
+ 		format_error(lc, "disks", argv);
+-		return 1;
++		return 0;
+ 	}
+ 
+ 	if (M_SET & p->metadata) {

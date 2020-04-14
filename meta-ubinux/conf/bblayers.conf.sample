@@ -1,0 +1,43 @@
+# LAYER_CONF_VERSION is increased each time build/conf/bblayers.conf
+# changes incompatibly
+LCONF_VERSION = "6"
+
+BBPATH = "${TOPDIR}"
+BBFILES ?= ""
+
+BBLAYERS ?= " \
+  ##COREBASE##/meta-ubinux \
+  ##COREBASE##/meta \
+  ##COREBASE##/meta-poky \
+  ##COREBASE##/meta-yocto-bsp \
+  ##COREBASE##/meta-gplv2 \
+  ##COREBASE##/meta-freescale \
+  ##COREBASE##/meta-oe/meta-filesystems \
+  ##COREBASE##/meta-oe/meta-gnome \
+  ##COREBASE##/meta-oe/meta-initramfs \
+  ##COREBASE##/meta-oe/meta-networking \
+  ##COREBASE##/meta-oe/meta-oe \
+  ##COREBASE##/meta-oe/meta-python \
+  ##COREBASE##/meta-oe/meta-webserver \
+  ##COREBASE##/meta-oe/meta-xfce \
+  ##COREBASE##/meta-oe/meta-perl \
+  ##COREBASE##/meta-oe/meta-multimedia \
+  ##COREBASE##/meta-cgl/meta-cgl-common \
+  ##COREBASE##/meta-cloud-services \
+  ##COREBASE##/meta-cloud-services/meta-openstack \
+  ##COREBASE##/meta-virtualization \
+  ##COREBASE##/meta-selinux \
+  ##COREBASE##/meta-measured \
+  ##COREBASE##/meta-security \
+  ##COREBASE##/meta-security/meta-security-compliance \
+  ##COREBASE##/meta-qt5 \
+  ##COREBASE##/meta-swupdate \
+  ##COREBASE##/meta-linaro/meta-linaro  \
+  ##COREBASE##/meta-spdxscanner \
+  "
+BBLAYERS_NON_REMOVABLE ?= " \
+  ##COREBASE##/meta-ubinux \
+  ##COREBASE##/meta \
+  ##COREBASE##/meta-yocto \
+  "
+LAYERSERIES_COMPAT_ubinux = "dunfell"

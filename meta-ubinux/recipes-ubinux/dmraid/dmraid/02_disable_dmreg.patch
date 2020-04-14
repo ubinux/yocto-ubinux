@@ -1,0 +1,133 @@
+Disabled all dmreg stuff
+--- 1.0.0.rc16.orig/lib/Makefile.in
++++ 1.0.0.rc16/lib/Makefile.in
+@@ -45,10 +45,6 @@ SOURCES=\
+ 	format/ddf/ddf1_dump.c \
+ 	format/partition/dos.c
+ 
+-ifeq ("@STATIC_LINK@", "no")
+-	SOURCES += register/dmreg.c
+-endif
+-
+ OBJECTS=$(SOURCES:%.c=%.o)
+ 
+ LIB_STATIC=$(top_srcdir)/lib/libdmraid.a
+@@ -63,8 +59,8 @@ ifeq ("@KLIBC@", "no")
+ 	ifeq ("@STATIC_LINK@", "no")
+ 		LIB_SHARED=$(top_srcdir)/lib/libdmraid.so
+ 		LIB_EVENTS_SHARED=$(top_srcdir)/lib/$(LIB_EVENTS_NAME).so
+-		TARGETS += $(LIB_SHARED) $(LIB_EVENTS_SHARED)
+-		INSTALL_TARGETS += $(LIB_SHARED) $(LIB_EVENTS_SHARED)
++		TARGETS += $(LIB_SHARED)
++		INSTALL_TARGETS += $(LIB_SHARED)
+ 		ifeq ("@DIETLIBC@", "yes")
+ 			LIBDMRAIDLIBS += -ldevmapper_dietc
+ 		else
+--- 1.0.0.rc16.orig/make.tmpl.in
++++ 1.0.0.rc16/make.tmpl.in
+@@ -137,7 +137,7 @@ $(TARGETS): $(OBJECTS)
+ 
+ %.so: $(OBJECTS)
+ 	$(CC) -shared -Wl,-soname,$(notdir $@).$(DMRAID_LIB_VERSION) \
+-	-Wl,--version-script,.export.sym $(OBJECTS) $(LIBDMRAIDLIBS) -o $@ -ldevmapper-event
++	-Wl,--version-script,.export.sym $(OBJECTS) $(LIBDMRAIDLIBS) -o $@
+ 
+ $(LIB_STATIC): $(OBJECTS)
+ 	$(RM) $@
+--- 1.0.0.rc16.orig/tools/Makefile.in
++++ 1.0.0.rc16/tools/Makefile.in
+@@ -22,12 +22,6 @@ TARGETS=\
+ 
+ include $(top_srcdir)/make.tmpl
+ 
+-ifeq ("@KLIBC@", "no")
+-	ifeq ("@STATIC_LINK@", "no")
+-		TARGETS += dmevent_tool
+-	endif
+-endif
+-
+ DMRAIDLIBS=-ldmraid
+ 
+ ifeq ("@KLIBC@", "yes")
+@@ -37,16 +31,10 @@ else
+ 		ifeq ("@LIB_SO@", "no")
+ 			DMRAIDLIBS += -ldevmapper_dietc
+ 		endif
+-		ifeq ("@STATIC_LINK@", "no")
+-			DMEVENTTOOLLIBS = -ldevmapper-event_dietc
+-		endif
+ 	else
+ 		ifeq ("@LIB_SO@", "no")
+ 			DMRAIDLIBS += -ldevmapper
+ 		endif
+-		ifeq ("@STATIC_LINK@", "no")
+-			DMEVENTTOOLLIBS = -ldevmapper-event
+-		endif
+ 	endif
+ 
+ 	ifeq ("@LIBSELINUX@", "yes")
+--- 1.0.0.rc16.orig/lib/.export.sym
++++ 1.0.0.rc16/lib/.export.sym
+@@ -52,8 +52,6 @@ Base {
+ 		dso_end_rebuild;
+ 		hot_spare_add;
+ 		dso_get_members;
+-		dm_register_device;
+-		dm_unregister_device;
+ 		dm_all_monitored;
+ 	local:
+ 		*;
+--- 1.0.0.rc16.orig/lib/activate/activate.c
++++ 1.0.0.rc16/lib/activate/activate.c
+@@ -849,18 +849,12 @@ enum dm_what { DM_ACTIVATE, DM_REGISTER 
+ static int
+ dm_register_for_event(char *dev_name, char *lib_name)
+ {
+-#ifdef	DMRAID_AUTOREGISTER
+-	dm_register_device(dev_name, lib_name);
+-#endif
+ 	return 1;
+ }
+ 
+ static int
+ dm_unregister_for_event(char *dev_name, char *lib_name)
+ {
+-#ifdef	DMRAID_AUTOREGISTER
+-	dm_unregister_device(dev_name, lib_name);
+-#endif
+ 	return 1;
+ }
+ 
+@@ -874,6 +868,8 @@ do_device(struct lib_context *lc, struct
+ 	if (OPT_TEST(lc))
+ 		return 1;
+ 
++	return 1;
++
+         struct dmraid_format *fmt = get_format(rs);
+ 
+         if (fmt->name != NULL) {
+--- 1.0.0.rc16.orig/lib/metadata/reconfig.c
++++ 1.0.0.rc16/lib/metadata/reconfig.c
+@@ -242,20 +242,16 @@ add_dev_to_raid(struct lib_context *lc, 
+ 		 * metadata on disks to OK state.
+ 		 */
+ 		/* Create lib-events library name */
+-		if (fmt->name) {
++		/*if (fmt->name) {
+ 			strncpy(lib_name, "libdmraid-events-", LIB_NAME_LENGTH);
+ 			strncat(lib_name, fmt->name,
+ 				LIB_NAME_LENGTH-strlen(fmt->name)-3);
+ 			strncat(lib_name, ".so", 3);
+ 		} else
+ 			goto err;
+-
+-		/* Check registration */
+-		if (!dm_monitored_events(&pending, sub_rs->name, lib_name)) {
+-			/* If NOT registered update metadata to OK state. */
++*/
+ 			if (check_rd->fmt->metadata_handler)
+ 				check_rd->fmt->metadata_handler(lc, UPDATE_REBUILD_STATE, NULL, (void *) rs);
+-		}
+ 	}
+ #endif

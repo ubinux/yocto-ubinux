@@ -1,0 +1,23 @@
+From: Phillip Susi <psusi@cfl.rr.com>
+Last-Update: 2011-03-08
+Forwarded: yes
+Description: Testing with dm devices was failing on Ubuntu because
+ /dev/dm-X is the actual device node, but the code wanted it to be
+ a symlink.  Fixed dm_test_device() to test that the file ( or node
+ it points to ) is a block device, which seems a much more
+ appropriate test.
+
+Index: 1.0.0.rc16/lib/device/scan.c
+===================================================================
+--- 1.0.0.rc16.orig/lib/device/scan.c
++++ 1.0.0.rc16/lib/device/scan.c
+@@ -86,8 +86,8 @@
+ {
+ 	struct stat s;
+ 
+-	return !lstat(path, &s) &&
+-		S_ISLNK(s.st_mode) &&
++	return !stat(path, &s) &&
++		S_ISBLK(s.st_mode) &&
+ 		!strncmp(get_basename(lc, path), "dm-", 3);
+ }
