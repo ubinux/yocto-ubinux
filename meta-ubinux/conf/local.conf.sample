@@ -267,7 +267,7 @@ GLIBC_GENERATE_LOCALES = "en_GB.UTF-8 en_US.UTF-8 de_DE.UTF-8 el_GR.UTF-8 es_ES.
 
 DISTRO = "ubinux"
 DISTROOVERRIDES = "poky:linuxstdbase"
-DISTRO_FEATURES_append = " pam largefile systemd opensaf virtualization tomoyo polkit"
+DISTRO_FEATURES_append = " pam largefile systemd opensaf virtualization tomoyo polkit smack"
 #disable sysvinit
 DISTRO_FEATURES_BACKFILL_CONSIDERED = "sysvinit"
 VIRTUAL-RUNTIME_login_manager = ""
