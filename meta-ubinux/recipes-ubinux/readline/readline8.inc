@@ -12,18 +12,14 @@ LIC_FILES_CHKSUM = "file://COPYING;md5=d32239bcb673463ab874e80d47fae504"
 
 DEPENDS += "ncurses"
 
-SRC_URI = "${GNU_MIRROR}/readline/readline-7.0.tar.gz;name=archive \
-           "
+SRC_URI = "${GNU_MIRROR}/readline/${BPN}-${PV}.tar.gz;name=archive"
 SRC_URI += "file://inputrc"
 
 inherit autotools texinfo
 
-S = "${WORKDIR}/readline-7.0"
 EXTRA_AUTORECONF += "--exclude=autoheader"
-EXTRA_OECONF += "--includedir=${includedir}/readline7 \
-                 --libdir=${libdir}/readline7"
 
-#LEAD_SONAME = "libreadline6.so"
+LEAD_SONAME = "libreadline.so"
 
 do_configure_prepend () {
 	if [ ! -e ${S}/acinclude.m4 ]; then
@@ -32,8 +28,9 @@ do_configure_prepend () {
 }
 
 do_install_append () {
-#        oe_libinstall -so -C shlib libhistory ${D}${libdir}/readline6
-#        oe_libinstall -so -C shlib libreadline ${D}${libdir}/readline6
+	# Make install doesn't properly install these
+	oe_libinstall -so -C shlib libhistory ${D}${libdir}
+	oe_libinstall -so -C shlib libreadline ${D}${libdir}
 
 	rmdir ${D}${bindir}
 	rm -rf ${D}${datadir}/${BPN}/*.c
@@ -41,17 +38,19 @@ do_install_append () {
 
 	install -m 0755 -d ${D}${sysconfdir}
 	install -m 0644 ${WORKDIR}/inputrc ${D}${sysconfdir}/inputrc
-	rm -rf ${D}${datadir}/${BPN}/*.c
-	rmdir ${D}${datadir}/${BPN} || true
-
-	install -m 0755 -d ${D}${sysconfdir}
-	install -m 0644 ${WORKDIR}/inputrc ${D}${sysconfdir}/inputrc
-
 }
 
-FILES_${PN} += "${datadir}"
-FILES_${PN}-dev += "${libdir}/readline7/libhistory.so \
-                    ${libdir}/readline7/libreadline.so"
 BBCLASSEXTEND = "native nativesdk"
 
 CONFFILES_${PN} += "${sysconfdir}/inputrc"
+
+inherit update-alternatives
+
+ALTERNATIVE_PRIORITY = "100"
+ALTERNATIVE_${PN}-doc = "history.3"
+ALTERNATIVE_LINK_NAME[history.3] = "${mandir}/man3/history.3"
+
+# OpenSuse injects versions into libreadline leading to conficits between our native one and theirs
+# see their spec file for where this is injected. Extra versioning is harmless so we just do the same.
+SRC_URI_append_class-native = " file://rl-native.map"
+LDFLAGS_append_class-native = " -Wl,--version-script=${WORKDIR}/rl-native.map"
