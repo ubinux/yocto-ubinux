@@ -1,4 +1,4 @@
-require readline.inc
+require readline8.inc
 
 SRC_URI += "file://configure-fix.patch \
             file://norpath.patch"

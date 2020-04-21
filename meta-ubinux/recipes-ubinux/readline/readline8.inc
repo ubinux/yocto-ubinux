@@ -12,14 +12,18 @@ LIC_FILES_CHKSUM = "file://COPYING;md5=d32239bcb673463ab874e80d47fae504"
 
 DEPENDS += "ncurses"
 
-SRC_URI = "${GNU_MIRROR}/readline/${BPN}-${PV}.tar.gz;name=archive"
+SRC_URI = "${GNU_MIRROR}/readline/readline-8.0.tar.gz;name=archive"
 SRC_URI += "file://inputrc"
 
 inherit autotools texinfo
 
-EXTRA_AUTORECONF += "--exclude=autoheader"
+S = "${WORKDIR}/readline-8.0"
 
-LEAD_SONAME = "libreadline.so"
+EXTRA_AUTORECONF += "--exclude=autoheader"
+EXTRA_OECONF += "--includedir=${includedir}/readline8 \
+		 --libdir=${libdir}/readline8"
+
+#LEAD_SONAME = "libreadline.so"
 
 do_configure_prepend () {
 	if [ ! -e ${S}/acinclude.m4 ]; then
@@ -29,8 +33,8 @@ do_configure_prepend () {
 
 do_install_append () {
 	# Make install doesn't properly install these
-	oe_libinstall -so -C shlib libhistory ${D}${libdir}
-	oe_libinstall -so -C shlib libreadline ${D}${libdir}
+	#oe_libinstall -so -C shlib libhistory ${D}${libdir}
+	#oe_libinstall -so -C shlib libreadline ${D}${libdir}
 
 	rmdir ${D}${bindir}
 	rm -rf ${D}${datadir}/${BPN}/*.c
@@ -39,6 +43,10 @@ do_install_append () {
 	install -m 0755 -d ${D}${sysconfdir}
 	install -m 0644 ${WORKDIR}/inputrc ${D}${sysconfdir}/inputrc
 }
+
+FILES_${PN} += "${datadir}"
+FILES_${PN}-dev += "${libdir}/readline8/libhistory.so \
+                    ${libdir}/readline8/libreadline.so"
 
 BBCLASSEXTEND = "native nativesdk"
 
