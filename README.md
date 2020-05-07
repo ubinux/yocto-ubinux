@@ -44,8 +44,16 @@ set up build environment of X86_64
 ```
 $ setup_ubinux.sh ubinux-x86-64 ../build-ubinux-x86-64
 ```
+## 3.3 Set environment variables
+Enter the build directory to set the environment variables.
+```
+$ cd ${build_dir}
+$ vi conf/local.conf
+```
+Note
+  - You can find the explanation of these variables from https://wiki.yoctoproject.org/wiki/Main_Page
 
-## 3.3 Generate image
+## 3.4 Generate image
 Enter the build directory to generate the image of the specified arch.
 ```
 $ cd ${build_dir}
