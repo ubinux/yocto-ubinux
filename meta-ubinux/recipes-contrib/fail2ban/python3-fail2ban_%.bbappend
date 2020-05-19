@@ -1,4 +1,0 @@
-FILESEXTRAPATHS_prepend := "${THISDIR}/files:"
-
-RDEPENDS_${PN} = "iptables sqlite3 ${PYTHON_PN} ${PYTHON_PN}-pyinotify"
-
