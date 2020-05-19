@@ -16,7 +16,7 @@ metas=meta-gplv2
 [meta-gplv2]
 GITURL=ssh://10.130.70.189/ubinux-dev/common/ubinux-layers/yocto/meta-gplv2
 BRANCH=master
-HEADID=e1243f721bd183f21d0c0ca34b9667c4f3426c7b
+HEADID=60b251c25ba87e946a0ca4cdc8d17b1cb09292ac
 FILES=conf/
  licenses/
  recipes-core/readline/
@@ -419,7 +419,7 @@ FILES=meta-oe/conf/
 [meta-freescale]
 GITURL=ssh://10.130.70.189/ubinux-dev/common/ubinux-layers/yocto/meta-freescale
 BRANCH=master
-HEADID=76467d61049bd89a25f5a26592bc6c8808e51ff9
+HEADID=960a870e70521c3b468db42fcc1192c55bfb5373
 FILES=conf/layer.conf
  custom-licenses/
  classes/
@@ -594,7 +594,7 @@ FILES=conf/layer.conf
 [meta-spdxscanner]
 GITURL=ssh://10.130.70.189/ubinux-dev/common/ubinux-layers/yocto/meta-spdxscanner
 BRANCH=master
-HEADID=cb705ea69abc795d0985ed26fa652a108fddf282
+HEADID=395b0fd9282552b5dc92dfea9deedf5cdc4d1bba
 FILES=conf/layer.conf
  classes
 
