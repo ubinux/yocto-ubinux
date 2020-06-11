@@ -6,11 +6,11 @@ SECTION = "libs"
 LICENSE = "BSD & MIT"
 LIC_FILES_CHKSUM = "file://LICENSE;md5=17f20574c0b154d12236d5fbe964f549"
 
-SRC_URI = " \
-    https://github.com/libevent/libevent/releases/download/release-${PV}-stable/${BP}-stable.tar.gz \
-    file://Makefile-missing-test-dir.patch \
-    file://run-ptest \
-"
+SRC_URI = "https://github.com/libevent/libevent/releases/download/release-${PV}-stable/${BP}-stable.tar.gz \
+           file://Makefile-missing-test-dir.patch \
+           file://run-ptest \
+           file://0001-test-regress_dns.c-patch-out-tests-that-require-a-wo.patch \
+           "
 
 SRC_URI[md5sum] = "7f35cfe69b82d879111ec0d7b7b1c531"
 SRC_URI[sha256sum] = "a65bac6202ea8c5609fd5c7e480e6d25de467ea1917c08290c521752f147283d"
@@ -31,9 +31,17 @@ inherit ptest multilib_header
 
 DEPENDS = "zlib"
 
+PACKAGES_DYNAMIC = "^${PN}-.*$"
+python split_libevent_libs () {
+    do_split_packages(d, '${libdir}', r'^libevent_([a-z]*)-.*\.so\..*', '${PN}-%s', '${SUMMARY} (%s)', prepend=True, allow_links=True)
+}
+PACKAGESPLITFUNCS_prepend = "split_libevent_libs "
+
 BBCLASSEXTEND = "native nativesdk"
 
 do_install_append() {
+	rm ${D}${bindir}/event_rpcgen.py
+	rmdir ${D}${bindir}
         oe_multilib_header event2/event-config.h
 }
 

@@ -46,7 +46,6 @@ UBINUX_PKGS = " \
 	cairo \
 	ccs-tools \
 	checksec \
-	chkconfig \
 	cifs-utils \
 	cluster-glue \
 	cluster-glue-plugin-interfacemgr \
@@ -72,7 +71,6 @@ UBINUX_PKGS = " \
 	font-alias \
 	font-util \
 	fontconfig \
-	foomatic-filters \
 	freetype \
 	f2fs-tools \
 	fscryptctl \
@@ -289,7 +287,6 @@ UBINUX_PKGS = " \
 	fuse \
 	fuse-utils \
 	drbd-utils \
-	heartbeat \
 	hostapd \
 	hwdata \
 	i2c-tools \
@@ -306,7 +303,6 @@ UBINUX_PKGS = " \
 	libgxim \
 	liblockfile \
 	libnet \
-	libnih \
 	libnotify \
 	libol \
 	libp11 \
@@ -620,22 +616,7 @@ UBINUX_PKGS = " \
 	btrfs-tools \
 	openvswitch \
 	\
-	openlmi-tools \
 	opensaf \
-	\
-	python-cachetools \
-	python-configparser \
-	python-fail2ban \
-	python-heat \
-	python-heatclient \
-	python-pyinotify \
-	python-dbus \
-	python-linecache2 \
-	python-pywbem \
-	python-pycodestyle \
-	python-stevedore \
-	python-traceback2 \
-	python-pyasn1-modules \
 	\
 	python3-cachetools \
 	python3-configparser \
@@ -649,6 +630,7 @@ UBINUX_PKGS = " \
 	python3-stevedore \
 	python3-xxhash \
 	python3-wtforms \
+	python3-pyasn1-modules \
 	\
 	xmlto \
 	expect \

@@ -267,7 +267,7 @@ GLIBC_GENERATE_LOCALES = "en_GB.UTF-8 en_US.UTF-8 de_DE.UTF-8 el_GR.UTF-8 es_ES.
 
 DISTRO = "ubinux"
 DISTROOVERRIDES = "poky:linuxstdbase"
-DISTRO_FEATURES_append = " pam largefile systemd opensaf virtualization tomoyo polkit"
+DISTRO_FEATURES_append = " pam largefile systemd opensaf virtualization tomoyo polkit smack"
 #disable sysvinit
 DISTRO_FEATURES_BACKFILL_CONSIDERED = "sysvinit"
 VIRTUAL-RUNTIME_login_manager = ""
@@ -276,6 +276,7 @@ VIRTUAL-RUNTIME_init_manager = "busybox"
 VIRTUAL-RUNTIME_dev_manager = "busybox-mdev"
 VIRTUAL-RUNTIME_dev_manager = "udev"
 VIRTUAL-RUNTIME_syslog = "syslog-ng"
+VIRTUAL-RUNTIME_base-utils-syslog = "syslog-ng"
 
 # ubinux v14 MW version decription as follows:
 PREFERRED_PROVIDER_virtual/libiconv = "glibc"
@@ -309,7 +310,7 @@ PREFERRED_VERSION_time = "1.7"
 PREFERRED_VERSION_bash = "3.2.57"
 PREFERRED_VERSION_grep = "2.5.1a"
 PREFERRED_VERSION_gdbm = "1.8.3"
-
+PREFERRED_PROVIDER_u-boot-fw-utils = "libubootenv"
 # Fix installation confilt since 2020.01,so use python-pika provided by meta-openstack
 PREFERRED_VERSION_python-pika = "0.10.0+gitAUTOINC+b907f91415"
 ##################################################################
@@ -329,4 +330,5 @@ SOURCE_DATE_EPOCH = "1"
 ARCHIVER_MODE[srpm] = "1"
 ARCHIVER_MODE[src] = "original"
 #INHERIT += "fossology-rest"
-DL_DIR ?= "/yocto/work001/common/downloads-ubinux202001"
+COPYLEFT_LICENSE_INCLUDE = "*"
+SOURCE_DATE_EPOCH = "1"

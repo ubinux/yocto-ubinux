@@ -7,7 +7,10 @@ SECTION = "console/utils"
 LICENSE = "GPLv2 & CDDL-1.0 & LGPLv2.1+"
 LIC_FILES_CHKSUM = "file://COPYING;md5=32f68170be424c2cd64804337726b312"
 
-SRC_URI = "${SOURCEFORGE_MIRROR}/project/cdrtools/cdrtools-${REALPV}.tar.bz2"
+SRC_URI = " \
+	${SOURCEFORGE_MIRROR}/project/cdrtools/cdrtools-${PV}.tar.bz2 \
+	file://0001-Don-t-set-uid-gid-during-install.patch \
+	"
 UPSTREAM_VERSION_UNKNOWN = "1"
 
 SRC_URI[md5sum] = "7d45c5b7e1f78d85d1583b361aee6e8b"
@@ -19,11 +22,6 @@ EXTRA_OEMAKE = "-e MAKEFLAGS="
 export ac_cv_prog_CC = "${CC}"
 
 inherit native
-
-PV = "3.01a31+really3.01"
-REALPV = "3.01"
-
-S = "${WORKDIR}/${BPN}-${REALPV}"
 
 do_install() {
 	make install GMAKE_NOWARN=true INS_BASE=${prefix} DESTDIR=${D}

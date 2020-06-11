@@ -10,7 +10,6 @@ SRC_URI = "http://pagesperso-orange.fr/sebastien.godard/${BP}.tar.xz \
           "
 
 UPSTREAM_CHECK_URI = "http://sebastien.godard.pagesperso-orange.fr/download.html"
-UPSTREAM_VERSION_UNKNOWN = "1"
 
 DEPENDS += "base-passwd"
 
@@ -24,16 +23,15 @@ PACKAGECONFIG[systemd] = "--with-systemdsystemunitdir=${systemd_system_unitdir}"
 
 EXTRA_OECONF += "--disable-stripping"
 
-SYSTEMD_PACKAGES = "${PN}"
-SYSTEMD_SERVICE_${PN} = "sysstat.service"
-SYSTEMD_AUTO_ENABLE = "enable"
-
 do_configure_prepend() {
     export sa_lib_dir=${libexecdir}/sa
 }
 
 do_install() {
 	autotools_do_install
+
+	# Don't version the documentation
+	mv ${D}${docdir}/${BP} ${D}${docdir}/${BPN}
 
 	# don't install /var/log/sa when populating rootfs. Do it through volatile
 	rm -rf ${D}/var

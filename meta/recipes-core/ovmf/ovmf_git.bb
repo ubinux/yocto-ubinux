@@ -2,7 +2,7 @@ SUMMARY = "OVMF - UEFI firmware for Qemu and KVM"
 DESCRIPTION = "OVMF is an EDK II based project to enable UEFI support for \
 Virtual Machines. OVMF contains sample UEFI firmware for QEMU and KVM"
 HOMEPAGE = "https://github.com/tianocore/tianocore.github.io/wiki/OVMF"
-LICENSE = "BSD"
+LICENSE = "BSD-2-Clause"
 LICENSE_class-target = "${@bb.utils.contains('PACKAGECONFIG', 'secureboot', 'BSD & OpenSSL', 'BSD', d)}"
 LIC_FILES_CHKSUM = "file://OvmfPkg/License.txt;md5=06357ddc23f46577c2aeaeaf7b776d65"
 
@@ -13,14 +13,14 @@ PACKAGECONFIG ??= ""
 PACKAGECONFIG[secureboot] = ",,,"
 
 SRC_URI = "gitsm://github.com/tianocore/edk2.git;branch=master;protocol=git \
-	file://0002-ovmf-update-path-to-native-BaseTools.patch \
-	file://0003-BaseTools-makefile-adjust-to-build-in-under-bitbake.patch \
-	file://0004-ovmf-enable-long-path-file.patch \
-	file://no-stack-protector-all-archs.patch \
+           file://0001-ovmf-update-path-to-native-BaseTools.patch \
+           file://0002-BaseTools-makefile-adjust-to-build-in-under-bitbake.patch \
+           file://0003-ovmf-enable-long-path-file.patch \
+           file://0004-ovmf-Update-to-latest.patch \
         "
 
-PV = "edk2-stable201905"
-SRCREV="20d2e5a125e34fc8501026613a71549b2a1a3e54"
+PV = "edk2-stable201911"
+SRCREV = "bd85bf54c268204c7a698a96f3ccd96cd77952cd"
 UPSTREAM_CHECK_GITTAGREGEX = "(?P<pver>edk2-stable.*)"
 
 inherit deploy
@@ -29,10 +29,7 @@ PARALLEL_MAKE = ""
 
 S = "${WORKDIR}/git"
 
-DEPENDS_class-native="util-linux-native iasl-native"
-DEPENDS_class-target="ovmf-native bc-native"
-
-DEPENDS_append = " nasm-native"
+DEPENDS = "nasm-native acpica-native ovmf-native util-linux-native"
 
 EDK_TOOLS_DIR="edk2_basetools"
 

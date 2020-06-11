@@ -18,6 +18,7 @@ SRC_URI = "${GNU_MIRROR}/coreutils/${BP}.tar.xz \
            file://0001-uname-report-processor-and-hardware-correctly.patch \
            file://disable-ls-output-quoting.patch \
            file://0001-local.mk-fix-cross-compiling-problem.patch \
+           file://run-ptest \
           "
 
 SRC_URI_append_libc-musl = "file://strtod_fix_clash_with_strtold.patch"
@@ -49,7 +50,7 @@ bindir_progs = "arch basename chcon cksum comm csplit cut dir dircolors dirname 
                 env expand expr factor fmt fold groups head hostid id install \
                 join link logname md5sum mkfifo nl nohup nproc od paste pathchk \
                 pinky pr printf ptx readlink realpath runcon seq sha1sum sha224sum sha256sum \
-                sha384sum sha512sum shred shuf sort split stdbuf sum tac tail tee test timeout \
+                sha384sum sha512sum shred shuf sort split sum tac tail tee test timeout \
                 tr truncate tsort tty unexpand uniq unlink uptime users vdir wc who whoami yes"
 
 # hostname gets a special treatment and is not included in this
@@ -57,6 +58,10 @@ base_bindir_progs = "cat chgrp chmod chown cp date dd echo false hostname kill l
                      mknod mv pwd rm rmdir sleep stty sync touch true uname stat"
 
 sbindir_progs= "chroot"
+
+PACKAGE_BEFORE_PN_class-target += "coreutils-stdbuf"
+FILES_coreutils-stdbuf = "${bindir}/stdbuf ${libdir}/coreutils/libstdbuf.so"
+RDEPENDS_coreutils_class-target += "coreutils-stdbuf"
 
 # Let aclocal use the relative path for the m4 file rather than the
 # absolute since coreutils has a lot of m4 files, otherwise there might
@@ -139,3 +144,47 @@ python __anonymous() {
 }
 
 BBCLASSEXTEND = "native nativesdk"
+
+inherit ptest
+
+RDEPENDS_${PN}-ptest += "bash findutils gawk liberror-perl libmodule-build-perl make perl perl-module-file-stat python3-core sed shadow"
+
+# -dev automatic dependencies fails as we don't want libmodule-build-perl-dev, its too heavy
+# may need tweaking if DEPENDS changes
+RRECOMMENDS_coreutils-dev[nodeprrecs] = "1"
+RRECOMMENDS_coreutils-dev = "acl-dev attr-dev gmp-dev libcap-dev bash-dev findutils-dev gawk-dev shadow-dev"
+
+do_install_ptest () {
+    install -d ${D}${PTEST_PATH}/tests
+    cp -r ${S}/tests/* ${D}${PTEST_PATH}/tests
+    sed -i 's/ginstall/install/g'  `grep -R ginstall ${D}${PTEST_PATH}/tests | awk -F: '{print $1}' | uniq`
+    install -d ${D}${PTEST_PATH}/build-aux
+    install ${S}/build-aux/test-driver ${D}${PTEST_PATH}/build-aux/
+    cp ${B}/Makefile ${D}${PTEST_PATH}/
+    cp ${S}/init.cfg ${D}${PTEST_PATH}/
+    cp -r ${B}/src ${D}${PTEST_PATH}/
+    cp -r ${S}/src/*.c ${D}${PTEST_PATH}/src
+    sed -i '/^VPATH/s/= .*$/= ./g' ${D}${PTEST_PATH}/Makefile
+    sed -i '/^PROGRAMS/s/^/#/g' ${D}${PTEST_PATH}/Makefile
+    sed -i '/^Makefile: /s/^.*$/Makefile:/g' ${D}${PTEST_PATH}/Makefile
+    sed -i '/^abs_srcdir/s/= .*$/= \$\{PWD\}/g' ${D}${PTEST_PATH}/Makefile
+    sed -i '/^abs_top_builddir/s/= .*$/= \$\{PWD\}/g' ${D}${PTEST_PATH}/Makefile
+    sed -i '/^abs_top_srcdir/s/= .*$/= \$\{PWD\}/g' ${D}${PTEST_PATH}/Makefile
+    sed -i '/^built_programs/s/ginstall/install/g' ${D}${PTEST_PATH}/Makefile
+    chmod -R 777 ${D}${PTEST_PATH}
+
+    # Disable subcase stty-pairs.sh, it will cause test framework hang
+    sed -i '/stty-pairs.sh/d' ${D}${PTEST_PATH}/Makefile
+
+    # Disable subcase tail-2/assert.sh as it has issues on 32-bit systems
+    sed -i '/assert.sh/d' ${D}${PTEST_PATH}/Makefile
+
+    # Tweak test d_type-check to use python3 instead of python
+    sed -i "1s@.*@#!/usr/bin/python3@" ${D}${PTEST_PATH}/tests/d_type-check
+    install ${B}/src/getlimits ${D}/${bindir}
+    
+    # handle multilib
+    sed -i s:@libdir@:${libdir}:g ${D}${PTEST_PATH}/run-ptest
+}
+
+FILES_${PN}-ptest += "${bindir}/getlimits"

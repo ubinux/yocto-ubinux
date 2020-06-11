@@ -8,7 +8,7 @@ PR = "r13"
 
 PACKAGE_ARCH = "${TUNE_PKGARCH}"
 
-inherit packagegroup  distro_features_check
+inherit packagegroup  features_check
 # rdepends on libx11-dev
 REQUIRED_DISTRO_FEATURES = "x11"
 
@@ -75,7 +75,6 @@ RDEPENDS_packagegroup-self-hosted-sdk = "\
     g++-symlinks \
     gcc \
     gcc-symlinks \
-    intltool \
     ldd \
     less \
     libstdc++ \
@@ -109,7 +108,6 @@ RDEPENDS_packagegroup-self-hosted-debug = " \
 
 RDEPENDS_packagegroup-self-hosted-extended = "\
     bzip2 \
-    chkconfig \
     chrpath \
     cpio \
     curl \
@@ -153,8 +151,6 @@ RDEPENDS_packagegroup-self-hosted-extended = "\
     perl-misc \
     perl-modules \
     perl-pod \
-    python \
-    python-modules \
     python3 \
     python3-modules \
     python3-git \
@@ -168,7 +164,6 @@ RDEPENDS_packagegroup-self-hosted-extended = "\
     sysstat \
     tar \
     tcl \
-    texi2html \
     texinfo \
     unzip \
     usbutils \

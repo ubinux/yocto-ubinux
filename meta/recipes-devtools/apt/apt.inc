@@ -1,5 +1,5 @@
 SUMMARY = "Advanced front-end for dpkg"
-DESCRIPTION = "Provides commandline tools for searching and managing as well \
+DESCRIPTION = "Provides command-line tools for searching and managing as well \
 as querying information about packages as a low-level access to all features \
 of the libapt-pkg library."
 LICENSE = "GPLv2.0+"
@@ -26,7 +26,7 @@ LIC_FILES_CHKSUM = "file://COPYING.GPL;md5=b234ee4d69f5fce4486a80fdaf4a4263"
 # so we check the latest upstream from a directory that does get updated
 UPSTREAM_CHECK_URI = "${DEBIAN_MIRROR}/main/a/apt/"
 
-inherit autotools gettext useradd
+inherit autotools gettext useradd upstream-version-is-even
 
 EXTRA_AUTORECONF = "--exclude=autopoint,autoheader"
 

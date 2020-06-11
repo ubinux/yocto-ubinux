@@ -32,7 +32,7 @@ SYSROOT_DIRS_BLACKLIST = " \
     ${datadir}/gtk-doc/html \
     ${datadir}/locale \
     ${datadir}/pixmaps \
-    ${libdir}/${PN}/ptest \
+    ${libdir}/${BPN}/ptest \
 "
 
 sysroot_stage_dir() {
@@ -75,8 +75,8 @@ python sysroot_strip () {
 
     dstdir = d.getVar('SYSROOT_DESTDIR')
     pn = d.getVar('PN')
-    libdir = os.path.abspath(dstdir + os.sep + d.getVar("libdir"))
-    base_libdir = os.path.abspath(dstdir + os.sep + d.getVar("base_libdir"))
+    libdir = d.getVar("libdir")
+    base_libdir = d.getVar("base_libdir")
     qa_already_stripped = 'already-stripped' in (d.getVar('INSANE_SKIP_' + pn) or "").split()
     strip_cmd = d.getVar("STRIP")
 
@@ -277,11 +277,13 @@ python extend_recipe_sysroot() {
 
     start = None
     configuredeps = []
+    owntaskdeps = []
     for dep in taskdepdata:
         data = taskdepdata[dep]
         if data[1] == mytaskname and data[0] == pn:
             start = dep
-            break
+        elif data[0] == pn:
+            owntaskdeps.append(data[1])
     if start is None:
         bb.fatal("Couldn't find ourself in BB_TASKDEPDATA?")
 
@@ -427,7 +429,7 @@ python extend_recipe_sysroot() {
                         # Was likely already uninstalled
                         continue
                     potential.append(l)
-        # We need to ensure not other task needs this dependency. We hold the sysroot
+        # We need to ensure no other task needs this dependency. We hold the sysroot
         # lock so we ca search the indexes to check
         if potential:
             for i in glob.glob(depdir + "/index.*"):
@@ -435,6 +437,11 @@ python extend_recipe_sysroot() {
                     continue
                 with open(i, "r") as f:
                     for l in f:
+                        if l.startswith("TaskDeps:"):
+                            prevtasks = l.split()[1:]
+                            if mytaskname in prevtasks:
+                                # We're a dependency of this task so we can clear items out the sysroot
+                                break
                         l = l.strip()
                         if l in potential:
                             potential.remove(l)
@@ -449,6 +456,29 @@ python extend_recipe_sysroot() {
     msg_exists = []
     msg_adding = []
 
+    # Handle all removals first since files may move between recipes
+    for dep in configuredeps:
+        c = setscenedeps[dep][0]
+        if c not in installed:
+            continue
+        taskhash = setscenedeps[dep][5]
+        taskmanifest = depdir + "/" + c + "." + taskhash
+
+        if os.path.exists(depdir + "/" + c):
+            lnk = os.readlink(depdir + "/" + c)
+            if lnk == c + "." + taskhash and os.path.exists(depdir + "/" + c + ".complete"):
+                continue
+            else:
+                bb.note("%s exists in sysroot, but is stale (%s vs. %s), removing." % (c, lnk, c + "." + taskhash))
+                sstate_clean_manifest(depdir + "/" + lnk, d, workdir)
+                os.unlink(depdir + "/" + c)
+                if os.path.lexists(depdir + "/" + c + ".complete"):
+                    os.unlink(depdir + "/" + c + ".complete")
+        elif os.path.lexists(depdir + "/" + c):
+            os.unlink(depdir + "/" + c)
+
+    binfiles = {}
+    # Now handle installs
     for dep in configuredeps:
         c = setscenedeps[dep][0]
         if c not in installed:
@@ -461,14 +491,6 @@ python extend_recipe_sysroot() {
             if lnk == c + "." + taskhash and os.path.exists(depdir + "/" + c + ".complete"):
                 msg_exists.append(c)
                 continue
-            else:
-                bb.note("%s exists in sysroot, but is stale (%s vs. %s), removing." % (c, lnk, c + "." + taskhash))
-                sstate_clean_manifest(depdir + "/" + lnk, d, workdir)
-                os.unlink(depdir + "/" + c)
-                if os.path.lexists(depdir + "/" + c + ".complete"):
-                    os.unlink(depdir + "/" + c + ".complete")
-        elif os.path.lexists(depdir + "/" + c):
-            os.unlink(depdir + "/" + c)
 
         msg_adding.append(c)
 
@@ -548,7 +570,16 @@ python extend_recipe_sysroot() {
                     if l.endswith("/"):
                         staging_copydir(l, targetdir, dest, seendirs)
                         continue
-                    staging_copyfile(l, targetdir, dest, postinsts, seendirs)
+                    if "/bin/" in l or "/sbin/" in l:
+                        # defer /*bin/* files until last in case they need libs
+                        binfiles[l] = (targetdir, dest)
+                    else:
+                        staging_copyfile(l, targetdir, dest, postinsts, seendirs)
+
+    # Handle deferred binfiles
+    for l in binfiles:
+        (targetdir, dest) = binfiles[l]
+        staging_copyfile(l, targetdir, dest, postinsts, seendirs)
 
     bb.note("Installed into sysroot: %s" % str(msg_adding))
     bb.note("Skipping as already exists in sysroot: %s" % str(msg_exists))
@@ -564,6 +595,7 @@ python extend_recipe_sysroot() {
         os.symlink(manifests[dep], depdir + "/" + c + ".complete")
 
     with open(taskindex, "w") as f:
+        f.write("TaskDeps: " + " ".join(owntaskdeps) + "\n")
         for l in sorted(installed):
             f.write(l + "\n")
 

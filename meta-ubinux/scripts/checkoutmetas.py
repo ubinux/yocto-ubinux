@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2.7
 import ConfigParser
 import string, os, sys
 import getpass
@@ -28,7 +28,6 @@ def checkout_all_repository():
         files  = cf.get(meta, "FILES")
 
         checkout_repository(meta, giturl, branch, headid, files)
-
 
 def main():
     if len(sys.argv) == 1:

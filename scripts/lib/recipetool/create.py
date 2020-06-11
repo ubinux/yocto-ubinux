@@ -477,8 +477,6 @@ def create_recipe(args):
             storeTagName = params['tag']
             params['nobranch'] = '1'
             del params['tag']
-        if scheme == 'npm':
-            params['noverify'] = '1'
         fetchuri = bb.fetch2.encodeurl((scheme, network, path, user, passwd, params))
 
         tmpparent = tinfoil.config_data.getVar('BASE_WORKDIR')
@@ -495,9 +493,7 @@ def create_recipe(args):
         if ftmpdir and args.keep_temp:
             logger.info('Fetch temp directory is %s' % ftmpdir)
 
-        dirlist = os.listdir(srctree)
-        filterout = ['git.indirectionsymlink']
-        dirlist = [x for x in dirlist if x not in filterout]
+        dirlist = scriptutils.filter_src_subdirs(srctree)
         logger.debug('Directory listing (excluding filtered out):\n  %s' % '\n  '.join(dirlist))
         if len(dirlist) == 1:
             singleitem = os.path.join(srctree, dirlist[0])
@@ -716,10 +712,8 @@ def create_recipe(args):
         lines_after.append('INSANE_SKIP_${PN} += "already-stripped"')
         lines_after.append('')
 
-    if args.fetch_dev:
-        extravalues['fetchdev'] = True
-    else:
-        extravalues['fetchdev'] = None
+    if args.npm_dev:
+        extravalues['NPM_INSTALL_DEV'] = 1
 
     # Find all plugins that want to register handlers
     logger.debug('Loading recipe handlers')
@@ -1315,7 +1309,7 @@ def register_commands(subparsers):
     group.add_argument('-S', '--srcrev', help='Source revision to fetch if fetching from an SCM such as git (default latest)')
     parser_create.add_argument('-B', '--srcbranch', help='Branch in source repository if fetching from an SCM such as git (default master)')
     parser_create.add_argument('--keep-temp', action="store_true", help='Keep temporary directory (for debugging)')
-    parser_create.add_argument('--fetch-dev', action="store_true", help='For npm, also fetch devDependencies')
+    parser_create.add_argument('--npm-dev', action="store_true", help='For npm, also fetch devDependencies')
     parser_create.add_argument('--devtool', action="store_true", help=argparse.SUPPRESS)
     parser_create.add_argument('--mirrors', action="store_true", help='Enable PREMIRRORS and MIRRORS for source tree fetching (disabled by default).')
     parser_create.set_defaults(func=create_recipe)

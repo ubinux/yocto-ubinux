@@ -25,4 +25,3 @@ do_configure() {
 	           -C ${STAGING_KERNEL_DIR} O=${STAGING_KERNEL_BUILDDIR} scripts prepare
 
 }
-ALLOW_EMPTY_${PN} = "1"

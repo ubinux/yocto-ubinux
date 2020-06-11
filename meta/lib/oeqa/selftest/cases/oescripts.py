@@ -4,6 +4,7 @@
 
 import os
 import shutil
+import importlib
 import unittest
 from oeqa.selftest.case import OESelftestTestCase
 from oeqa.selftest.cases.buildhistory import BuildhistoryBase
@@ -33,15 +34,13 @@ class BuildhistoryDiffTests(BuildhistoryBase):
         if expected_endlines:
             self.fail('Missing expected line endings:\n  %s' % '\n  '.join(expected_endlines))
 
+@unittest.skipUnless(importlib.util.find_spec("cairo"), "Python cairo module is not present")
 class OEScriptTests(OESelftestTestCase):
 
     @classmethod
     def setUpClass(cls):
         super(OEScriptTests, cls).setUpClass()
-        try:
-            import cairo
-        except ImportError:
-            raise unittest.SkipTest('Python module cairo is not present')
+        import cairo
         bitbake("core-image-minimal -c rootfs -f")
         cls.tmpdir = get_bb_var('TMPDIR')
         cls.buildstats = cls.tmpdir + "/buildstats/" + sorted(os.listdir(cls.tmpdir + "/buildstats"))[-1]
@@ -64,6 +63,7 @@ class OEPybootchartguyTests(OEScriptTests):
     def test_pybootchartguy_to_generate_build_pdf_output(self):
         runCmd('%s/pybootchartgui/pybootchartgui.py  %s -o %s/charts -f pdf' % (self.scripts_dir, self.buildstats, self.tmpdir))
         self.assertTrue(os.path.exists(self.tmpdir + "/charts.pdf"))
+
 
 class OEGitproxyTests(OESelftestTestCase):
 
@@ -121,3 +121,67 @@ class OEGitproxyTests(OESelftestTestCase):
         if dash is None:
             self.skipTest("No \"dash\" found on test system.")
         self.run_oegitproxy(custom_shell=dash)
+
+class OeRunNativeTest(OESelftestTestCase):
+    def test_oe_run_native(self):
+        bitbake("qemu-helper-native -c addto_recipe_sysroot")
+        result = runCmd("oe-run-native qemu-helper-native tunctl -h")
+        self.assertIn("Delete: tunctl -d device-name [-f tun-clone-device]", result.output)
+
+class OEListPackageconfigTests(OEScriptTests):
+    #oe-core.scripts.List_all_the_PACKAGECONFIG's_flags
+    def check_endlines(self, results,  expected_endlines): 
+        for line in results.output.splitlines():
+            for el in expected_endlines:
+                if line == el:
+                    expected_endlines.remove(el)
+                    break
+
+        if expected_endlines:
+            self.fail('Missing expected listings:\n  %s' % '\n  '.join(expected_endlines))
+
+
+    #oe-core.scripts.List_all_the_PACKAGECONFIG's_flags
+    def test_packageconfig_flags_help(self):
+        runCmd('%s/contrib/list-packageconfig-flags.py -h' % self.scripts_dir)
+
+    def test_packageconfig_flags_default(self):
+        results = runCmd('%s/contrib/list-packageconfig-flags.py' % self.scripts_dir)
+        expected_endlines = []
+        expected_endlines.append("RECIPE NAME                  PACKAGECONFIG FLAGS")
+        expected_endlines.append("pinentry                     gtk2 libcap ncurses qt secret")
+        expected_endlines.append("tar                          acl")
+
+        self.check_endlines(results, expected_endlines)
+
+
+    def test_packageconfig_flags_option_flags(self):
+        results = runCmd('%s/contrib/list-packageconfig-flags.py -f' % self.scripts_dir)
+        expected_endlines = []
+        expected_endlines.append("PACKAGECONFIG FLAG     RECIPE NAMES")
+        expected_endlines.append("qt                     nativesdk-pinentry  pinentry  pinentry-native")
+        expected_endlines.append("secret                 nativesdk-pinentry  pinentry  pinentry-native")
+
+        self.check_endlines(results, expected_endlines)
+
+    def test_packageconfig_flags_option_all(self):
+        results = runCmd('%s/contrib/list-packageconfig-flags.py -a' % self.scripts_dir)
+        expected_endlines = []
+        expected_endlines.append("pinentry-1.1.0")
+        expected_endlines.append("PACKAGECONFIG ncurses libcap")
+        expected_endlines.append("PACKAGECONFIG[qt] --enable-pinentry-qt, --disable-pinentry-qt, qtbase-native qtbase")
+        expected_endlines.append("PACKAGECONFIG[gtk2] --enable-pinentry-gtk2, --disable-pinentry-gtk2, gtk+ glib-2.0")
+        expected_endlines.append("PACKAGECONFIG[libcap] --with-libcap, --without-libcap, libcap")
+        expected_endlines.append("PACKAGECONFIG[ncurses] --enable-ncurses  --with-ncurses-include-dir=${STAGING_INCDIR}, --disable-ncurses, ncurses")
+        expected_endlines.append("PACKAGECONFIG[secret] --enable-libsecret, --disable-libsecret, libsecret")
+
+        self.check_endlines(results, expected_endlines)
+
+    def test_packageconfig_flags_optiins_preferred_only(self):
+        results = runCmd('%s/contrib/list-packageconfig-flags.py -p' % self.scripts_dir)
+        expected_endlines = []
+        expected_endlines.append("RECIPE NAME                  PACKAGECONFIG FLAGS")
+        expected_endlines.append("pinentry                     gtk2 libcap ncurses qt secret")
+
+        self.check_endlines(results, expected_endlines)
+
