@@ -631,6 +631,7 @@ UBINUX_PKGS = " \
 	python3-xxhash \
 	python3-wtforms \
 	python3-pyasn1-modules \
+	python3-zopeinterface \
 	\
 	xmlto \
 	expect \
