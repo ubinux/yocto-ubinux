@@ -16,7 +16,7 @@ metas=meta-gplv2
 [meta-gplv2]
 GITURL=ssh://10.130.70.189/ubinux-dev/common/ubinux-layers/yocto/meta-gplv2
 BRANCH=master
-HEADID=e1243f721bd183f21d0c0ca34b9667c4f3426c7b
+HEADID=a8da8eb127a56561bf633ab53bec57fb5dbba537
 FILES=conf/
  licenses/
  recipes-core/readline/
@@ -37,7 +37,7 @@ FILES=conf/
 [meta-oe]
 GITURL=ssh://10.130.70.189/ubinux-dev/common/ubinux-layers/yocto/meta-openembedded.git
 BRANCH=master
-HEADID=5caca0f7bdefd28b9ecc446aea4177e2e297aa20
+HEADID=9f3a74984ace99000065445307cb935927986395
 FILES=meta-oe/conf/
  meta-oe/COPYING.MIT
  meta-oe/licenses/
@@ -370,7 +370,8 @@ FILES=meta-oe/conf/
  meta-gnome/classes/
  meta-gnome/recipes-support/libuser/
  meta-gnome/recipes-support/libstemmer/
- meta-gnome/recipes-kernel/sysprof/
+ meta-gnome/recipes-gnome/sysprof/
+ meta-gnome/recipes-gnome/yelp/
  meta-gnome/recipes-gnome/gexiv2/
  meta-gnome/recipes-gnome/gnome-desktop/
  meta-gnome/recipes-gnome/gnome-autoar/
@@ -601,7 +602,7 @@ FILES=conf/layer.conf
 
 [meta-swupdate]
 GITURL=ssh://10.130.70.189/ubinux-dev/common/ubinux-layers/yocto/meta-swupdate
-BRANCH=maste
+BRANCH=master
 HEADID=a81a753c5fdf2fa625bb5dbbb24113a677fe5cfa
 FILES=conf/layer.conf
  recipes-support/swupdate/
