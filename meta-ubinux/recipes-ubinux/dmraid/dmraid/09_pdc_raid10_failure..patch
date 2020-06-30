@@ -1,0 +1,14 @@
+fix pdc metadata format handler to report the proper number of devices in a subset
+--- 1.0.0.rc16.orig/lib/format/ataraid/pdc.c
++++ 1.0.0.rc16/lib/format/ataraid/pdc.c
+@@ -490,7 +490,9 @@ devices(struct raid_dev *rd, void *conte
+ 	if (context && pdc->raid.type != PDC_T_SPAN)
+ 		*((uint64_t *) context) += rd->sectors;
+ 
+-	return pdc->raid.total_disks;
++	return is_raid10(pdc) ? 
++		pdc->raid.total_disks / 2 :
++		pdc->raid.total_disks;
+ }
+ 
+ static int

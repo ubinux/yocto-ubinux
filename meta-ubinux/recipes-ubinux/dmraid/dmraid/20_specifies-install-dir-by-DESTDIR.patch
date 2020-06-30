@@ -1,0 +1,123 @@
+Install all target into ${D} specified by DESTDIR.
+
+Signed-off-by: Bian Naimeng <biannm@cn.fujitsu.com>
+
+diff -Nurp 1.0.0.rc16.org/include/Makefile.in 1.0.0.rc16/include/Makefile.in
+--- 1.0.0.rc16.org/include/Makefile.in	2009-09-16 16:55:23.000000000 +0800
++++ 1.0.0.rc16/include/Makefile.in	2014-11-27 15:05:06.108660939 +0800
+@@ -16,15 +16,15 @@ include $(top_srcdir)/make.tmpl
+ .PHONY: install_dmraid_headers remove_dmraid_headers
+ 
+ install_dmraid_headers: $(HEADERS)
+-	@echo "Installing $(HEADERS) in $(includedir)/dmraid"
+-	mkdir -p $(includedir)/dmraid
+-	$(INSTALL) $(STRIP) $(HEADERS) $(includedir)/dmraid
++	@echo "Installing $(HEADERS) in $(DESTDIR)/$(includedir)/dmraid"
++	mkdir -p $(DESTDIR)$(includedir)/dmraid
++	$(INSTALL) $(STRIP) $(HEADERS) $(DESTDIR)/$(includedir)/dmraid
+ 
+ install: install_dmraid_headers
+ 
+ remove_dmraid_headers:
+-	@echo "Removing $(HEADERS) from $(includedir)/dmraid"
+-	rm -f $(includedir)/dmraid
++	@echo "Removing $(HEADERS) from $(DESTDIR)/$(includedir)/dmraid"
++	rm -f $(DESTDIR)/$(includedir)/dmraid
+ 
+ remove:        remove_dmraid_headers
+ 
+diff -Nurp 1.0.0.rc16.org/lib/Makefile.in 1.0.0.rc16/lib/Makefile.in
+--- 1.0.0.rc16.org/lib/Makefile.in	2014-11-27 14:49:17.212698021 +0800
++++ 1.0.0.rc16/lib/Makefile.in	2014-11-27 15:07:33.008655199 +0800
+@@ -78,30 +78,30 @@ $(LIB_EVENTS_SHARED):
+ .PHONY: install_dmraid_libs remove_dmraid_libs
+ 
+ install_dmraid_libs: $(INSTALL_TARGETS)
+-	@echo "Installing $(INSTALL_TARGETS) in $(libdir)"; \
+-	mkdir -p $(libdir); \
++	@echo "Installing $(INSTALL_TARGETS) in $(DESTDIR)/$(libdir)"; \
++	mkdir -p $(DESTDIR)/$(libdir); \
+ 	for f in $(INSTALL_TARGETS); \
+ 	do \
+ 		n=$$(basename $${f}) ; \
+ 		if echo "$$n" | grep -q '.so$$'; then \
+ 			$(INSTALL) -m 555 $(STRIP) \
+-				$$f $(libdir)/$${n}.@DMRAID_LIB_VERSION@; \
+-			mkdir -p $(prefix)/lib; \
+-			cd $(prefix)/lib/ && $(LN_S) -f /lib/$${n}.@DMRAID_LIB_VERSION@ $${n}; \
++				$$f $(DESTDIR)/$(libdir)/$${n}.@DMRAID_LIB_VERSION@; \
++			mkdir -p $(DESTDIR)/$(prefix)/lib; \
++			cd $(DESTDIR)/$(prefix)/lib/ && $(LN_S) -f /lib/$${n}.@DMRAID_LIB_VERSION@ $${n}; \
+ 		else \
+-			$(INSTALL) -m 555 $(STRIP) $$f $(libdir)/$${n}; \
++			$(INSTALL) -m 555 $(STRIP) $$f $(DESTDIR)/$(libdir)/$${n}; \
+ 		fi \
+ 	done
+ 
+ install: install_dmraid_libs
+ 
+ remove_dmraid_libs:
+-	@echo "Removing $(INSTALL_TARGETS) from $(libdir)"; \
++	@echo "Removing $(INSTALL_TARGETS) from $(DESTDIR)/$(libdir)"; \
+ 	for f in $(INSTALL_TARGETS); \
+ 	do \
+ 		n=$$(basename $${f}) ; \
+-		rm -f $(libdir)/$${n}.@DMRAID_LIB_VERSION@; \
+-		rm -f $(libdir)/$${n}; \
++		rm -f $(DESTDIR)/$(libdir)/$${n}.@DMRAID_LIB_VERSION@; \
++		rm -f $(DESTDIR)/$(libdir)/$${n}; \
+ 	done
+ 
+ remove:	remove_dmraid_libs
+diff -Nurp 1.0.0.rc16.org/make.tmpl.in 1.0.0.rc16/make.tmpl.in
+--- 1.0.0.rc16.org/make.tmpl.in	2014-11-27 14:49:17.212698021 +0800
++++ 1.0.0.rc16/make.tmpl.in	2014-11-27 15:02:34.940666847 +0800
+@@ -21,8 +21,8 @@ LD_DEPS += @LD_DEPS@
+ SOFLAG += @SOFLAG@
+ 
+ # Setup directory variables
+-prefix = $(DESTDIR)@prefix@
+-exec_prefix = $(DESTDIR)@exec_prefix@
++prefix = @prefix@
++exec_prefix = @exec_prefix@
+ bindir = @bindir@
+ ifeq ("@KLIBC@", "no")
+   libdir = @libdir@
+diff -Nurp 1.0.0.rc16.org/man/Makefile.in 1.0.0.rc16/man/Makefile.in
+--- 1.0.0.rc16.org/man/Makefile.in	2009-09-16 16:55:23.000000000 +0800
++++ 1.0.0.rc16/man/Makefile.in	2014-11-27 15:08:35.924652740 +0800
+@@ -9,7 +9,7 @@ top_srcdir = @top_srcdir@
+ VPATH = @srcdir@
+ 
+ MAN8=dmraid.8 dmevent_tool.8
+-MAN8DIR=${mandir}/man8
++MAN8DIR=$(DESTDIR)/${mandir}/man8
+ 
+ include $(top_srcdir)/make.tmpl
+ 
+diff -Nurp 1.0.0.rc16.org/tools/Makefile.in 1.0.0.rc16/tools/Makefile.in
+--- 1.0.0.rc16.org/tools/Makefile.in	2014-11-27 14:49:17.212698021 +0800
++++ 1.0.0.rc16/tools/Makefile.in	2014-11-27 15:10:11.408649009 +0800
+@@ -71,17 +71,17 @@ dmevent_tool: $(top_srcdir)/lib/libdmrai
+ 	      -L$(DESTDIR)$(libdir) $(DMRAIDLIBS) $(DMEVENTTOOLLIBS) $(DMRAIDLIBS) $(LIBS) 
+ 
+ install_dmraid_tools: $(TARGETS)
+-	@echo "Installing $(TARGETS) in $(sbindir)"; \
+-	mkdir -p $(sbindir); \
+-	$(INSTALL) $(STRIP) $(TARGETS) $(sbindir)
++	@echo "Installing $(TARGETS) in $(DESTDIR)/$(sbindir)"; \
++	mkdir -p $(DESTDIR)/$(sbindir); \
++	$(INSTALL) $(STRIP) $(TARGETS) $(DESTDIR)/$(sbindir)
+ 
+ install: install_dmraid_tools
+ 
+ remove_dmraid_tools:
+-	@echo "Removing $(TARGETS) from $(sbindir)"; \
++	@echo "Removing $(TARGETS) from $(DESTDIR)/$(sbindir)"; \
+ 	for f in $(TARGETS); \
+ 	do \
+-		rm -f $(sbindir)/$$f; \
++		rm -f $(DESTDIR)/$(sbindir)/$$f; \
+ 	done
+ 
+ remove:	remove_dmraid_tools

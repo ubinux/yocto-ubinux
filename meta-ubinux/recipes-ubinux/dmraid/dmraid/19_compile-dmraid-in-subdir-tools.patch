@@ -1,0 +1,20 @@
+Compile dmraid in subdir tools to avoid error as follows
+
+  | tools/dmraid.c:12:27: fatal error: dmraid/dmraid.h: No such file or directory
+  |  #include <dmraid/dmraid.h>
+  |                            ^
+
+Signed-off-by: Bian Naimeng <biannm@cn.fujitsu.com>
+
+diff -Nurp 1.0.0.rc16.orig/Makefile.in 1.0.0.rc16/Makefile.in
+--- 1.0.0.rc16.orig/Makefile.in	2009-09-16 16:55:23.000000000 +0800
++++ 1.0.0.rc16/Makefile.in	2014-11-26 16:39:54.087815059 +0800
+@@ -10,8 +10,6 @@ VPATH = @srcdir@
+ 
+ SUBDIRS = include lib man tools
+ 
+-TARGETS = tools/dmraid
+-
+ include make.tmpl
+ 
+ tools: lib

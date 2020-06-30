@@ -1,0 +1,39 @@
+From: Stefan Bader <stefan.bader@canonical.com>
+Date: Tue, 14 Jan 2014 15:26:50 +0100
+Subject: Avoid meaningless error messages while probing for meta-data
+
+This happens as device-mapper volumes are checked and kpartx creates
+a 2 sector mapping if a device contains an extended partition.
+Offsetting from the last sector backwards some probes overflow and
+end up trying to seek to a very large offset (which fails and emits
+a visible error message during device scanning).
+This message is useless as such a small device would be pointless as
+a RAID set anyway.
+To fix this without larger changes, pragmatically ignore devices smaller
+than 8 sectors (4K).
+
+Signed-off-by: Stefan Bader <stefan.bader@canonical.com>
+
+Index: 1.0.0.rc16/lib/format/format.c
+===================================================================
+--- 1.0.0.rc16.orig/lib/format/format.c	2014-01-14 15:50:17.554952405 +0100
++++ 1.0.0.rc16/lib/format/format.c	2014-01-14 15:50:35.319039242 +0100
+@@ -533,6 +533,18 @@ read_raid_dev(struct lib_context *lc,
+ 	union read_info info;
+ 
+ 	/*
++	 * Kpartx will create a mapping for extended partitions which only
++	 * covers 2 sectors. That leads to error messages when looking for
++	 * meta-data as moving back from the last sector results in huge
++	 * offsets. Quick hack here to ignore any device smaller than 4K.
++	 */
++	if (di->sectors < 8) {
++		log_dbg(lc, "%s: Ignore device smaller than 4K (%s)",
++			handler, di->path);
++		return NULL;
++	}
++
++	/*
+ 	 * In case the metadata format handler provides a special
+ 	 * metadata read function, use that. If not, allocate and
+ 	 * read size from offset.
