@@ -403,7 +403,6 @@ UBINUX_PKGS = " \
 	smem \
 	sshfs-fuse \
 	stress \
-	syslog-ng \
 	takao-fonts \
 	tcpdump \
 	tcsh \
