@@ -92,7 +92,6 @@ FILES=meta-oe/conf/
  meta-oe/recipes-support/numactl/
  meta-oe/recipes-support/openldap/
  meta-oe/recipes-support/pcsc-lite/
- meta-oe/recipes-support/syslog-ng/
  meta-oe/recipes-support/bash-completion/
  meta-oe/recipes-dbs/postgresql/ 
  meta-oe/recipes-support/sg3-utils/sg3-utils_1.44.bb
