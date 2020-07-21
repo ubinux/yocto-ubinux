@@ -275,8 +275,8 @@ VIRTUAL-RUNTIME_init_manager = "systemd"
 VIRTUAL-RUNTIME_init_manager = "busybox"
 VIRTUAL-RUNTIME_dev_manager = "busybox-mdev"
 VIRTUAL-RUNTIME_dev_manager = "udev"
-VIRTUAL-RUNTIME_syslog = "syslog-ng"
-VIRTUAL-RUNTIME_base-utils-syslog = "syslog-ng"
+VIRTUAL-RUNTIME_syslog = "busybox-syslog"
+VIRTUAL-RUNTIME_base-utils-syslog = "busybox-syslog"
 
 # ubinux v14 MW version decription as follows:
 PREFERRED_PROVIDER_virtual/libiconv = "glibc"
