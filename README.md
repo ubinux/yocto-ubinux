@@ -11,6 +11,9 @@ Currently yocto-ubinux is managed on Github. You can get from there.
 $ git clone https://github.com/ubinux/yocto-ubinux.git      
 ```
 
+Note
+  - Modify the value of the DOWNLOADS variable in the file setup_ubinux.sh to specify the download directory.
+
 ## 2.2 Build environment
 
 Please refer to the build environment of poky3.0.
