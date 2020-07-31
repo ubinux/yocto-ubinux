@@ -593,7 +593,7 @@ FILES=conf/layer.conf
  licenses/
 
 [meta-spdxscanner]
-GITURL=https://github.com/dl9pf/meta-spdxscanner.git
+GITURL=https://git.yoctoproject.org/git/meta-spdxscanner
 BRANCH=master
 HEADID=c731a5f1cc83d9d8a1e120207746c89059d5576f
 FILES=conf/layer.conf
