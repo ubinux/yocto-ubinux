@@ -14,7 +14,7 @@ metas=meta-gplv2
  meta-linaro
 
 [meta-gplv2]
-GITURL=ssh://10.24.14.171/home/owllinfilesrv/yocto/meta-gplv2 
+GITURL=https://git.yoctoproject.org/git/meta-gplv2
 BRANCH=zeus
 HEADID=0f4eecc000f66d114ad258fa31aed66afa292166
 FILES=conf/
@@ -34,7 +34,7 @@ FILES=conf/
  recipes-support/gdbm/
 
 [meta-oe-zeus]
-GITURL=ssh://10.24.14.171/home/owllinfilesrv/yocto/meta-openembedded.git
+GITURL=http://git.openembedded.org/meta-openembedded
 BRANCH=zeus
 HEADID=0d16b31c3d96e0797d3335d44545412996c48c9a
 FILES=meta-oe/conf/
@@ -394,7 +394,7 @@ FILES=meta-oe/conf/
  meta-systemd/oe-core/recipes-core/util-linux/
 
 [meta-freescale]
-GITURL=ssh://10.24.14.171/home/owllinfilesrv/yocto/meta-freescale
+GITURL=https://git.yoctoproject.org/git/meta-freescale
 BRANCH=zeus
 HEADID=4af1824f3daa13bd2bceafe8de7f371b35e0dfce
 FILES=conf/layer.conf
@@ -408,7 +408,7 @@ FILES=conf/layer.conf
 
 
 [meta-cgl]
-GITURL=ssh://10.24.14.171/home/owllinfilesrv/yocto/meta-cgl.git
+GITURL=https://git.yoctoproject.org/git/meta-cgl
 BRANCH=master
 HEADID=fe28a226377697639d18a9c671dd5f9004be0ba0
 FILES=meta-cgl-common/conf/layer.conf
@@ -425,7 +425,7 @@ FILES=meta-cgl-common/conf/layer.conf
  meta-cgl-common/recipes-cgl/monit/
 
 [meta-cloud-services]
-GITURL=ssh://10.24.14.171/home/owllinfilesrv/yocto/meta-cloud-services
+GITURL=http://git.yoctoproject.org/git/meta-cloud-services
 BRANCH=zeus
 HEADID=b8c25f63ab9124fe911165205d17808b9a7dead0
 FILES=conf/layer.conf
@@ -484,8 +484,7 @@ FILES=conf/layer.conf
  recipes-support/nss-pam-ldapd/
 
 [meta-virtualization]
-#GITURL=ssh://10.24.14.171/home/owllinfilesrv/yocto/meta-virtualization
-GITURL=ssh://192.168.250.207/yocto/work002/fnst/leimh/community/meta-virtualization
+GITURL=http://git.yoctoproject.org/git/meta-virtualization
 BRANCH=zeus
 HEADID=f4262ab75d36a06c528cc1630b48b817fb0acf8f
 FILES=conf/layer.conf
@@ -502,21 +501,21 @@ FILES=conf/layer.conf
  recipes-devtools/python/python-webob_1.8.5.bb
 
 [meta-selinux]
-GITURL=ssh://10.24.14.171/home/owllinfilesrv/yocto/meta-selinux
+GITURL=http://git.yoctoproject.org/git/meta-selinux
 BRANCH=zeus
 HEADID=44d760413920ba440439b8bc7c2a71ca26cd7a2d
 FILES=conf/layer.conf
  recipes-security/audit/
 
 [meta-measured]
-GITURL=ssh://10.24.14.171/home/owllinfilesrv/yocto/meta-measured
+GITURL=https://github.com/flihp/meta-measured.git
 BRANCH=master
 HEADID=a110355f087ce0ad1c90a3080878de3206fe0079
 FILES=conf/
  recipes-tpm/trousers/
 
 [meta-security]
-GITURL=ssh://10.24.14.171/home/owllinfilesrv/yocto/meta-security.git
+GITURL=http://git.yoctoproject.org/git/meta-security
 BRANCH=zeus
 HEADID=27ddb455543b670097e252ba0d0ad5b7e4101748
 FILES=conf
@@ -536,7 +535,7 @@ FILES=conf
  
 
 [meta-qt5]
-GITURL=ssh://10.24.14.171/home/owllinfilesrv/yocto/meta-qt5
+GITURL=https://github.com/meta-qt5/meta-qt5.git
 BRANCH=zeus
 HEADID=432ad2aa6c3a13253fefc909faba368851d21fb1
 FILES=conf/layer.conf
@@ -573,7 +572,7 @@ FILES=conf/layer.conf
  licenses/
 
 [meta-spdxscanner]
-GITURL=ssh://10.24.14.171/home/owllinfilesrv/yocto/meta-spdxscanner
+GITURL=https://git.yoctoproject.org/git/meta-spdxscanner
 BRANCH=zeus
 HEADID=051a87f5e2396d63ab36d86f5d8a772fd868e490
 FILES=conf/layer.conf
@@ -581,7 +580,7 @@ FILES=conf/layer.conf
 
 
 [meta-swupdate]
-GITURL=ssh://10.24.14.171/home/owllinfilesrv/yocto/meta-swupdate
+GITURL=https://github.com/sbabic/meta-swupdate.git
 BRANCH=zeus
 HEADID=ae3be5af32322293e9118570dde8dec117a83222
 FILES=conf/layer.conf
@@ -590,7 +589,7 @@ FILES=conf/layer.conf
  recipes-bsp/u-boot/
 
 [meta-linaro]
-GITURL=ssh://10.24.14.171/home/owllinfilesrv/yocto/meta-linaro
+GITURL=https://git.linaro.org/openembedded/meta-linaro.git
 BRANCH=master
 HEADID=14a8a62dca7a2c70d91578fc79e71911bc670253
 FILES=meta-linaro/conf/layer.conf
