@@ -346,7 +346,7 @@ def create_progress_handler(func, progress, logfile, d):
             cls_obj = functools.reduce(resolve, cls.split("."), bb.utils._context)
             if not cls_obj:
                 # Fall-back on __builtins__
-                cls_obj = functools.reduce(lambda x, y: x.get(y), cls.split("."), __builtins__)
+                cls_obj = functools.reduce(resolve, cls.split("."), __builtins__)
             if cls_obj:
                 return cls_obj(d, outfile=logfile, otherargs=otherargs)
             bb.warn('%s: unknown custom progress handler in task progress varflag value "%s", ignoring' % (func, cls))
@@ -398,7 +398,13 @@ exit $ret
 
     progress = d.getVarFlag(func, 'progress')
     if progress:
-        logfile = create_progress_handler(func, progress, logfile, d)
+        try:
+            logfile = create_progress_handler(func, progress, logfile, d)
+        except:
+            from traceback import format_exc
+            logger.error("Failed to create progress handler")
+            logger.error(format_exc())
+            raise
 
     fifobuffer = bytearray()
     def readfifo(data):

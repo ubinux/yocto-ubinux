@@ -1,6 +1,8 @@
 require glibc.inc
 require glibc-version.inc
 
+CVE_CHECK_WHITELIST += "CVE-2020-10029"
+
 DEPENDS += "gperf-native bison-native make-native"
 
 NATIVESDKFIXES ?= ""
@@ -41,6 +43,8 @@ SRC_URI =  "${GLIBC_GIT_URI};branch=${SRCBRANCH};name=glibc \
            file://0028-inject-file-assembly-directives.patch \
            file://0029-locale-prevent-maybe-uninitialized-errors-with-Os-BZ.patch \
            file://0030-wordsize.h-Unify-the-header-between-arm-and-aarch64.patch \
+           file://CVE-2020-6096.patch \
+           file://CVE-2020-6096_2.patch \
            "
 S = "${WORKDIR}/git"
 B = "${WORKDIR}/build-${TARGET_SYS}"
