@@ -45,7 +45,7 @@ Note
 Example
 set up build environment of X86_64
 ```
-$ setup_ubinux.sh ubinux-x86-64 ../build-ubinux-x86-64
+$ . setup_ubinux.sh ubinux-x86-64 ../build-ubinux-x86-64
 ```
 ## 3.3 Set environment variables
 Enter the build directory to set the environment variables.
