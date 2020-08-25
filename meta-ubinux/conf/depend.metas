@@ -37,7 +37,7 @@ FILES=conf/
 [meta-oe]
 GITURL=ssh://10.130.70.189/ubinux-dev/common/ubinux-layers/yocto/meta-openembedded.git
 BRANCH=master
-HEADID=9f3a74984ace99000065445307cb935927986395
+HEADID=f6438269ebe2631f96908e6b115e0dccf79600e5
 FILES=meta-oe/conf/
  meta-oe/COPYING.MIT
  meta-oe/licenses/
@@ -190,7 +190,7 @@ FILES=meta-oe/conf/
  meta-oe/recipes-devtools/nodejs/ 
  meta-oe/recipes-devtools/yajl/
  meta-oe/recipes-devtools/lemon/
- meta-oe/recipes-devtools/perl/ipc-run_20180523.0.bb
+ meta-oe/recipes-devtools/perl/ipc-run_20200505.0.bb
  meta-oe/recipes-devtools/php/
  meta-oe/recipes-devtools/uw-imap/
  meta-oe/recipes-devtools/iptraf/
@@ -213,7 +213,7 @@ FILES=meta-oe/conf/
  
  meta-oe/recipes-graphics/xorg-app/xrdb_1.2.0.bb
  meta-oe/recipes-graphics/xorg-app/xsetroot_1.1.2.bb
- meta-oe/recipes-graphics/xorg-app/twm_1.0.10.bb
+ meta-oe/recipes-graphics/xorg-app/twm_1.0.11.bb
  meta-oe/recipes-graphics/xorg-app/setxkbmap_1.3.1.bb
  meta-oe/recipes-graphics/xorg-app/xgamma_1.0.6.bb
  meta-oe/recipes-graphics/xorg-app/xkbevd_1.1.4.bb
@@ -405,7 +405,7 @@ FILES=meta-oe/conf/
  meta-perl/recipes-perl/libdigest/
  meta-perl/recipes-perl/libhtml/libhtml-parser-perl_3.72.bb
  meta-perl/recipes-perl/libhtml/libhtml-tagset-perl_3.20.bb
- meta-perl/recipes-perl/libnet/libnet-dns-perl_1.24.bb
+ meta-perl/recipes-perl/libnet/libnet-dns-perl_1.25.bb
  meta-perl/recipes-perl/libnet/libnet-dns-sec-perl_1.10.bb
  meta-perl/recipes-perl/libproc/
  meta-perl/recipes-perl/libmime/files/
@@ -419,7 +419,7 @@ FILES=meta-oe/conf/
 [meta-freescale]
 GITURL=ssh://10.130.70.189/ubinux-dev/common/ubinux-layers/yocto/meta-freescale
 BRANCH=master
-HEADID=0a0e00b3a3e0eff9a5a21eba7162b820ab29eb67
+HEADID=7164e5959daa04c3df4d0a330cf23faafeb2cda9
 FILES=conf/layer.conf
  custom-licenses/
  classes/
@@ -449,7 +449,7 @@ FILES=meta-cgl-common/conf/layer.conf
 [meta-cloud-services]
 GITURL=ssh://10.130.70.189/ubinux-dev/common/ubinux-layers/yocto/meta-cloud-services
 BRANCH=master
-HEADID=8516070112019bd7b3a5c41eb55a042808a13089
+HEADID=5f7fefe50b2b7e4b4814ae1b88c6451475de8a94
 FILES=conf/layer.conf
  classes/
  meta-openstack/classes/default_configs.bbclass
@@ -509,7 +509,7 @@ FILES=conf/layer.conf
 [meta-virtualization]
 GITURL=ssh://10.130.70.189/ubinux-dev/common/ubinux-layers/yocto/meta-virtualization
 BRANCH=master
-HEADID=4ba3d8daad8b77957d95db53fe34d1b49bfbd9c3
+HEADID=0db3901a48426ee403a045e0b626416c5fa93c6f
 FILES=conf/layer.conf
  classes/
  files/
@@ -523,7 +523,7 @@ FILES=conf/layer.conf
 [meta-selinux]
 GITURL=ssh://10.130.70.189/ubinux-dev/common/ubinux-layers/yocto/meta-selinux
 BRANCH=master
-HEADID=f677a09992413f32e6b2c4c607ae44fb42de72c2
+HEADID=15fed8756aa4828fa12a3d813754b4ca65a7607d
 FILES=conf/layer.conf
  recipes-security/audit/
 
@@ -537,7 +537,7 @@ FILES=conf/
 [meta-security]
 GITURL=ssh://10.130.70.189/ubinux-dev/common/ubinux-layers/yocto/meta-security.git
 BRANCH=master
-HEADID=95fe86eb98bc401dae8183326048f50ce7985bda
+HEADID=98e0a3ecf8161b678a224bc7b06abae9dc9d9039
 FILES=conf
  recipes-ids/samhain
  recipes-perl/
@@ -557,7 +557,7 @@ FILES=conf
 [meta-qt5]
 GITURL=ssh://10.130.70.189/ubinux-dev/common/ubinux-layers/yocto/meta-qt5
 BRANCH=master
-HEADID=62bb2ca66bfc13f3216a207013a51c3b9a1b9f26
+HEADID=5144a99a696a8a72c0765ea0e8be8ceafaa78f85
 FILES=conf/layer.conf
  recipes-qt/qt5/qttools_git.bb
  recipes-qt/qt5/qt5-git.inc
@@ -594,7 +594,7 @@ FILES=conf/layer.conf
 [meta-spdxscanner]
 GITURL=ssh://10.130.70.189/ubinux-dev/common/ubinux-layers/yocto/meta-spdxscanner
 BRANCH=master
-HEADID=c731a5f1cc83d9d8a1e120207746c89059d5576f
+HEADID=3803f1affc465089819106c1afdb161c5172999d
 FILES=conf/layer.conf
  classes
 
@@ -602,11 +602,11 @@ FILES=conf/layer.conf
 [meta-swupdate]
 GITURL=ssh://10.130.70.189/ubinux-dev/common/ubinux-layers/yocto/meta-swupdate
 BRANCH=master
-HEADID=a81a753c5fdf2fa625bb5dbbb24113a677fe5cfa
+HEADID=2371b498255ab74961bf2acbc8c815f35a593923
 FILES=conf/layer.conf
  recipes-support/swupdate/
- recipes-devtools/mtd/
  recipes-bsp/u-boot/
+ recipes-devtools/mtd/
 
 [meta-linaro]
 GITURL=ssh://10.130.70.189/ubinux-dev/common/ubinux-layers/yocto/meta-linaro
