@@ -25,6 +25,7 @@ import subprocess
 import errno
 import re
 import datetime
+import pickle
 import bb.server.xmlrpcserver
 from bb import daemonize
 from multiprocessing import queues
@@ -34,12 +35,11 @@ logger = logging.getLogger('BitBake')
 class ProcessTimeout(SystemExit):
     pass
 
-class ProcessServer(multiprocessing.Process):
+class ProcessServer():
     profile_filename = "profile.log"
     profile_processed_filename = "profile.log.processed"
 
-    def __init__(self, lock, sock, sockname):
-        multiprocessing.Process.__init__(self)
+    def __init__(self, lock, lockname, sock, sockname, server_timeout, xmlrpcinterface):
         self.command_channel = False
         self.command_channel_reply = False
         self.quit = False
@@ -55,8 +55,13 @@ class ProcessServer(multiprocessing.Process):
         self._idlefuns = {}
 
         self.bitbake_lock = lock
+        self.bitbake_lock_name = lockname
         self.sock = sock
         self.sockname = sockname
+
+        self.server_timeout = server_timeout
+        self.timeout = self.server_timeout
+        self.xmlrpcinterface = xmlrpcinterface
 
     def register_idle_function(self, function, data):
         """Register a function to be called while the server is idle"""
@@ -69,21 +74,6 @@ class ProcessServer(multiprocessing.Process):
             self.xmlrpc = bb.server.xmlrpcserver.BitBakeXMLRPCServer(self.xmlrpcinterface, self.cooker, self)
 
             print("Bitbake XMLRPC server address: %s, server port: %s" % (self.xmlrpc.host, self.xmlrpc.port))
-
-        heartbeat_event = self.cooker.data.getVar('BB_HEARTBEAT_EVENT')
-        if heartbeat_event:
-            try:
-                self.heartbeat_seconds = float(heartbeat_event)
-            except:
-                bb.warn('Ignoring invalid BB_HEARTBEAT_EVENT=%s, must be a float specifying seconds.' % heartbeat_event)
-
-        self.timeout = self.server_timeout or self.cooker.data.getVar('BB_SERVER_TIMEOUT')
-        try:
-            if self.timeout:
-                self.timeout = float(self.timeout)
-        except:
-            bb.warn('Ignoring invalid BB_SERVER_TIMEOUT=%s, must be a float specifying seconds.' % self.timeout)
-
 
         try:
             self.bitbake_lock.seek(0)
@@ -127,6 +117,7 @@ class ProcessServer(multiprocessing.Process):
         fds = [self.sock]
         if self.xmlrpc:
             fds.append(self.xmlrpc)
+        seendata = False
         print("Entering server connection loop")
 
         def disconnect_client(self, fds):
@@ -226,7 +217,26 @@ class ProcessServer(multiprocessing.Process):
             if self.xmlrpc in ready:
                 self.xmlrpc.handle_requests()
 
+            if not seendata and hasattr(self.cooker, "data"):
+                heartbeat_event = self.cooker.data.getVar('BB_HEARTBEAT_EVENT')
+                if heartbeat_event:
+                    try:
+                        self.heartbeat_seconds = float(heartbeat_event)
+                    except:
+                        bb.warn('Ignoring invalid BB_HEARTBEAT_EVENT=%s, must be a float specifying seconds.' % heartbeat_event)
+
+                self.timeout = self.server_timeout or self.cooker.data.getVar('BB_SERVER_TIMEOUT')
+                try:
+                    if self.timeout:
+                        self.timeout = float(self.timeout)
+                except:
+                    bb.warn('Ignoring invalid BB_SERVER_TIMEOUT=%s, must be a float specifying seconds.' % self.timeout)
+                seendata = True
+
             ready = self.idle_commands(.1, fds)
+
+        if len(threading.enumerate()) != 1:
+            print("More than one thread left?: " + str(threading.enumerate()))
 
         print("Exiting")
         # Remove the socket file so we don't get any more connections to avoid races
@@ -245,41 +255,48 @@ class ProcessServer(multiprocessing.Process):
 
         self.cooker.post_serve()
 
+        # Flush logs before we release the lock
+        sys.stdout.flush()
+        sys.stderr.flush()
+
         # Finally release the lockfile but warn about other processes holding it open
         lock = self.bitbake_lock
-        lockfile = lock.name
+        lockfile = self.bitbake_lock_name
         lock.close()
         lock = None
 
         while not lock:
-            with bb.utils.timeout(3):
-                lock = bb.utils.lockfile(lockfile, shared=False, retry=False, block=True)
-                if lock:
-                    # We hold the lock so we can remove the file (hide stale pid data)
-                    # via unlockfile.
-                    bb.utils.unlockfile(lock)
-                    return
-
-                if not lock:
-                    # Some systems may not have lsof available
-                    procs = None
+            i = 0
+            lock = None
+            while not lock and i < 30:
+                time.sleep(0.1)
+                lock = bb.utils.lockfile(lockfile, shared=False, retry=False, block=False)
+                i += 1
+            if lock:
+                # We hold the lock so we can remove the file (hide stale pid data)
+                # via unlockfile.
+                bb.utils.unlockfile(lock)
+                return
+            if not lock:
+                # Some systems may not have lsof available
+                procs = None
+                try:
+                    procs = subprocess.check_output(["lsof", '-w', lockfile], stderr=subprocess.STDOUT)
+                except OSError as e:
+                    if e.errno != errno.ENOENT:
+                        raise
+                if procs is None:
+                    # Fall back to fuser if lsof is unavailable
                     try:
-                        procs = subprocess.check_output(["lsof", '-w', lockfile], stderr=subprocess.STDOUT)
+                        procs = subprocess.check_output(["fuser", '-v', lockfile], stderr=subprocess.STDOUT)
                     except OSError as e:
                         if e.errno != errno.ENOENT:
                             raise
-                    if procs is None:
-                        # Fall back to fuser if lsof is unavailable
-                        try:
-                            procs = subprocess.check_output(["fuser", '-v', lockfile], stderr=subprocess.STDOUT)
-                        except OSError as e:
-                            if e.errno != errno.ENOENT:
-                                raise
 
-                    msg = "Delaying shutdown due to active processes which appear to be holding bitbake.lock"
-                    if procs:
-                        msg += ":\n%s" % str(procs)
-                    print(msg)
+                msg = "Delaying shutdown due to active processes which appear to be holding bitbake.lock"
+                if procs:
+                    msg += ":\n%s" % str(procs)
+                print(msg)
 
     def idle_commands(self, delay, fds=None):
         nextsleep = delay
@@ -317,8 +334,9 @@ class ProcessServer(multiprocessing.Process):
             self.next_heartbeat += self.heartbeat_seconds
             if self.next_heartbeat <= now:
                 self.next_heartbeat = now + self.heartbeat_seconds
-            heartbeat = bb.event.HeartbeatEvent(now)
-            bb.event.fire(heartbeat, self.cooker.data)
+            if hasattr(self.cooker, "data"):
+                heartbeat = bb.event.HeartbeatEvent(now)
+                bb.event.fire(heartbeat, self.cooker.data)
         if nextsleep and now + nextsleep > self.next_heartbeat:
             # Shorten timeout so that we we wake up in time for
             # the heartbeat.
@@ -380,39 +398,26 @@ class BitBakeProcessServerConnection(object):
         self.connection.recv.close()
         return
 
+start_log_format = '--- Starting bitbake server pid %s at %s ---'
+start_log_datetime_format = '%Y-%m-%d %H:%M:%S.%f'
+
 class BitBakeServer(object):
-    start_log_format = '--- Starting bitbake server pid %s at %s ---'
-    start_log_datetime_format = '%Y-%m-%d %H:%M:%S.%f'
 
-    def __init__(self, lock, sockname, configuration, featureset):
+    def __init__(self, lock, sockname, featureset, server_timeout, xmlrpcinterface):
 
-        self.configuration = configuration
+        self.server_timeout = server_timeout
+        self.xmlrpcinterface = xmlrpcinterface
         self.featureset = featureset
         self.sockname = sockname
         self.bitbake_lock = lock
         self.readypipe, self.readypipein = os.pipe()
 
-        # Create server control socket
-        if os.path.exists(sockname):
-            os.unlink(sockname)
-
         # Place the log in the builddirectory alongside the lock file
         logfile = os.path.join(os.path.dirname(self.bitbake_lock.name), "bitbake-cookerdaemon.log")
+        self.logfile = logfile
 
-        self.sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
-        # AF_UNIX has path length issues so chdir here to workaround
-        cwd = os.getcwd()
-        try:
-            os.chdir(os.path.dirname(sockname))
-            self.sock.bind(os.path.basename(sockname))
-        finally:
-            os.chdir(cwd)
-        self.sock.listen(1)
-
-        os.set_inheritable(self.sock.fileno(), True)
         startdatetime = datetime.datetime.now()
         bb.daemonize.createDaemon(self._startServer, logfile)
-        self.sock.close()
         self.bitbake_lock.close()
         os.close(self.readypipein)
 
@@ -431,7 +436,7 @@ class BitBakeServer(object):
             ready.close()
             bb.error("Unable to start bitbake server (%s)" % str(r))
             if os.path.exists(logfile):
-                logstart_re = re.compile(self.start_log_format % ('([0-9]+)', '([0-9-]+ [0-9:.]+)'))
+                logstart_re = re.compile(start_log_format % ('([0-9]+)', '([0-9-]+ [0-9:.]+)'))
                 started = False
                 lines = []
                 lastlines = []
@@ -443,7 +448,7 @@ class BitBakeServer(object):
                             lastlines.append(line)
                             res = logstart_re.match(line.rstrip())
                             if res:
-                                ldatetime = datetime.datetime.strptime(res.group(2), self.start_log_datetime_format)
+                                ldatetime = datetime.datetime.strptime(res.group(2), start_log_datetime_format)
                                 if ldatetime >= startdatetime:
                                     started = True
                                     lines.append(line)
@@ -464,26 +469,55 @@ class BitBakeServer(object):
         ready.close()
 
     def _startServer(self):
-        print(self.start_log_format % (os.getpid(), datetime.datetime.now().strftime(self.start_log_datetime_format)))
-        sys.stdout.flush()
-
-        server = ProcessServer(self.bitbake_lock, self.sock, self.sockname)
-        self.configuration.setServerRegIdleCallback(server.register_idle_function)
         os.close(self.readypipe)
-        writer = ConnectionWriter(self.readypipein)
+        os.set_inheritable(self.bitbake_lock.fileno(), True)
+        os.set_inheritable(self.readypipein, True)
+        serverscript = os.path.realpath(os.path.dirname(__file__) + "/../../../bin/bitbake-server")
+        os.execl(sys.executable, "bitbake-server", serverscript, "decafbad", str(self.bitbake_lock.fileno()), str(self.readypipein), self.logfile, self.bitbake_lock.name, self.sockname,  str(self.server_timeout), str(self.xmlrpcinterface[0]), str(self.xmlrpcinterface[1]))
+
+def execServer(lockfd, readypipeinfd, lockname, sockname, server_timeout, xmlrpcinterface):
+
+    import bb.cookerdata
+    import bb.cooker
+
+    print(start_log_format % (os.getpid(), datetime.datetime.now().strftime(start_log_datetime_format)))
+    sys.stdout.flush()
+
+    try:
+        bitbake_lock = os.fdopen(lockfd, "w")
+
+        # Create server control socket
+        if os.path.exists(sockname):
+            os.unlink(sockname)
+
+        sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+        # AF_UNIX has path length issues so chdir here to workaround
+        cwd = os.getcwd()
         try:
-            self.cooker = bb.cooker.BBCooker(self.configuration, self.featureset)
+            os.chdir(os.path.dirname(sockname))
+            sock.bind(os.path.basename(sockname))
+        finally:
+            os.chdir(cwd)
+        sock.listen(1)
+
+        server = ProcessServer(bitbake_lock, lockname, sock, sockname, server_timeout, xmlrpcinterface)
+        writer = ConnectionWriter(readypipeinfd)
+        try:
+            featureset = []
+            cooker = bb.cooker.BBCooker(featureset, server.register_idle_function)
         except bb.BBHandledException:
             return None
         writer.send("r")
         writer.close()
-        server.cooker = self.cooker
-        server.server_timeout = self.configuration.server_timeout
-        server.xmlrpcinterface = self.configuration.xmlrpcinterface
+        server.cooker = cooker
         print("Started bitbake server pid %d" % os.getpid())
         sys.stdout.flush()
 
-        server.start()
+        server.run()
+    finally:
+        # Flush any ,essages/errors to the logfile before exit
+        sys.stdout.flush()
+        sys.stderr.flush()
 
 def connectProcessServer(sockname, featureset):
     # Connect to socket

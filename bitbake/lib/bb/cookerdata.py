@@ -58,10 +58,17 @@ class ConfigParameters(object):
     def updateToServer(self, server, environment):
         options = {}
         for o in ["abort", "force", "invalidate_stamp",
-                  "verbose", "debug", "dry_run", "dump_signatures",
-                  "debug_domains", "extra_assume_provided", "profile",
-                  "prefile", "postfile", "server_timeout"]:
+                  "dry_run", "dump_signatures",
+                  "extra_assume_provided", "profile",
+                  "prefile", "postfile", "server_timeout",
+                  "nosetscene", "setsceneonly", "skipsetscene",
+                  "runall", "runonly", "writeeventlog"]:
             options[o] = getattr(self.options, o)
+
+        options['build_verbose_shell'] = self.options.verbose
+        options['build_verbose_stdout'] = self.options.verbose
+        options['default_loglevel'] = bb.msg.loggerDefaultLogLevel
+        options['debug_domains'] = bb.msg.loggerDefaultDomains
 
         ret, error = server.runCommand(["updateConfig", options, environment, sys.argv])
         if error:
@@ -111,11 +118,11 @@ class CookerConfiguration(object):
     """
 
     def __init__(self):
-        self.debug_domains = []
+        self.debug_domains = bb.msg.loggerDefaultDomains
+        self.default_loglevel = bb.msg.loggerDefaultLogLevel
         self.extra_assume_provided = []
         self.prefile = []
         self.postfile = []
-        self.debug = 0
         self.cmd = None
         self.abort = True
         self.force = False
@@ -125,34 +132,21 @@ class CookerConfiguration(object):
         self.skipsetscene = False
         self.invalidate_stamp = False
         self.dump_signatures = []
+        self.build_verbose_shell = False
+        self.build_verbose_stdout = False
         self.dry_run = False
         self.tracking = False
-        self.xmlrpcinterface = []
-        self.server_timeout = None
         self.writeeventlog = False
-        self.server_only = False
         self.limited_deps = False
         self.runall = []
         self.runonly = []
 
         self.env = {}
 
-    def setConfigParameters(self, parameters):
-        for key in self.__dict__.keys():
-            if key in parameters.options.__dict__:
-                setattr(self, key, parameters.options.__dict__[key])
-        self.env = parameters.environment.copy()
-
-    def setServerRegIdleCallback(self, srcb):
-        self.server_register_idlecallback = srcb
-
     def __getstate__(self):
         state = {}
         for key in self.__dict__.keys():
-            if key == "server_register_idlecallback":
-                state[key] = None
-            else:
-                state[key] = getattr(self, key)
+            state[key] = getattr(self, key)
         return state
 
     def __setstate__(self,state):

@@ -12,16 +12,16 @@ KBRANCH_qemux86  ?= "v5.4/standard/base"
 KBRANCH_qemux86-64 ?= "v5.4/standard/base"
 KBRANCH_qemumips64 ?= "v5.4/standard/mti-malta64"
 
-SRCREV_machine_qemuarm ?= "420ba5a7bfcd58536e7df52eb434d9ffbddbcbe5"
-SRCREV_machine_qemuarm64 ?= "ca698a8d9c4af186ffac417a3632351bac498971"
-SRCREV_machine_qemumips ?= "f621e48d6e00b26d51069eeae64f2bb479afcafc"
-SRCREV_machine_qemuppc ?= "ca698a8d9c4af186ffac417a3632351bac498971"
-SRCREV_machine_qemuriscv64 ?= "ca698a8d9c4af186ffac417a3632351bac498971"
-SRCREV_machine_qemux86 ?= "ca698a8d9c4af186ffac417a3632351bac498971"
-SRCREV_machine_qemux86-64 ?= "ca698a8d9c4af186ffac417a3632351bac498971"
-SRCREV_machine_qemumips64 ?= "4bf6fb25f1d73cae1486a4782bd52082ccc6715e"
-SRCREV_machine ?= "ca698a8d9c4af186ffac417a3632351bac498971"
-SRCREV_meta ?= "021a303c35cbd79f67666a8d4c4487751f96cbce"
+SRCREV_machine_qemuarm ?= "05fde54b1e68379be26d2d666e52eb8a4433cf67"
+SRCREV_machine_qemuarm64 ?= "60fc5f2c61a48088ff4bbfb35b2f64af70bc5bdd"
+SRCREV_machine_qemumips ?= "02fee7ae77f92e2090c26959be11c0a109b02ec2"
+SRCREV_machine_qemuppc ?= "60fc5f2c61a48088ff4bbfb35b2f64af70bc5bdd"
+SRCREV_machine_qemuriscv64 ?= "60fc5f2c61a48088ff4bbfb35b2f64af70bc5bdd"
+SRCREV_machine_qemux86 ?= "60fc5f2c61a48088ff4bbfb35b2f64af70bc5bdd"
+SRCREV_machine_qemux86-64 ?= "60fc5f2c61a48088ff4bbfb35b2f64af70bc5bdd"
+SRCREV_machine_qemumips64 ?= "e8247201b3d33b579520620cf37a398fa8311822"
+SRCREV_machine ?= "60fc5f2c61a48088ff4bbfb35b2f64af70bc5bdd"
+SRCREV_meta ?= "96bf76ffc2601220c790ffc0b57eec5a06c3f819"
 
 # remap qemuarm to qemuarma15 for the 5.4 kernel
 # KMACHINE_qemuarm ?= "qemuarma15"
@@ -30,7 +30,7 @@ SRC_URI = "git://git.yoctoproject.org/linux-yocto.git;name=machine;branch=${KBRA
            git://git.yoctoproject.org/yocto-kernel-cache;type=kmeta;name=meta;branch=yocto-5.4;destsuffix=${KMETA}"
 
 LIC_FILES_CHKSUM = "file://COPYING;md5=bbea815ee2795b2f4230826c0c6b8814"
-LINUX_VERSION ?= "5.4.53"
+LINUX_VERSION ?= "5.4.60"
 
 DEPENDS += "${@bb.utils.contains('ARCH', 'x86', 'elfutils-native', '', d)}"
 DEPENDS += "openssl-native util-linux-native"
@@ -38,7 +38,7 @@ DEPENDS += "openssl-native util-linux-native"
 PV = "${LINUX_VERSION}+git${SRCPV}"
 
 KMETA = "kernel-meta"
-KCONF_BSP_AUDIT_LEVEL = "2"
+KCONF_BSP_AUDIT_LEVEL = "1"
 
 KERNEL_DEVICETREE_qemuarmv5 = "versatile-pb.dtb"
 

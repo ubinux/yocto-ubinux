@@ -18,11 +18,11 @@ PREFERRED_PROVIDER_virtual/gettext ??= "gettext"
 
 GCCVERSION ?= "10.%"
 SDKGCCVERSION ?= "${GCCVERSION}"
-BINUVERSION ?= "2.34%"
+BINUVERSION ?= "2.35%"
 GDBVERSION ?= "9.%"
-GLIBCVERSION ?= "2.31%"
-LINUXLIBCVERSION ?= "5.4%"
-QEMUVERSION ?= "5.0%"
+GLIBCVERSION ?= "2.32"
+LINUXLIBCVERSION ?= "5.8%"
+QEMUVERSION ?= "5.1%"
 GOVERSION ?= "1.14%"
 # This can not use wildcards like 8.0.% since it is also used in mesa to denote
 # llvm version being used, so always bump it with llvm recipe version bump

@@ -602,8 +602,8 @@ class FetcherLocalTest(FetcherTest):
         self.assertEqual(tree, ['a', 'dir/c'])
 
     def test_local_wildcard(self):
-        tree = self.fetchUnpack(['file://a', 'file://dir/*'])
-        self.assertEqual(tree, ['a',  'dir/c', 'dir/d', 'dir/subdir/e'])
+        with self.assertRaises(bb.fetch2.ParameterError):
+            tree = self.fetchUnpack(['file://a', 'file://dir/*'])
 
     def test_local_dir(self):
         tree = self.fetchUnpack(['file://a', 'file://dir'])
@@ -1262,9 +1262,7 @@ class FetchLatestVersionTest(FetcherTest):
 
 
 class FetchCheckStatusTest(FetcherTest):
-    test_wget_uris = ["http://www.cups.org/software/1.7.2/cups-1.7.2-source.tar.bz2",
-                      "http://www.cups.org/",
-                      "http://downloads.yoctoproject.org/releases/sato/sato-engine-0.1.tar.gz",
+    test_wget_uris = ["http://downloads.yoctoproject.org/releases/sato/sato-engine-0.1.tar.gz",
                       "http://downloads.yoctoproject.org/releases/sato/sato-engine-0.2.tar.gz",
                       "http://downloads.yoctoproject.org/releases/sato/sato-engine-0.3.tar.gz",
                       "https://yoctoproject.org/",
