@@ -58,7 +58,8 @@ UBINUX_PKGS = " \
 	daq \
 	devmem2 \
 	dfu-util \
-	dhcp-server \
+	dhcpcd  \
+	kea \
 	dialog \
 	dosfstools \
 	edac-utils \
@@ -443,8 +444,6 @@ UBINUX_PKGS = " \
 	cpp-symlinks \
 	cxpm \
 	db-bin \
-	dhcp-omshell \
-	dhcp-relay \
 	e2fsprogs-e2fsck \
 	e2fsprogs-mke2fs \
 	e2fsprogs-tune2fs \
