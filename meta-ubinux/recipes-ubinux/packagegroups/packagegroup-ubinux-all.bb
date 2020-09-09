@@ -52,7 +52,8 @@ UBINUX_PKGS = " \
 	daq \
 	devmem2 \
 	dfu-util \
-	dhcp-server \
+	dhcpcd \
+	kea \
 	dialog \
 	dosfstools \
 	edac-utils \
@@ -437,8 +438,6 @@ UBINUX_PKGS = " \
 	cpp-symlinks \
 	cxpm \
 	db-bin \
-	dhcp-omshell \
-	dhcp-relay \
 	e2fsprogs-e2fsck \
 	e2fsprogs-mke2fs \
 	e2fsprogs-tune2fs \
@@ -563,6 +562,7 @@ UBINUX_PKGS = " \
 	uhubctl \
 	uim \
 	upm \
+        trace-cmd \
 	util-linux-hwclock \
 	util-linux-agetty \
 	util-linux-blkid \
@@ -617,8 +617,6 @@ UBINUX_PKGS = " \
 	xmlto \
 	expect \
 	cim-schema-exper \
-	upm \
-	trace-cmd \
 "
 
 RDEPENDS_packagegroup-ubinux-all = " \
