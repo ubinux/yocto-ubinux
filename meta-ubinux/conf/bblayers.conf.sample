@@ -27,9 +27,9 @@ BBLAYERS ?= " \
   ##COREBASE##/meta-cloud-services/meta-openstack \
   ##COREBASE##/meta-virtualization \
   ##COREBASE##/meta-selinux \
-  ##COREBASE##/meta-measured \
   ##COREBASE##/meta-security \
   ##COREBASE##/meta-security/meta-security-compliance \
+  ##COREBASE##/meta-security/meta-tpm \
   ##COREBASE##/meta-qt5 \
   ##COREBASE##/meta-swupdate \
   ##COREBASE##/meta-linaro/meta-linaro  \
