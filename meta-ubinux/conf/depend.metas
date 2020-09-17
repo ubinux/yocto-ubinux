@@ -6,7 +6,6 @@ metas=meta-gplv2
  meta-cloud-services
  meta-virtualization
  meta-selinux
- meta-measured
  meta-security
  meta-qt5
  meta-swupdate
@@ -545,6 +544,8 @@ FILES=conf
  recipes-security/fail2ban/
  recipes-security/scapy/
  recipes-mac/smack/
+ meta-tpm/conf
+ meta-tpm/recipes-tpm/trousers/
  
 
 [meta-qt5]
