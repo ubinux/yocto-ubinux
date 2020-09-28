@@ -155,7 +155,7 @@ do_kernel_metadata() {
 			fi
 			in_tree_defconfig="${WORKDIR}/defconfig"
 		else
-			bbfatal "A KBUILD_DEFCONFIG '${KBUILD_DEFCONFIG}' was specified, but not present in the source tree"
+			bbfatal "A KBUILD_DEFCONFIG '${KBUILD_DEFCONFIG}' was specified, but not present in the source tree (${S}/arch/${ARCH}/configs/)"
 		fi
 	fi
 
@@ -241,7 +241,7 @@ do_kernel_metadata() {
 		for feature in ${KERNEL_FEATURES}; do
 			feature_found=f
 			for d in $includes; do
-				path_to_check=$(echo $d | sed 's/-I//g')
+				path_to_check=$(echo $d | sed 's/^-I//')
 				if [ "$feature_found" = "f" ] && [ -e "$path_to_check/$feature" ]; then
 				    feature_found=t
 				fi

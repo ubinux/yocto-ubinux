@@ -35,6 +35,10 @@ logger = logging.getLogger('BitBake')
 class ProcessTimeout(SystemExit):
     pass
 
+def serverlog(msg):
+    print(str(os.getpid()) + " " +  datetime.datetime.now().strftime('%H:%M:%S.%f') + " " + msg)
+    sys.stdout.flush()
+
 class ProcessServer():
     profile_filename = "profile.log"
     profile_processed_filename = "profile.log.processed"
@@ -73,7 +77,7 @@ class ProcessServer():
         if self.xmlrpcinterface[0]:
             self.xmlrpc = bb.server.xmlrpcserver.BitBakeXMLRPCServer(self.xmlrpcinterface, self.cooker, self)
 
-            print("Bitbake XMLRPC server address: %s, server port: %s" % (self.xmlrpc.host, self.xmlrpc.port))
+            serverlog("Bitbake XMLRPC server address: %s, server port: %s" % (self.xmlrpc.host, self.xmlrpc.port))
 
         try:
             self.bitbake_lock.seek(0)
@@ -84,7 +88,7 @@ class ProcessServer():
                 self.bitbake_lock.write("%s\n" % (os.getpid()))
             self.bitbake_lock.flush()
         except Exception as e:
-            print("Error writing to lock file: %s" % str(e))
+            serverlog("Error writing to lock file: %s" % str(e))
             pass
 
         if self.cooker.configuration.profile:
@@ -98,7 +102,7 @@ class ProcessServer():
 
             prof.dump_stats("profile.log")
             bb.utils.process_profilelog("profile.log")
-            print("Raw profiling information saved to profile.log and processed statistics to profile.log.processed")
+            serverlog("Raw profiling information saved to profile.log and processed statistics to profile.log.processed")
 
         else:
             ret = self.main()
@@ -118,10 +122,10 @@ class ProcessServer():
         if self.xmlrpc:
             fds.append(self.xmlrpc)
         seendata = False
-        print("Entering server connection loop")
+        serverlog("Entering server connection loop")
 
         def disconnect_client(self, fds):
-            print("Disconnecting Client")
+            serverlog("Disconnecting Client")
             if self.controllersock:
                 fds.remove(self.controllersock)
                 self.controllersock.close()
@@ -139,12 +143,12 @@ class ProcessServer():
                 self.haveui = False
             ready = select.select(fds,[],[],0)[0]
             if newconnections:
-                print("Starting new client")
+                serverlog("Starting new client")
                 conn = newconnections.pop(-1)
                 fds.append(conn)
                 self.controllersock = conn
             elif self.timeout is None and not ready:
-                print("No timeout, exiting.")
+                serverlog("No timeout, exiting.")
                 self.quit = True
 
         self.lastui = time.time()
@@ -153,17 +157,17 @@ class ProcessServer():
                 while select.select([self.sock],[],[],0)[0]:
                     controllersock, address = self.sock.accept()
                     if self.controllersock:
-                        print("Queuing %s (%s)" % (str(ready), str(newconnections)))
+                        serverlog("Queuing %s (%s)" % (str(ready), str(newconnections)))
                         newconnections.append(controllersock)
                     else:
-                        print("Accepting %s (%s)" % (str(ready), str(newconnections)))
+                        serverlog("Accepting %s (%s)" % (str(ready), str(newconnections)))
                         self.controllersock = controllersock
                         fds.append(controllersock)
             if self.controllersock in ready:
                 try:
-                    print("Processing Client")
+                    serverlog("Processing Client")
                     ui_fds = recvfds(self.controllersock, 3)
-                    print("Connecting Client")
+                    serverlog("Connecting Client")
 
                     # Where to write events to
                     writer = ConnectionWriter(ui_fds[0])
@@ -187,14 +191,14 @@ class ProcessServer():
 
             if not self.timeout == -1.0 and not self.haveui and self.timeout and \
                     (self.lastui + self.timeout) < time.time():
-                print("Server timeout, exiting.")
+                serverlog("Server timeout, exiting.")
                 self.quit = True
 
             # If we don't see a UI connection within maxuiwait, its unlikely we're going to see
             # one. We have had issue with processes hanging indefinitely so timing out UI-less
             # servers is useful.
             if not self.hadanyui and not self.xmlrpc and not self.timeout and (self.lastui + self.maxuiwait) < time.time():
-                print("No UI connection within max timeout, exiting to avoid infinite loop.")
+                serverlog("No UI connection within max timeout, exiting to avoid infinite loop.")
                 self.quit = True
 
             if self.command_channel in ready:
@@ -209,8 +213,9 @@ class ProcessServer():
                     self.quit = True
                     continue
                 try:
-                    print("Running command %s" % command)
+                    serverlog("Running command %s" % command)
                     self.command_channel_reply.send(self.cooker.command.runCommand(command))
+                    serverlog("Command Completed")
                 except Exception as e:
                    logger.exception('Exception in server main event loop running command %s (%s)' % (command, str(e)))
 
@@ -236,9 +241,9 @@ class ProcessServer():
             ready = self.idle_commands(.1, fds)
 
         if len(threading.enumerate()) != 1:
-            print("More than one thread left?: " + str(threading.enumerate()))
+            serverlog("More than one thread left?: " + str(threading.enumerate()))
 
-        print("Exiting")
+        serverlog("Exiting")
         # Remove the socket file so we don't get any more connections to avoid races
         try:
             os.unlink(self.sockname)
@@ -262,6 +267,17 @@ class ProcessServer():
         # Finally release the lockfile but warn about other processes holding it open
         lock = self.bitbake_lock
         lockfile = self.bitbake_lock_name
+
+        def get_lock_contents(lockfile):
+            try:
+                with open(lockfile, "r") as f:
+                    return f.readlines()
+            except FileNotFoundError:
+                return None
+
+        lockcontents = get_lock_contents(lockfile)
+        serverlog("Original lockfile contents: " + str(lockcontents))
+
         lock.close()
         lock = None
 
@@ -269,19 +285,30 @@ class ProcessServer():
             i = 0
             lock = None
             while not lock and i < 30:
-                time.sleep(0.1)
                 lock = bb.utils.lockfile(lockfile, shared=False, retry=False, block=False)
+                if not lock:
+                    newlockcontents = get_lock_contents(lockfile)
+                    if newlockcontents != lockcontents:
+                        # A new server was started, the lockfile contents changed, we can exit
+                        serverlog("Lockfile now contains different contents, exiting: " + str(newlockcontents))
+                        return
+                    time.sleep(0.1)
                 i += 1
             if lock:
                 # We hold the lock so we can remove the file (hide stale pid data)
                 # via unlockfile.
                 bb.utils.unlockfile(lock)
+                serverlog("Exiting as we could obtain the lock")
                 return
+
             if not lock:
                 # Some systems may not have lsof available
                 procs = None
                 try:
                     procs = subprocess.check_output(["lsof", '-w', lockfile], stderr=subprocess.STDOUT)
+                except subprocess.CalledProcessError:
+                    # File was deleted?
+                    continue
                 except OSError as e:
                     if e.errno != errno.ENOENT:
                         raise
@@ -289,14 +316,17 @@ class ProcessServer():
                     # Fall back to fuser if lsof is unavailable
                     try:
                         procs = subprocess.check_output(["fuser", '-v', lockfile], stderr=subprocess.STDOUT)
+                    except subprocess.CalledProcessError:
+                        # File was deleted?
+                        continue
                     except OSError as e:
                         if e.errno != errno.ENOENT:
                             raise
 
                 msg = "Delaying shutdown due to active processes which appear to be holding bitbake.lock"
                 if procs:
-                    msg += ":\n%s" % str(procs)
-                print(msg)
+                    msg += ":\n%s" % str(procs.decode("utf-8"))
+                serverlog(msg)
 
     def idle_commands(self, delay, fds=None):
         nextsleep = delay
@@ -368,7 +398,7 @@ class ServerCommunicator():
         ret, exc = self.recv.get()
         # Should probably turn all exceptions in exc back into exceptions?
         # For now, at least handle BBHandledException
-        if exc and "BBHandledException" in exc:
+        if exc and ("BBHandledException" in exc or "SystemExit" in exc):
             raise bb.BBHandledException()
         return ret, exc
 
@@ -451,7 +481,7 @@ class BitBakeServer(object):
                             lines.append(line)
                         else:
                             lastlines.append(line)
-                            res = logstart_re.match(line.rstrip())
+                            res = logstart_re.search(line.rstrip())
                             if res:
                                 ldatetime = datetime.datetime.strptime(res.group(2), start_log_datetime_format)
                                 if ldatetime >= startdatetime:
@@ -485,8 +515,7 @@ def execServer(lockfd, readypipeinfd, lockname, sockname, server_timeout, xmlrpc
     import bb.cookerdata
     import bb.cooker
 
-    print(start_log_format % (os.getpid(), datetime.datetime.now().strftime(start_log_datetime_format)))
-    sys.stdout.flush()
+    serverlog(start_log_format % (os.getpid(), datetime.datetime.now().strftime(start_log_datetime_format)))
 
     try:
         bitbake_lock = os.fdopen(lockfd, "w")
@@ -515,8 +544,7 @@ def execServer(lockfd, readypipeinfd, lockname, sockname, server_timeout, xmlrpc
         writer.send("r")
         writer.close()
         server.cooker = cooker
-        print("Started bitbake server pid %d" % os.getpid())
-        sys.stdout.flush()
+        serverlog("Started bitbake server pid %d" % os.getpid())
 
         server.run()
     finally:

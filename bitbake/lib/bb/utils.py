@@ -402,8 +402,8 @@ def better_exec(code, context, text = None, realfile = "<code>", pythonexception
         (t, value, tb) = sys.exc_info()
         try:
             _print_exception(t, value, tb, realfile, text, context)
-        except Exception as e:
-            logger.error("Exception handler error: %s" % str(e))
+        except Exception as e2:
+            logger.error("Exception handler error: %s" % str(e2))
 
         e = bb.BBHandledException(e)
         raise e
@@ -1071,21 +1071,20 @@ def process_profilelog(fn, pout = None):
     # Either call with a list of filenames and set pout or a filename and optionally pout.
     if not pout:
         pout = fn + '.processed'
-    pout = open(pout, 'w')
-   
-    import pstats
-    if isinstance(fn, list):
-        p = pstats.Stats(*fn, stream=pout)
-    else:
-        p = pstats.Stats(fn, stream=pout)
-    p.sort_stats('time')
-    p.print_stats()
-    p.print_callers()
-    p.sort_stats('cumulative')
-    p.print_stats()
 
-    pout.flush()
-    pout.close()  
+    with open(pout, 'w') as pout:
+        import pstats
+        if isinstance(fn, list):
+            p = pstats.Stats(*fn, stream=pout)
+        else:
+            p = pstats.Stats(fn, stream=pout)
+        p.sort_stats('time')
+        p.print_stats()
+        p.print_callers()
+        p.sort_stats('cumulative')
+        p.print_stats()
+
+        pout.flush()
 
 #
 # Was present to work around multiprocessing pool bugs in python < 2.7.3
@@ -1458,13 +1457,19 @@ def edit_bblayers_conf(bblayers_conf, add, remove, edit_cb=None):
 
     return (notadded, notremoved)
 
-
-def get_file_layer(filename, d):
-    """Determine the collection (as defined by a layer's layer.conf file) containing the specified file"""
+def get_collection_res(d):
     collections = (d.getVar('BBFILE_COLLECTIONS') or '').split()
     collection_res = {}
     for collection in collections:
         collection_res[collection] = d.getVar('BBFILE_PATTERN_%s' % collection) or ''
+
+    return collection_res
+
+
+def get_file_layer(filename, d, collection_res={}):
+    """Determine the collection (as defined by a layer's layer.conf file) containing the specified file"""
+    if not collection_res:
+        collection_res = get_collection_res(d)
 
     def path_to_layer(path):
         # Use longest path so we handle nested layers
@@ -1477,12 +1482,13 @@ def get_file_layer(filename, d):
         return match
 
     result = None
-    bbfiles = (d.getVar('BBFILES') or '').split()
+    bbfiles = (d.getVar('BBFILES_PRIORITIZED') or '').split()
     bbfilesmatch = False
     for bbfilesentry in bbfiles:
-        if fnmatch.fnmatch(filename, bbfilesentry):
+        if fnmatch.fnmatchcase(filename, bbfilesentry):
             bbfilesmatch = True
             result = path_to_layer(bbfilesentry)
+            break
 
     if not bbfilesmatch:
         # Probably a bbclass

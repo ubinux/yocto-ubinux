@@ -352,7 +352,7 @@ class BBCooker:
                 self.caches_array.append(getattr(module, cache_name))
             except ImportError as exc:
                 logger.critical("Unable to import extra RecipeInfo '%s' from '%s': %s" % (cache_name, module_name, exc))
-                sys.exit("FATAL: Failed to import extra cache class '%s'." % cache_name)
+                raise bb.BBHandledException()
 
         self.databuilder = bb.cookerdata.CookerDataBuilder(self.configuration, False)
         self.databuilder.parseBaseConfiguration()
@@ -1127,7 +1127,7 @@ class BBCooker:
             from bb import shell
         except ImportError:
             parselog.exception("Interactive mode not available")
-            sys.exit(1)
+            raise bb.BBHandledException()
         else:
             shell.start( self )
 
@@ -1563,6 +1563,7 @@ class BBCooker:
         if self.state in (state.shutdown, state.forceshutdown, state.error):
             if hasattr(self.parser, 'shutdown'):
                 self.parser.shutdown(clean=False, force = True)
+                self.parser.final_cleanup()
             raise bb.BBHandledException()
 
         if self.state != state.parsing:
@@ -1673,6 +1674,7 @@ class BBCooker:
         return
 
     def post_serve(self):
+        self.shutdown(force=True)
         prserv.serv.auto_shutdown()
         if self.hashserv:
             self.hashserv.process.terminate()
@@ -1701,8 +1703,9 @@ class BBCooker:
         self.finishcommand()
         self.extraconfigdata = {}
         self.command.reset()
-        self.databuilder.reset()
-        self.data = self.databuilder.data
+        if hasattr(self, "data"):
+           self.databuilder.reset()
+           self.data = self.databuilder.data
         self.parsecache_valid = False
         self.baseconfig_valid = False
 
@@ -1759,10 +1762,10 @@ class CookerCollectFiles(object):
         collectlog.debug(1, "collecting .bb files")
 
         files = (config.getVar( "BBFILES") or "").split()
-        config.setVar("BBFILES", " ".join(files))
 
         # Sort files by priority
         files.sort( key=lambda fileitem: self.calc_bbfile_priority(fileitem)[0] )
+        config.setVar("BBFILES_PRIORITIZED", " ".join(files))
 
         if not len(files):
             files = self.get_bbfiles()
@@ -1991,7 +1994,8 @@ class Parser(multiprocessing.Process):
             except queue.Empty:
                 pass
             else:
-                self.results.cancel_join_thread()
+                self.results.close()
+                self.results.join_thread()
                 break
 
             if pending:
@@ -2000,6 +2004,8 @@ class Parser(multiprocessing.Process):
                 try:
                     job = self.jobs.pop()
                 except IndexError:
+                    self.results.close()
+                    self.results.join_thread()
                     break
                 result = self.parse(*job)
                 # Clear the siggen cache after parsing to control memory usage, its huge
@@ -2085,6 +2091,9 @@ class CookerParser(object):
         if self.toparse:
             bb.event.fire(bb.event.ParseStarted(self.toparse), self.cfgdata)
             def init():
+                signal.signal(signal.SIGTERM, signal.SIG_DFL)
+                signal.signal(signal.SIGHUP, signal.SIG_DFL)
+                signal.signal(signal.SIGINT, signal.SIG_IGN)
                 bb.utils.set_process_name(multiprocessing.current_process().name)
                 multiprocessing.util.Finalize(None, bb.codeparser.parser_cache_save, exitpriority=1)
                 multiprocessing.util.Finalize(None, bb.fetch.fetcher_parse_save, exitpriority=1)
@@ -2119,8 +2128,6 @@ class CookerParser(object):
 
             bb.event.fire(event, self.cfgdata)
 
-        # Allow data left in the cancel queue to be discarded
-        self.parser_quit.cancel_join_thread()
         for process in self.processes:
             self.parser_quit.put(None)
 
@@ -2140,13 +2147,14 @@ class CookerParser(object):
                 process.join()
 
         self.parser_quit.close()
-        self.parser_quit.join_thread()
+        # Allow data left in the cancel queue to be discarded
+        self.parser_quit.cancel_join_thread()
 
         def sync_caches():
             for c in self.bb_caches.values():
                 c.sync()
 
-        sync = threading.Thread(target=sync_caches)
+        sync = threading.Thread(target=sync_caches, name="SyncThread")
         self.syncthread = sync
         sync.start()
         bb.codeparser.parser_cache_savemerge()

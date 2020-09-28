@@ -1336,7 +1336,7 @@ class BaseConfig(object):
         if not os.access(qemu_bin, os.X_OK):
             raise OEPathError("No QEMU binary '%s' could be found" % qemu_bin)
 
-        self.qemu_opt = "%s %s %s %s" % (qemu_bin, self.get('NETWORK_CMD'), self.get('ROOTFS_OPTIONS'), self.get('QB_OPT_APPEND'))
+        self.qemu_opt = "%s %s %s %s %s" % (qemu_bin, self.get('NETWORK_CMD'), self.get('QB_RNG'), self.get('ROOTFS_OPTIONS'), self.get('QB_OPT_APPEND'))
 
         for ovmf in self.ovmf_bios:
             format = ovmf.rsplit('.', 1)[-1]
@@ -1518,6 +1518,11 @@ def main():
         return 0
     try:
         config = BaseConfig()
+
+        renice = os.path.expanduser("~/bin/runqemu-renice")
+        if os.path.exists(renice):
+            logger.info('Using %s to renice' % renice)
+            subprocess.check_call([renice, str(os.getpid())])
 
         def sigterm_handler(signum, frame):
             logger.info("SIGTERM received")
