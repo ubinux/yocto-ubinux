@@ -20,6 +20,7 @@ SRC_URI += "file://touchscreen.rules \
            file://99-default.preset \
            file://0001-binfmt-Don-t-install-dependency-links-at-install-tim.patch \
            file://0003-implment-systemd-sysv-install-for-OE.patch \
+           file://0001-systemd.pc.in-use-ROOTPREFIX-without-suffixed-slash.patch \
            "
 
 # patches needed by musl
@@ -44,7 +45,6 @@ SRC_URI_MUSL = "\
                file://0021-avoid-redefinition-of-prctl_mm_map-structure.patch \
                file://0021-Handle-missing-LOCK_EX.patch \
                file://0022-Fix-incompatible-pointer-type-struct-sockaddr_un.patch \
-               file://0023-Fix-field-efi_loader_entry_one_shot_stat-has-incompl.patch \
                file://0024-test-json.c-define-M_PIl.patch \
                file://0001-do-not-disable-buffer-in-writing-files.patch \
                file://0002-src-login-brightness.c-include-sys-wait.h.patch \

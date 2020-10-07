@@ -2,6 +2,13 @@ require pseudo.inc
 
 SRC_URI = "git://git.yoctoproject.org/pseudo;branch=oe-core \
            file://0001-configure-Prune-PIE-flags.patch \
+           file://delete_mismatches.patch \
+           file://add_ignore_paths.patch \
+           file://abort_on_mismatch.patch \
+           file://track_link_fds.patch \
+           file://xattr_fix.patch \
+           file://mayunlink.patch \
+           file://pathfix.patch \
            file://fallback-passwd \
            file://fallback-group \
            "
