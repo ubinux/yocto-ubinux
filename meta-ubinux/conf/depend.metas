@@ -15,7 +15,7 @@ metas=meta-gplv2
 [meta-gplv2]
 GITURL=ssh://10.130.70.189/ubinux-dev/common/ubinux-layers/yocto/meta-gplv2
 BRANCH=master
-HEADID=a8da8eb127a56561bf633ab53bec57fb5dbba537
+HEADID=f9761c01495cd52ce88e33fbc8824f882cf80288
 FILES=conf/
  licenses/
  recipes-core/readline/
@@ -36,7 +36,7 @@ FILES=conf/
 [meta-oe]
 GITURL=ssh://10.130.70.189/ubinux-dev/common/ubinux-layers/yocto/meta-openembedded.git
 BRANCH=master
-HEADID=d8826b63b8c4c34b5ffd31a65aa21843ea9bee66
+HEADID=1ea3e2c4d25c58efd1dc33d8a0e945ae069f673a
 FILES=meta-oe/conf/
  meta-oe/COPYING.MIT
  meta-oe/licenses/
@@ -418,7 +418,7 @@ FILES=meta-oe/conf/
 [meta-freescale]
 GITURL=ssh://10.130.70.189/ubinux-dev/common/ubinux-layers/yocto/meta-freescale
 BRANCH=master
-HEADID=91a3a45f14eda2e2c0a79e7c9c69736cdc94fe5e
+HEADID=1e119770f76318e9e541de759b507039244d98f6
 FILES=conf/layer.conf
  custom-licenses/
  classes/
@@ -432,7 +432,7 @@ FILES=conf/layer.conf
 [meta-cgl]
 GITURL=ssh://10.130.70.189/ubinux-dev/common/ubinux-layers/yocto/meta-cgl.git
 BRANCH=master
-HEADID=95f6c75525fdabf02d568a08961e7e4dcf89f65b
+HEADID=44ac4773f184e7dd2c6efbc94958fac0947bbef7
 FILES=meta-cgl-common/conf/layer.conf
  meta-cgl-common/conf/distro/include/cgl_common_security_flags.inc
  meta-cgl-common/recipes-cgl/cluster-glue/
@@ -448,7 +448,7 @@ FILES=meta-cgl-common/conf/layer.conf
 [meta-cloud-services]
 GITURL=ssh://10.130.70.189/ubinux-dev/common/ubinux-layers/yocto/meta-cloud-services
 BRANCH=master
-HEADID=bb37ca2e43a1c0f22e555bad82072ee70bbf014f
+HEADID=910195eb791d754d394ba1013a258ab120c995e9
 FILES=conf/layer.conf
  classes/
  meta-openstack/classes/default_configs.bbclass
@@ -508,7 +508,7 @@ FILES=conf/layer.conf
 [meta-virtualization]
 GITURL=ssh://10.130.70.189/ubinux-dev/common/ubinux-layers/yocto/meta-virtualization
 BRANCH=master
-HEADID=cdf6f553470b348430e6750473b19a13541ff2d8
+HEADID=9cdcd3ee8d1f65ccd69a1af9ca9e0e03566d95ac
 FILES=conf/layer.conf
  classes/
  files/
@@ -529,7 +529,7 @@ FILES=conf/layer.conf
 [meta-security]
 GITURL=ssh://10.130.70.189/ubinux-dev/common/ubinux-layers/yocto/meta-security.git
 BRANCH=master
-HEADID=d6baccc068451e3649ae7583a32d26b268086e11
+HEADID=ab56b1df52c5b28680656fc00bfe143a7e069097
 FILES=conf
  recipes-ids/samhain
  recipes-perl/
