@@ -4,17 +4,18 @@ LICENSE = "MIT"
 
 inherit packagegroup
 
-PACKAGES = "packagegroup-ubinux-all"
+LSB_IMAGE_FEATURES = " splash ssh-server-openssh hwcodecs package-management "
+IMAGE_FEATURES += " ${LSB_IMAGE_FEATURES} "
+IMAGE_FEATURES += " dev-pkgs staticdev-pkgs "
 
 LSB_PKG_GROUPS = " \
         packagegroup-core-full-cmdline \
 "
-
-IMAGE_INSTALL = " \
-	${BASE_PKG_GROUPS} \
-	${LSB_PKG_GROUPS} \
-	${UBINUX_PKGS} \
+BASE_PKG_GROUPS = " \
+        packagegroup-core-boot \
 "
+
+PACKAGES = "packagegroup-ubinux-all "
 
 UBINUX_PKGS = " \
 	adcli \
@@ -53,6 +54,7 @@ UBINUX_PKGS = " \
 	devmem2 \
 	dfu-util \
 	dhcpcd \
+	dnf \
 	kea \
 	dialog \
 	dosfstools \
@@ -624,5 +626,5 @@ RDEPENDS_packagegroup-ubinux-all = " \
         ${LSB_PKG_GROUPS} \
         ${UBINUX_PKGS} \
         opensaf \
+        ${BASE_PKG_GROUPS} \
 "
-
