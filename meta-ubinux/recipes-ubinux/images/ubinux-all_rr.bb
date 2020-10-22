@@ -61,6 +61,7 @@ UBINUX_PKGS = " \
 	dhcpcd  \
 	kea \
 	dialog \
+	dnf \
 	dosfstools \
 	edac-utils \
 	encodings \
