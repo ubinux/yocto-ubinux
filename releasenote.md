@@ -28,8 +28,7 @@ Solution Development Dept. Software Div.
 
 ## 2. Features
 ### 2.1 Security Fixes
-Following security issues have been fixed from ubinux-2020.08.
-
+Following security issues have been fixed from ubinux-2020.09.
 
 bind:
 - CVE-2020-8620
