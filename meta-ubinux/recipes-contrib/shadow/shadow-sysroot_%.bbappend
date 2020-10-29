@@ -1,1 +1,0 @@
-deltask do_spdx
