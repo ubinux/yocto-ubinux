@@ -282,7 +282,7 @@ class DpkgPM(OpkgDpkgPM):
 
         os.environ['APT_CONFIG'] = self.apt_conf_file
 
-        cmd = "%s %s install --force-yes --allow-unauthenticated --no-remove %s" % \
+        cmd = "%s %s install --allow-downgrades --allow-remove-essential --allow-change-held-packages --allow-unauthenticated --no-remove %s" % \
               (self.apt_get_cmd, self.apt_args, ' '.join(pkgs))
 
         try:
@@ -311,6 +311,8 @@ class DpkgPM(OpkgDpkgPM):
     def remove(self, pkgs, with_dependencies=True):
         if not pkgs:
             return
+
+        os.environ['INTERCEPT_DIR'] = self.intercepts_dir
 
         if with_dependencies:
             os.environ['APT_CONFIG'] = self.apt_conf_file
