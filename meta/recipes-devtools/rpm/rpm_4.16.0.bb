@@ -40,6 +40,7 @@ SRC_URI = "git://github.com/rpm-software-management/rpm;branch=rpm-4.16.x \
            file://0016-rpmscript.c-change-logging-level-around-scriptlets-t.patch \
            file://0001-lib-transaction.c-fix-file-conflicts-for-MIPS64-N32.patch \
            file://0001-rpmdb.c-add-a-missing-include.patch \
+           file://0001-tools-Add-error.h-for-non-glibc-case.patch \
            "
 
 PE = "1"
@@ -47,7 +48,7 @@ SRCREV = "cd7f9303ef1070f027493cad7d00bc66935af2a0"
 
 S = "${WORKDIR}/git"
 
-DEPENDS = "openssl db file popt xz bzip2 elfutils python3"
+DEPENDS = "libgcrypt db file popt xz bzip2 elfutils python3"
 DEPENDS_append_class-native = " file-replacement-native bzip2-replacement-native"
 
 inherit autotools gettext pkgconfig python3native
@@ -58,7 +59,7 @@ AUTOTOOLS_AUXDIR = "${S}/build-aux"
 # OE-core patches autoreconf to additionally run gnu-configize, which fails with this recipe
 EXTRA_AUTORECONF_append = " --exclude=gnu-configize"
 
-EXTRA_OECONF_append = " --without-lua --enable-python --with-crypto=openssl"
+EXTRA_OECONF_append = " --without-lua --enable-python --with-crypto=libgcrypt"
 EXTRA_OECONF_append_libc-musl = " --disable-nls --disable-openmp"
 
 # --sysconfdir prevents rpm from attempting to access machine-specific configuration in sysroot/etc; we need to have it in rootfs
