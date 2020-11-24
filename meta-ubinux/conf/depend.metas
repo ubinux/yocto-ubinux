@@ -241,6 +241,7 @@ FILES=meta-oe/conf/
  meta-oe/recipes-connectivity/zabbix/
  meta-oe/recipes-connectivity/libndp/
  meta-oe/recipes-graphics/ttf-fonts/
+ meta-oe/recipes-support/libharu/
  meta-oe/recipes-support/libnih/
  meta-oe/recipes-extended/libgxim/
  meta-oe/recipes-bsp/cpufrequtils/
