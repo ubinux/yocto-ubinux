@@ -21,6 +21,8 @@ SRC_URI = "https://mesa.freedesktop.org/archive/mesa-${PV}.tar.xz \
            file://0005-vc4-use-intmax_t-for-formatted-output-of-timespec-me.patch \
            file://0001-meson-misdetects-64bit-atomics-on-mips-clang.patch \
            file://0001-futex.h-Define-__NR_futex-if-it-does-not-exist.patch \
+           file://0001-anv-fix-a-build-race-between-generating-a-header-and.patch \
+           file://0001-meson-Add-xcb-fixes-to-loader-when-using-x11-and-dri.patch \
            "
 
 SRC_URI[sha256sum] = "d1a46d9a3f291bc0e0374600bdcb59844fa3eafaa50398e472a36fc65fd0244a"
@@ -46,11 +48,6 @@ PROVIDES = " \
     "
 
 inherit meson pkgconfig python3native gettext features_check
-
-# Unset these to stop python trying to report the target Python setup
-_PYTHON_SYSCONFIGDATA_NAME[unexport] = "1"
-STAGING_INCDIR[unexport] = "1"
-STAGING_LIBDIR[unexport] = "1"
 
 BBCLASSEXTEND = "native nativesdk"
 

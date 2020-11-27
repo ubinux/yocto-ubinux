@@ -78,6 +78,7 @@ extlinks = {
     'yocto_git': ('https://git.yoctoproject.org%s', None),
     'oe_home': ('https://www.openembedded.org%s', None),
     'oe_lists': ('https://lists.openembedded.org%s', None),
+    'oe_git': ('https://git.openembedded.org%s', None),
 }
 
 # Intersphinx config to use cross reference with Bitbake user manual
@@ -124,3 +125,8 @@ html_last_updated_fmt = '%b %d, %Y'
 
 # Remove the trailing 'dot' in section numbers
 html_secnumber_suffix = " "
+
+latex_elements = {
+    'passoptionstopackages': '\PassOptionsToPackage{bookmarksdepth=5}{hyperref}',
+    'preamble': '\setcounter{tocdepth}{2}',
+}
