@@ -36,11 +36,11 @@ Note
   ```
   $ cd meta-ubinux/conf/machine
   $ ls 
-  ubinux-armv7.conf    
-  ubinux-x86-64.conf
-  ubinux-x86.conf
+  ubinux-armv8.conf 
+  ubinux-x86-64.conf 
   ```  
   - ${build_dir} - build directory of ubinux and it's set by the user
+  - The multlib option is enabled in ubinux-armv8.conf, so if you compile this machine, it will actually compile aarch64 and armv7 together.
 
 Example
 set up build environment of X86_64
@@ -56,11 +56,20 @@ $ vi conf/local.conf
 Note
   - You can find the explanation of these variables from https://wiki.yoctoproject.org/wiki/Main_Page
 
-## 3.4 Generate image
+## 3.4 Generate toolchain
+Enter the build directory to generate the toolchain of the specified arch.
+```
+$ bitbake meta-toolchain
+```
+Note
+  - The toolchains of each arch are stored in the corresponding directory of ${build_dir}/tmp/deploy/sdk/
+
+## 3.5 Generate image
 Enter the build directory to generate the image of the specified arch.
 ```
 $ cd ${build_dir}
 $ bitbake ubinux-all
 ```
 Note
-  - The images of each arch are stored in the corresponding directory of ${build_dir}/tmp/deploy/images
+  - The rpms of each arch are stored in the corresponding directory of ${build_dir}/tmp/deploy/rpm
+  - Using dnf-plugin-tui(https://github.com/ubinux/dnf-plugin-tui) in toolchain generated in Chapter 3.4 to generate image.
