@@ -119,7 +119,6 @@ The following objects are not validated because the hardware of the test environ
 ## 5. Known Security Issues
 The following security issues were known in this release:
 
-** Unpatched list **
 bash:
 - CVE-2016-7543
 - CVE-2016-9401
