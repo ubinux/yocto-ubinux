@@ -165,7 +165,7 @@ an entire Linux distribution, including the toolchain, from source.
       infrastructure resources and get that information. A good starting
       point could also be to check your web browser settings. Finally,
       you can find more information on the
-      ":yocto_wiki:`Working Behind a Network Proxy </wiki/Working_Behind_a_Network_Proxy>`"
+      ":yocto_wiki:`Working Behind a Network Proxy </Working_Behind_a_Network_Proxy>`"
       page of the Yocto Project Wiki.
 
 #. **Initialize the Build Environment:** From within the ``poky``
@@ -244,9 +244,9 @@ an entire Linux distribution, including the toolchain, from source.
       $ bitbake core-image-sato
 
    For information on using the ``bitbake`` command, see the
-   :ref:`usingpoky-components-bitbake` section in the Yocto Project Overview and
+   :ref:`overview-manual/overview-manual-concepts:bitbake` section in the Yocto Project Overview and
    Concepts Manual, or see the ":ref:`BitBake Command
-   <bitbake:bitbake-user-manual-command>`" section in the BitBake User Manual.
+   <bitbake:bitbake-user-manual/bitbake-user-manual-intro:the bitbake command>`" section in the BitBake User Manual.
 
 #. **Simulate Your Image Using QEMU:** Once this particular image is
    built, you can start QEMU, which is a Quick EMUlator that ships with

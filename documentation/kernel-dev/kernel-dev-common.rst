@@ -147,8 +147,8 @@ section:
    ::
 
       $ cd ~/poky/build/tmp/deploy/sdk
-      $ ./poky-glibc-x86_64-core-image-minimal-i586-toolchain-ext-3.1.2.sh
-      Poky (Yocto Project Reference Distro) Extensible SDK installer version 3.1.2
+      $ ./poky-glibc-x86_64-core-image-minimal-i586-toolchain-ext-&DISTRO;.sh
+      Poky (Yocto Project Reference Distro) Extensible SDK installer version &DISTRO;
       ============================================================================
       Enter target directory for SDK (default: ~/poky_sdk):
       You are about to install the SDK to "/home/scottrif/poky_sdk". Proceed [Y/n]? Y
@@ -207,7 +207,7 @@ section:
    building for actual hardware and not for emulation, you could flash
    the image to a USB stick on ``/dev/sdd`` and boot your device. For an
    example that uses a Minnowboard, see the
-   :yocto_wiki:`TipsAndTricks/KernelDevelopmentWithEsdk </wiki/TipsAndTricks/KernelDevelopmentWithEsdk>`
+   :yocto_wiki:`TipsAndTricks/KernelDevelopmentWithEsdk </TipsAndTricks/KernelDevelopmentWithEsdk>`
    Wiki page.
 
 At this point you have set up to start making modifications to the
@@ -862,7 +862,7 @@ the ":ref:`kernel-dev/kernel-dev-common:getting ready to develop using \`\`devto
       If the image you originally created resulted in a Wic file, you
       can use an alternate method to create the new image with the
       updated kernel. For an example, see the steps in the
-      :yocto_wiki:`TipsAndTricks/KernelDevelopmentWithEsdk </wiki/TipsAndTricks/KernelDevelopmentWithEsdk>`
+      :yocto_wiki:`TipsAndTricks/KernelDevelopmentWithEsdk </TipsAndTricks/KernelDevelopmentWithEsdk>`
       Wiki Page.
 
    ::

@@ -349,10 +349,10 @@ particular recipe.
 .. note::
 
    -  For the ``oe-core`` layer, recipe maintainers come from the
-      `maintainers.inc <http://git.yoctoproject.org/cgit/cgit.cgi/poky/tree/meta/conf/distro/include/maintainers.inc>`_
+      :yocto_git:`maintainers.inc </poky/tree/meta/conf/distro/include/maintainers.inc>`
       file.
 
-   -  If the recipe is using the :ref:`bitbake:git-fetcher`
+   -  If the recipe is using the :ref:`bitbake:bitbake-user-manual/bitbake-user-manual-fetching:git fetcher (\`\`git://\`\`)`
       rather than a
       tarball, the commit hash points to the commit that matches the
       recipe's latest version tag.
@@ -388,7 +388,7 @@ satisfied.
    When a reason for not upgrading displays, the reason is usually
    written into the recipe using the ``RECIPE_NO_UPDATE_REASON``
    variable. See the
-   :yocto_git:`base-passwd.bb </cgit/cgit.cgi/poky/tree/meta/recipes-core/base-passwd/base-passwd_3.5.29.bb>`
+   :yocto_git:`base-passwd.bb </poky/tree/meta/recipes-core/base-passwd/base-passwd_3.5.29.bb>`
    recipe for an example.
 
 ::
@@ -413,7 +413,7 @@ Upgrading a Recipe
 As software matures, upstream recipes are upgraded to newer versions. As
 a developer, you need to keep your local recipes up-to-date with the
 upstream version releases. Several methods exist by which you can
-upgrade recipes. You can read about them in the ":ref:`gs-upgrading-recipes`"
+upgrade recipes. You can read about them in the ":ref:`dev-manual/dev-manual-common-tasks:upgrading recipes`"
 section of the Yocto Project Development Tasks Manual. This section
 overviews the ``devtool upgrade`` command.
 
@@ -441,7 +441,7 @@ You can read more on the ``devtool upgrade`` workflow in the
 ":ref:`sdk-manual/sdk-extensible:use \`\`devtool upgrade\`\` to create a version of the recipe that supports a newer version of the software`"
 section in the Yocto Project Application Development and the Extensible
 Software Development Kit (eSDK) manual. You can also see an example of
-how to use ``devtool upgrade`` in the ":ref:`gs-using-devtool-upgrade`"
+how to use ``devtool upgrade`` in the ":ref:`dev-manual/dev-manual-common-tasks:using \`\`devtool upgrade\`\``"
 section in the Yocto Project Development Tasks Manual.
 
 .. _devtool-resetting-a-recipe:

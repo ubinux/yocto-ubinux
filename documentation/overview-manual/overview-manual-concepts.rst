@@ -43,8 +43,6 @@ see the
 ":ref:`overview-manual/overview-manual-concepts:openembedded build system concepts`"
 section.
 
-.. _usingpoky-components-bitbake:
-
 BitBake
 -------
 
@@ -78,7 +76,7 @@ versions of ``matchbox-desktop`` might exist. BitBake chooses the one
 selected by the distribution configuration. You can get more details
 about how BitBake chooses between different target versions and
 providers in the
-":ref:`Preferences <bitbake:bb-bitbake-preferences>`" section
+":ref:`Preferences <bitbake:bitbake-user-manual/bitbake-user-manual-execution:preferences>`" section
 of the BitBake User Manual.
 
 BitBake also tries to execute any dependent tasks first. So for example,
@@ -91,8 +89,6 @@ job as long as possible even after encountering an error. When an error
 occurs, the target that failed and those that depend on it cannot be
 remade. However, when you use this option other dependencies can still
 be processed.
-
-.. _overview-components-recipes:
 
 Recipes
 -------
@@ -109,8 +105,6 @@ the word "package" is used for the packaged output from the OpenEmbedded
 build system (i.e. ``.ipk`` or ``.deb`` files), this document avoids
 using the term "package" when referring to recipes.
 
-.. _overview-components-classes:
-
 Classes
 -------
 
@@ -122,8 +116,6 @@ The ":ref:`ref-manual/ref-classes:Classes`" chapter in the
 Yocto Project Reference Manual provides details about classes and how to
 use them.
 
-.. _overview-components-configurations:
-
 Configurations
 --------------
 
@@ -134,8 +126,6 @@ distribution configuration options, compiler tuning options, general
 common configuration options, and user configuration options in
 ``conf/local.conf``, which is found in the :term:`Build Directory`.
 
-
-.. _overview-layers:
 
 Layers
 ======
@@ -165,8 +155,6 @@ procedures and learn about tools (i.e. ``bitbake-layers``) for creating
 layers suitable for the Yocto Project in the
 ":ref:`dev-manual/dev-manual-common-tasks:understanding and creating layers`"
 section of the Yocto Project Development Tasks Manual.
-
-.. _openembedded-build-system-build-concepts:
 
 OpenEmbedded Build System Concepts
 ==================================
@@ -285,7 +273,7 @@ The ``local.conf`` file provides many basic variables that define a
 build environment. Here is a list of a few. To see the default
 configurations in a ``local.conf`` file created by the build environment
 script, see the
-:yocto_git:`local.conf.sample </cgit/cgit.cgi/poky/tree/meta-poky/conf/local.conf.sample>`
+:yocto_git:`local.conf.sample </poky/tree/meta-poky/conf/local.conf.sample>`
 in the ``meta-poky`` layer:
 
 -  *Target Machine Selection:* Controlled by the
@@ -405,17 +393,17 @@ figure <#general-workflow-figure>`__:
    configurations. This type of information is specific to a particular
    target architecture. A good example of a BSP layer from the `Poky
    Reference Distribution <#gs-reference-distribution-poky>`__ is the
-   :yocto_git:`meta-yocto-bsp </cgit/cgit.cgi/poky/tree/meta-yocto-bsp>`
+   :yocto_git:`meta-yocto-bsp </poky/tree/meta-yocto-bsp>`
    layer.
 
 -  *Policy Configuration:* Distribution Layers (i.e. "Distro Layer" in
    the following figure) providing top-level or general policies for the
    images or SDKs being built for a particular distribution. For
    example, in the Poky Reference Distribution the distro layer is the
-   :yocto_git:`meta-poky </cgit/cgit.cgi/poky/tree/meta-poky>`
+   :yocto_git:`meta-poky </poky/tree/meta-poky>`
    layer. Within the distro layer is a ``conf/distro`` directory that
    contains distro configuration files (e.g.
-   :yocto_git:`poky.conf </cgit/cgit.cgi/poky/tree/meta-poky/conf/distro/poky.conf>`
+   :yocto_git:`poky.conf </poky/tree/meta-poky/conf/distro/poky.conf>`
    that contain many policy configurations for the Poky distribution.
 
 The following figure shows an expanded representation of these three
@@ -439,9 +427,8 @@ Model <#the-yocto-project-layer-model>`__" sections both earlier in this
 manual.
 
 If you explored the previous links, you discovered some areas where many
-layers that work with the Yocto Project exist. The `Source
-Repositories <http://git.yoctoproject.org/>`__ also shows layers
-categorized under "Yocto Metadata Layers."
+layers that work with the Yocto Project exist. The :yocto_git:`Source
+Repositories <>` also shows layers categorized under "Yocto Metadata Layers."
 
 .. note::
 
@@ -527,8 +514,6 @@ their respective layers.
 This layer contains any recipes, append files, and patches, that your
 project needs.
 
-.. _sources-dev-environment:
-
 Sources
 -------
 
@@ -601,13 +586,11 @@ class to include that local project. You use either the ``local.conf``
 or a recipe's append file to override or set the recipe to point to the
 local directory on your disk to pull in the whole source tree.
 
-.. _scms:
-
 Source Control Managers (Optional)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Another place from which the build system can get source files is with
-:ref:`fetchers <bitbake:bb-fetchers>` employing various Source
+:ref:`fetchers <bitbake:bitbake-user-manual/bitbake-user-manual-fetching:fetchers>` employing various Source
 Control Managers (SCMs) such as Git or Subversion. In such cases, a
 repository is cloned or checked out. The
 :ref:`ref-tasks-fetch` task inside
@@ -643,8 +626,6 @@ organization.
 Regular mirrors can be any site across the Internet that is used as an
 alternative location for source code should the primary site not be
 functioning for some reason or another.
-
-.. _package-feeds-dev-environment:
 
 Package Feeds
 -------------
@@ -709,8 +690,6 @@ qemux86 exist. Packages for the i586 architecture are placed in
 ``build/tmp/deploy/ipk/i586``, while packages for the qemux86
 architecture are placed in ``build/tmp/deploy/ipk/qemux86``.
 
-.. _bitbake-dev-environment:
-
 BitBake Tool
 ------------
 
@@ -726,8 +705,6 @@ those areas.
    Separate documentation exists for the BitBake tool. See the
    BitBake User Manual
    for reference material on BitBake.
-
-.. _source-fetching-dev-environment:
 
 Source Fetching
 ~~~~~~~~~~~~~~~
@@ -819,8 +796,6 @@ Build Directory's hierarchy:
    what the OpenEmbedded build system is using as a build target (e.g.
    general architecture, a build host, an SDK, or a specific machine).
 
-.. _patching-dev-environment:
-
 Patching
 ~~~~~~~~
 
@@ -860,8 +835,6 @@ section in the Yocto Project Application Development and the Extensible
 Software Development Kit (SDK) manual and the
 ":ref:`kernel-dev/kernel-dev-common:using traditional kernel development to patch the kernel`"
 section in the Yocto Project Linux Kernel Development Manual.
-
-.. _configuration-compilation-and-staging-dev-environment:
 
 Configuration, Compilation, and Staging
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -905,7 +878,7 @@ This step in the build process consists of the following tasks:
    variables. For information on how this variable works within that
    class, see the
    :ref:`autotools <ref-classes-autotools>` class
-   :yocto_git:`here </cgit/cgit.cgi/poky/tree/meta/classes/autotools.bbclass>`.
+   :yocto_git:`here </poky/tree/meta/classes/autotools.bbclass>`.
 
 -  *do_compile*: Once a configuration task has been satisfied,
    BitBake compiles the source using the
@@ -921,8 +894,6 @@ This step in the build process consists of the following tasks:
    holding area pointed to by the :term:`D`
    variable. Packaging occurs later using files from this holding
    directory.
-
-.. _package-splitting-dev-environment:
 
 Package Splitting
 ~~~~~~~~~~~~~~~~~
@@ -985,7 +956,7 @@ The :term:`FILES` variable defines the
 files that go into each package in
 :term:`PACKAGES`. If you want
 details on how this is accomplished, you can look at
-:yocto_git:`package.bbclass </cgit/cgit.cgi/poky/tree/meta/classes/package.bbclass>`.
+:yocto_git:`package.bbclass </poky/tree/meta/classes/package.bbclass>`.
 
 Depending on the type of packages being created (RPM, DEB, or IPK), the
 :ref:`do_package_write_* <ref-tasks-package_write_deb>`
@@ -1003,8 +974,6 @@ that part of the build process.
    into an official package feed (e.g. the Ångström distribution). This
    functionality is highly distribution-specific and thus is not
    provided out of the box.
-
-.. _image-generation-dev-environment:
 
 Image Generation
 ~~~~~~~~~~~~~~~~
@@ -1126,8 +1095,6 @@ build system has created the final image output files.
    The entire image generation process is run under
    Pseudo. Running under Pseudo ensures that the files in the root filesystem
    have correct ownership.
-
-.. _sdk-generation-dev-environment:
 
 SDK Generation
 ~~~~~~~~~~~~~~
@@ -1303,8 +1270,6 @@ variable is the function that determines whether a given dependency
 needs to be followed, and whether for any given relationship the
 function needs to be passed. The function returns a True or False value.
 
-.. _images-dev-environment:
-
 Images
 ------
 
@@ -1362,8 +1327,6 @@ current configuration.
    link that points to the most recently built file for each machine.
    These links might be useful for external scripts that need to obtain
    the latest version of each file.
-
-.. _sdk-dev-environment:
 
 Application Development SDK
 ---------------------------
@@ -1677,8 +1640,6 @@ them if they are deemed to be valid.
 The rest of this section goes into detail about the overall incremental
 build architecture, the checksums (signatures), and shared state.
 
-.. _concepts-overall-architecture:
-
 Overall Architecture
 --------------------
 
@@ -1696,8 +1657,6 @@ best solution. Also, in this case, the core must be "taught" much about
 specific tasks. This methodology does not scale well and does not allow
 users to easily add new tasks in layers or as external recipes without
 touching the packaged-staging core.
-
-.. _overview-checksums:
 
 Checksums (Signatures)
 ----------------------
@@ -1949,7 +1908,7 @@ The following list explains the previous example:
    extra metadata to the `stamp
    file <#stamp-files-and-the-rerunning-of-tasks>`__. In this case, the
    metadata makes the task specific to a machine's architecture. See
-   ":ref:`bitbake:ref-bitbake-tasklist`"
+   ":ref:`bitbake:bitbake-user-manual/bitbake-user-manual-execution:the task list`"
    section in the BitBake User Manual for more information on the
    ``stamp-extra-info`` flag.
 

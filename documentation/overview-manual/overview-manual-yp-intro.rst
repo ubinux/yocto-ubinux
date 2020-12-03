@@ -35,8 +35,6 @@ by Drew Moseley and in this short introductory
 The remainder of this section overviews advantages and challenges tied
 to the Yocto Project.
 
-.. _gs-features:
-
 Features
 --------
 
@@ -135,8 +133,6 @@ Project:
    manifest <dev-manual/dev-manual-common-tasks:maintaining open source license compliance during your product's lifecycle>`
    for review by people who need to track the use of open source
    licenses (e.g. legal teams).
-
-.. _gs-challenges:
 
 Challenges
 ----------
@@ -271,9 +267,8 @@ with the string ``meta-``.
    , but it is a commonly accepted standard in the Yocto Project
    community.
 
-For example, if you were to examine the `tree
-view <https://git.yoctoproject.org/cgit/cgit.cgi/poky/tree/>`__ of the
-``poky`` repository, you will see several layers: ``meta``,
+For example, if you were to examine the :yocto_git:`tree view </poky/tree/>`
+of the ``poky`` repository, you will see several layers: ``meta``,
 ``meta-skeleton``, ``meta-selftest``, ``meta-poky``, and
 ``meta-yocto-bsp``. Each of these repositories represents a distinct
 layer.
@@ -295,8 +290,6 @@ components and tools are downloaded separately.
 
 This section provides brief overviews of the components and tools
 associated with the Yocto Project.
-
-.. _gs-development-tools:
 
 Development Tools
 -----------------
@@ -352,8 +345,6 @@ applications using the Yocto Project:
    OpenEmbedded build system. Toaster allows you to configure, run, and
    view information about builds. For information on Toaster, see the
    :doc:`../toaster-manual/toaster-manual`.
-
-.. _gs-production-tools:
 
 Production Tools
 ----------------
@@ -450,8 +441,6 @@ activities using the Yocto Project:
    You can read more about Pseudo in the "`Fakeroot and
    Pseudo <#fakeroot-and-pseudo>`__" section.
 
-.. _gs-openembedded-build-system:
-
 Open-Embedded Build System Components
 -------------------------------------
 
@@ -477,7 +466,7 @@ The following list consists of components associated with the
    OpenEmbedded-derived systems, which includes the Yocto Project. The
    Yocto Project and the OpenEmbedded Project both maintain the
    OpenEmbedded-Core. You can find the OE-Core metadata in the Yocto
-   Project :yocto_git:`Source Repositories </cgit/cgit.cgi/poky/tree/meta>`.
+   Project :yocto_git:`Source Repositories </poky/tree/meta>`.
 
    Historically, the Yocto Project integrated the OE-Core metadata
    throughout the Yocto Project source repository reference system
@@ -495,8 +484,6 @@ The following list consists of components associated with the
    `figure <#yp-key-dev-elements>`__. The Yocto Project combines various
    components such as BitBake, OE-Core, script "glue", and documentation
    for its build system.
-
-.. _gs-reference-distribution-poky:
 
 Reference Distribution (Poky)
 -----------------------------
@@ -519,8 +506,6 @@ To use the Yocto Project tools and components, you can download
 
 You can read more about Poky in the "`Reference Embedded Distribution
 (Poky) <#reference-embedded-distribution>`__" section.
-
-.. _gs-packages-for-finished-targets:
 
 Packages for Finished Targets
 -----------------------------
@@ -560,8 +545,6 @@ targets:
    You can find the opkg source in the Yocto Project
    :yocto_git:`Source Repositories <>`.
 
-.. _gs-archived-components:
-
 Archived Components
 -------------------
 
@@ -587,8 +570,6 @@ Linux.
 3. *CROPS:* The final and best solution available now for developing
    using the Yocto Project on a system not native to Linux is with
    `CROPS <#gs-crops-overview>`__.
-
-.. _gs-development-methods:
 
 Development Methods
 ===================
@@ -671,8 +652,6 @@ Project.
    For information about and how to use Toaster, see the 
    :doc:`../toaster-manual/toaster-manual`.
 
-.. _reference-embedded-distribution:
-
 Reference Embedded Distribution (Poky)
 ======================================
 
@@ -691,7 +670,7 @@ Poky is a combined repository of BitBake, OpenEmbedded-Core (which is
 found in ``meta``), ``meta-poky``, ``meta-yocto-bsp``, and documentation
 provided all together and known to work well together. You can view
 these items that make up the Poky repository in the
-:yocto_git:`Source Repositories </cgit/cgit.cgi/poky/tree/>`.
+:yocto_git:`Source Repositories </poky/tree/>`.
 
 .. note::
 
@@ -775,8 +754,6 @@ the beginning or end of a task. For information on these BitBake
 operators, see the
 ":ref:`bitbake:bitbake-user-manual/bitbake-user-manual-metadata:appending and prepending (override style syntax)`"
 section in the BitBake User's Manual.
-
-.. _openembedded-build-system-workflow:
 
 The OpenEmbedded Build System Workflow
 ======================================
@@ -892,8 +869,7 @@ helpful for getting started:
    set of recipes.
 
    You can see the Metadata in the ``meta`` directory of the Yocto
-   Project `Source
-   Repositories <http://git.yoctoproject.org/cgit/cgit.cgi>`__.
+   Project :yocto_git:`Source Repositories <>`.
 
 -  *Packages:* In the context of the Yocto Project, this term refers to
    a recipe's packaged output produced by BitBake (i.e. a "baked

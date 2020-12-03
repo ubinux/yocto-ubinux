@@ -200,7 +200,7 @@ either
 :term:`FILESEXTRAPATHS` if
 you are creating Metadata in `recipe-space <#recipe-space-metadata>`__,
 or the top level of
-:yocto_git:`yocto-kernel-cache </cgit/cgit.cgi/yocto-kernel-cache/tree/>`
+:yocto_git:`yocto-kernel-cache </yocto-kernel-cache/tree/>`
 if you are creating `Metadata outside of the
 recipe-space <#metadata-outside-the-recipe-space>`__.
 
@@ -369,7 +369,7 @@ in the "`Features <#features>`__" section. The
 variable in the kernel recipe selects the kernel type. For example, in
 the ``linux-yocto_4.12.bb`` kernel recipe found in
 ``poky/meta/recipes-kernel/linux``, a
-:ref:`require <bitbake:require-inclusion>` directive
+:ref:`require <bitbake:bitbake-user-manual/bitbake-user-manual-metadata:\`\`require\`\` directive>` directive
 includes the ``poky/meta/recipes-kernel/linux/linux-yocto.inc`` file,
 which has the following statement that defines the default kernel type:
 ::
@@ -469,7 +469,7 @@ supported kernel type.
    For BSPs supported by the Yocto Project, the BSP description files
    are located in the ``bsp`` directory of the ``yocto-kernel-cache``
    repository organized under the "Yocto Linux Kernel" heading in the
-   :yocto_git:`Yocto Project Source Repositories </>`.
+   :yocto_git:`Yocto Project Source Repositories <>`.
 
 This section overviews the BSP description structure, the aggregation
 concepts, and presents a detailed example using a BSP supported by the

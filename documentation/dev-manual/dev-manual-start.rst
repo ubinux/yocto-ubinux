@@ -11,8 +11,6 @@ host <dev-manual/dev-manual-start:preparing the build host>`, how to locate
 Yocto Project source repositories, and how to create local Git
 repositories.
 
-.. _usingpoky-changes-collaborate:
-
 Creating a Team Development Environment
 =======================================
 
@@ -261,8 +259,6 @@ particular working environment and set of practices.
        of the available mailing lists, see the ":ref:`resources-mailinglist`" section in
        the Yocto Project Reference Manual.
 
-.. _dev-preparing-the-build-host:
-
 Preparing the Build Host
 ========================
 
@@ -309,7 +305,7 @@ Project Build Host:
    validation and their status, see the ":ref:`Supported Linux
    Distributions <detailed-supported-distros>`"
    section in the Yocto Project Reference Manual and the wiki page at
-   :yocto_wiki:`Distribution Support </wiki/Distribution_Support>`.
+   :yocto_wiki:`Distribution Support </Distribution_Support>`.
 
 2. *Have Enough Free Memory:* Your system should have at least 50 Gbytes
    of free disk space for building images.
@@ -351,8 +347,6 @@ Project Application Development and the Extensible Software Development
 Kit (eSDK) manual. If you want to work on the kernel, see the :doc:`../kernel-dev/kernel-dev`. If you are going to use
 Toaster, see the ":doc:`../toaster-manual/toaster-manual-setup-and-use`"
 section in the Toaster User Manual.
-
-.. _setting-up-to-use-crops:
 
 Setting Up to Use CROss PlatformS (CROPS)
 -----------------------------------------
@@ -453,8 +447,6 @@ Project Application Development and the Extensible Software Development
 Kit (eSDK) manual. If you are going to use the Toaster container, see
 the ":doc:`../toaster-manual/toaster-manual-setup-and-use`"
 section in the Toaster User Manual.
-
-.. _setting-up-to-use-wsl:
 
 Setting Up to Use Windows Subsystem For Linux (WSLv2)
 -----------------------------------------------------
@@ -594,7 +586,7 @@ Working from a copy of the upstream :ref:`dev-manual/dev-manual-start:accessing 
 preferred method for obtaining and using a Yocto Project release. You
 can view the Yocto Project Source Repositories at
 :yocto_git:`/`. In particular, you can find the ``poky``
-repository at :yocto_git:`/cgit.cgi/poky`.
+repository at :yocto_git:`/poky`.
 
 Use the following procedure to locate the latest upstream copy of the
 ``poky`` Git repository:
@@ -608,7 +600,7 @@ Use the following procedure to locate the latest upstream copy of the
 
 3. *Find the URL Used to Clone the Repository:* At the bottom of the
    page, note the URL used to clone that repository
-   (e.g. :yocto_git:`/cgit.cgi/poky`).
+   (e.g. :yocto_git:`/poky`).
 
    .. note::
 
@@ -686,7 +678,7 @@ Releases <#accessing-index-of-releases>`__" section.
    .. note::
 
       For a "map" of Yocto Project releases to version numbers, see the
-      :yocto_wiki:`Releases </wiki/Releases>` wiki page.
+      :yocto_wiki:`Releases </Releases>` wiki page.
 
    You can use the "RELEASE ARCHIVE" link to reveal a menu of all Yocto
    Project releases.
@@ -854,8 +846,6 @@ and then specifically check out that development branch.
       $ git branch
         master
         * &DISTRO_NAME_NO_CAP;
-
-.. _checkout-out-by-tag-in-poky:
 
 Checking Out by Tag in Poky
 ---------------------------

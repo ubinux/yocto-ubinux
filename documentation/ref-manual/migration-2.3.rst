@@ -198,7 +198,7 @@ The following changes took place for BitBake:
    fetcher passes the new parameter through the ``SVN_SSH`` environment
    variable during the :ref:`ref-tasks-fetch` task.
 
-   See the ":ref:`bitbake:svn-fetcher`"
+   See the ":ref:`bitbake:bitbake-user-manual/bitbake-user-manual-fetching:subversion (svn) fetcher (\`\`svn://\`\`)`"
    section in the BitBake
    User Manual for additional information.
 
@@ -323,7 +323,7 @@ The following package management changes took place:
    .. note::
 
       For further details on this change, see the
-      :yocto_git:`commit message </cgit/cgit.cgi/poky/commit/?id=f4d4f99cfbc2396e49c1613a7d237b9e57f06f81>`.
+      :yocto_git:`commit message </poky/commit/?id=f4d4f99cfbc2396e49c1613a7d237b9e57f06f81>`.
 
 .. _migration-2.3-removed-recipes:
 
