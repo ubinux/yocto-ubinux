@@ -51,7 +51,7 @@ Consider the following:
    :term:`SYSROOT_PREPROCESS_FUNCS`.
 
    For an example, see the ``pixbufcache`` class in ``meta/classes/`` in
-   the :ref:`overview-manual/overview-manual-development-environment:yocto project source repositories`.
+   the :ref:`overview-manual/development-environment:yocto project source repositories`.
 
    .. note::
 
@@ -366,7 +366,7 @@ The following changes have been made to Wic:
 .. note::
 
    For more information on Wic, see the
-   ":ref:`dev-manual/dev-manual-common-tasks:creating partitioned images using wic`"
+   ":ref:`dev-manual/common-tasks:creating partitioned images using wic`"
    section in the Yocto Project Development Tasks Manual.
 
 -  *Default Output Directory Changed:* Wic's default output directory is
@@ -404,7 +404,7 @@ The following QA checks have changed:
 
    For additional information, see the
    :ref:`insane <ref-classes-insane>` class and the
-   ":ref:`ref-manual/ref-qa-checks:errors and warnings`" section.
+   ":ref:`ref-manual/qa-checks:errors and warnings`" section.
 
 .. _migration-2.3-miscellaneous-changes:
 
