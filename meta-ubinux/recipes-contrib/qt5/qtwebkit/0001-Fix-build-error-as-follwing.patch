@@ -1,0 +1,35 @@
+From 942d29111ed293e2793801fd062caf844e92b653 Mon Sep 17 00:00:00 2001
+From: Lei Maohui <leimaohui@cn.fujitsu.com>
+Date: Wed, 2 Dec 2020 13:52:49 +0900
+Subject: [PATCH] Fix build error as follwing:
+
+error: 'TRUE' was not declared in this scope
+error: 'FALSE' was not declared in this scope
+
+Signed-off-by: Lei Maohui <leimaohui@cn.fujitsu.com>
+---
+ Source/WebCore/config.h | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/Source/WebCore/config.h b/Source/WebCore/config.h
+index e31f88fd3..46c5ce4c5 100644
+--- a/Source/WebCore/config.h
++++ b/Source/WebCore/config.h
+@@ -72,6 +72,14 @@
+ // Helps us catch if anyone uses new or delete by accident in code and doesn't include "config.h".
+ #undef new
+ #undef delete
++
++#ifndef FALSE
++#define FALSE (0)
++#endif
++#ifndef TRUE
++#define TRUE (!FALSE)
++#endif
++
+ #include <wtf/FastMalloc.h>
+ 
+ #include <ciso646>
+-- 
+2.25.1
+
