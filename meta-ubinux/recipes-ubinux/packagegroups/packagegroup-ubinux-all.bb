@@ -114,6 +114,7 @@ UBINUX_PKGS = " \
 	libfontenc \
 	libgcrypt \
 	libgpg-error \
+	libharu \
 	libice \
 	libidn \
 	libnewt \
