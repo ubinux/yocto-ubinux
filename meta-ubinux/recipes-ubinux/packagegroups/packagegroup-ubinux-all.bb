@@ -345,7 +345,6 @@ UBINUX_PKGS = " \
 	openwsman \
 	passwdqc \
 	pam-plugin-access \
-	pam-plugin-cracklib \
 	pam-plugin-debug \
 	pam-plugin-deny \
 	pam-plugin-echo \
@@ -375,8 +374,6 @@ UBINUX_PKGS = " \
 	pam-plugin-shells \
 	pam-plugin-stress \
 	pam-plugin-succeed-if \
-	pam-plugin-tally \
-	pam-plugin-tally2 \
 	pam-plugin-time \
 	pam-plugin-timestamp \
 	pam-plugin-umask \
