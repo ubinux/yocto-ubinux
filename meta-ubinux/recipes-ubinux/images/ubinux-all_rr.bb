@@ -350,7 +350,6 @@ UBINUX_PKGS = " \
 	openwsman \
 	passwdqc \
 	pam-plugin-access \
-	pam-plugin-cracklib \
 	pam-plugin-debug \
 	pam-plugin-deny \
 	pam-plugin-echo \
@@ -380,8 +379,6 @@ UBINUX_PKGS = " \
 	pam-plugin-shells \
 	pam-plugin-stress \
 	pam-plugin-succeed-if \
-	pam-plugin-tally \
-	pam-plugin-tally2 \
 	pam-plugin-time \
 	pam-plugin-timestamp \
 	pam-plugin-umask \
@@ -543,7 +540,6 @@ UBINUX_PKGS = " \
 	pulseaudio-lib-cli \
 	pulseaudio-lib-oss-util \
 	pulseaudio-lib-protocol-cli \
-	pulseaudio-lib-protocol-esound \
 	pulseaudio-lib-protocol-http \
 	pulseaudio-lib-protocol-native \
 	pulseaudio-lib-protocol-simple \
