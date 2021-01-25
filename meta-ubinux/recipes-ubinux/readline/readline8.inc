@@ -12,12 +12,12 @@ LIC_FILES_CHKSUM = "file://COPYING;md5=d32239bcb673463ab874e80d47fae504"
 
 DEPENDS += "ncurses"
 
-SRC_URI = "${GNU_MIRROR}/readline/readline-8.0.tar.gz;name=archive"
+SRC_URI = "${GNU_MIRROR}/readline/readline-8.1.tar.gz;name=archive"
 SRC_URI += "file://inputrc"
 
 inherit autotools texinfo
 
-S = "${WORKDIR}/readline-8.0"
+S = "${WORKDIR}/readline-8.1"
 
 EXTRA_AUTORECONF += "--exclude=autoheader"
 EXTRA_OECONF += "--includedir=${includedir}/readline8 \
