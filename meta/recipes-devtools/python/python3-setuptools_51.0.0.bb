@@ -28,6 +28,7 @@ RDEPENDS_${PN} = "\
   ${PYTHON_PN}-netserver \
   ${PYTHON_PN}-numbers \
   ${PYTHON_PN}-pickle \
+  ${PYTHON_PN}-pkg-resources \
   ${PYTHON_PN}-pkgutil \
   ${PYTHON_PN}-plistlib \
   ${PYTHON_PN}-shell \
@@ -58,8 +59,3 @@ RDEPENDS_${PYTHON_PN}-pkg-resources = "\
   ${PYTHON_PN}-plistlib \
   ${PYTHON_PN}-pprint \
 "
-# Due to the way OE-Core implemented native recipes, the native class cannot
-# have a dependency on something that is not a recipe name. Work around that by
-# manually setting RPROVIDES.
-RDEPENDS_${PN}_append = " ${PYTHON_PN}-pkg-resources"
-RPROVIDES_append_class-native = " ${PYTHON_PN}-pkg-resources-native"

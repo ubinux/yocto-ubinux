@@ -33,6 +33,8 @@ PACKAGECONFIG_class-native = ""
 PACKAGECONFIG_class-nativesdk = ""
 
 PACKAGECONFIG[cryptodev-linux] = "enable-devcryptoeng,disable-devcryptoeng,cryptodev-linux,,cryptodev-module"
+PACKAGECONFIG[no-tls1] = "no-tls1"
+PACKAGECONFIG[no-tls1_1] = "no-tls1_1"
 
 B = "${WORKDIR}/build"
 do_configure[cleandirs] = "${B}"
@@ -51,6 +53,20 @@ EXTRA_OECONF_class-nativesdk = "--with-rand-seed=os,devrandom"
 # Relying on hardcoded built-in paths causes openssl-native to not be relocateable from sstate.
 CFLAGS_append_class-native = " -DOPENSSLDIR=/not/builtin -DENGINESDIR=/not/builtin"
 CFLAGS_append_class-nativesdk = " -DOPENSSLDIR=/not/builtin -DENGINESDIR=/not/builtin"
+
+# Disable deprecated crypto algorithms
+# Retained for compatibilty
+# des (curl)
+# dh (python-ssl)
+# dsa (rpm)
+# md4 (cyrus-sasl freeradius hostapd)
+# bf (wvstreams postgresql x11vnc crda znc cfengine)
+# rc4 (freerdp librtorrent ettercap xrdp transmission pam-ssh-agent-auth php)
+# rc2 (mailx)
+# psk (qt5)
+# srp (libest)
+# whirlpool (qca)
+DEPRECATED_CRYPTO_FLAGS = "no-ssl no-idea no-rc5 no-md2 no-camellia no-mdc2 no-scrypt no-seed no-siphash no-sm2 no-sm3 no-sm4"
 
 do_configure () {
 	os=${HOST_OS}
@@ -125,7 +141,7 @@ do_configure () {
 	# WARNING: do not set compiler/linker flags (-I/-D etc.) in EXTRA_OECONF, as they will fully replace the
 	# environment variables set by bitbake. Adjust the environment variables instead.
 	HASHBANGPERL="/usr/bin/env perl" PERL=perl PERL5LIB="${S}/external/perl/Text-Template-1.46/lib/" \
-	perl ${S}/Configure ${EXTRA_OECONF} ${PACKAGECONFIG_CONFARGS} --prefix=$useprefix --openssldir=${libdir}/ssl-1.1 --libdir=${libdir} $target
+	perl ${S}/Configure ${EXTRA_OECONF} ${PACKAGECONFIG_CONFARGS} ${DEPRECATED_CRYPTO_FLAGS} --prefix=$useprefix --openssldir=${libdir}/ssl-1.1 --libdir=${libdir} $target
 	perl ${B}/configdata.pm --dump
 }
 
@@ -215,6 +231,8 @@ RDEPENDS_${PN}-bin += "openssl-conf"
 BBCLASSEXTEND = "native nativesdk"
 
 CVE_PRODUCT = "openssl:openssl"
+
+CVE_VERSION_SUFFIX = "alphabetical"
 
 # Only affects OpenSSL >= 1.1.1 in combination with Apache < 2.4.37
 # Apache in meta-webserver is already recent enough

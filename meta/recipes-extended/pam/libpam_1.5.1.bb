@@ -23,6 +23,7 @@ SRC_URI = "https://github.com/linux-pam/linux-pam/releases/download/v${PV}/Linux
            file://libpam-xtests.patch \
            file://0001-modules-pam_namespace-Makefile.am-correctly-install-.patch \
            file://0001-Makefile.am-support-usrmage.patch \
+           file://run-ptest \
            "
 
 SRC_URI[sha256sum] = "201d40730b1135b1b3cdea09f2c28ac634d73181ccd0172ceddee3649c5792fc"
@@ -40,7 +41,7 @@ CFLAGS_append = " -fPIC "
 
 S = "${WORKDIR}/Linux-PAM-${PV}"
 
-inherit autotools gettext pkgconfig systemd
+inherit autotools gettext pkgconfig systemd ptest
 
 PACKAGECONFIG ??= ""
 PACKAGECONFIG[audit] = "--enable-audit,--disable-audit,audit,"
@@ -82,13 +83,6 @@ RRECOMMENDS_${PN} = "${PN}-runtime-${libpam_suffix}"
 RRECOMMENDS_${PN}_class-native = ""
 
 python populate_packages_prepend () {
-    def pam_plugin_append_file(pn, dir, file):
-        nf = os.path.join(dir, file)
-        of = d.getVar('FILES_' + pn)
-        if of:
-            nf = of + " " + nf
-        d.setVar('FILES_' + pn, nf)
-
     def pam_plugin_hook(file, pkg, pattern, format, basename):
         pn = d.getVar('PN')
         libpam_suffix = d.getVar('libpam_suffix')
@@ -116,14 +110,14 @@ python populate_packages_prepend () {
 
     do_split_packages(d, pam_libdir, r'^pam(.*)\.so$', pam_pkgname,
                       'PAM plugin for %s', hook=pam_plugin_hook, extra_depends='')
-    pam_plugin_append_file('%spam-plugin-unix' % mlprefix, pam_sbindir, 'unix_chkpwd')
-    pam_plugin_append_file('%spam-plugin-unix' % mlprefix, pam_sbindir, 'unix_update')
-    pam_plugin_append_file('%spam-plugin-tally' % mlprefix, pam_sbindir, 'pam_tally')
-    pam_plugin_append_file('%spam-plugin-tally2' % mlprefix, pam_sbindir, 'pam_tally2')
-    pam_plugin_append_file('%spam-plugin-timestamp' % mlprefix, pam_sbindir, 'pam_timestamp_check')
-    pam_plugin_append_file('%spam-plugin-mkhomedir' % mlprefix, pam_sbindir, 'mkhomedir_helper')
-    pam_plugin_append_file('%spam-plugin-console' % mlprefix, pam_sbindir, 'pam_console_apply')
     do_split_packages(d, pam_filterdir, r'^(.*)$', 'pam-filter-%s', 'PAM filter for %s', extra_depends='')
+}
+
+do_compile_ptest() {
+        cd tests
+        sed -i -e 's/$(MAKE) $(AM_MAKEFLAGS) check-TESTS//' Makefile
+        oe_runmake check-am
+        cd -
 }
 
 do_install() {
@@ -143,6 +137,13 @@ do_install() {
 	if ${@bb.utils.contains('DISTRO_FEATURES','systemd','true','false',d)}; then
 		echo "session optional pam_systemd.so" >> ${D}${sysconfdir}/pam.d/common-session
 	fi
+}
+
+do_install_ptest() {
+    if [ ${PTEST_ENABLED} = "1" ]; then
+        mkdir -p ${D}${PTEST_PATH}/tests
+        install -m 0755 ${B}/tests/.libs/* ${D}${PTEST_PATH}/tests
+    fi
 }
 
 inherit features_check
