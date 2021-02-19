@@ -25,7 +25,6 @@ UBINUX_PKGS = " \
 	atk \
 	audit \
 	auditd \
-	audispd-plugins \
 	bastille \
 	bdftopcf \
 	bind \
