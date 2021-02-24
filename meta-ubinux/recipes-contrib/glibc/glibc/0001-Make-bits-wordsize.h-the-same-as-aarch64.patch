@@ -1,0 +1,25 @@
+From 7b160d9270c2d2190f6cc1f4e4d587400a362e95 Mon Sep 17 00:00:00 2001
+From: Lei Maohui <leimaohui@cn.fujitsu.com>
+Date: Thu, 18 Feb 2021 11:52:13 +0900
+Subject: [PATCH] Make bits/wordsize.h the same as aarch64.
+
+Signed-off-by: Lei Maohui <leimaohui@cn.fujitsu.com>
+---
+ sysdeps/arm/bits/wordsize.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sysdeps/arm/bits/wordsize.h b/sysdeps/arm/bits/wordsize.h
+index 34fcdef1f1a..9a754514b38 100644
+--- a/sysdeps/arm/bits/wordsize.h
++++ b/sysdeps/arm/bits/wordsize.h
+@@ -1,6 +1,6 @@
+ /* Determine the wordsize from the preprocessor defines.
+ 
+-   Copyright (C) 2016-2020 Free Software Foundation, Inc.
++   Copyright (C) 2016-2021 Free Software Foundation, Inc.
+    This file is part of the GNU C Library.
+ 
+    The GNU C Library is free software; you can redistribute it and/or
+-- 
+2.25.1
+
