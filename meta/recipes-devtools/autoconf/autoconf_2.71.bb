@@ -40,10 +40,13 @@ RDEPENDS_${PN} = "m4 gnu-config \
 		  perl-module-file-spec \
 		  perl-module-file-spec-unix \
 		  perl-module-file-stat \
+                  perl-module-file-temp \
 		  perl-module-getopt-long \
 		  perl-module-io-file \
+                  perl-module-list-util \
 		  perl-module-overloading \
 		  perl-module-posix \
+                  perl-module-scalar-util \
 		  perl-module-symbol \
 		  perl-module-thread-queue \
 		  perl-module-threads \
@@ -65,7 +68,7 @@ update_gnu_config() {
 	install -m 0755 ${STAGING_DATADIR_NATIVE}/gnu-config/config.guess ${S}/build-aux
 	install -m 0755 ${STAGING_DATADIR_NATIVE}/gnu-config/config.sub ${S}/build-aux
 }
-do_configure[prefuncss] += "update_gnu_config"
+do_configure[prefuncs] += "update_gnu_config"
 
 do_configure_class-native() {
 	oe_runconf
