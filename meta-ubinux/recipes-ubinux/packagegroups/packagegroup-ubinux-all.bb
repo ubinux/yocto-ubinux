@@ -46,7 +46,6 @@ UBINUX_PKGS = " \
 	consolekit \
 	coreutils-doc \
 	cpufrequtils \
-	crash \
 	cryptodev-linux \
 	czmq \
 	daq \
