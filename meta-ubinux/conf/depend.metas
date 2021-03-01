@@ -589,7 +589,7 @@ FILES=conf/layer.conf
 [meta-spdxscanner]
 GITURL=ssh://10.130.70.189/ubinux-dev/common/ubinux-layers/yocto/meta-spdxscanner
 BRANCH=master
-HEADID=be89efcac00aa9b35178fde65391c9e4b5dbfb13
+HEADID=d3f7442795fc4ccf49cc3169c2bb2683f836ffb9
 FILES=conf/layer.conf
  classes
 
