@@ -1,5 +1,6 @@
 SUMMARY = "eudev is a fork of systemd's udev"
 HOMEPAGE = "https://wiki.gentoo.org/wiki/Eudev"
+DESCRIPTION = "eudev is Gentoo's fork of udev, systemd's device file manager for the Linux kernel. It manages device nodes in /dev and handles all user space actions when adding or removing devices."
 LICENSE = "GPLv2.0+ & LGPL-2.1+"
 LICENSE_libudev = "LGPL-2.1+"
 LIC_FILES_CHKSUM = "file://COPYING;md5=751419260aa954499f7abaabaa882bbe"
@@ -20,8 +21,8 @@ SRC_URI = "https://dev.gentoo.org/~blueness/${BPN}/${BP}.tar.gz \
            file://udev.rules \
 "
 
-SRC_URI[md5sum] = "dedfb1964f6098fe9320de827957331f"
-SRC_URI[sha256sum] = "89618619084a19e1451d373c43f141b469c9fd09767973d73dd268b92074d4fc"
+SRC_URI[md5sum] = "60b135a189523f333cea5f71a3345c8d"
+SRC_URI[sha256sum] = "87bb028d470fd1b85169349b44c55d5b733733dc2d50ddf1196e026725ead034"
 
 inherit autotools update-rc.d qemu pkgconfig features_check
 

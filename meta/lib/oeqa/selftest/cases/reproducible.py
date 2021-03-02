@@ -28,38 +28,21 @@ import datetime
 # ruby-ri-docs, meson:
 #https://autobuilder.yocto.io/pub/repro-fail/oe-reproducible-20210215-0_td9la2/packages/diff-html/
 exclude_packages = [
-	'bootchart2-doc',
-	'cups',
-	'efivar',
-	'epiphany',
-	'gcr',
 	'glide',
 	'go-dep',
 	'go-helloworld',
 	'go-runtime',
 	'go_',
-	'gst-devtools',
-	'gstreamer1.0-python',
-	'gtk-doc',
-	'igt-gpu-tools',
-	'libaprutil',
-	'libhandy-1-src',
-	'libid3tag',
-	'libsecret-dev',
-	'libsecret-src',
+	'go-',
 	'lttng-tools-dbg',
 	'lttng-tools-ptest',
 	'ltp',
 	'meson',
 	'ovmf-shell-efi',
-	'parted-ptest',
 	'perf',
 	'python3-cython',
 	'qemu',
-	'ruby-ri-docs',
-	'swig',
-	'syslinux-misc',
-	'systemd-bootchart'
+	'ruby-ri-docs'
 	]
 
 def is_excluded(package):
@@ -131,7 +114,7 @@ def compare_file(reference, test, diffutils_sysroot):
         result.status = MISSING
         return result
 
-    r = runCmd(['cmp', '--quiet', reference, test], native_sysroot=diffutils_sysroot, ignore_status=True)
+    r = runCmd(['cmp', '--quiet', reference, test], native_sysroot=diffutils_sysroot, ignore_status=True, sync=False)
 
     if r.status:
         result.status = DIFFERENT
@@ -167,7 +150,7 @@ class DiffoscopeTests(OESelftestTestCase):
             self.assertTrue(os.path.exists(os.path.join(tmpdir, 'index.html')), "HTML index not found!")
 
 class ReproducibleTests(OESelftestTestCase):
-    package_classes = ['deb', 'ipk']
+    package_classes = ['deb', 'ipk', 'rpm']
     images = ['core-image-minimal', 'core-image-sato', 'core-image-full-cmdline', 'world']
     save_results = False
     if 'OEQA_DEBUGGING_SAVED_OUTPUT' in os.environ:
