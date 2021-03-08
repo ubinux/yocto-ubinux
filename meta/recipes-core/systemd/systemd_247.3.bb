@@ -484,10 +484,15 @@ FILES_${PN}-container = "${sysconfdir}/dbus-1/system.d/org.freedesktop.import1.c
                          ${datadir}/polkit-1/actions/org.freedesktop.machine1.policy \
                         "
 
+# "machinectl import-tar" uses "tar --numeric-owner", not supported by busybox.
 RRECOMMENDS_${PN}-container += "\
-                         ${PN}-journal-upload \
-                         ${PN}-journal-remote \
                          ${PN}-journal-gatewayd \
+                         ${PN}-journal-remote \
+                         ${PN}-journal-upload \
+                         kernel-module-dm-mod \
+                         kernel-module-loop \
+                         kernel-module-tun \
+                         tar \
                         "
 
 FILES_${PN}-extra-utils = "\
