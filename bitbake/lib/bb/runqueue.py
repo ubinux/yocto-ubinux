@@ -1943,6 +1943,10 @@ class RunQueueExecute:
             logger.error("Scenequeue had holdoff tasks: %s" % pprint.pformat(self.holdoff_tasks))
             err = True
 
+        for tid in self.scenequeue_covered.intersection(self.scenequeue_notcovered):
+            # No task should end up in both covered and uncovered, that is a bug.
+            logger.error("Setscene task %s in both covered and notcovered." % tid)
+
         for tid in self.rqdata.runq_setscene_tids:
             if tid not in self.scenequeue_covered and tid not in self.scenequeue_notcovered:
                 err = True
@@ -2431,6 +2435,9 @@ class RunQueueExecute:
 
         for dep in sorted(self.sqdata.sq_deps[task]):
             if fail and task in self.sqdata.sq_harddeps and dep in self.sqdata.sq_harddeps[task]:
+                if dep in self.scenequeue_covered or dep in self.scenequeue_notcovered:
+                    # dependency could be already processed, e.g. noexec setscene task
+                    continue
                 logger.debug2("%s was unavailable and is a hard dependency of %s so skipping" % (task, dep))
                 self.sq_task_failoutright(dep)
                 continue
