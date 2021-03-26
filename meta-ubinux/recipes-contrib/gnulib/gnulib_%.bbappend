@@ -1,2 +1,0 @@
-deltask do_deploy_archives
-deltask do_spdx
