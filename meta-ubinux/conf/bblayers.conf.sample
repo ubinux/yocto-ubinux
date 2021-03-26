@@ -40,4 +40,4 @@ BBLAYERS_NON_REMOVABLE ?= " \
   ##COREBASE##/meta \
   ##COREBASE##/meta-yocto \
   "
-LAYERSERIES_COMPAT_ubinux = "dunfell gatesgarth"
+LAYERSERIES_COMPAT_ubinux = "hardknott"
