@@ -13,12 +13,12 @@ fi
 
 MACHINE=$1
 BUILD=$2
-DOWNLOADS=/ubinux-dev/common/downloads/202104
 export TEMPLATECONF="meta-ubinux/conf"
 
 #. trunk/poky-ubinux/oe-init-build-env ${BUILD}
 . ./oe-init-build-env ${BUILD}
 
+DOWNLOADS=$(readlink -f $2)/downloads/downloads-ubinux202104
 add_conf_append ()
 {
 cat << EOF >> conf/local.conf
