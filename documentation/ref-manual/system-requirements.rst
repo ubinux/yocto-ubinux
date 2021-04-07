@@ -59,7 +59,7 @@ distributions:
 
 -  Debian GNU/Linux 10.x (Buster)
 
--  OpenSUSE Leap 15.1
+-  openSUSE Leap 15.1
 
 
 .. note::
@@ -294,7 +294,7 @@ installer and automatically installs the tools for you:
 
    During execution, the buildtools tarball will be downloaded, the
    checksum of the download will be verified, the installer will be run
-   for you, and some basic checks will be run to to make sure the
+   for you, and some basic checks will be run to make sure the
    installation is functional.
 
    To avoid the need of ``sudo`` privileges, the ``install-buildtools``
