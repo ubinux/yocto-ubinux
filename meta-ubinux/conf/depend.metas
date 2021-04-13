@@ -15,7 +15,7 @@ metas=meta-gplv2
 [meta-gplv2]
 GITURL=ssh://10.130.70.189/ubinux-dev/common/ubinux-layers/yocto/meta-gplv2
 BRANCH=master
-HEADID=453c4ab9cd4a20c19726ddd1bb1ace723a705285
+HEADID=9e119f333cc8f53bd3cf64326f826dbc6ce3db0f
 FILES=conf/
  licenses/
  recipes-core/readline/
@@ -36,7 +36,7 @@ FILES=conf/
 [meta-oe]
 GITURL=ssh://10.130.70.189/ubinux-dev/common/ubinux-layers/yocto/meta-openembedded.git
 BRANCH=master
-HEADID=589aa162cead42acdd7e8dbd7c0243b95e341f19
+HEADID=5d8dfa1ad4ac5d32536a10c9e299a3dd17296fc9
 FILES=meta-oe/conf/
  meta-oe/COPYING.MIT
  meta-oe/licenses/
@@ -54,14 +54,14 @@ FILES=meta-oe/conf/
  meta-oe/recipes-graphics/tslib/
  meta-oe/recipes-graphics/xorg-app/xlsfonts_1.0.6.bb
  meta-oe/recipes-graphics/xorg-app/xrdb_1.2.0.bb
- meta-oe/recipes-graphics/xorg-app/xterm_362.bb
+ meta-oe/recipes-graphics/xorg-app/xterm_367.bb
  meta-oe/recipes-graphics/xorg-app/xterm/
  meta-oe/recipes-graphics/xorg-app/xwd_1.0.7.bb
  meta-oe/recipes-graphics/xorg-app/iceauth_1.0.8.bb
  meta-oe/recipes-graphics/xorg-app/setxkbmap_1.3.2.bb
  meta-oe/recipes-graphics/xorg-data/
  meta-oe/recipes-graphics/xorg-driver/xf86-input-void_1.4.1.bb
- meta-oe/recipes-graphics/xorg-lib/libxaw_1.0.13.bb
+ meta-oe/recipes-graphics/xorg-lib/libxaw_1.0.14.bb
  meta-oe/recipes-graphics/xorg-app/sessreg_1.1.2.bb
  meta-oe/recipes-graphics/xorg-app/sessreg/
  meta-oe/recipes-graphics/libsdl/libsdl_1.2.15.bb
@@ -422,7 +422,7 @@ FILES=meta-oe/conf/
 [meta-freescale]
 GITURL=ssh://10.130.70.189/ubinux-dev/common/ubinux-layers/yocto/meta-freescale
 BRANCH=master
-HEADID=0a435d64e588843f6943d6e5723e5ecc12990aa2
+HEADID=064ee01ffbfff34e50e018ac1ba1e636339c7657
 FILES=conf/layer.conf
  custom-licenses/
  classes/
@@ -452,7 +452,7 @@ FILES=meta-cgl-common/conf/layer.conf
 [meta-cloud-services]
 GITURL=ssh://10.130.70.189/ubinux-dev/common/ubinux-layers/yocto/meta-cloud-services
 BRANCH=master
-HEADID=5355a496725714fd97bd3a766d9f273d91878b82
+HEADID=a878d3aedf0339cf121c0c933d9f3cfb526f56f9
 FILES=conf/layer.conf
  classes/
  meta-openstack/classes/default_configs.bbclass
@@ -512,7 +512,7 @@ FILES=conf/layer.conf
 [meta-virtualization]
 GITURL=ssh://10.130.70.189/ubinux-dev/common/ubinux-layers/yocto/meta-virtualization
 BRANCH=master
-HEADID=69c9ed9a1d505c50cdaa9f91303f8053d0a6e391
+HEADID=3124f23254045209974337a20e8f51aadbc5c403
 FILES=conf/layer.conf
  classes/
  files/
@@ -526,14 +526,14 @@ FILES=conf/layer.conf
 [meta-selinux]
 GITURL=ssh://10.130.70.189/ubinux-dev/common/ubinux-layers/yocto/meta-selinux
 BRANCH=master
-HEADID=ab7ce3d5f68b6f00f155d892b9ba510ed95f8afa
+HEADID=5753d1522526ce5e9ef8df138e151aa9248016ac
 FILES=conf/layer.conf
  recipes-security/audit/
 
 [meta-security]
 GITURL=ssh://10.130.70.189/ubinux-dev/common/ubinux-layers/yocto/meta-security.git
 BRANCH=master
-HEADID=fffd85ac87079fedc9fae2c7e211461cd98855ba
+HEADID=e70a97b5702ce4153a5159f16d7b88f360c3b3ec
 FILES=conf
  recipes-ids/samhain
  recipes-perl/
@@ -555,7 +555,7 @@ FILES=conf
 [meta-qt5]
 GITURL=ssh://10.130.70.189/ubinux-dev/common/ubinux-layers/yocto/meta-qt5
 BRANCH=master
-HEADID=324843cb1a2feb5f5c7b0064ca33edaa605cb749
+HEADID=a00af3eae082b772469d9dd21b2371dd4d237684
 FILES=conf/layer.conf
  recipes-qt/qt5/qttools_git.bb
  recipes-qt/qt5/qt5-git.inc
@@ -592,7 +592,7 @@ FILES=conf/layer.conf
 [meta-spdxscanner]
 GITURL=ssh://10.130.70.189/ubinux-dev/common/ubinux-layers/yocto/meta-spdxscanner
 BRANCH=master
-HEADID=d3f7442795fc4ccf49cc3169c2bb2683f836ffb9
+HEADID=986bb2be79faf0f382cc2c1462b312dda23f35cb
 FILES=conf/layer.conf
  classes
  recipes-devtools/
@@ -601,7 +601,7 @@ FILES=conf/layer.conf
 [meta-swupdate]
 GITURL=ssh://10.130.70.189/ubinux-dev/common/ubinux-layers/yocto/meta-swupdate
 BRANCH=master
-HEADID=065aafa41cff44985170b9ff6170ff9f87007b7f
+HEADID=6433af0914730030bd182f4230aac69e664d23c5
 FILES=conf/layer.conf
  recipes-support/swupdate/
  recipes-bsp/u-boot/
@@ -610,6 +610,6 @@ FILES=conf/layer.conf
 [meta-linaro]
 GITURL=ssh://10.130.70.189/ubinux-dev/common/ubinux-layers/yocto/meta-linaro
 BRANCH=master
-HEADID=11091b487e1ad4c6a4adfac34d958a3d9d9ccd17
+HEADID=fb96032b38e3064290ab0891238c92d47a45f151
 FILES=meta-linaro/conf/layer.conf
  meta-linaro/recipes-kernel/trace-cmd
