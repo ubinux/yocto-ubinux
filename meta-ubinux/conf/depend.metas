@@ -13,7 +13,7 @@ metas=meta-gplv2
  meta-linaro
 
 [meta-gplv2]
-GITURL=ssh://10.130.70.189/ubinux-dev/common/ubinux-layers/yocto/meta-gplv2
+GITURL=https://git.yoctoproject.org/git/meta-gplv2
 BRANCH=master
 HEADID=9e119f333cc8f53bd3cf64326f826dbc6ce3db0f
 FILES=conf/
@@ -34,7 +34,7 @@ FILES=conf/
  recipes-support/gdbm/
 
 [meta-oe]
-GITURL=ssh://10.130.70.189/ubinux-dev/common/ubinux-layers/yocto/meta-openembedded.git
+GITURL=http://git.openembedded.org/meta-openembedded
 BRANCH=master
 HEADID=5d8dfa1ad4ac5d32536a10c9e299a3dd17296fc9
 FILES=meta-oe/conf/
@@ -421,7 +421,7 @@ FILES=meta-oe/conf/
  meta-systemd/oe-core/recipes-core/util-linux/
 
 [meta-freescale]
-GITURL=ssh://10.130.70.189/ubinux-dev/common/ubinux-layers/yocto/meta-freescale
+GITURL=https://git.yoctoproject.org/git/meta-freescale
 BRANCH=master
 HEADID=722b1e6fc4f069cee4565c3fc9c7f0669529266d
 FILES=conf/layer.conf
@@ -435,7 +435,7 @@ FILES=conf/layer.conf
 
 
 [meta-cgl]
-GITURL=ssh://10.130.70.189/ubinux-dev/common/ubinux-layers/yocto/meta-cgl.git
+GITURL=https://git.yoctoproject.org/git/meta-cgl
 BRANCH=master
 HEADID=305c9553ec3f6b850ca2b45969643211320b0954
 FILES=meta-cgl-common/conf/layer.conf
@@ -451,7 +451,7 @@ FILES=meta-cgl-common/conf/layer.conf
  meta-cgl-common/recipes-cgl/pacemaker/
 
 [meta-cloud-services]
-GITURL=ssh://10.130.70.189/ubinux-dev/common/ubinux-layers/yocto/meta-cloud-services
+GITURL=http://git.yoctoproject.org/git/meta-cloud-services
 BRANCH=master
 HEADID=a878d3aedf0339cf121c0c933d9f3cfb526f56f9
 FILES=conf/layer.conf
@@ -511,7 +511,7 @@ FILES=conf/layer.conf
  recipes-support/nss-pam-ldapd/
 
 [meta-virtualization]
-GITURL=ssh://10.130.70.189/ubinux-dev/common/ubinux-layers/yocto/meta-virtualization
+GITURL=http://git.yoctoproject.org/git/meta-virtualization
 BRANCH=master
 HEADID=3124f23254045209974337a20e8f51aadbc5c403
 FILES=conf/layer.conf
@@ -525,14 +525,14 @@ FILES=conf/layer.conf
  recipes-containers/criu/
 
 [meta-selinux]
-GITURL=ssh://10.130.70.189/ubinux-dev/common/ubinux-layers/yocto/meta-selinux
+GITURL=http://git.yoctoproject.org/git/meta-selinux
 BRANCH=master
 HEADID=5753d1522526ce5e9ef8df138e151aa9248016ac
 FILES=conf/layer.conf
  recipes-security/audit/
 
 [meta-security]
-GITURL=ssh://10.130.70.189/ubinux-dev/common/ubinux-layers/yocto/meta-security.git
+GITURL=http://git.yoctoproject.org/git/meta-security
 BRANCH=master
 HEADID=e70a97b5702ce4153a5159f16d7b88f360c3b3ec
 FILES=conf
@@ -554,7 +554,7 @@ FILES=conf
  
 
 [meta-qt5]
-GITURL=ssh://10.130.70.189/ubinux-dev/common/ubinux-layers/yocto/meta-qt5
+GITURL=https://github.com/meta-qt5/meta-qt5.git
 BRANCH=master
 HEADID=a00af3eae082b772469d9dd21b2371dd4d237684
 FILES=conf/layer.conf
@@ -591,7 +591,7 @@ FILES=conf/layer.conf
  licenses/
 
 [meta-spdxscanner]
-GITURL=ssh://10.130.70.189/ubinux-dev/common/ubinux-layers/yocto/meta-spdxscanner
+GITURL=https://git.yoctoproject.org/git/meta-spdxscanner
 BRANCH=master
 HEADID=967ec220a19598aaf9a812ad9ff46c49c65bb0f6
 FILES=conf/layer.conf
@@ -600,7 +600,7 @@ FILES=conf/layer.conf
 
 
 [meta-swupdate]
-GITURL=ssh://10.130.70.189/ubinux-dev/common/ubinux-layers/yocto/meta-swupdate
+GITURL=https://github.com/sbabic/meta-swupdate.git
 BRANCH=master
 HEADID=6433af0914730030bd182f4230aac69e664d23c5
 FILES=conf/layer.conf
@@ -609,7 +609,7 @@ FILES=conf/layer.conf
  recipes-devtools/mtd/
 
 [meta-linaro]
-GITURL=ssh://10.130.70.189/ubinux-dev/common/ubinux-layers/yocto/meta-linaro
+GITURL=https://git.linaro.org/openembedded/meta-linaro.git
 BRANCH=master
 HEADID=fb96032b38e3064290ab0891238c92d47a45f151
 FILES=meta-linaro/conf/layer.conf
