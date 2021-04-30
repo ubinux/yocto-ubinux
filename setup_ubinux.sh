@@ -18,7 +18,7 @@ export TEMPLATECONF="meta-ubinux/conf"
 #. trunk/poky-ubinux/oe-init-build-env ${BUILD}
 . ./oe-init-build-env ${BUILD}
 
-DOWNLOADS=$(readlink -f $2)/downloads/downloads-ubinux202007
+DOWNLOADS=$(readlink -f $2)/downloads/downloads-ubinux202010
 add_conf_append ()
 {
 cat << EOF >> conf/local.conf
