@@ -57,10 +57,9 @@ UBINUX_PKGS = " \
 	daq \
 	devmem2 \
 	dfu-util \
-	dhcpcd  \
-	kea \
-	dialog \
+	dhcpcd \
 	dnf \
+	dialog \
 	dosfstools \
 	edac-utils \
 	encodings \
@@ -109,6 +108,7 @@ UBINUX_PKGS = " \
 	libhugetlbfs \
 	iwd \
 	kbd \
+	kea \
 	kexec-tools \
 	less \
 	libcap-ng \
@@ -188,6 +188,7 @@ UBINUX_PKGS = " \
 	netkit-rsh-client \
 	netkit-rsh-server \
 	nfs-export-root \
+	novnc \
 	openhpi \
 	openssh \
 	paxctl \
@@ -493,6 +494,7 @@ UBINUX_PKGS = " \
 	lmsensors-config-sensord \
 	lmsensors-sensorsdetect \
 	babeltrace \
+	matchbox-keyboard \
 	mesa-megadriver \
 	nano \
 	ncurses-terminfo \
@@ -534,17 +536,6 @@ UBINUX_PKGS = " \
 	qtquickcontrols \
 	qtscript \
 	pulseaudio-lib-alsa-util \
-	pulseaudio-lib-avahi-wrap \
-	pulseaudio-lib-bluez5-util \
-	pulseaudio-lib-cli \
-	pulseaudio-lib-oss-util \
-	pulseaudio-lib-protocol-cli \
-	pulseaudio-lib-protocol-http \
-	pulseaudio-lib-protocol-native \
-	pulseaudio-lib-protocol-simple \
-	pulseaudio-lib-rtp \
-	pulseaudio-misc \
-	pulseaudio-server \
 	quagga-bgpd \
 	quagga-isisd \
 	quagga-ospf6d \
@@ -559,6 +550,8 @@ UBINUX_PKGS = " \
 	smack \
 	snappy \
 	sxpm \
+	tigervnc \
+	trace-cmd \
 	tslib-calibrate \
 	tslib-tests \
 	tzdata-africa \
@@ -626,13 +619,12 @@ UBINUX_PKGS = " \
 	python3-xxhash \
 	python3-wtforms \
 	python3-pyasn1-modules \
+	python3-websockify \
 	python3-zopeinterface \
 	\
 	xmlto \
 	expect \
 	cim-schema-exper \
-	upm \
-	trace-cmd \
 "
 
 

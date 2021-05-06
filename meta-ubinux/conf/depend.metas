@@ -66,6 +66,7 @@ FILES=meta-oe/conf/
  meta-oe/recipes-graphics/xorg-app/sessreg/
  meta-oe/recipes-graphics/libsdl/libsdl_1.2.15.bb
  meta-oe/recipes-graphics/libsdl/libsdl-1.2.15/
+ meta-oe/recipes-graphics/tigervnc/
  
  meta-oe/recipes-support/ccid/
  meta-oe/recipes-crypto/cryptsetup/
@@ -499,8 +500,10 @@ FILES=conf/layer.conf
  meta-openstack/recipes-devtools/ruby/net-ssh_git.bb
  meta-openstack/recipes-devtools/ruby/mixlib-log_git.bb
  meta-openstack/recipes-devtools/ruby/erubis_git.bb
+ meta-openstack/recipes-devtools/python/python3-websockify_0.9.0.bb
 
  meta-openstack/recipes-extended/libpam/
+ meta-openstack/recipes-extended/novnc/novnc_git.bb
  meta-openstack/recipes-extended/qpid/
  meta-openstack/recipes-support/tgt/
  meta-openstack/recipes-support/postgresql/

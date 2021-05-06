@@ -53,7 +53,6 @@ UBINUX_PKGS = " \
 	dfu-util \
 	dhcpcd \
 	dnf \
-	kea \
 	dialog \
 	dosfstools \
 	edac-utils \
@@ -103,6 +102,7 @@ UBINUX_PKGS = " \
 	libhugetlbfs \
 	iwd \
 	kbd \
+	kea \
 	kexec-tools \
 	less \
 	libcap-ng \
@@ -182,6 +182,7 @@ UBINUX_PKGS = " \
 	netkit-rsh-client \
 	netkit-rsh-server \
 	nfs-export-root \
+	novnc \
 	openhpi \
 	openssh \
 	paxctl \
@@ -487,6 +488,7 @@ UBINUX_PKGS = " \
 	lmsensors-config-sensord \
 	lmsensors-sensorsdetect \
 	babeltrace \
+	matchbox-keyboard \
 	mesa-megadriver \
 	nano \
 	ncurses-terminfo \
@@ -542,6 +544,8 @@ UBINUX_PKGS = " \
 	smack \
 	snappy \
 	sxpm \
+	tigervnc \
+	trace-cmd \
 	tslib-calibrate \
 	tslib-tests \
 	tzdata-africa \
@@ -560,7 +564,6 @@ UBINUX_PKGS = " \
 	uhubctl \
 	uim \
 	upm \
-        trace-cmd \
 	util-linux-hwclock \
 	util-linux-agetty \
 	util-linux-blkid \
@@ -610,6 +613,7 @@ UBINUX_PKGS = " \
 	python3-xxhash \
 	python3-wtforms \
 	python3-pyasn1-modules \
+	python3-websockify \
 	python3-zopeinterface \
 	\
 	xmlto \
