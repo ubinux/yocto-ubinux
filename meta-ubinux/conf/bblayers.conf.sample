@@ -32,7 +32,6 @@ BBLAYERS ?= " \
   ##COREBASE##/meta-security/meta-tpm \
   ##COREBASE##/meta-qt5 \
   ##COREBASE##/meta-swupdate \
-  ##COREBASE##/meta-linaro/meta-linaro  \
   ##COREBASE##/meta-spdxscanner \
   "
 BBLAYERS_NON_REMOVABLE ?= " \
