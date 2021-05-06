@@ -242,6 +242,7 @@ FILES=meta-oe/conf/
  meta-oe/recipes-kernel/ktap/
  meta-oe/recipes-kernel/bpftool/
  meta-oe/recipes-kernel/kpatch/
+ meta-oe/recipes-kernel/trace-cmd/
  meta-oe/recipes-extended/iotop
  meta-oe/recipes-connectivity/zabbix/
  meta-oe/recipes-connectivity/libndp/
@@ -601,7 +602,6 @@ FILES=conf/layer.conf
  classes
  recipes-devtools/
 
-
 [meta-swupdate]
 GITURL=ssh://10.130.70.189/ubinux-dev/common/ubinux-layers/yocto/meta-swupdate
 BRANCH=master
@@ -610,10 +610,3 @@ FILES=conf/layer.conf
  recipes-support/swupdate/
  recipes-bsp/u-boot/
  recipes-devtools/mtd/
-
-[meta-linaro]
-GITURL=ssh://10.130.70.189/ubinux-dev/common/ubinux-layers/yocto/meta-linaro
-BRANCH=master
-HEADID=fb96032b38e3064290ab0891238c92d47a45f151
-FILES=meta-linaro/conf/layer.conf
- meta-linaro/recipes-kernel/trace-cmd
