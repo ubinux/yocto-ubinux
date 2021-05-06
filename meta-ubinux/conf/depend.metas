@@ -10,7 +10,6 @@ metas=meta-gplv2
  meta-qt5
  meta-swupdate
  meta-spdxscanner
- meta-linaro
 
 [meta-gplv2]
 GITURL=ssh://10.130.70.189/ubinux-dev/common/ubinux-layers/yocto/meta-gplv2
