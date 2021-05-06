@@ -1,8 +1,8 @@
-Moving to the Yocto Project 1.6 Release
-=======================================
+Moving to the Yocto Project 1.6 Release (daisy)
+===============================================
 
 This section provides migration information for moving to the Yocto
-Project 1.6 Release from the prior release.
+Project 1.6 Release (codename "daisy") from the prior release.
 
 .. _migration-1.6-archiver-class:
 
@@ -53,8 +53,7 @@ Matching Branch Requirement for Git Fetching
 When fetching source from a Git repository using
 :term:`SRC_URI`, BitBake will now validate the
 :term:`SRCREV` value against the branch. You can specify
-the branch using the following form:
-::
+the branch using the following form::
 
       SRC_URI = "git://server.name/repository;branch=branchname"
 
@@ -207,7 +206,7 @@ functions to call and not arbitrary shell commands:
 
 For
 migration purposes, you can simply wrap shell commands in a shell
-function and then call the function. Here is an example: ::
+function and then call the function. Here is an example::
 
    my_postprocess_function() {
       echo "hello" > ${IMAGE_ROOTFS}/hello.txt
@@ -248,8 +247,7 @@ the ``autotools`` or ``autotools_stage``\ classes.
 
 ``qemu-native`` now builds without SDL-based graphical output support by
 default. The following additional lines are needed in your
-``local.conf`` to enable it:
-::
+``local.conf`` to enable it::
 
    PACKAGECONFIG_pn-qemu-native = "sdl"
    ASSUME_PROVIDED += "libsdl-native"

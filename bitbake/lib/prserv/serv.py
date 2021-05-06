@@ -18,10 +18,6 @@ import select
 
 logger = logging.getLogger("BitBake.PRserv")
 
-if sys.hexversion < 0x020600F0:
-    print("Sorry, python 2.6 or later is required.")
-    sys.exit(1)
-
 class Handler(SimpleXMLRPCRequestHandler):
     def _dispatch(self,method,params):
         try:
@@ -60,7 +56,6 @@ class PRServer(SimpleXMLRPCServer):
         self.register_function(self.quit, "quit")
         self.register_function(self.ping, "ping")
         self.register_function(self.export, "export")
-        self.register_function(self.dump_db, "dump_db")
         self.register_function(self.importone, "importone")
         self.register_introspection_functions()
 
@@ -121,26 +116,6 @@ class PRServer(SimpleXMLRPCServer):
         except sqlite3.Error as exc:
             logger.error(str(exc))
             return None
-
-    def dump_db(self):
-        """
-        Returns a script (string) that reconstructs the state of the
-        entire database at the time this function is called. The script
-        language is defined by the backing database engine, which is a
-        function of server configuration.
-        Returns None if the database engine does not support dumping to
-        script or if some other error is encountered in processing.
-        """
-        buff = io.StringIO()
-        try:
-            self.table.sync()
-            self.table.dump_db(buff)
-            return buff.getvalue()
-        except Exception as exc:
-            logger.error(str(exc))
-            return None
-        finally:
-            buff.close()
 
     def importone(self, version, pkgarch, checksum, value):
         return self.table.importone(version, pkgarch, checksum, value)
@@ -339,9 +314,6 @@ class PRServerConnection(object):
     def export(self,version=None, pkgarch=None, checksum=None, colinfo=True):
         return self.connection.export(version, pkgarch, checksum, colinfo)
 
-    def dump_db(self):
-        return self.connection.dump_db()
-
     def importone(self, version, pkgarch, checksum, value):
         return self.connection.importone(version, pkgarch, checksum, value)
 
@@ -510,3 +482,6 @@ def auto_shutdown():
 def ping(host, port):
     conn=PRServerConnection(host, port)
     return conn.ping()
+
+def connect(host, port):
+    return PRServerConnection(host, port)

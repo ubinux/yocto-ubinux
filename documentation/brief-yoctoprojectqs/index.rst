@@ -60,10 +60,10 @@ following requirements:
 
 -
 
-   -  Git 1.8.3.1 or greater
-   -  tar 1.28 or greater
-   -  Python 3.5.0 or greater.
-   -  gcc 5.0 or greater.
+   -  Git &MIN_GIT_VERSION; or greater
+   -  tar &MIN_TAR_VERSION; or greater
+   -  Python &MIN_PYTHON_VERSION; or greater.
+   -  gcc &MIN_GCC_VERSION; or greater.
 
 If your build host does not meet any of these three listed version
 requirements, you can take steps to prepare the system so that you
@@ -238,7 +238,7 @@ an entire Linux distribution, including the toolchain, from source.
 
       You can significantly speed up your build and guard against fetcher
       failures by using mirrors. To use mirrors, add these lines to your
-      local.conf file in the Build directory: ::
+      local.conf file in the Build directory::
 
          SSTATE_MIRRORS = "\
          file://.* http://sstate.yoctoproject.org/dev/PATH;downloadfilename=PATH \n \

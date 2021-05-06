@@ -1,8 +1,8 @@
-Moving to the Yocto Project 2.6 Release
-=======================================
+Moving to the Yocto Project 2.6 Release (thud)
+==============================================
 
 This section provides migration information for moving to the Yocto
-Project 2.6 Release from the prior release.
+Project 2.6 Release (codename "thud") from the prior release.
 
 .. _migration-2.6-gcc-changes:
 
@@ -118,7 +118,7 @@ For names of recipes removed because of this repository change, see the
 ---------------------------------------------------------------------------------------------------
 
 Previously, it was possible for Python recipes that inherited the
-:ref:`distutils <ref-classes-distutils>` and
+``distutils`` and
 :ref:`distutils3 <ref-classes-distutils3>` classes to fetch code
 during the :ref:`ref-tasks-configure` task to satisfy
 dependencies mentioned in ``setup.py`` if those dependencies were not
@@ -161,13 +161,11 @@ The following changes have been made:
    allows easier and more direct changes.
 
    The ``IMAGE_VERSION_SUFFIX`` variable is set in the ``bitbake.conf``
-   configuration file as follows:
-   ::
+   configuration file as follows::
 
       IMAGE_VERSION_SUFFIX = "-${DATETIME}"
 
--  Several variables have changed names for consistency:
-   ::
+-  Several variables have changed names for consistency::
 
       Old Variable Name             New Variable Name
       ========================================================
@@ -292,8 +290,7 @@ avoids the ``systemd`` recipe from becoming machine-specific for cases
 where machine-specific configurations need to be applied (e.g. for
 ``qemu*`` machines).
 
-Currently, the new recipe packages the following files:
-::
+Currently, the new recipe packages the following files::
 
    ${sysconfdir}/machine-id
    ${sysconfdir}/systemd/coredump.conf
@@ -393,8 +390,7 @@ If you wish to disable Python profile-guided optimization regardless of
 the value of ``MACHINE_FEATURES``, then ensure that
 :term:`PACKAGECONFIG` for the ``python3`` recipe
 does not contain "pgo". You could accomplish the latter using the
-following at the configuration level:
-::
+following at the configuration level::
 
    PACKAGECONFIG_remove_pn-python3 = "pgo"
 
@@ -411,8 +407,7 @@ The following miscellaneous changes occurred:
 -  Default to using the Thumb-2 instruction set for armv7a and above. If
    you have any custom recipes that build software that needs to be
    built with the ARM instruction set, change the recipe to set the
-   instruction set as follows:
-   ::
+   instruction set as follows::
 
       ARM_INSTRUCTION_SET = "arm"
 
