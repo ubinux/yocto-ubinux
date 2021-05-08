@@ -186,8 +186,10 @@ class QemuRunner:
         except:
             self.logger.error("qemurunner: qmp.py missing, please ensure it's installed")
             return False
-        qmp_port = self.tmpdir + "/." + next(tempfile._get_candidate_names())
-        qmp_param = ' -S -qmp unix:%s,server,wait' % (qmp_port)
+        # Path relative to tmpdir used as cwd for qemu below to avoid unix socket path length issues
+        qmp_file = "." + next(tempfile._get_candidate_names())
+        qmp_param = ' -S -qmp unix:./%s,server,wait' % (qmp_file)
+        qmp_port = self.tmpdir + "/" + qmp_file
 
         try:
             if self.serial_ports >= 2:
@@ -224,7 +226,7 @@ class QemuRunner:
         # blocking at the end of the runqemu script when using this within
         # oe-selftest (this makes stty error out immediately). There ought
         # to be a proper fix but this will suffice for now.
-        self.runqemu = subprocess.Popen(launch_cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, stdin=subprocess.PIPE, preexec_fn=os.setpgrp, env=env)
+        self.runqemu = subprocess.Popen(launch_cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, stdin=subprocess.PIPE, preexec_fn=os.setpgrp, env=env, cwd=self.tmpdir)
         output = self.runqemu.stdout
 
         #
@@ -287,31 +289,37 @@ class QemuRunner:
         # This will allow us to read status from Qemu if the the process
         # is still alive
         self.logger.debug("QMP Initializing to %s" % (qmp_port))
+        # chdir dance for path length issues with unix sockets
+        origpath = os.getcwd()
         try:
-            self.qmp = qmp.QEMUMonitorProtocol(qmp_port)
-        except OSError as msg:
-            self.logger.warning("Failed to initialize qemu monitor socket: %s File: %s" % (msg, msg.filename))
-            return False
-
-        self.logger.debug("QMP Connecting to %s" % (qmp_port))
-        if not os.path.exists(qmp_port) and self.is_alive():
-            self.logger.debug("QMP Port does not exist waiting for it to be created")
-            endtime = time.time() + self.runqemutime
-            while not os.path.exists(qmp_port) and self.is_alive() and time.time() < endtime:
-               self.logger.warning("QMP port does not exist yet!")
-               time.sleep(0.5)
-            if not os.path.exists(qmp_port) and self.is_alive():
-                self.logger.warning("QMP Port still does not exist but QEMU is alive")
+            os.chdir(os.path.dirname(qmp_port))
+            try:
+               self.qmp = qmp.QEMUMonitorProtocol(os.path.basename(qmp_port))
+            except OSError as msg:
+                self.logger.warning("Failed to initialize qemu monitor socket: %s File: %s" % (msg, msg.filename))
                 return False
 
-        try:
-            self.qmp.connect()
-        except OSError as msg:
-            self.logger.warning("Failed to connect qemu monitor socket: %s File: %s" % (msg, msg.filename))
-            return False
-        except qmp.QMPConnectError as msg:
-            self.logger.warning("Failed to communicate with qemu monitor: %s" % (msg))
-            return False
+            self.logger.debug("QMP Connecting to %s" % (qmp_port))
+            if not os.path.exists(qmp_port) and self.is_alive():
+                self.logger.debug("QMP Port does not exist waiting for it to be created")
+                endtime = time.time() + self.runqemutime
+                while not os.path.exists(qmp_port) and self.is_alive() and time.time() < endtime:
+                   self.logger.info("QMP port does not exist yet!")
+                   time.sleep(0.5)
+                if not os.path.exists(qmp_port) and self.is_alive():
+                    self.logger.warning("QMP Port still does not exist but QEMU is alive")
+                    return False
+
+            try:
+                self.qmp.connect()
+            except OSError as msg:
+                self.logger.warning("Failed to connect qemu monitor socket: %s File: %s" % (msg, msg.filename))
+                return False
+            except qmp.QMPConnectError as msg:
+                self.logger.warning("Failed to communicate with qemu monitor: %s" % (msg))
+                return False
+        finally:
+            os.chdir(origpath)
 
         # Release the qemu porcess to continue running
         self.run_monitor('cont')
@@ -534,6 +542,10 @@ class QemuRunner:
             self.thread.stop()
             self.thread.join()
 
+    def allowexit(self):
+        if self.thread:
+            self.thread.allowexit()
+
     def restart(self, qemuparams = None):
         self.logger.warning("Restarting qemu process")
         if self.runqemu.poll() is None:
@@ -630,6 +642,7 @@ class LoggingThread(threading.Thread):
         self.logger = logger
         self.readsock = None
         self.running = False
+        self.canexit = False
 
         self.errorevents = select.POLLERR | select.POLLHUP | select.POLLNVAL
         self.readevents = select.POLLIN | select.POLLPRI
@@ -662,6 +675,9 @@ class LoggingThread(threading.Thread):
         self.close_ignore_error(self.readpipe)
         self.close_ignore_error(self.writepipe)
         self.running = False
+
+    def allowexit(self):
+        self.canexit = True
 
     def eventloop(self):
         poll = select.poll()
@@ -719,7 +735,9 @@ class LoggingThread(threading.Thread):
             # happened. But for this code it counts as an
             # error since the connection shouldn't go away
             # until qemu exits.
-            raise Exception("Console connection closed unexpectedly")
+            if not self.canexit:
+                raise Exception("Console connection closed unexpectedly")
+            return ''
 
         return data
 
