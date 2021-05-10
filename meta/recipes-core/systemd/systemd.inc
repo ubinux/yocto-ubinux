@@ -16,6 +16,9 @@ LIC_FILES_CHKSUM = "file://LICENSE.GPL2;md5=751419260aa954499f7abaabaa882bbe \
 
 SRCREV = "17472dca0160cbe7b807ca648475fd70d0d62fe5"
 SRCBRANCH = "v247-stable"
-SRC_URI = "git://github.com/systemd/systemd-stable.git;protocol=git;branch=${SRCBRANCH}"
+SRC_URI = "git://github.com/systemd/systemd-stable.git;protocol=git;branch=${SRCBRANCH} \
+           file://7c5fd25119a495009ea62f79e5daec34cc464628.patch \
+           file://48fff0a2af3f62acd446ebec8081b039b72caad8.patch \
+"
 
 S = "${WORKDIR}/git"
