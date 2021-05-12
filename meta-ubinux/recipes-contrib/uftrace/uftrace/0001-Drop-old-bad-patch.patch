@@ -1,9 +1,7 @@
-From d10f72ba47d98cc72f15e3ef7119dfd3f6122735 Mon Sep 17 00:00:00 2001
+From 023f4d3d83c32b293e2fb7a4fbf21b1554d4dd2b Mon Sep 17 00:00:00 2001
 From: Lei Maohui <leimaohui@cn.fujitsu.com>
-Date: Fri, 16 Apr 2021 14:05:57 +0900
-Subject: [PATCH] Fix bug of runtime on aarch64.
-
-This patch has not been merged by upstream.https://github.com/namhyung/uftrace/pull/1248
+Date: Wed, 12 May 2021 14:48:10 +0900
+Subject: [PATCH] Drop old bad patch.
 
 Signed-off-by: Lei Maohui <leimaohui@cn.fujitsu.com>
 ---
@@ -11,15 +9,15 @@ Signed-off-by: Lei Maohui <leimaohui@cn.fujitsu.com>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/arch/aarch64/mcount-arch.h b/arch/aarch64/mcount-arch.h
-index 69efe521..60c2c1ba 100644
+index 60c2c1ba..69efe521 100644
 --- a/arch/aarch64/mcount-arch.h
 +++ b/arch/aarch64/mcount-arch.h
 @@ -31,7 +31,7 @@ struct mcount_arch_context {
  	double d[ARCH_MAX_FLOAT_REGS];
  };
  
--#define ARCH_PLT0_SIZE  32
-+#define ARCH_PLT0_SIZE  16
+-#define ARCH_PLT0_SIZE  16
++#define ARCH_PLT0_SIZE  32
  #define ARCH_PLTHOOK_ADDR_OFFSET  0
  
  struct mcount_disasm_engine;
