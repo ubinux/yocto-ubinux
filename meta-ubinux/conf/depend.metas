@@ -14,7 +14,7 @@ metas=meta-gplv2
 [meta-gplv2]
 GITURL=ssh://10.130.70.189/ubinux-dev/common/ubinux-layers/yocto/meta-gplv2
 BRANCH=master
-HEADID=e4da38dd796b258a1b7c82221e03c0033092a8ba
+HEADID=1ee1a73070d91e0c727f9d0db11943a61765c8d9
 FILES=conf/
  licenses/
  recipes-core/readline/
@@ -35,11 +35,12 @@ FILES=conf/
 [meta-oe]
 GITURL=ssh://10.130.70.189/ubinux-dev/common/ubinux-layers/yocto/meta-openembedded.git
 BRANCH=master
-HEADID=4fe10656553bc4afa293796c57ae99c728937ada
+HEADID=c7f8fc0200157c9ae2c6a224089fc455151d6139
 FILES=meta-oe/conf/
  meta-oe/COPYING.MIT
  meta-oe/licenses/
  meta-oe/classes/gitpkgv.bbclass
+ meta-oe/recipes-support/fltk/
  meta-oe/recipes-support/multipath-tools
  meta-oe/recipes-support/libusb/
  meta-oe/recipes-support/itstool/
@@ -424,7 +425,7 @@ FILES=meta-oe/conf/
 [meta-freescale]
 GITURL=ssh://10.130.70.189/ubinux-dev/common/ubinux-layers/yocto/meta-freescale
 BRANCH=master
-HEADID=f8fe947d5202c97b79096fd08a68d9de8e2e809f
+HEADID=7bfd1773f586a79be8abedf36e04c46b77c7c73c
 FILES=conf/layer.conf
  custom-licenses/
  classes/
@@ -516,7 +517,7 @@ FILES=conf/layer.conf
 [meta-virtualization]
 GITURL=ssh://10.130.70.189/ubinux-dev/common/ubinux-layers/yocto/meta-virtualization
 BRANCH=master
-HEADID=ba24aaeea8daf9247bd0cb00cd2761593d2f4a65
+HEADID=25b8c5d9816561ea24e3d0b3261c8c65cc6fb500
 FILES=conf/layer.conf
  classes/
  files/
@@ -559,7 +560,7 @@ FILES=conf
 [meta-qt5]
 GITURL=ssh://10.130.70.189/ubinux-dev/common/ubinux-layers/yocto/meta-qt5
 BRANCH=master
-HEADID=41027a6188fb851b35425b7ffecaa6eb420d3f01
+HEADID=a2882fecc96019781880c38fc6a81a9b71c944ad
 FILES=conf/layer.conf
  recipes-qt/qt5/qttools_git.bb
  recipes-qt/qt5/qt5-git.inc
@@ -604,7 +605,7 @@ FILES=conf/layer.conf
 [meta-swupdate]
 GITURL=ssh://10.130.70.189/ubinux-dev/common/ubinux-layers/yocto/meta-swupdate
 BRANCH=master
-HEADID=33c1f73c3b03458b5aaf8d160480289483182d5c
+HEADID=9b33cf2946c2f1e37b3478e4eae2bcd28422a169
 FILES=conf/layer.conf
  recipes-support/swupdate/
  recipes-bsp/u-boot/
