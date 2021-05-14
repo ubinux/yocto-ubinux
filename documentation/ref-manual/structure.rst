@@ -38,7 +38,7 @@ usually matches the current stable BitBake release from the BitBake
 project. BitBake, a :term:`Metadata` interpreter, reads the
 Yocto Project Metadata and runs the tasks defined by that data. Failures
 are usually caused by errors in your Metadata and not from BitBake
-itself; consequently, most users do not need to worry about BitBake.
+itself.
 
 When you run the ``bitbake`` command, the main BitBake executable (which
 resides in the ``bitbake/bin/`` directory) starts. Sourcing the
@@ -279,7 +279,7 @@ file, it uses ``sed`` to substitute final
 .. note::
 
    You can see how the ``TEMPLATECONF`` variable is used by looking at the
-   ``scripts/oe-setup-builddir``` script in the :term:`Source Directory`.
+   ``scripts/oe-setup-builddir`` script in the :term:`Source Directory`.
    You can find the Yocto Project version of the ``local.conf.sample`` file in
    the ``meta-poky/conf`` directory.
 
@@ -783,7 +783,7 @@ system. The tools, however, can also be used on targets.
 
 This directory contains non-essential applications that add features
 compared to the alternatives in core. You might need this directory for
-full tool functionality or for Linux Standard Base (LSB) compliance.
+full tool functionality.
 
 .. _structure-meta-recipes-gnome:
 
@@ -808,14 +808,6 @@ libraries.
 
 This directory contains the kernel and generic applications and
 libraries that have strong kernel dependencies.
-
-.. _structure-meta-recipes-lsb4:
-
-``meta/recipes-lsb4/``
-----------------------
-
-This directory contains recipes specifically added to support the Linux
-Standard Base (LSB) version 4.x.
 
 .. _structure-meta-recipes-multimedia:
 
