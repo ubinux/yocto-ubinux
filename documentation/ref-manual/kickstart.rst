@@ -106,13 +106,15 @@ the ``part`` and ``partition`` commands:
 -  ``--fstype``: Sets the file system type for the partition. Valid
    values are:
 
-   -  ``ext4``
+   -  ``btrfs``
 
-   -  ``ext3``
+   -  ``erofs``
 
    -  ``ext2``
 
-   -  ``btrfs``
+   -  ``ext3``
+
+   -  ``ext4``
 
    -  ``squashfs``
 
@@ -210,5 +212,5 @@ supports the following options:
 
 -  ``--configfile``: Specifies a user-defined configuration file for
    the bootloader. You can provide a full pathname for the file or a
-   file that exists in the ``canned-wks`` folder. This option overrides
+   file located in the ``canned-wks`` folder. This option overrides
    all other bootloader options.

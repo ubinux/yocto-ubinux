@@ -9,6 +9,7 @@
 *******************************
 
 - :yocto_docs:`3.3 Documentation </3.3>`
+- :yocto_docs:`3.3.1 Documentation </3.3.1>`
 
 *******************************
 3.2 'gatesgarth' Release Series
@@ -18,6 +19,7 @@
 - :yocto_docs:`3.2.1 Documentation </3.2.1>`
 - :yocto_docs:`3.2.2 Documentation </3.2.2>`
 - :yocto_docs:`3.2.3 Documentation </3.2.3>`
+- :yocto_docs:`3.2.4 Documentation </3.2.4>`
 
 ****************************
 3.1 'dunfell' Release Series
@@ -31,6 +33,7 @@
 - :yocto_docs:`3.1.5 Documentation </3.1.5>`
 - :yocto_docs:`3.1.6 Documentation </3.1.6>`
 - :yocto_docs:`3.1.7 Documentation </3.1.7>`
+- :yocto_docs:`3.1.8 Documentation </3.1.8>`
 
 ==========================
  Previous Release Manuals
