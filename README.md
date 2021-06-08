@@ -47,7 +47,6 @@ set up build environment of X86_64
 ```
 $ . setup_ubinux.sh ubinux-x86-64 ../build-ubinux-x86-64
 ```
-Note
   - You can enter the build directory to set the environment variables.
     ```
     $ cd ${build_dir}
