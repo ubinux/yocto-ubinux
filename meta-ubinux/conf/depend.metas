@@ -316,7 +316,7 @@ FILES=meta-oe/conf/
  meta-networking/recipes-daemons/lldpd/
  meta-networking/recipes-daemons/ncftp/
  meta-networking/recipes-daemons/openhpi/
- meta-metworking/recipes-devtools/python/
+ meta-networking/recipes-devtools/python/
  meta-networking/recipes-support/openipmi/
  meta-networking/recipes-daemons/opensaf
  meta-networking/recipes-daemons/postfix/
@@ -543,6 +543,8 @@ GITURL=ssh://10.130.70.189/ubinux-dev/common/ubinux-layers/yocto/meta-security.g
 BRANCH=master
 HEADID=48c7b34ec3932ac522a93e631ab9d9e805142af1
 FILES=conf
+ classes/sanity-meta-security.bbclass
+ meta-tpm/classes/sanity-meta-tpm.bbclass
  recipes-ids/samhain
  recipes-perl/
  recipes-security/ecryptfs-utils/
@@ -554,7 +556,6 @@ FILES=conf
  meta-security-compliance/recipes-auditors/lynis/
  recipes-security/paxctl/
  recipes-security/fail2ban/
- recipes-security/scapy/
  recipes-mac/smack/
  meta-tpm/conf
  meta-tpm/recipes-tpm/trousers/
