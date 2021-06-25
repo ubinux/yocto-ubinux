@@ -317,7 +317,7 @@ PREFERRED_VERSION_python-pika = "0.10.0+gitAUTOINC+b907f91415"
 ##################################################################
 ## Patch handling.
 ##################################################################
-PATCHTOOL = "patch"
+#PATCHTOOL = "patch"
 QT_DIR_NAME = "/qt5"
 LICENSE_CREATE_PACKAGE = "1"
 COPYLEFT_LICENSE_INCLUDE = "*"
