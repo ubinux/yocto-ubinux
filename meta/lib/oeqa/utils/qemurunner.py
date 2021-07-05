@@ -65,7 +65,7 @@ class QemuRunner:
         self.boot_patterns = boot_patterns
         self.tmpfsdir = tmpfsdir
 
-        self.runqemutime = 120
+        self.runqemutime = 300
         if not workdir:
             workdir = os.getcwd()
         self.qemu_pidfile = workdir + '/pidfile_' + str(os.getpid())
@@ -192,6 +192,12 @@ class QemuRunner:
         qmp_file = "." + next(tempfile._get_candidate_names())
         qmp_param = ' -S -qmp unix:./%s,server,wait' % (qmp_file)
         qmp_port = self.tmpdir + "/" + qmp_file
+        # Create a second socket connection for debugging use, 
+        # note this will NOT cause qemu to block waiting for the connection
+        qmp_file2 = "." + next(tempfile._get_candidate_names())
+        qmp_param += ' -qmp unix:./%s,server,nowait' % (qmp_file2)
+        qmp_port2 = self.tmpdir + "/" + qmp_file2
+        self.logger.info("QMP Available for connection at %s" % (qmp_port2))
 
         try:
             if self.serial_ports >= 2:
@@ -230,6 +236,7 @@ class QemuRunner:
         # to be a proper fix but this will suffice for now.
         self.runqemu = subprocess.Popen(launch_cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, stdin=subprocess.PIPE, preexec_fn=os.setpgrp, env=env, cwd=self.tmpdir)
         output = self.runqemu.stdout
+        launch_time = time.time()
 
         #
         # We need the preexec_fn above so that all runqemu processes can easily be killed
@@ -333,6 +340,10 @@ class QemuRunner:
 
             try:
                 self.qmp.connect()
+                connect_time = time.time()
+                self.logger.info("QMP connected to QEMU at %s and took %s seconds" %
+                                  (time.strftime("%D %H:%M:%S"),
+                                   time.time() - launch_time))
             except OSError as msg:
                 self.logger.warning("Failed to connect qemu monitor socket: %s File: %s" % (msg, msg.filename))
                 return False
@@ -342,8 +353,28 @@ class QemuRunner:
         finally:
             os.chdir(origpath)
 
-        # Release the qemu porcess to continue running
+        # We worry that mmap'd libraries may cause page faults which hang the qemu VM for periods
+        # causing failures. Before we "start" qemu, read through it's mapped files to try and 
+        # ensure we don't hit page faults later
+        mapdir = "/proc/" + str(self.qemupid) + "/map_files/"
+        try:
+            for f in os.listdir(mapdir):
+                linktarget = os.readlink(os.path.join(mapdir, f))
+                if not linktarget.startswith("/") or linktarget.startswith("/dev") or "deleted" in linktarget:
+                    continue
+                with open(linktarget, "rb") as readf:
+                    data = True
+                    while data:
+                        data = readf.read(4096)
+        # Centos7 doesn't allow us to read /map_files/
+        except PermissionError:
+            pass
+
+        # Release the qemu process to continue running
         self.run_monitor('cont')
+        self.logger.info("QMP released QEMU at %s and took %s seconds from connect" %
+                          (time.strftime("%D %H:%M:%S"),
+                           time.time() - connect_time))
 
         # We are alive: qemu is running
         out = self.getOutput(output)
@@ -571,8 +602,12 @@ class QemuRunner:
                         return True
         return False
 
-    def run_monitor(self, command, timeout=60):
-        return self.qmp.cmd(command)
+    def run_monitor(self, command, args=None, timeout=60):
+        if hasattr(self, 'qmp') and self.qmp:
+            if args is not None:
+                return self.qmp.cmd(command, args)
+            else:
+                return self.qmp.cmd(command)
 
     def run_serial(self, command, raw=False, timeout=60):
         # We assume target system have echo to get command status

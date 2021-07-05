@@ -397,6 +397,14 @@ python copy_buildsystem () {
             f.write('require conf/locked-sigs.inc\n')
             f.write('require conf/unlocked-sigs.inc\n')
 
+    # Copy multiple configurations if they exist in the users config directory
+    if d.getVar('BBMULTICONFIG') is not None:
+        bb.utils.mkdirhier(os.path.join(baseoutpath, 'conf', 'multiconfig'))
+        for mc in d.getVar('BBMULTICONFIG').split():
+            dest_stub = "/conf/multiconfig/%s.conf" % (mc,)
+            if os.path.exists(builddir + dest_stub):
+                shutil.copyfile(builddir + dest_stub, baseoutpath + dest_stub)
+
     if os.path.exists(builddir + '/cache/bb_unihashes.dat'):
         bb.parse.siggen.save_unitaskhashes()
         bb.utils.mkdirhier(os.path.join(baseoutpath, 'cache'))
@@ -556,6 +564,9 @@ python copy_buildsystem () {
     # sdk_ext_postinst() below) thus the checksum we take here would always
     # be different.
     manifest_file_list = ['conf/*']
+    if d.getVar('BBMULTICONFIG') is not None:
+        manifest_file_list.append('conf/multiconfig/*')
+
     esdk_manifest_excludes = (d.getVar('ESDK_MANIFEST_EXCLUDES') or '').split()
     esdk_manifest_excludes_list = []
     for exclude_item in esdk_manifest_excludes:
@@ -564,7 +575,7 @@ python copy_buildsystem () {
     with open(manifest_file, 'w') as f:
         for item in manifest_file_list:
             for fn in glob.glob(os.path.join(baseoutpath, item)):
-                if fn == manifest_file:
+                if fn == manifest_file or os.path.isdir(fn):
                     continue
                 if fn in esdk_manifest_excludes_list:
                     continue
@@ -738,6 +749,11 @@ fakeroot python do_populate_sdk_ext() {
     # currently forces this upon us
     if d.getVar('SDK_ARCH') != d.getVar('BUILD_ARCH'):
         bb.fatal('The extensible SDK can currently only be built for the same architecture as the machine being built on - SDK_ARCH is set to %s (likely via setting SDKMACHINE) which is different from the architecture of the build machine (%s). Unable to continue.' % (d.getVar('SDK_ARCH'), d.getVar('BUILD_ARCH')))
+
+    # FIXME hopefully we can remove this restriction at some point, but the eSDK
+    # can only be built for the primary (default) multiconfig
+    if d.getVar('BB_CURRENT_MC') != 'default':
+        bb.fatal('The extensible SDK can currently only be built for the default multiconfig.  Currently trying to build for %s.' % d.getVar('BB_CURRENT_MC'))
 
     d.setVar('SDK_INSTALL_TARGETS', get_sdk_install_targets(d))
     if d.getVar('SDK_INCLUDE_BUILDTOOLS') == '1':
