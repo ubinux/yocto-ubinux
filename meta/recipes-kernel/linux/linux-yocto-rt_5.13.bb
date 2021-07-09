@@ -1,4 +1,4 @@
-KBRANCH ?= "v5.4/standard/preempt-rt/base"
+KBRANCH ?= "v5.13/standard/preempt-rt/base"
 
 require recipes-kernel/linux/linux-yocto.inc
 
@@ -11,15 +11,15 @@ python () {
         raise bb.parse.SkipRecipe("Set PREFERRED_PROVIDER_virtual/kernel to linux-yocto-rt to enable it")
 }
 
-SRCREV_machine ?= "c86c4081f4764f57bbb26df8a9202c01799c3771"
-SRCREV_meta ?= "c5e5dc4e13bd4882a8ed96b8026e6fd268b68f8a"
+SRCREV_machine ?= "b1cead8d98582ca687f93e06438543b97144e5bf"
+SRCREV_meta ?= "ceb5fa598d08902fe2934c041875aa92d9a6fa19"
 
 SRC_URI = "git://git.yoctoproject.org/linux-yocto.git;branch=${KBRANCH};name=machine \
-           git://git.yoctoproject.org/yocto-kernel-cache;type=kmeta;name=meta;branch=yocto-5.4;destsuffix=${KMETA}"
+           git://git.yoctoproject.org/yocto-kernel-cache;type=kmeta;name=meta;branch=yocto-5.13;destsuffix=${KMETA}"
 
-LINUX_VERSION ?= "5.4.129"
+LINUX_VERSION ?= "5.13"
 
-LIC_FILES_CHKSUM = "file://COPYING;md5=bbea815ee2795b2f4230826c0c6b8814"
+LIC_FILES_CHKSUM = "file://COPYING;md5=6bc538ed5bd9a7fc9398086aedcd7e46"
 
 DEPENDS += "${@bb.utils.contains('ARCH', 'x86', 'elfutils-native', '', d)}"
 DEPENDS += "openssl-native util-linux-native"
@@ -27,7 +27,7 @@ DEPENDS += "openssl-native util-linux-native"
 PV = "${LINUX_VERSION}+git${SRCPV}"
 
 KMETA = "kernel-meta"
-KCONF_BSP_AUDIT_LEVEL = "2"
+KCONF_BSP_AUDIT_LEVEL = "1"
 
 LINUX_KERNEL_TYPE = "preempt-rt"
 
