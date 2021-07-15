@@ -1,0 +1,30 @@
+From 2ba83ff539c18d02f8e4b4ce7903a5b46f364609 Mon Sep 17 00:00:00 2001
+From: Lei Maohui <leimaohui@fujitsu.com>
+Date: Thu, 8 Jul 2021 15:06:27 +0900
+Subject: [PATCH] fix build error of cross build
+
+The error likes as following
+| configure: error: cannot run C compiled programs.
+| If you meant to cross compile, use `--host'.
+
+Signed-off-by: Lei Maohui <leimaohui@fujitsu.com>
+---
+ Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Makefile b/Makefile
+index 7f52cc8..cadbc47 100644
+--- a/Makefile
++++ b/Makefile
+@@ -78,7 +78,7 @@ user: iscsiuio/Makefile
+ 	@echo "Read README file for detailed information."
+ 
+ iscsiuio/Makefile: iscsiuio/configure iscsiuio/Makefile.in
+-	cd iscsiuio; ./configure $(WITHOUT_ARG)
++	cd iscsiuio; ./configure $(WITHOUT_ARG) $(CONFIGURE_ARGS)
+ 
+ iscsiuio/configure iscsiuio/Makefile.in: iscsiuio/configure.ac iscsiuio/Makefile.am
+ 	cd iscsiuio; autoreconf --install
+-- 
+2.25.1
+
