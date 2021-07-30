@@ -19,17 +19,15 @@ inherit cmake pkgconfig
 
 PROVIDES += "llvm${PV}"
 
-MAJOR_VERSION = "12"
-MINOR_VERSION = "0"
-PATCH_VERSION = "0"
+PV = "12.0.1"
 
-PV = "${MAJOR_VERSION}.${MINOR_VERSION}.${PATCH_VERSION}"
+MAJOR_VERSION = "${@oe.utils.trim_version("${PV}", 1)}"
 
 LLVM_RELEASE = "${PV}"
 LLVM_DIR = "llvm${LLVM_RELEASE}"
 
 BRANCH = "release/${MAJOR_VERSION}.x"
-SRCREV = "fa0971b87fb2c9d14d1bba2551e61f02f18f329b"
+SRCREV = "fed41342a82f5a3a9201819a82bf7a48313e296b"
 SRC_URI = "git://github.com/llvm/llvm-project.git;branch=${BRANCH} \
            file://0006-llvm-TargetLibraryInfo-Undefine-libc-functions-if-th.patch;striplevel=2 \
            file://0007-llvm-allow-env-override-of-exe-path.patch;striplevel=2 \
@@ -178,7 +176,7 @@ FILES_${PN}-llvmhello = "\
 FILES_${PN}-dev += " \
     ${libdir}/${LLVM_DIR}/llvm-config \
     ${libdir}/${LLVM_DIR}/libRemarks.so \
-    ${libdir}/${LLVM_DIR}/libLLVM-${MAJOR_VERSION}.${MINOR_VERSION}.${PATCH_VERSION}.so \
+    ${libdir}/${LLVM_DIR}/libLLVM-${PV}.so \
 "
 
 FILES_${PN}-staticdev += "\

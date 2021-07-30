@@ -97,6 +97,7 @@ class DataNode(AstNode):
     def eval(self, data):
         groupd = self.groupd
         key = groupd["var"]
+        key = key.replace(":", "_")
         loginfo = {
             'variable': key,
             'file': self.filename,
@@ -145,7 +146,7 @@ class DataNode(AstNode):
             data.setVar(key, val, parsing=True, **loginfo)
 
 class MethodNode(AstNode):
-    tr_tbl = str.maketrans('/.+-@%&', '_______')
+    tr_tbl = str.maketrans('/.+-@%&~', '________')
 
     def __init__(self, filename, lineno, func_name, body, python, fakeroot):
         AstNode.__init__(self, filename, lineno)
@@ -207,6 +208,7 @@ class ExportFuncsNode(AstNode):
     def eval(self, data):
 
         for func in self.n:
+            func = func.replace(":", "_")
             calledfunc = self.classname + "_" + func
 
             if data.getVar(func, False) and not data.getVarFlag(func, 'export_func', False):
