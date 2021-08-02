@@ -23,11 +23,9 @@ import tempfile
 import shutil
 import mimetypes
 
-if len(sys.argv) != 2:
+if len(sys.argv) < 2:
     print("Please specify a directory to run the conversion script against.")
     sys.exit(1)
-
-targetdir = sys.argv[1]
 
 # List of strings to treat as overrides
 vars = ["append", "prepend", "remove"]
@@ -74,7 +72,7 @@ for exp in vars:
 
 shortvars_re = {}
 for exp in shortvars:
-    shortvars_re[exp] = (re.compile('((^|[\'"\s])[A-Za-z0-9_\-:${}]+)_' + exp + '([\'"\s:])'), r"\1:" + exp + r"\3")
+    shortvars_re[exp] = (re.compile('((^|[\'"\s])[A-Za-z0-9_\-:${}]+)_' + exp + '([\(\'"\s:])'), r"\1:" + exp + r"\3")
 
 package_re = {}
 for exp in packagevars:
@@ -90,6 +88,7 @@ subs = {
 }
 
 def processfile(fn):
+    print("processing file '%s'" % fn)
     try:
         fh, abs_path = tempfile.mkstemp()
         with os.fdopen(fh, 'w') as new_file:
@@ -101,12 +100,6 @@ def processfile(fn):
                             skip = True
                             if "ptest_append" in line or "ptest_remove" in line or "ptest_prepend" in line:
                                 skip = False
-                    if "base_dep_prepend" in line and line.startswith("BASEDEPENDS_class"):
-                        line = line.replace("BASEDEPENDS_class", "BASEDEPENDS:class")
-                        skip = True
-                    if "autotools_dep_prepend" in line and line.startswith("DEPENDS_prepend"):
-                        line = line.replace("DEPENDS_prepend", "DEPENDS:prepend")
-                        skip = True
                     for sub in subs:
                         if sub in line:
                             line = line.replace(sub, subs[sub])
@@ -128,14 +121,19 @@ def processfile(fn):
         pass
 
 ourname = os.path.basename(sys.argv[0])
+ourversion = "0.9.1"
 
-for root, dirs, files in os.walk(targetdir):
-   for name in files:
-      if name == ourname:
-          continue
-      fn = os.path.join(root, name)
-      if os.path.islink(fn):
-          continue
-      if "/.git/" in fn or fn.endswith(".html") or fn.endswith(".patch") or fn.endswith(".m4") or fn.endswith(".diff"):
-          continue
-      processfile(fn)
+for targetdir in sys.argv[1:]:
+    print("processing directory '%s'" % targetdir)
+    for root, dirs, files in os.walk(targetdir):
+        for name in files:
+            if name == ourname:
+                continue
+            fn = os.path.join(root, name)
+            if os.path.islink(fn):
+                continue
+            if "/.git/" in fn or fn.endswith(".html") or fn.endswith(".patch") or fn.endswith(".m4") or fn.endswith(".diff"):
+                continue
+            processfile(fn)
+
+print("All files processed with version %s" % ourversion)

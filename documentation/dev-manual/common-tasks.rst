@@ -872,7 +872,7 @@ a recipe and using :term:`EXTRA_IMAGE_FEATURES` from within your
 :term:`Build Directory`.
 
 To understand how these features work, the best reference is
-``meta/classes/core-image.bbclass``. This class lists out the available
+``meta/classes/image.bbclass``. This class lists out the available
 :term:`IMAGE_FEATURES` of which most map to package groups while some, such
 as ``debug-tweaks`` and ``read-only-rootfs``, resolve as general
 configuration settings.
@@ -4384,7 +4384,7 @@ directory:
    variable, inherit the
    :ref:`own-mirrors <ref-classes-own-mirrors>`
    class, and use the
-   :term:`bitbake:BB_NO_NETWORK`
+   :term:`BB_NO_NETWORK`
    variable to your ``local.conf``.
    ::
 
@@ -4457,7 +4457,7 @@ variable for more information:
 -  :term:`BB_NUMBER_THREADS`:
    The maximum number of threads BitBake simultaneously executes.
 
--  :term:`bitbake:BB_NUMBER_PARSE_THREADS`:
+-  :term:`BB_NUMBER_PARSE_THREADS`:
    The number of threads BitBake uses during parsing.
 
 -  :term:`PARALLEL_MAKE`: Extra
@@ -7288,7 +7288,8 @@ The ``devtool edit-recipe`` command lets you take a look at the recipe::
        npmsw://${THISDIR}/${BPN}/npm-shrinkwrap.json \
        "
    S = "${WORKDIR}/npm"
-   inherit npm LICENSE_${PN} = "MIT"
+   inherit npm
+   LICENSE_${PN} = "MIT"
    LICENSE_${PN}-accepts = "MIT"
    LICENSE_${PN}-array-flatten = "MIT"
    ...
@@ -9121,7 +9122,7 @@ BitBake has determined by doing the following:
 
    The output of ``bitbake-dumpsig`` also includes the value each
    variable had, a list of dependencies for each variable, and
-   :term:`bitbake:BB_HASHBASE_WHITELIST`
+   :term:`BB_HASHBASE_WHITELIST`
    information.
 
 There is also a ``bitbake-diffsigs`` command for comparing two
@@ -9358,7 +9359,7 @@ log to ``${T}/log.do_``\ `task`, and can also log to standard output
 
 -  ``bb.debug(level, msg)``: Writes "DEBUG: msg" to the
    log. Also logs to stdout if the log level is greater than or equal to
-   level. See the ":ref:`-D <bitbake:bitbake-user-manual/bitbake-user-manual-intro:usage and syntax>`" option
+   level. See the ":ref:`bitbake:bitbake-user-manual/bitbake-user-manual-intro:usage and syntax`" option
    in the BitBake User Manual for more information.
 
 -  ``bb.warn(msg)``: Writes "WARNING: msg" to the log while also
