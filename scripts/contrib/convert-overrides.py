@@ -36,9 +36,10 @@ vars = vars + ["mipsarch", "x86-x32", "mips16e", "microblaze", "e5500-64b", "mip
 vars = vars + ["class-native", "class-target", "class-cross-canadian", "class-cross", "class-devupstream"]
 vars = vars + ["tune-",  "pn-", "forcevariable"]
 vars = vars + ["libc-musl", "libc-glibc", "libc-newlib","libc-baremetal"]
-vars = vars + ["task-compile", "task-install", "task-clean", "task-image-qa", "task-rm_work", "task-image-complete", "task-populate-sdk"]
+vars = vars + ["task-configure", "task-compile", "task-install", "task-clean", "task-image-qa", "task-rm_work", "task-image-complete", "task-populate-sdk"]
 vars = vars + ["toolchain-clang", "mydistro", "nios2", "sdkmingw32", "overrideone", "overridetwo"]
 vars = vars + ["linux-gnux32", "linux-muslx32", "linux-gnun32", "mingw32", "poky", "darwin", "linuxstdbase"]
+vars = vars + ["linux-gnueabi", "eabi"]
 vars = vars + ["virtclass-multilib", "virtclass-mcextend"]
 
 # List of strings to treat as overrides but only with whitespace following or another override (more restricted matching).
@@ -63,7 +64,7 @@ skips = skips + ["get_appends_for_files", "test_doubleref_remove", "test_bitbake
 skips = skips + ["test_rpm_remove", "test_bitbakelayers_add_remove", "recipe_append_file", "log_data_removed", "recipe_append", "systemd_machine_unit_append"]
 skips = skips + ["recipetool_append", "changetype_remove", "try_appendfile_wc", "test_qemux86_directdisk", "test_layer_appends", "tgz_removed"]
 
-imagevars = ["IMAGE_CMD", "EXTRA_IMAGECMD"]
+imagevars = ["IMAGE_CMD", "EXTRA_IMAGECMD", "IMAGE_TYPEDEP", "CONVERSION_CMD", "COMPRESS_CMD"]
 packagevars = packagevars + imagevars
 
 vars_re = {}
@@ -121,7 +122,7 @@ def processfile(fn):
         pass
 
 ourname = os.path.basename(sys.argv[0])
-ourversion = "0.9.1"
+ourversion = "0.9.2"
 
 if os.path.isfile(sys.argv[1]):
     processfile(sys.argv[1])
