@@ -91,9 +91,10 @@ level changes:
       Variables that are exported to the environment are preceded by the
       string "export" in the command's output.
 
--  For recipe changes, use the following::
+-  To find changes to a given variable in a specific recipe, use the
+   following::
 
-      $ bitbake recipe -e \| grep VARIABLE="
+      $ bitbake recipename -e | grep VARIABLENAME=\"
 
    This command checks to see if the variable actually makes
    it into a specific recipe.
@@ -281,11 +282,11 @@ operators in that their effects are applied at variable expansion time
 rather than being immediately applied. Here are some examples::
 
    B = "bval"
-   B_append = " additional data"
+   B:append = " additional data"
    C = "cval"
-   C_prepend = "additional data "
+   C:prepend = "additional data "
    D = "dval"
-   D_append = "additional data"
+   D:append = "additional data"
 
 The variable :term:`B`
 becomes "bval additional data" and ``C`` becomes "additional data cval".
@@ -312,10 +313,10 @@ When you use this syntax, BitBake expects one or more strings.
 Surrounding spaces and spacing are preserved. Here is an example::
 
    FOO = "123 456 789 123456 123 456 123 456"
-   FOO_remove = "123"
-   FOO_remove = "456"
+   FOO:remove = "123"
+   FOO:remove = "456"
    FOO2 = " abc def ghi abcdef abc def abc def def"
-   FOO2_remove = "\
+   FOO2:remove = "\
        def \
        abc \
        ghi \
@@ -349,15 +350,15 @@ If, on the other hand, ``foo.bbclass``
 uses the "_append" operator, then the final value of ``FOO`` will be
 "initial val", as intended::
 
-   FOO_append = " val"
+   FOO:append = " val"
 
 .. note::
 
    It is never necessary to use "+=" together with "_append". The following
    sequence of assignments appends "barbaz" to FOO::
 
-       FOO_append = "bar"
-       FOO_append = "baz"
+       FOO:append = "bar"
+       FOO:append = "baz"
 
 
    The only effect of changing the second assignment in the previous
@@ -538,12 +539,12 @@ variable.
    that value based on the architecture of the build::
 
       KBRANCH = "standard/base"
-      KBRANCH_qemuarm = "standard/arm-versatile-926ejs"
-      KBRANCH_qemumips = "standard/mti-malta32"
-      KBRANCH_qemuppc = "standard/qemuppc"
-      KBRANCH_qemux86 = "standard/common-pc/base"
-      KBRANCH_qemux86-64 = "standard/common-pc-64/base"
-      KBRANCH_qemumips64 = "standard/mti-malta64"
+      KBRANCH:qemuarm = "standard/arm-versatile-926ejs"
+      KBRANCH:qemumips = "standard/mti-malta32"
+      KBRANCH:qemuppc = "standard/qemuppc"
+      KBRANCH:qemux86 = "standard/common-pc/base"
+      KBRANCH:qemux86-64 = "standard/common-pc-64/base"
+      KBRANCH:qemumips64 = "standard/mti-malta64"
 
 -  *Appending and Prepending:* BitBake also supports append and prepend
    operations to variable values based on whether a specific item is
@@ -551,7 +552,7 @@ variable.
 
       DEPENDS = "glibc ncurses"
       OVERRIDES = "machine:local"
-      DEPENDS_append_machine = "libmad"
+      DEPENDS:append:machine = "libmad"
 
    In this example, :term:`DEPENDS` becomes "glibc ncurses libmad".
 
@@ -559,15 +560,15 @@ variable.
    example, the following lines will conditionally append to the
    ``KERNEL_FEATURES`` variable based on the architecture::
 
-      KERNEL_FEATURES_append = " ${KERNEL_EXTRA_FEATURES}"
-      KERNEL_FEATURES_append_qemux86=" cfg/sound.scc cfg/paravirt_kvm.scc"
-      KERNEL_FEATURES_append_qemux86-64=" cfg/sound.scc cfg/paravirt_kvm.scc"
+      KERNEL_FEATURES:append = " ${KERNEL_EXTRA_FEATURES}"
+      KERNEL_FEATURES:append:qemux86=" cfg/sound.scc cfg/paravirt_kvm.scc"
+      KERNEL_FEATURES:append:qemux86-64=" cfg/sound.scc cfg/paravirt_kvm.scc"
 
 -  *Setting a Variable for a Single Task:* BitBake supports setting a
    variable just for the duration of a single task. Here is an example::
 
       FOO_task-configure = "val 1"
-      FOO_task-compile = "val 2"
+      FOO:task-compile = "val 2"
 
    In the
    previous example, ``FOO`` has the value "val 1" while the
@@ -582,7 +583,7 @@ variable.
    You can also use this syntax with other combinations (e.g.
    "``_prepend``") as shown in the following example::
 
-      EXTRA_OEMAKE_prepend_task-compile = "${PARALLEL_MAKE} "
+      EXTRA_OEMAKE:prepend:task-compile = "${PARALLEL_MAKE} "
 
 Key Expansion
 -------------
@@ -618,27 +619,27 @@ example::
 
    OVERRIDES = "foo"
    A = "Z"
-   A_foo_append = "X"
+   A:foo:append = "X"
 
 For this case,
 ``A`` is unconditionally set to "Z" and "X" is unconditionally and
-immediately appended to the variable ``A_foo``. Because overrides have
-not been applied yet, ``A_foo`` is set to "X" due to the append and
+immediately appended to the variable ``A:foo``. Because overrides have
+not been applied yet, ``A:foo`` is set to "X" due to the append and
 ``A`` simply equals "Z".
 
 Applying overrides, however, changes things. Since "foo" is listed in
 :term:`OVERRIDES`, the conditional variable ``A`` is replaced with the "foo"
-version, which is equal to "X". So effectively, ``A_foo`` replaces
+version, which is equal to "X". So effectively, ``A:foo`` replaces
 ``A``.
 
 This next example changes the order of the override and the append::
 
    OVERRIDES = "foo"
    A = "Z"
-   A_append_foo = "X"
+   A:append:foo = "X"
 
 For this case, before
-overrides are handled, ``A`` is set to "Z" and ``A_append_foo`` is set
+overrides are handled, ``A`` is set to "Z" and ``A:append:foo`` is set
 to "X". Once the override for "foo" is applied, however, ``A`` gets
 appended with "X". Consequently, ``A`` becomes "ZX". Notice that spaces
 are not appended.
@@ -648,21 +649,21 @@ back as in the first example::
 
    OVERRIDES = "foo"
    A = "Y"
-   A_foo_append = "Z"
-   A_foo_append = "X"
+   A:foo:append = "Z"
+   A:foo:append = "X"
 
 For this case, before any overrides are resolved,
 ``A`` is set to "Y" using an immediate assignment. After this immediate
-assignment, ``A_foo`` is set to "Z", and then further appended with "X"
+assignment, ``A:foo`` is set to "Z", and then further appended with "X"
 leaving the variable set to "ZX". Finally, applying the override for
 "foo" results in the conditional variable ``A`` becoming "ZX" (i.e.
-``A`` is replaced with ``A_foo``).
+``A`` is replaced with ``A:foo``).
 
 This final example mixes in some varying operators::
 
    A = "1"
-   A_append = "2"
-   A_append = "3"
+   A:append = "2"
+   A:append = "3"
    A += "4"
    A .= "5"
 
@@ -752,7 +753,7 @@ parsed. One way to achieve a conditional inherit in this case is to use
 overrides::
 
    VARIABLE = ""
-   VARIABLE_someoverride = "myclass"
+   VARIABLE:someoverride = "myclass"
 
 Another method is by using anonymous Python. Here is an example::
 
@@ -919,7 +920,7 @@ As an example, consider the following::
        fn
    }
 
-   fn_prepend() {
+   fn:prepend() {
        bbplain second
    }
 
@@ -927,7 +928,7 @@ As an example, consider the following::
        bbplain third
    }
 
-   do_foo_append() {
+   do_foo:append() {
        bbplain fourth
    }
 
@@ -977,7 +978,7 @@ override-style operators to BitBake-style Python functions.
 
 As an example, consider the following::
 
-   python do_foo_prepend() {
+   python do_foo:prepend() {
        bb.plain("first")
    }
 
@@ -985,7 +986,7 @@ As an example, consider the following::
        bb.plain("second")
    }
 
-   python do_foo_append() {
+   python do_foo:append() {
        bb.plain("third")
    }
 
@@ -1139,7 +1140,7 @@ before anonymous functions run. In the following example, ``FOO`` ends
 up with the value "foo from anonymous"::
 
    FOO = "foo"
-   FOO_append = " from outside"
+   FOO:append = " from outside"
 
    python () {
        d.setVar("FOO", "foo from anonymous")

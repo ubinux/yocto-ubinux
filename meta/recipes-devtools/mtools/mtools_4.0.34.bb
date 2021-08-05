@@ -7,8 +7,8 @@ LIC_FILES_CHKSUM = "file://COPYING;md5=d32239bcb673463ab874e80d47fae504"
 
 DEPENDS += "virtual/libiconv"
 
-RDEPENDS_${PN}_libc-glibc = "glibc-gconv-ibm850"
-RRECOMMENDS_${PN}_libc-glibc = "\
+RDEPENDS:${PN}:libc-glibc = "glibc-gconv-ibm850"
+RRECOMMENDS:${PN}:libc-glibc = "\
 	glibc-gconv-ibm437 \
 	glibc-gconv-ibm737 \
 	glibc-gconv-ibm775 \
@@ -24,15 +24,14 @@ RRECOMMENDS_${PN}_libc-glibc = "\
 	glibc-gconv-ibm866 \
 	glibc-gconv-ibm869 \
 	"
-SRC_URI[sha256sum] = "62498cd51ae7c79a27c879a45f0d2a8c44e1404cbb901372d09b02735ef5ad89"
+SRC_URI[sha256sum] = "ada543eb1b0ffe5440d4ee42634309ea1e286d7ebb80c99ba50db5cb2c360cab"
 
 SRC_URI = "${GNU_MIRROR}/mtools/mtools-${PV}.tar.bz2 \
            file://mtools-makeinfo.patch \
-           file://no-x11.gplv3.patch \
            file://clang_UNUSED.patch \
            "
 
-SRC_URI_append_class-native = " file://disable-hardcoded-configs.patch"
+SRC_URI:append:class-native = " file://disable-hardcoded-configs.patch"
 
 inherit autotools texinfo
 
@@ -43,7 +42,7 @@ BBCLASSEXTEND = "native nativesdk"
 PACKAGECONFIG ??= ""
 PACKAGECONFIG[libbsd] = "ac_cv_lib_bsd_main=yes,ac_cv_lib_bsd_main=no,libbsd"
 
-do_install_prepend () {
+do_install:prepend () {
     # Create bindir to fix parallel installation issues
     mkdir -p ${D}/${bindir}
     mkdir -p ${D}/${datadir}

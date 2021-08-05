@@ -10,5 +10,5 @@ PE = "1"
 XORG_PN = "libXpm"
 
 PACKAGES =+ "sxpm cxpm"
-FILES_cxpm = "${bindir}/cxpm"
-FILES_sxpm = "${bindir}/sxpm"
+FILES:cxpm = "${bindir}/cxpm"
+FILES:sxpm = "${bindir}/sxpm"

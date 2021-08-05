@@ -8,7 +8,7 @@ LIC_FILES_CHKSUM = "file://COPYING;md5=751419260aa954499f7abaabaa882bbe"
 SRC_URI = "${KERNELORG_MIRROR}/software/utils/i2c-tools/${BP}.tar.gz \
 "
 
-SRC_URI[sha256sum] = "7de18ed890e111fa54ab7ea896804d5faa4d1f0462a258aad9fbb7a8cc6b60cc"
+SRC_URI[sha256sum] = "eec464e42301d93586cbeca3845ed61bff40f560670e5b35baec57301d438148"
 
 inherit update-alternatives
 
@@ -22,20 +22,20 @@ do_install() {
 }
 
 PACKAGES =+ "${PN}-misc"
-FILES_${PN}-misc = "${sbindir}/i2c-stub-from-dump \
+FILES:${PN}-misc = "${sbindir}/i2c-stub-from-dump \
                         ${bindir}/ddcmon \
                         ${bindir}/decode-edid \
                         ${bindir}/decode-dimms \
                         ${bindir}/decode-vaio \
                        "
-RDEPENDS_${PN}-misc = "${PN} perl perl-module-posix \
+RDEPENDS:${PN}-misc = "${PN} perl perl-module-posix \
                        perl-module-constant perl-module-file-basename \
                        perl-module-fcntl perl-module-strict perl-module-vars \
 		       perl-module-carp \
                       "
 
 ALTERNATIVE_PRIORITY = "100"
-ALTERNATIVE_${PN} = "i2cdetect i2cdump i2cget i2cset i2ctransfer"
+ALTERNATIVE:${PN} = "i2cdetect i2cdump i2cget i2cset i2ctransfer"
 ALTERNATIVE_LINK_NAME[i2cdetect] = "${sbindir}/i2cdetect"
 ALTERNATIVE_LINK_NAME[i2cdump] = "${sbindir}/i2cdump"
 ALTERNATIVE_LINK_NAME[i2cget] = "${sbindir}/i2cget"
