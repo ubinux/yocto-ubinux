@@ -1,6 +1,6 @@
-SYSTEMD_AUTO_ENABLE_${PN}-syslog = "disable"
+SYSTEMD_AUTO_ENABLE:${PN}-syslog = "disable"
 
-do_prepare_config_append () {
+do_prepare_config:append () {
 	sed -e "s/.*CONFIG_INSTALL .*$/CONFIG_INSTALL=y/" \
 	    -e "s/.*CONFIG_FEATURE_INSTALL_LONG_OPTIONS .*$/CONFIG_FEATURE_INSTALL_LONG_OPTIONS=y/" \
 	    -e "s/.*CONFIG_SU .*/CONFIG_SU=y/" \

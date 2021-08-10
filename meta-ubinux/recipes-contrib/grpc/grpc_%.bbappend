@@ -1,1 +1,1 @@
-DEPENDS_remove_class-target = " googletest  "
+DEPENDS:remove:class-target = " googletest  "

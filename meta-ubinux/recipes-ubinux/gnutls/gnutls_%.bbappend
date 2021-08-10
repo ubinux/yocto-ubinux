@@ -1,4 +1,4 @@
-EXTRA_OECONF_remove = " \
+EXTRA_OECONF:remove = " \
     --enable-openssl-compatibility \
 "
 EXTRA_OECONF += " \

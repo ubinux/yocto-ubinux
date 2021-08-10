@@ -1,4 +1,4 @@
-FILESEXTRAPATHS_prepend := "${THISDIR}/${PN}:"
+FILESEXTRAPATHS:prepend := "${THISDIR}/${PN}:"
 SRC_URI += " \
     file://iptables.service \
     file://ip6tables.service \
@@ -16,7 +16,7 @@ SYSTEMD_PACKAGES = "${PN}"
 SYSTEMD_SERVICE_${PN} = "iptables.service ip6tables.service"
 SYSTEMD_AUTO_ENABLE = "disable"
 
-do_install_append() {
+do_install:append() {
     if ${@bb.utils.contains('DISTRO_FEATURES','systemd','true','false',d)}; then
          install -d ${D}${systemd_unitdir}/system
          install -d ${D}${libexecdir}

@@ -1,8 +1,8 @@
-FILESEXTRAPATHS_prepend := "${THISDIR}/${PN}:"
+FILESEXTRAPATHS:prepend := "${THISDIR}/${PN}:"
 
-SRC_URI_append_class-native = "file://0001-Disable-demo.patch"
+SRC_URI:append:class-native = "file://0001-Disable-demo.patch"
 
-RRECOMMENDS_${PN}_class-native = ""
+RRECOMMENDS_${PN}:class-native = ""
 
 BBCLASSEXTEND += "native"
 

@@ -18,7 +18,7 @@ DEPENDS = "virtual/${HOST_PREFIX}gcc-crosssdk virtual/nativesdk-libc nativesdk-z
            nativesdk-readline virtual/nativesdk-${HOST_PREFIX}compilerlibs\
            nativesdk-coreutils nativesdk-ncurses"
 
-FILESEXTRAPATHS_prepend := "${THISDIR}/crash:"
+FILESEXTRAPATHS:prepend := "${THISDIR}/crash:"
 
 S = "${WORKDIR}/git"
 SRC_URI = "git://github.com/crash-utility/crash.git \
@@ -45,13 +45,13 @@ UPSTREAM_CHECK_URI = "https://github.com/crash-utility/crash/releases"
 
 #inherit gettext
 
-TARGET_CC_ARCH_append = " ${SELECTED_OPTIMIZATION}"
+TARGET_CC_ARCH:append = " ${SELECTED_OPTIMIZATION}"
 
 # crash 7.1.3 and before don't support mips64/riscv64
-COMPATIBLE_HOST_riscv64 = "null"
-COMPATIBLE_HOST_riscv32 = "null"
-COMPATIBLE_HOST_mipsarchn64 = "null"
-COMPATIBLE_HOST_mipsarchn32 = "null"
+COMPATIBLE_HOST:riscv64 = "null"
+COMPATIBLE_HOST:riscv32 = "null"
+COMPATIBLE_HOST:mipsarchn64 = "null"
+COMPATIBLE_HOST:mipsarchn32 = "null"
 
 
 EXTRA_OEMAKE = 'RPMPKG="${PV}" \
@@ -60,14 +60,14 @@ EXTRA_OEMAKE = 'RPMPKG="${PV}" \
                 GDB_MAKE_JOBS=" " \
                '
 #target=${TARGET_ARCH} \
-#EXTRA_OEMAKE_append = "${HOST_CC_ARCH} LDFLAGS='${BUILD_LDFLAGS}'"
-EXTRA_OEMAKE_append = "${HOST_CC_ARCH} LDFLAGS='${LDFLAGS}'"
+#EXTRA_OEMAKE:append = "${HOST_CC_ARCH} LDFLAGS='${BUILD_LDFLAGS}'"
+EXTRA_OEMAKE:append = "${HOST_CC_ARCH} LDFLAGS='${LDFLAGS}'"
 
 do_configure() {
     :
 }
 
-do_compile_prepend() {
+do_compile:prepend() {
     case ${TARGET_ARCH} in
         aarch64*)    ARCH=ARM64 ;;
         arm*)        ARCH=ARM ;;
@@ -87,7 +87,7 @@ do_compile() {
     oe_runmake ${EXTRA_OEMAKE} RECIPE_SYSROOT=${STAGING_DIR_HOST}${SDKPATHNATIVE}
 }
 
-do_install_prepend () {
+do_install:prepend () {
     install -d ${D}${bindir}
     install -d ${D}/${mandir}/man8
     install -d ${D}${includedir}/crash
@@ -102,7 +102,7 @@ do_install () {
     cross_canadian_bindirlinks
 }
 
-RDEPENDS_${PN} += "nativesdk-xz"
+RDEPENDS:${PN} += "nativesdk-xz"
 
 ARM_INSTRUCTION_SET = "arm"
 

@@ -1,1 +1,1 @@
-PROVIDES_append_class-nativesdk = " file-replacement-nativesdk"
+PROVIDES:append:class-nativesdk = " file-replacement-nativesdk"

@@ -1,1 +1,1 @@
-RRECOMMENDS_${PN}-bin_remove_class-target = "u-boot-default-env"
+RRECOMMENDS:${PN}-bin:remove:class-target = "u-boot-default-env"
