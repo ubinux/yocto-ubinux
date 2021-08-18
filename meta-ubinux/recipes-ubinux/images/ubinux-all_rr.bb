@@ -105,7 +105,6 @@ UBINUX_PKGS = " \
 	ipc-run \
 	iptraf-ng \
 	libjpeg-turbo \
-	libhugetlbfs \
 	iwd \
 	kbd \
 	kea \
@@ -403,7 +402,14 @@ UBINUX_PKGS = " \
 	smem \
 	sshfs-fuse \
 	stress \
-	takao-fonts \
+	ttf-ipag \
+	ttf-ipagp \
+	ttf-ipam \
+	ttf-ipamp \
+	ttf-takao-gothic \
+	ttf-takao-mincho \
+	ttf-takao-pgothic \
+	ttf-takao-pmincho \
 	tcpdump \
 	tcsh \
 	tftp-hpa \
