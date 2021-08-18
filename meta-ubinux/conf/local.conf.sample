@@ -310,8 +310,8 @@ PREFERRED_PROVIDER_bluez-hcidump = "bluez5"
 
 #PREFERRED_VERSION_gnutls = "3.3.12"
 
-PACKAGECONFIG_append_pn-curl = " libssh2"
-PACKAGECONFIG_pn-opensaf = " openhpi"
+PACKAGECONFIG:append:pn-curl = " libssh2"
+PACKAGECONFIG:pn-opensaf = " openhpi"
 PREFERRED_VERSION_readline = "5.2"
 PREFERRED_VERSION_readline-native = "5.2"
 PREFERRED_VERSION_readline-nativesdk = "5.2"
