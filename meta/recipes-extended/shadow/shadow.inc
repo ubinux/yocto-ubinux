@@ -16,6 +16,7 @@ SRC_URI = "https://github.com/shadow-maint/shadow/releases/download/v${PV}/${BP}
            file://shadow-relaxed-usernames.patch \
            file://0001-Fix-out-of-tree-builds-with-respect-to-libsubid-incl.patch \
            file://0001-libsubid-link-to-PAM-libraries.patch \
+           file://0001-libmisc-fix-default-value-in-SHA_get_salt_rounds.patch \
            "
 
 SRC_URI:append:class-target = " \
@@ -46,9 +47,7 @@ inherit autotools gettext
 
 export CONFIG_SHELL="/bin/sh"
 
-EXTRA_OECONF += "--without-audit \
-                 --without-libcrack \
-                 --without-selinux \
+EXTRA_OECONF += "--without-libcrack \
                  --with-group-name-max-length=24 \
                  --enable-subordinate-ids=yes \
                  --without-sssd \
@@ -81,6 +80,8 @@ PACKAGECONFIG:class-nativesdk = ""
 PACKAGECONFIG[pam] = "--with-libpam,--without-libpam,libpam,${PAM_PLUGINS}"
 PACKAGECONFIG[attr] = "--with-attr,--without-attr,attr"
 PACKAGECONFIG[acl] = "--with-acl,--without-acl,acl"
+PACKAGECONFIG[audit] = "--with-audit,--without-audit,audit"
+PACKAGECONFIG[selinux] = "--with-selinux,--without-selinux,libselinux libsemanage"
 
 RDEPENDS:${PN} = "shadow-securetty \
                   base-passwd \

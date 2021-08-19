@@ -39,6 +39,7 @@ SRC_URI = "https://download.qemu.org/${BPN}-${PV}.tar.xz \
            file://0001-linux-user-Tag-vsx-with-ieee128-fpbits.patch \
            file://CVE-2021-3527-1.patch \
            file://CVE-2021-3527-2.patch \
+           file://CVE-2021-3682.patch \
            "
 UPSTREAM_CHECK_REGEX = "qemu-(?P<pver>\d+(\.\d+)+)\.tar"
 
@@ -110,7 +111,7 @@ export LIBTOOL="${HOST_SYS}-libtool"
 
 B = "${WORKDIR}/build"
 
-#EXTRA_OECONF_append = " --python=${HOSTTOOLS_DIR}/python3"
+#EXTRA_OECONF:append = " --python=${HOSTTOOLS_DIR}/python3"
 
 do_configure:prepend:class-native() {
 	# Append build host pkg-config paths for native target since the host may provide sdl
