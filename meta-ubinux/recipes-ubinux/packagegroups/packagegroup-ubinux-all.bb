@@ -627,7 +627,7 @@ UBINUX_PKGS = " \
 	cim-schema-exper \
 "
 
-RDEPENDS_packagegroup-ubinux-all = " \
+RDEPENDS:packagegroup-ubinux-all = " \
         packagegroup-core-boot \
         ${LSB_PKG_GROUPS} \
         ${UBINUX_PKGS} \

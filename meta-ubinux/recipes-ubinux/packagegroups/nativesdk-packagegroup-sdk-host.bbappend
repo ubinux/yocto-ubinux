@@ -1,4 +1,4 @@
-RDEPENDS_${PN} += "nativesdk-libnewt-python \
+RDEPENDS:${PN} += "nativesdk-libnewt-python \
                    nativesdk-createrepo-c \
                    nativesdk-libxml2 \
                    nativesdk-libxml2-python \
