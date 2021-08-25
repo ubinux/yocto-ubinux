@@ -184,7 +184,6 @@ FILES=meta-oe/conf
  meta-oe/recipes-extended/mraa/
  meta-oe/recipes-extended/brotli/
  meta-oe/recipes-extended/zstd/
- meta-oe/recipes-extended/rsyslog/
 
  meta-oe/recipes-devtools/abseil-cpp/
  meta-oe/recipes-devtools/libedit/
@@ -463,7 +462,7 @@ FILES=meta-cgl-common/conf/layer.conf
 [meta-cloud-services]
 GITURL=ssh://10.130.70.189/ubinux-dev/common/ubinux-layers/yocto/meta-cloud-services
 BRANCH=master
-HEADID=e887a996155f8b9f22d6aca0e31b5fbccd82751e
+HEADID=f4b1d9d404af79289f70f3db1ee283bd5abdd523
 FILES=conf/layer.conf
  classes/
  meta-openstack/classes/default_configs.bbclass
