@@ -8,7 +8,7 @@ RUSTLIB = "-L ${STAGING_LIBDIR}/rust"
 RUST_DEBUG_REMAP = "--remap-path-prefix=${WORKDIR}=/usr/src/debug/${PN}/${EXTENDPE}${PV}-${PR}"
 RUSTFLAGS += "${RUSTLIB} ${RUST_DEBUG_REMAP}"
 RUSTLIB_DEP ?= "libstd-rs"
-RUST_TARGET_PATH = "${STAGING_LIBDIR_NATIVE}/rustlib"
+export RUST_TARGET_PATH = "${STAGING_LIBDIR_NATIVE}/rustlib"
 RUST_PANIC_STRATEGY ?= "unwind"
 
 # Native builds are not effected by TCLIBC. Without this, rust-native
@@ -169,6 +169,11 @@ do_rust_create_wrappers () {
 	# Yocto Target / Rust Target archiver
 	create_wrapper "${RUST_TARGET_AR}" "${WRAPPER_TARGET_AR}"
 
+	# Need to filter out LD_LIBRARY_PATH from the linker without using shell
+	mv ${RUST_BUILD_CCLD} ${RUST_BUILD_CCLD}.real
+	${BUILD_CC} ${COREBASE}/meta/files/rust-ccld-wrapper.c -o ${RUST_BUILD_CCLD}
+	mv ${RUST_TARGET_CCLD} ${RUST_TARGET_CCLD}.real
+	${BUILD_CC} ${COREBASE}/meta/files/rust-ccld-wrapper.c -o ${RUST_TARGET_CCLD}
 }
 
 addtask rust_create_wrappers before do_configure after do_patch
