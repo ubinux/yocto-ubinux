@@ -5391,7 +5391,7 @@ system and gives an overview of their function and contents.
       The list of packages the recipe creates. The default value is the
       following::
 
-         ${PN}-dbg ${PN}-staticdev ${PN}-dev ${PN}-doc ${PN}-locale ${PACKAGE_BEFORE_PN} ${PN}
+         ${PN}-src ${PN}-dbg ${PN}-staticdev ${PN}-dev ${PN}-doc ${PN}-locale ${PACKAGE_BEFORE_PN} ${PN}
 
       During packaging, the :ref:`ref-tasks-package` task
       goes through :term:`PACKAGES` and uses the :term:`FILES`
@@ -7503,6 +7503,7 @@ system and gives an overview of their function and contents.
              ${base_libdir} \
              ${nonarch_base_libdir} \
              ${datadir} \
+             /sysroot-only \
              "
 
    :term:`SYSROOT_DIRS_BLACKLIST`
@@ -7516,10 +7517,16 @@ system and gives an overview of their function and contents.
              ${mandir} \
              ${docdir} \
              ${infodir} \
-             ${datadir}/locale \
+             ${datadir}/X11/locale \
              ${datadir}/applications \
+             ${datadir}/bash-completion \
              ${datadir}/fonts \
+             ${datadir}/gtk-doc/html \
+             ${datadir}/installed-tests \
+             ${datadir}/locale \
              ${datadir}/pixmaps \
+             ${datadir}/terminfo \
+             ${libdir}/${BPN}/ptest \
              "
 
    :term:`SYSROOT_DIRS_NATIVE`
