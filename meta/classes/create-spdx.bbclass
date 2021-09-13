@@ -105,6 +105,9 @@ def convert_license_to_spdx(lic, document, d, existing={}):
         if l == "|":
             return "OR"
 
+        if l == "CLOSED":
+            return "NONE"
+
         spdx_license = d.getVarFlag("SPDXLICENSEMAP", l) or l
         if spdx_license in license_data["licenses"]:
             return spdx_license
@@ -270,7 +273,7 @@ def add_package_sources_from_debug(d, package_doc, spdx_package, package, packag
                         doc_ref.checksum.checksumValue = source_file.doc_sha1
                         package_doc.externalDocumentRefs.append(doc_ref)
 
-                    ref_id = "%s:%s" % (doc_ref.externalDocumentId, source_file.file.SPDXID),
+                    ref_id = "%s:%s" % (doc_ref.externalDocumentId, source_file.file.SPDXID)
                 else:
                     bb.debug(1, "Debug source %s with SHA256 %s not found in any dependency" % (str(debugsrc_path), file_sha256))
                 break
