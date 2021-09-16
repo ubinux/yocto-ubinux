@@ -14,7 +14,7 @@ metas=meta-gplv2
 [meta-gplv2]
 GITURL=ssh://10.130.70.189/ubinux-dev/common/ubinux-layers/yocto/meta-gplv2
 BRANCH=master
-HEADID=33befe8fc63274efd170deeb0b69b093ca6b6afd
+HEADID=f04e4369bf9dd3385165281b9fa2ed1043b0e400
 FILES=conf/
  licenses/
  recipes-core/readline/
@@ -35,7 +35,7 @@ FILES=conf/
 [meta-oe]
 GITURL=ssh://10.130.70.189/ubinux-dev/common/ubinux-layers/yocto/meta-openembedded.git
 BRANCH=master
-HEADID=f58bd1789ad840b04fa36212d67cebbe14ed21e5
+HEADID=5eb46e36a66836f6bbc8a0ffd54ae8a7c10a841f
 FILES=meta-oe/conf
  meta-oe/COPYING.MIT
  meta-oe/licenses/
@@ -217,7 +217,7 @@ FILES=meta-oe/conf
  meta-oe/recipes-benchmark/iozone3/
  meta-oe/recipes-benchmark/libhugetlbfs/
  
- meta-oe/recipes-graphics/xorg-app/xrdb_1.2.0.bb
+ meta-oe/recipes-graphics/xorg-app/xrdb_1.2.1.bb
  meta-oe/recipes-graphics/xorg-app/xsetroot_1.1.2.bb
  meta-oe/recipes-graphics/xorg-app/twm_1.0.11.bb
  meta-oe/recipes-graphics/xorg-app/setxkbmap_1.3.1.bb
@@ -408,6 +408,7 @@ FILES=meta-oe/conf
  meta-perl/README
  meta-perl/COPYING.MIT
  meta-oe/recipes-devtools/perl/libdbi-perl_1.643.bb
+ meta-oe/recipes-devtools/perl/libdbi-perl/
  meta-oe/recipes-devtools/perl/libdbd-mysql-perl_4.050.bb
  meta-oe/recipes-devtools/perl/libdev-checklib-perl_1.14.bb
  meta-oe/recipes-devtools/perl/libdev-checklib-perl/
@@ -429,7 +430,7 @@ FILES=meta-oe/conf
 [meta-freescale]
 GITURL=ssh://10.130.70.189/ubinux-dev/common/ubinux-layers/yocto/meta-freescale
 BRANCH=master
-HEADID=7a928a20d1629fea8814a27442a1817c17296417
+HEADID=6cb49377476a39c4de9c223c07e1ad57df06427f
 FILES=conf/layer.conf
  custom-licenses/
  classes/
@@ -462,7 +463,7 @@ FILES=meta-cgl-common/conf/layer.conf
 [meta-cloud-services]
 GITURL=ssh://10.130.70.189/ubinux-dev/common/ubinux-layers/yocto/meta-cloud-services
 BRANCH=master
-HEADID=f4b1d9d404af79289f70f3db1ee283bd5abdd523
+HEADID=dd38ce3b266a7ad7659140c5de5cae6ff13bf2a7
 FILES=conf/layer.conf
  classes/
  meta-openstack/classes/default_configs.bbclass
@@ -524,7 +525,7 @@ FILES=conf/layer.conf
 [meta-virtualization]
 GITURL=ssh://10.130.70.189/ubinux-dev/common/ubinux-layers/yocto/meta-virtualization
 BRANCH=master
-HEADID=8106d11f2e492e7da531c5e31dd1d492a956b387
+HEADID=ec521bd529b87de4a9520057eeb48dd9f659322a
 FILES=conf/layer.conf
  classes/
  files/
@@ -538,13 +539,13 @@ FILES=conf/layer.conf
 [meta-selinux]
 GITURL=ssh://10.130.70.189/ubinux-dev/common/ubinux-layers/yocto/meta-selinux
 BRANCH=master
-HEADID=654201e25da6761f2b69f5ff1dd80ec61a79027f
+HEADID=a6595e22ab27ecbda43f46444df8531f230a7a60
 FILES=conf/layer.conf
 
 [meta-security]
 GITURL=ssh://10.130.70.189/ubinux-dev/common/ubinux-layers/yocto/meta-security.git
 BRANCH=master
-HEADID=c885d399cd3a1e2378d030ae52e6584f44176d55
+HEADID=e0fca90835169e21ffabe6f2e4b901678236d36e
 FILES=conf
  classes/sanity-meta-security.bbclass
  meta-tpm/classes/sanity-meta-tpm.bbclass
@@ -604,7 +605,7 @@ FILES=conf/layer.conf
 [meta-spdxscanner]
 GITURL=ssh://10.130.70.189/ubinux-dev/common/ubinux-layers/yocto/meta-spdxscanner
 BRANCH=master
-HEADID=6adb6fc3ab547928c60ee382bddd555fc3ef33f7
+HEADID=d364d90e57b4cd54b4d86992ed911451d3646d28
 FILES=conf/layer.conf
  classes
  recipes-devtools/
@@ -612,7 +613,7 @@ FILES=conf/layer.conf
 [meta-swupdate]
 GITURL=ssh://10.130.70.189/ubinux-dev/common/ubinux-layers/yocto/meta-swupdate
 BRANCH=master
-HEADID=abc520d97482232302046459715845a025aca7d6
+HEADID=d2fa521535a64d27498c4468b8f26be44c8a7db1
 FILES=conf/layer.conf
  recipes-support/swupdate/
  recipes-bsp/u-boot/
