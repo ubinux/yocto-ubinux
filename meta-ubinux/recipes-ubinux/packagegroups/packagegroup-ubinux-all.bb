@@ -29,6 +29,7 @@ UBINUX_PKGS = " \
 	bdftopcf \
 	bind \
 	bind-utils \
+	bison \
 	babeld \
 	blktool \
 	bluez5 \
