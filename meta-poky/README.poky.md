@@ -1,84 +1,73 @@
-Poky
-====
+# 1. Introduction
+***
+Like RHEL, Fedora and Ubuntu, ubinux is a solution of embedded platform operating system（including mass storage，small printers and scanners） based on Linux distribution.
 
-Poky is an integration of various components to form a pre-packaged
-build system and development environment which is used as a development and
-validation tool by the [Yocto Project](http://www.yoctoproject.org/). It
-features support for building customised embedded style device images
-and custom containers. There are reference demo images ranging from X11/GTK+
- to Weston, commandline and more. The system supports cross-architecture
-application development using QEMU emulation and a standalone toolchain and
-SDK suitable for IDE integration.
+# 2. Prepare
+***
+## 2.1 Download
 
-Additional information on the specifics of hardware that Poky supports
-is available in README.hardware. Further hardware support can easily be added
-in the form of BSP layers which extend the systems capabilities in a modular way.
-Many layers are available and can be found through the
-[layer index](https://layers.openembedded.org/).
+Currently yocto-ubinux is managed on Github. You can get from there.
+```
+$ git clone https://github.com/ubinux/yocto-ubinux.git      
+```
 
-As an integration layer Poky consists of several upstream projects such as 
-[BitBake](https://git.openembedded.org/bitbake/),
-[OpenEmbedded-Core](https://git.openembedded.org/openembedded-core/),
-[Yocto documentation](http://git.yoctoproject.org/cgit.cgi/yocto-docs/),
-the '[meta-yocto](http://git.yoctoproject.org/cgit.cgi/meta-yocto/)' layer
-which has configuration and hardware support components. These components
-are all part of the Yocto Project and OpenEmbedded ecosystems.
+Note
+  - Modify the value of the DOWNLOADS variable in the file setup_ubinux.sh to specify the download directory.
 
-The Yocto Project has extensive documentation about the system including a 
-reference manual which can be found at <https://docs.yoctoproject.org/>
+## 2.2 Build environment
 
-OpenEmbedded is the build architecture used by Poky and the Yocto project.
-For information about OpenEmbedded, see the 
-[OpenEmbedded website](http://www.openembedded.org/).
+Please refer to the build environment of poky3.0.
+Ubuntu 18.04 is recommended.
+More than 100g space needs to be prepared for build.
 
-Contribution Guidelines
------------------------
+# 3. Usage
+## 3.1 Download repos 
+```
+$ cd yocto-ubinux/
+$ python meta-ubinux/scripts/checkoutmetas.py
+```
 
-The project works using a mailing list patch submission process. Patches
-should be sent to the mailing list for the repository the components
-originate from (see below). Throughout the Yocto Project, the README
-files in the component in question should detail where to send patches,
-who the maintainers are and where bugs should be reported.
+## 3.2 Set up build environment
+```
+$ . setup_ubinux.sh ${machine} ${build_dir}
+```
+Note
+  - ${machine} - the config file’s name of each arch
+  ```
+  $ cd meta-ubinux/conf/machine
+  $ ls 
+  ubinux-armv8.conf 
+  ubinux-x86-64.conf 
+  ```  
+  - ${build_dir} - build directory of ubinux and it's set by the user
+  - The multlib option is enabled in ubinux-armv8.conf, so if you compile this machine, it will actually compile aarch64 and armv7 together.
 
-A guide to submitting patches to OpenEmbedded is available at:
+Example
+set up build environment of X86_64
+```
+$ . setup_ubinux.sh ubinux-x86-64 ../build-ubinux-x86-64
+```
+  - You can enter the build directory to set the environment variables.
+    ```
+    $ cd ${build_dir}
+    $ vi conf/local.conf
+    ```
+  - You can find the explanation of environment variables from https://wiki.yoctoproject.org/wiki/Main_Page
 
-<http://www.openembedded.org/wiki/How_to_submit_a_patch_to_OpenEmbedded>
+## 3.3 Generate toolchain
+Enter the build directory to generate the toolchain of the specified arch.
+```
+$ bitbake meta-toolchain
+```
+Note
+  - The toolchains of each arch are stored in the corresponding directory of ${build_dir}/tmp/deploy/sdk/
 
-There is good documentation on how to write/format patches at:
-
-<https://www.openembedded.org/wiki/Commit_Patch_Message_Guidelines>
-
-Where to Send Patches
----------------------
-
-As Poky is an integration repository (built using a tool called combo-layer),
-patches against the various components should be sent to their respective
-upstreams:
-
-OpenEmbedded-Core (files in meta/, meta-selftest/, meta-skeleton/, scripts/):
-
-- Git repository: <https://git.openembedded.org/openembedded-core/>
-- Mailing list: openembedded-core@lists.openembedded.org
-
-BitBake (files in bitbake/):
-
-- Git repository: <https://git.openembedded.org/bitbake/>
-- Mailing list: bitbake-devel@lists.openembedded.org
-
-Documentation (files in documentation/):
-
-- Git repository: <https://git.yoctoproject.org/cgit/cgit.cgi/yocto-docs/>
-- Mailing list: docs@lists.yoctoproject.org
-
-meta-yocto (files in meta-poky/, meta-yocto-bsp/):
-
-- Git repository: <http://git.yoctoproject.org/cgit/cgit.cgi/meta-yocto>
-- Mailing list: poky@lists.yoctoproject.org
-
-If in doubt, check the openembedded-core git repository for the content you
-intend to modify as most files are from there unless clearly one of the above
-categories. Before sending, be sure the patches apply cleanly to the current
-git repository branch in question.
-
-[![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/765/badge)](https://bestpractices.coreinfrastructure.org/projects/765)
-
+## 3.4 Generate image
+Enter the build directory to generate the image of the specified arch.
+```
+$ cd ${build_dir}
+$ bitbake ubinux-all
+```
+Note
+  - The rpms of each arch are stored in the corresponding directory of ${build_dir}/tmp/deploy/rpm
+  - Using dnf-plugin-tui(https://github.com/ubinux/dnf-plugin-tui) in toolchain generated in Chapter 3.4 to generate image.
