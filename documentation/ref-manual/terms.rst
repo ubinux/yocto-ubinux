@@ -31,7 +31,7 @@ universal, the list includes them just in case:
          busybox_1.21.%.bbappend
 
       That append file
-      would match any ``busybox_1.21.``\ x\ ``.bb`` version of the recipe. So,
+      would match any ``busybox_1.21.x.bb`` version of the recipe. So,
       the append file would match any of the following recipe names:
 
       .. code-block:: shell
@@ -367,10 +367,16 @@ universal, the list includes them just in case:
      section in the Yocto Project Overview and Concepts Manual.
 
    :term:`Task`
-      A unit of execution for BitBake (e.g.
+      A per-recipe unit of execution for BitBake (e.g.
       :ref:`ref-tasks-compile`,
       :ref:`ref-tasks-fetch`,
       :ref:`ref-tasks-patch`, and so forth).
+      One of the major benefits of the build system is that, since each
+      recipe will typically spawn the execution of numerous tasks,
+      it is entirely possible that many tasks can execute in parallel,
+      either tasks from separate recipes or independent tasks within
+      the same recipe, potentially up to the parallelism of your
+      build system.
 
    :term:`Toaster`
       A web interface to the Yocto Project's :term:`OpenEmbedded Build System`.

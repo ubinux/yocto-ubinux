@@ -730,7 +730,7 @@ system and gives an overview of their function and contents.
       Each configuration file you
       use must reside in the :term:`Build Directory`
       ``conf/multiconfig`` directory (e.g.
-      build_directory\ ``/conf/multiconfig/configA.conf``).
+      ``build_directory/conf/multiconfig/configA.conf``).
 
       For information on how to use :term:`BBMULTICONFIG` in an environment
       that supports building targets with multiple configurations, see the
@@ -1581,6 +1581,23 @@ system and gives an overview of their function and contents.
          The bias provided by :term:`DEFAULT_PREFERENCE` is weak and is overridden
          by :term:`BBFILE_PRIORITY` if that variable is different between two
          layers that contain different versions of the same recipe.
+
+   :term:`DEBUG_PREFIX_MAP`
+      Allows to set C compiler options, such as ``-fdebug-prefix-map``,
+      ``-fmacro-prefix-map``, and ``-ffile-prefix-map``, which allow to
+      replace build-time paths by install-time ones in the debugging sections
+      of binaries.  This makes compiler output files location independent,
+      at the cost of having to pass an extra command to tell the debugger
+      where source files are.
+
+      This is used by the Yocto Project to guarantee
+      :doc:`/test-manual/reproducible-builds` even when the source code of
+      a package uses the ``__FILE__`` or ``assert()`` macros. See the
+      `reproducible-builds.org <https://reproducible-builds.org/docs/build-path/>`__
+      website for details.
+
+      This variable is set in the ``meta/conf/bitbake.conf`` file. It is
+      not intended to be user-configurable.
 
    :term:`DEFAULTTUNE`
       The default CPU and Application Binary Interface (ABI) tunings (i.e.
@@ -3589,6 +3606,12 @@ system and gives an overview of their function and contents.
 
       .. note::
 
+         Bundling the initramfs with the kernel conflates the code in the
+         initramfs with the GPLv2 licensed Linux kernel binary. Thus only GPLv2
+         compatible software may be part of a bundled initramfs.
+
+      .. note::
+
          Using an extra compilation pass to bundle the initramfs avoids a
          circular dependency between the kernel recipe and the initramfs
          recipe should the initramfs include kernel modules. Should that be
@@ -5064,33 +5087,44 @@ system and gives an overview of their function and contents.
       ":ref:`package.bbclass <ref-classes-package>`" section.
 
    :term:`PACKAGE_DEBUG_SPLIT_STYLE`
-      Determines how to split up the binary and debug information when
-      creating ``*-dbg`` packages to be used with the GNU Project Debugger
-      (GDB).
+      Determines how to split up and package debug and source information
+      when creating debugging packages to be used with the GNU Project
+      Debugger (GDB). In general, based on the value of this variable,
+      you can combine the source and debug info in a single package,
+      you can break out the source into a separate package that can be
+      installed independently, or you can choose to not have the source
+      packaged at all.
 
-      With the :term:`PACKAGE_DEBUG_SPLIT_STYLE` variable, you can control
-      where debug information, which can include or exclude source files,
-      is stored:
+      The possible values of :term:`PACKAGE_DEBUG_SPLIT_STYLE` variable:
 
-      -  ".debug": Debug symbol files are placed next to the binary in a
-         ``.debug`` directory on the target. For example, if a binary is
-         installed into ``/bin``, the corresponding debug symbol files are
-         installed in ``/bin/.debug``. Source files are placed in
-         ``/usr/src/debug``.
+      -  "``.debug``": All debugging and source info is placed in a single
+         ``*-dbg`` package; debug symbol files are placed next to the
+         binary in a ``.debug`` directory so that, if a binary is installed
+         into ``/bin``, the corresponding debug symbol file is installed
+         in ``/bin/.debug``. Source files are installed in the same ``*-dbg``
+         package under ``/usr/src/debug``.
 
-      -  "debug-file-directory": Debug symbol files are placed under
-         ``/usr/lib/debug`` on the target, and separated by the path from
-         where the binary is installed. For example, if a binary is
-         installed in ``/bin``, the corresponding debug symbols are
-         installed in ``/usr/lib/debug/bin``. Source files are placed in
-         ``/usr/src/debug``.
+      -  "``debug-file-directory``": As above, all debugging and source info
+         is placed in a single ``*-dbg`` package; debug symbol files are
+         placed entirely under the directory ``/usr/lib/debug`` and separated
+         by the path from where the binary is installed, so that if a binary
+         is installed in ``/bin``, the corresponding debug symbols are installed
+         in ``/usr/lib/debug/bin``, and so on. As above, source is installed
+         in the same package under ``/usr/src/debug``.
 
-      -  "debug-without-src": The same behavior as ".debug" previously
-         described with the exception that no source files are installed.
+      -  "``debug-with-srcpkg``": Debugging info is placed in the standard
+         ``*-dbg`` package as with the ``.debug`` value, while source is
+         placed in a separate ``*-src`` package, which can be installed
+         independently.  This is the default setting for this variable,
+         as defined in Poky's ``bitbake.conf`` file.
 
-      -  "debug-with-srcpkg": The same behavior as ".debug" previously
-         described with the exception that all source files are placed in a
-         separate ``*-src`` pkg. This is the default behavior.
+      -  "``debug-without-src``": The same behavior as with the ``.debug``
+         setting, but no source is packaged at all.
+
+      .. note::
+
+         Much of the above package splitting can be overridden via
+         use of the :term:`INHIBIT_PACKAGE_DEBUG_SPLIT` variable.
 
       You can find out more about debugging using GDB by reading the
       ":ref:`dev-manual/common-tasks:debugging with the gnu project debugger (gdb) remotely`" section
@@ -5347,7 +5381,7 @@ system and gives an overview of their function and contents.
       so one of two ways:
 
       -  *Append file:* Create an append file named
-         recipename\ ``.bbappend`` in your layer and override the value of
+         ``recipename.bbappend`` in your layer and override the value of
          :term:`PACKAGECONFIG`. You can either completely override the
          variable::
 
@@ -5821,10 +5855,10 @@ system and gives an overview of their function and contents.
       :term:`Build Directory`::
 
          PREMIRRORS:prepend = "\
-             git://.*/.* http://www.yoctoproject.org/sources/ \n \
-             ftp://.*/.* http://www.yoctoproject.org/sources/ \n \
-             http://.*/.* http://www.yoctoproject.org/sources/ \n \
-             https://.*/.* http://www.yoctoproject.org/sources/ \n"
+             git://.*/.* &YOCTO_DL_URL;/mirror/sources/ \n \
+             ftp://.*/.* &YOCTO_DL_URL;/mirror/sources/ \n \
+             http://.*/.* &YOCTO_DL_URL;/mirror/sources/ \n \
+             https://.*/.* &YOCTO_DL_URL;/mirror/sources/ \n"
 
       These changes cause the
       build system to intercept Git, FTP, HTTP, and HTTPS requests and
@@ -6131,6 +6165,13 @@ system and gives an overview of their function and contents.
       ":ref:`bitbake:bitbake-user-manual/bitbake-user-manual-execution:dependencies`" sections in the
       BitBake User Manual for additional information on tasks and
       dependencies.
+
+   :term:`RECIPE_NO_UPDATE_REASON`
+      If a recipe should not be replaced by a more recent upstream version,
+      putting the reason why in this variable in a recipe allows
+      ``devtool check-upgrade-status`` command to display it, as explained
+      in the ":ref:`ref-manual/devtool-reference:checking on the upgrade status of a recipe`"
+      section.
 
    :term:`REQUIRED_DISTRO_FEATURES`
       When inheriting the
@@ -8483,9 +8524,21 @@ system and gives an overview of their function and contents.
       install initscripts package them in the main package for the recipe,
       you rarely need to set this variable in individual recipes.
 
+   :term:`UPSTREAM_CHECK_COMMITS`
+      You can perform a per-recipe check for what the latest upstream
+      source code version is by calling ``devtool latest-version recipe``. If
+      the recipe source code is provided from Git repositories, but
+      releases are not identified by Git tags, set :term:`UPSTREAM_CHECK_COMMITS`
+      to ``1`` in the recipe, and the OpenEmbedded build system
+      will compare the latest commit with the one currently specified
+      by the recipe (:term:`SRCREV`).
+      ::
+
+         UPSTREAM_CHECK_COMMITS = "1"
+
    :term:`UPSTREAM_CHECK_GITTAGREGEX`
       You can perform a per-recipe check for what the latest upstream
-      source code version is by calling ``bitbake -c checkpkg`` recipe. If
+      source code version is by calling ``devtool latest-version recipe``. If
       the recipe source code is provided from Git repositories, the
       OpenEmbedded build system determines the latest upstream version by
       picking the latest tag from the list of all repository tags.
@@ -8508,7 +8561,7 @@ system and gives an overview of their function and contents.
 
    :term:`UPSTREAM_CHECK_URI`
       You can perform a per-recipe check for what the latest upstream
-      source code version is by calling ``bitbake -c checkpkg`` recipe. If
+      source code version is by calling ``devtool latest-version recipe``. If
       the source code is provided from tarballs, the latest version is
       determined by fetching the directory listing where the tarball is and
       attempting to find a later tarball. When this approach does not work,
@@ -8517,6 +8570,18 @@ system and gives an overview of their function and contents.
       ::
 
          UPSTREAM_CHECK_URI = "recipe_url"
+
+   :term:`UPSTREAM_VERSION_UNKNOWN`
+      You can perform a per-recipe check for what the latest upstream
+      source code version is by calling ``devtool latest-version recipe``.
+      If no combination of the :term:`UPSTREAM_CHECK_URI`, :term:`UPSTREAM_CHECK_REGEX`,
+      :term:`UPSTREAM_CHECK_GITTAGREGEX` and :term:`UPSTREAM_CHECK_COMMITS` variables in
+      the recipe allows to determine what the latest upstream version is,
+      you can set :term:`UPSTREAM_VERSION_UNKNOWN` to ``1`` in the recipe
+      to acknowledge that the check cannot be performed.
+      ::
+
+         UPSTREAM_VERSION_UNKNOWN = "1"
 
    :term:`USE_DEVFS`
       Determines if ``devtmpfs`` is used for ``/dev`` population. The
@@ -8697,7 +8762,7 @@ system and gives an overview of their function and contents.
    :term:`WKS_FILE`
       Specifies the location of the Wic kickstart file that is used by the
       OpenEmbedded build system to create a partitioned image
-      (image\ ``.wic``). For information on how to create a partitioned
+      (``image.wic``). For information on how to create a partitioned
       image, see the
       ":ref:`dev-manual/common-tasks:creating partitioned images using wic`"
       section in the Yocto Project Development Tasks Manual. For details on

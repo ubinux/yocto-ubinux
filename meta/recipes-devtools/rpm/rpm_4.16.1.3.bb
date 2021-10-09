@@ -40,6 +40,7 @@ SRC_URI = "git://github.com/rpm-software-management/rpm;branch=rpm-4.16.x \
            file://0016-rpmscript.c-change-logging-level-around-scriptlets-t.patch \
            file://0001-lib-transaction.c-fix-file-conflicts-for-MIPS64-N32.patch \
            file://0001-tools-Add-error.h-for-non-glibc-case.patch \
+           file://0001-build-pack.c-do-not-insert-payloadflags-into-.rpm-me.patch \
            "
 
 PE = "1"
@@ -58,7 +59,8 @@ AUTOTOOLS_AUXDIR = "${S}/build-aux"
 # OE-core patches autoreconf to additionally run gnu-configize, which fails with this recipe
 EXTRA_AUTORECONF:append = " --exclude=gnu-configize"
 
-EXTRA_OECONF:append = " --without-lua --enable-python --with-crypto=libgcrypt"
+# Vendor is detected differently on x86 and aarch64 hosts and can feed into target packages
+EXTRA_OECONF:append = " --without-lua --enable-python --with-crypto=libgcrypt --with-vendor=pc"
 EXTRA_OECONF:append:libc-musl = " --disable-nls --disable-openmp"
 
 # --sysconfdir prevents rpm from attempting to access machine-specific configuration in sysroot/etc; we need to have it in rootfs
@@ -194,3 +196,8 @@ rpm_package_preprocess () {
 	sed -i -e 's:--sysroot[^ ]*::g' \
 	    ${PKGD}/${libdir}/rpm/macros
 }
+
+SSTATE_HASHEQUIV_FILEMAP = " \
+    populate_sysroot:*/rpm/macros:${TMPDIR} \
+    populate_sysroot:*/rpm/macros:${COREBASE} \
+    "

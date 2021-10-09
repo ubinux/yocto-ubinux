@@ -15,7 +15,7 @@ configuration. For more information please see the Yocto Board Support Package
 (BSP) Developer's Guide - documentation source is in documentation/bspguide or 
 download the PDF from:
 
-   http://yoctoproject.org/documentation
+   https://docs.yoctoproject.org/
 
 Note that these reference BSPs use the linux-yocto kernel and in general don't
 pull in binary module support for the platforms. This means some device functionality
@@ -37,10 +37,10 @@ variable value corresponding to the board is given in brackets.
 Reference Board Maintenance
 ===========================
 
-Send pull requests, patches, comments or questions about meta-yocto-bsps to poky@yoctoproject.org
+Send pull requests, patches, comments or questions about meta-yocto-bsps to poky@lists.yoctoproject.org
 
 Maintainers: Kevin Hao <kexin.hao@windriver.com>
-             Bruce Ashfield <bruce.ashfield@windriver.com>
+             Bruce Ashfield <bruce.ashfield@gmail.com>
 
 Consumer Devices
 ================

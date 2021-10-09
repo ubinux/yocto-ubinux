@@ -13,6 +13,9 @@ SPDXDIR ??= "${WORKDIR}/spdx"
 SPDXDEPLOY = "${SPDXDIR}/deploy"
 SPDXWORK = "${SPDXDIR}/work"
 
+SPDX_TOOL_NAME ??= "oe-spdx-creator"
+SPDX_TOOL_VERSION ??= "1.0"
+
 SPDXRUNTIMEDEPLOY = "${SPDXDIR}/runtime-deploy"
 
 SPDX_INCLUDE_SOURCES ??= "0"
@@ -32,6 +35,10 @@ def get_doc_namespace(d, doc):
     namespace_uuid = uuid.uuid5(uuid.NAMESPACE_DNS, d.getVar("SPDX_UUID_NAMESPACE"))
     return "%s/%s-%s" % (d.getVar("SPDX_NAMESPACE_PREFIX"), doc.name, str(uuid.uuid5(namespace_uuid, doc.name)))
 
+def recipe_spdx_is_native(d, recipe):
+    return any(a.annotationType == "OTHER" and
+      a.annotator == "Tool: %s - %s" % (d.getVar("SPDX_TOOL_NAME"), d.getVar("SPDX_TOOL_VERSION")) and
+      a.comment == "isNative" for a in recipe.annotations)
 
 def is_work_shared(d):
     pn = d.getVar('PN')
@@ -67,6 +74,7 @@ def convert_license_to_spdx(lic, document, d, existing={}):
         extracted_info = oe.spdx.SPDXExtractedLicensingInfo()
         extracted_info.name = name
         extracted_info.licenseId = ident
+        extracted_info.extractedText = None
 
         if name == "PD":
             # Special-case this.
@@ -78,10 +86,12 @@ def convert_license_to_spdx(lic, document, d, existing={}):
                     with (Path(directory) / name).open(errors="replace") as f:
                         extracted_info.extractedText = f.read()
                         break
-                except Exception as e:
-                    # Error out, as the license was in available_licenses so
-                    # should be on disk somewhere.
-                    bb.error(f"Cannot find text for license {name}: {e}")
+                except FileNotFoundError:
+                    pass
+            if extracted_info.extractedText is None:
+                # Error out, as the license was in available_licenses so should
+                # be on disk somewhere.
+                bb.error("Cannot find text for license %s" % name)
         else:
             # If it's not SPDX, or PD, or in available licenses, then NO_GENERIC_LICENSE must be set
             filename = d.getVarFlag('NO_GENERIC_LICENSE', name)
@@ -90,7 +100,7 @@ def convert_license_to_spdx(lic, document, d, existing={}):
                 with open(filename, errors="replace") as f:
                     extracted_info.extractedText = f.read()
             else:
-                bb.error(f"Cannot find any text for license {name}")
+                bb.error("Cannot find any text for license %s" % name)
 
         extracted[name] = extracted_info
         document.hasExtractedLicensingInfos.append(extracted_info)
@@ -333,6 +343,10 @@ def collect_dep_sources(d, dep_recipes):
 
     sources = {}
     for dep in dep_recipes:
+        # Don't collect sources from native recipes as they
+        # match non-native sources also.
+        if recipe_spdx_is_native(d, dep.recipe):
+            continue
         recipe_files = set(dep.recipe.hasFiles)
 
         for spdx_file in dep.doc.files:
@@ -379,7 +393,6 @@ python do_create_spdx() {
     include_sources = d.getVar("SPDX_INCLUDE_SOURCES") == "1"
     archive_sources = d.getVar("SPDX_ARCHIVE_SOURCES") == "1"
     archive_packaged = d.getVar("SPDX_ARCHIVE_PACKAGED") == "1"
-    is_native = bb.data.inherits_class("native", d)
 
     creation_time = datetime.now(tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
@@ -398,6 +411,13 @@ python do_create_spdx() {
     recipe.name = d.getVar("PN")
     recipe.versionInfo = d.getVar("PV")
     recipe.SPDXID = oe.sbom.get_recipe_spdxid(d)
+    if bb.data.inherits_class("native", d):
+        annotation = oe.spdx.SPDXAnnotation()
+        annotation.annotationDate = creation_time
+        annotation.annotationType = "OTHER"
+        annotation.annotator = "Tool: %s - %s" % (d.getVar("SPDX_TOOL_NAME"), d.getVar("SPDX_TOOL_VERSION"))
+        annotation.comment = "isNative"
+        recipe.annotations.append(annotation)
 
     for s in d.getVar('SRC_URI').split():
         if not s.startswith("file://"):
@@ -477,7 +497,7 @@ python do_create_spdx() {
     sources = collect_dep_sources(d, dep_recipes)
     found_licenses = {license.name:recipe_ref.externalDocumentId + ":" + license.licenseId for license in doc.hasExtractedLicensingInfos}
 
-    if not is_native:
+    if not recipe_spdx_is_native(d, recipe):
         bb.build.exec_func("read_subpackage_metadata", d)
 
         pkgdest = Path(d.getVar("PKGDEST"))

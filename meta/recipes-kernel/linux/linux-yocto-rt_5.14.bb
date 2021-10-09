@@ -1,4 +1,4 @@
-KBRANCH ?= "v5.13/standard/preempt-rt/base"
+KBRANCH ?= "v5.14/standard/preempt-rt/base"
 
 require recipes-kernel/linux/linux-yocto.inc
 
@@ -11,13 +11,13 @@ python () {
         raise bb.parse.SkipRecipe("Set PREFERRED_PROVIDER_virtual/kernel to linux-yocto-rt to enable it")
 }
 
-SRCREV_machine ?= "eaf308f87d26c526da01d90bfb3581e2f40e32e7"
-SRCREV_meta ?= "c38435a3cacf424fa686ecac9a95ef8349b83bb3"
+SRCREV_machine ?= "ca5b19aa3996eb1907f546fce7a7fa55053fbead"
+SRCREV_meta ?= "884dfea956ec6b166d1f99a295c47338573a974c"
 
 SRC_URI = "git://git.yoctoproject.org/linux-yocto.git;branch=${KBRANCH};name=machine \
-           git://git.yoctoproject.org/yocto-kernel-cache;type=kmeta;name=meta;branch=yocto-5.13;destsuffix=${KMETA}"
+           git://git.yoctoproject.org/yocto-kernel-cache;type=kmeta;name=meta;branch=yocto-5.14;destsuffix=${KMETA}"
 
-LINUX_VERSION ?= "5.13.15"
+LINUX_VERSION ?= "5.14.9"
 
 LIC_FILES_CHKSUM = "file://COPYING;md5=6bc538ed5bd9a7fc9398086aedcd7e46"
 
