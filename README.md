@@ -24,7 +24,7 @@ More than 100g space needs to be prepared for build.
 ## 3.1 Download repos
 ```
 $ cd yocto-ubinux/
-$ python meta-ubinux/scripts/checkoutmetas.py
+$ ./meta-ubinux/scripts/checkoutmetas.py
 ```
 
 ## 3.2 Set up build environment
