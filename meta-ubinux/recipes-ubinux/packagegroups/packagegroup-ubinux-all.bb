@@ -246,10 +246,8 @@ UBINUX_PKGS = " \
 	xmodmap \
 	xmlsec1 \
 	xorg-minimal-fonts \
-	xorgxrdp \
 	xprop \
 	xrandr \
-	xrdp \
 	xrestop \
 	xserver-xorg \
 	xset \
@@ -615,6 +613,7 @@ UBINUX_PKGS = " \
 	python3-dbus \
 	python3-pycodestyle \
 	python3-pywbem \
+	python3-pyzmq \
 	python3-scapy \
 	python3-stevedore \
 	python3-xxhash \
