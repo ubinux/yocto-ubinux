@@ -402,24 +402,24 @@ def encodeurl(decoded):
 
     if not type:
         raise MissingParameterError('type', "encoded from the data %s" % str(decoded))
-    url = '%s://' % type
+    url = ['%s://' % type]
     if user and type != "file":
-        url += "%s" % user
+        url.append("%s" % user)
         if pswd:
-            url += ":%s" % pswd
-        url += "@"
+            url.append(":%s" % pswd)
+        url.append("@")
     if host and type != "file":
-        url += "%s" % host
+        url.append("%s" % host)
     if path:
         # Standardise path to ensure comparisons work
         while '//' in path:
             path = path.replace("//", "/")
-        url += "%s" % urllib.parse.quote(path)
+        url.append("%s" % urllib.parse.quote(path))
     if p:
         for parm in p:
-            url += ";%s=%s" % (parm, p[parm])
+            url.append(";%s=%s" % (parm, p[parm]))
 
-    return url
+    return "".join(url)
 
 def uri_replace(ud, uri_find, uri_replace, replacements, d, mirrortarball=None):
     if not ud.url or not uri_find or not uri_replace:
@@ -430,6 +430,7 @@ def uri_replace(ud, uri_find, uri_replace, replacements, d, mirrortarball=None):
     uri_replace_decoded = list(decodeurl(uri_replace))
     logger.debug2("For url %s comparing %s to %s" % (uri_decoded, uri_find_decoded, uri_replace_decoded))
     result_decoded = ['', '', '', '', '', {}]
+    # 0 - type, 1 - host, 2 - path, 3 - user,  4- pswd, 5 - params
     for loc, i in enumerate(uri_find_decoded):
         result_decoded[loc] = uri_decoded[loc]
         regexp = i
@@ -449,6 +450,9 @@ def uri_replace(ud, uri_find, uri_replace, replacements, d, mirrortarball=None):
                 for l in replacements:
                     uri_replace_decoded[loc][k] = uri_replace_decoded[loc][k].replace(l, replacements[l])
                 result_decoded[loc][k] = uri_replace_decoded[loc][k]
+        elif (loc == 3 or loc == 4) and uri_replace_decoded[loc]:
+            # User/password in the replacement is just a straight replacement
+            result_decoded[loc] = uri_replace_decoded[loc]
         elif (re.match(regexp, uri_decoded[loc])):
             if not uri_replace_decoded[loc]:
                 result_decoded[loc] = ""
@@ -466,9 +470,13 @@ def uri_replace(ud, uri_find, uri_replace, replacements, d, mirrortarball=None):
                     # Kill parameters, they make no sense for mirror tarballs
                     uri_decoded[5] = {}
                 elif ud.localpath and ud.method.supports_checksum(ud):
-                    basename = os.path.basename(uri_decoded[loc])
-                if basename and not result_decoded[loc].endswith(basename):
-                    result_decoded[loc] = os.path.join(result_decoded[loc], basename)
+                    basename = os.path.basename(ud.localpath)
+                if basename:
+                    uri_basename = os.path.basename(uri_decoded[loc])
+                    if basename != uri_basename and result_decoded[loc].endswith(uri_basename):
+                        result_decoded[loc] = result_decoded[loc].replace(uri_basename, basename)
+                    elif not result_decoded[loc].endswith(basename):
+                        result_decoded[loc] = os.path.join(result_decoded[loc], basename)
         else:
             return None
     result = encodeurl(result_decoded)
@@ -766,7 +774,7 @@ def get_srcrev(d, method_name='sortable_revision'):
         if urldata[u].method.supports_srcrev():
             scms.append(u)
 
-    if len(scms) == 0:
+    if not scms:
         raise FetchError("SRCREV was used yet no valid SCM was found in SRC_URI")
 
     if len(scms) == 1 and len(urldata[scms[0]].names) == 1:
@@ -1632,7 +1640,7 @@ class Fetch(object):
         if localonly and cache:
             raise Exception("bb.fetch2.Fetch.__init__: cannot set cache and localonly at same time")
 
-        if len(urls) == 0:
+        if not urls:
             urls = d.getVar("SRC_URI").split()
         self.urls = urls
         self.d = d

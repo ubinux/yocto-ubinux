@@ -12,8 +12,8 @@ SRC_URI = "https://strace.io/files/${PV}/strace-${PV}.tar.xz \
            file://mips-SIGEMT.patch \
            file://0001-caps-abbrev.awk-fix-gawk-s-path.patch \
            file://ptest-spacesave.patch \
-           file://uintptr_t.patch \
            file://0001-strace-fix-reproducibilty-issues.patch \
+           file://0001-Avoid-relying-on-presence-of-ipx.h.patch \
            "
 SRC_URI[sha256sum] = "901bee6db5e17debad4530dd9ffb4dc9a96c4a656edbe1c3141b7cb307b11e73"
 
@@ -53,4 +53,3 @@ RDEPENDS:${PN}-ptest:append:libc-glibc = "\
 "
 
 BBCLASSEXTEND = "native"
-TOOLCHAIN = "gcc"

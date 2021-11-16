@@ -8,10 +8,13 @@ from oeqa.utils.commands import runCmd, bitbake, get_bb_var, runqemu
 class OverlayFSTests(OESelftestTestCase):
     """Overlayfs class usage tests"""
 
-    def getline(self, res, line):
-        for l in res.output.split('\n'):
+    def getline_qemu(self, out, line):
+        for l in out.split('\n'):
             if line in l:
                 return l
+
+    def getline(self, res, line):
+        return self.getline_qemu(res.output, line)
 
     def add_overlay_conf_to_machine(self):
         machine_inc = """
@@ -148,24 +151,61 @@ EOT
 
 """
 
+        overlayfs_recipe_append = """
+OVERLAYFS_WRITABLE_PATHS[mnt-overlay] += "/usr/share/another-overlay-mount"
+
+SYSTEMD_SERVICE:${PN} += " \
+    my-application.service \
+"
+
+do_install:append() {
+    install -d ${D}${systemd_system_unitdir}
+    cat <<EOT > ${D}${systemd_system_unitdir}/my-application.service
+[Unit]
+Description=Sample application start-up unit
+After=overlayfs-user-overlays.service
+Requires=overlayfs-user-overlays.service
+
+[Service]
+Type=oneshot
+ExecStart=/bin/true
+RemainAfterExit=true
+
+[Install]
+WantedBy=multi-user.target
+EOT
+}
+"""
+
         self.write_config(config)
         self.add_overlay_conf_to_machine()
         self.write_recipeinc('systemd-machine-units', systemd_machine_unit_append)
+        self.write_recipeinc('overlayfs-user', overlayfs_recipe_append)
 
         bitbake('core-image-minimal')
 
-        def getline_qemu(out, line):
-            for l in out.split('\n'):
-                if line in l:
-                    return l
-
         with runqemu('core-image-minimal') as qemu:
+            # Check that application service started
+            status, output = qemu.run_serial("systemctl status my-application")
+            self.assertTrue("active (exited)" in output, msg=output)
+
+            # Check that overlay mounts are dependencies of our application unit
+            status, output = qemu.run_serial("systemctl list-dependencies my-application")
+            self.assertTrue("overlayfs-user-overlays.service" in output, msg=output)
+
+            status, output = qemu.run_serial("systemctl list-dependencies overlayfs-user-overlays")
+            self.assertTrue("usr-share-another\\x2doverlay\\x2dmount.mount" in output, msg=output)
+            self.assertTrue("usr-share-my\\x2dapplication.mount" in output, msg=output)
+
             # Check that we have /mnt/overlay fs mounted as tmpfs and
             # /usr/share/my-application as an overlay (see overlayfs-user recipe)
             status, output = qemu.run_serial("/bin/mount -t tmpfs,overlay")
 
-            line = getline_qemu(output, "on /mnt/overlay")
+            line = self.getline_qemu(output, "on /mnt/overlay")
             self.assertTrue(line and line.startswith("tmpfs"), msg=output)
 
-            line = getline_qemu(output, "upperdir=/mnt/overlay/upper/usr/share/my-application")
+            line = self.getline_qemu(output, "upperdir=/mnt/overlay/upper/usr/share/my-application")
+            self.assertTrue(line and line.startswith("overlay"), msg=output)
+
+            line = self.getline_qemu(output, "upperdir=/mnt/overlay/upper/usr/share/another-overlay-mount")
             self.assertTrue(line and line.startswith("overlay"), msg=output)

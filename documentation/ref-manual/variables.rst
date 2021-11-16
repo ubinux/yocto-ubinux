@@ -1850,7 +1850,7 @@ system and gives an overview of their function and contents.
 
    :term:`DISTRO_EXTRA_RDEPENDS`
       Specifies a list of distro-specific packages to add to all images.
-      This variable takes affect through ``packagegroup-base`` so the
+      This variable takes effect through ``packagegroup-base`` so the
       variable only really applies to the more full-featured images that
       include ``packagegroup-base``. You can use this variable to keep
       distro policy out of generic images. As with all other distro
@@ -4116,7 +4116,7 @@ system and gives an overview of their function and contents.
    :term:`KERNEL_VERSION`
       Specifies the version of the kernel as extracted from ``version.h``
       or ``utsrelease.h`` within the kernel sources. Effects of setting
-      this variable do not take affect until the kernel has been
+      this variable do not take effect until the kernel has been
       configured. Consequently, attempting to refer to this variable in
       contexts prior to configuration will not work.
 
@@ -6756,23 +6756,21 @@ system and gives an overview of their function and contents.
          $ bitbake -c populate_sdk imagename
 
    :term:`SDKMACHINE`
-      The machine for which the SDK is built. In other words, the SDK is
-      built such that it runs on the target you specify with the
-      :term:`SDKMACHINE` value. The value points to a corresponding ``.conf``
-      file under ``conf/machine-sdk/``.
+      The machine for which the SDK is built. In other words, the SDK is built
+      such that it runs on the target you specify with the :term:`SDKMACHINE`
+      value. The value points to a corresponding ``.conf`` file under
+      ``conf/machine-sdk/`` in the enabled layers, for example ``aarch64``,
+      ``i586``, ``i686``, ``ppc64``, ``ppc64le``, and ``x86_64`` are
+      :oe_git:`available in OpenEmbedded-Core </openembedded-core/tree/meta/conf/machine-sdk>`.
 
-      You can use "i686" and "x86_64" as possible values for this variable.
-      The variable defaults to "i686" and is set in the local.conf file in
-      the Build Directory.
-      ::
-
-         SDKMACHINE ?= "i686"
+      The variable defaults to :term:`BUILD_ARCH` so that SDKs are built for the
+      architecture of the build machine.
 
       .. note::
 
          You cannot set the :term:`SDKMACHINE`
          variable in your distribution configuration file. If you do, the
-         configuration will not take affect.
+         configuration will not take effect.
 
    :term:`SDKPATH`
       Defines the path offered to the user for installation of the SDK that
@@ -6924,6 +6922,23 @@ system and gives an overview of their function and contents.
 
       You will see this variable referenced in the default values of
       ``FILES:${PN}-dev``.
+
+   :term:`SOURCE_DATE_EPOCH`
+      This defines a date expressed in number of seconds since
+      the UNIX EPOCH (01 Jan 1970 00:00:00 UTC), which is used by
+      multiple build systems to force a timestamp in built binaries.
+      Many upstream projects already support this variable.
+
+      You will find more details in the `official specifications
+      <https://reproducible-builds.org/specs/source-date-epoch/>`__.
+
+      A value for each recipe is computed from the sources by
+      :oe_git:`meta/lib/oe/reproducible.py </openembedded-core/tree/meta/lib/oe/reproducible.py>`.
+
+      If a recipe wishes to override the default behavior, it should set its
+      own :term:`SOURCE_DATE_EPOCH` value::
+
+          SOURCE_DATE_EPOCH = "1613559011"
 
    :term:`SOURCE_MIRROR_FETCH`
       When you are fetching files to create a mirror of sources (i.e.
@@ -8157,6 +8172,15 @@ system and gives an overview of their function and contents.
       section in the Yocto Project Overview and Concepts Manual. For
       information on setting up a cross-development environment, see the
       :doc:`/sdk-manual/index` manual.
+
+      Note that this variable applies to building an SDK, not an eSDK,
+      in which case the term:`TOOLCHAIN_HOST_TASK_ESDK` setting should be
+      used instead.
+
+   :term:`TOOLCHAIN_HOST_TASK_ESDK`
+      This variable allows to extend what is installed in the host
+      portion of an eSDK. This is similar to :term:`TOOLCHAIN_HOST_TASK`
+      applying to SDKs.
 
    :term:`TOOLCHAIN_OUTPUTNAME`
       This variable defines the name used for the toolchain output. The

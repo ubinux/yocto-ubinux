@@ -281,6 +281,62 @@ overview of their function and contents.
 
          BB_GENERATE_MIRROR_TARBALLS = "1"
 
+   :term:`BB_GENERATE_SHALLOW_TARBALLS`
+      Setting this variable to "1" when :term:`BB_GIT_SHALLOW` is also set to
+      "1" causes bitbake to generate shallow mirror tarballs when fetching git
+      repositories. The number of commits included in the shallow mirror
+      tarballs is controlled by :term:`BB_GIT_SHALLOW_DEPTH`.
+
+      If both :term:`BB_GIT_SHALLOW` and :term:`BB_GENERATE_MIRROR_TARBALLS` are
+      enabled, bitbake will generate shallow mirror tarballs by default for git
+      repositories. This separate variable exists so that shallow tarball
+      generation can be enabled without needing to also enable normal mirror
+      generation if it is not desired.
+
+      For example usage, see :term:`BB_GIT_SHALLOW`.
+
+   :term:`BB_GIT_SHALLOW`
+      Setting this variable to "1" enables the support for fetching, using and
+      generating mirror tarballs of `shallow git repositories <https://riptutorial.com/git/example/4584/shallow-clone>`_.
+      The external `git-make-shallow <https://git.openembedded.org/bitbake/tree/bin/git-make-shallow>`_
+      script is used for shallow mirror tarball creation.
+
+      When :term:`BB_GIT_SHALLOW` is enabled, bitbake will attempt to fetch a shallow
+      mirror tarball. If the shallow mirror tarball cannot be fetched, it will
+      try to fetch the full mirror tarball and use that.
+
+      When a mirror tarball is not available, a full git clone will be performed
+      regardless of whether this variable is set or not. Support for shallow
+      clones is not currently implemented as git does not directly support
+      shallow cloning a particular git commit hash (it only supports cloning
+      from a tag or branch reference).
+
+      See also :term:`BB_GIT_SHALLOW_DEPTH` and
+      :term:`BB_GENERATE_SHALLOW_TARBALLS`.
+
+      Example usage::
+
+         BB_GIT_SHALLOW ?= "1"
+
+         # Keep only the top commit
+         BB_GIT_SHALLOW_DEPTH ?= "1"
+
+         # This defaults to enabled if both BB_GIT_SHALLOW and
+         # BB_GENERATE_MIRROR_TARBALLS are enabled
+         BB_GENERATE_SHALLOW_TARBALLS ?= "1"
+
+   :term:`BB_GIT_SHALLOW_DEPTH`
+      When used with :term:`BB_GENERATE_SHALLOW_TARBALLS`, this variable sets
+      the number of commits to include in generated shallow mirror tarballs.
+      With a depth of 1, only the commit referenced in :term:`SRCREV` is
+      included in the shallow mirror tarball. Increasing the depth includes
+      additional parent commits, working back through the commit history.
+
+      If this variable is unset, bitbake will default to a depth of 1 when
+      generating shallow mirror tarballs.
+
+      For example usage, see :term:`BB_GIT_SHALLOW`.
+
    :term:`BB_HASHBASE_WHITELIST`
       Lists variables that are excluded from checksum and dependency data.
       Variables that are excluded can therefore change without affecting
@@ -1277,67 +1333,100 @@ overview of their function and contents.
       The list of source files - local or remote. This variable tells
       BitBake which bits to pull for the build and how to pull them. For
       example, if the recipe or append file needs to fetch a single tarball
-      from the Internet, the recipe or append file uses a :term:`SRC_URI` entry
-      that specifies that tarball. On the other hand, if the recipe or
-      append file needs to fetch a tarball and include a custom file, the
-      recipe or append file needs an :term:`SRC_URI` variable that specifies
-      all those sources.
+      from the Internet, the recipe or append file uses a :term:`SRC_URI`
+      entry that specifies that tarball. On the other hand, if the recipe or
+      append file needs to fetch a tarball, apply two patches, and include
+      a custom file, the recipe or append file needs an :term:`SRC_URI`
+      variable that specifies all those sources.
 
-      The following list explains the available URI protocols:
+      The following list explains the available URI protocols. URI
+      protocols are highly dependent on particular BitBake Fetcher
+      submodules. Depending on the fetcher BitBake uses, various URL
+      parameters are employed. For specifics on the supported Fetchers, see
+      the :ref:`bitbake-user-manual/bitbake-user-manual-fetching:fetchers`
+      section.
 
-      -  ``file://`` : Fetches files, which are usually files shipped
-         with the metadata, from the local machine. The path is relative to
-         the :term:`FILESPATH` variable.
+      -  ``az://`` : Fetches files from an Azure Storage account using HTTPS.
 
       -  ``bzr://`` : Fetches files from a Bazaar revision control
          repository.
 
-      -  ``git://`` : Fetches files from a Git revision control
+      -  ``ccrc://`` - Fetches files from a ClearCase repository.
+
+      -  ``cvs://`` : Fetches files from a CVS revision control
          repository.
 
-      -  ``osc://`` : Fetches files from an OSC (OpenSUSE Build service)
-         revision control repository.
+      -  ``file://`` - Fetches files, which are usually files shipped
+         with the Metadata, from the local machine.
+         The path is relative to the :term:`FILESPATH`
+         variable. Thus, the build system searches, in order, from the
+         following directories, which are assumed to be a subdirectories of
+         the directory in which the recipe file (``.bb``) or append file
+         (``.bbappend``) resides:
 
-      -  ``repo://`` : Fetches files from a repo (Git) repository.
+         -  ``${BPN}`` - The base recipe name without any special suffix
+            or version numbers.
 
-      -  ``http://`` : Fetches files from the Internet using HTTP.
+         -  ``${BP}`` - ``${BPN}-${PV}``. The base recipe name and
+            version but without any special package name suffix.
 
-      -  ``https://`` : Fetches files from the Internet using HTTPS.
+         -  *files -* Files within a directory, which is named ``files``
+            and is also alongside the recipe or append file.
 
       -  ``ftp://`` : Fetches files from the Internet using FTP.
 
-      -  ``cvs://`` : Fetches files from a CVS revision control
+      -  ``git://`` : Fetches files from a Git revision control
          repository.
 
       -  ``hg://`` : Fetches files from a Mercurial (``hg``) revision
          control repository.
 
+      -  ``http://`` : Fetches files from the Internet using HTTP.
+
+      -  ``https://`` : Fetches files from the Internet using HTTPS.
+
+      -  ``npm://`` - Fetches JavaScript modules from a registry.
+
+      -  ``osc://`` : Fetches files from an OSC (OpenSUSE Build service)
+         revision control repository.
+
       -  ``p4://`` : Fetches files from a Perforce (``p4``) revision
          control repository.
+
+      -  ``repo://`` : Fetches files from a repo (Git) repository.
 
       -  ``ssh://`` : Fetches files from a secure shell.
 
       -  ``svn://`` : Fetches files from a Subversion (``svn``) revision
          control repository.
 
-      -  ``az://`` : Fetches files from an Azure Storage account using HTTPS.
-
       Here are some additional options worth mentioning:
 
-      -  ``unpack`` : Controls whether or not to unpack the file if it is
-         an archive. The default action is to unpack the file.
+      -  ``downloadfilename`` : Specifies the filename used when storing
+         the downloaded file.
+
+      -  ``name`` - Specifies a name to be used for association with
+         :term:`SRC_URI` checksums or :term:`SRCREV` when you have more than one
+         file or git repository specified in :term:`SRC_URI`. For example::
+
+            SRC_URI = "git://example.com/foo.git;name=first \
+                       git://example.com/bar.git;name=second \
+                       http://example.com/file.tar.gz;name=third"
+
+            SRCREV_first = "f1d2d2f924e986ac86fdf7b36c94bcdf32beec15"
+            SRCREV_second = "e242ed3bffccdf271b7fbaf34ed72d089537b42f"
+            SRC_URI[third.sha256sum] = "13550350a8681c84c861aac2e5b440161c2b33a3e4f302ac680ca5b686de48de"
 
       -  ``subdir`` : Places the file (or extracts its contents) into the
          specified subdirectory. This option is useful for unusual tarballs
          or other archives that do not have their files already in a
          subdirectory within the archive.
 
-      -  ``name`` : Specifies a name to be used for association with
-         :term:`SRC_URI` checksums when you have more than one file specified
-         in :term:`SRC_URI`.
+      -  ``subpath`` - Limits the checkout to a specific subpath of the
+         tree when using the Git fetcher is used.
 
-      -  ``downloadfilename`` : Specifies the filename used when storing
-         the downloaded file.
+      -  ``unpack`` : Controls whether or not to unpack the file if it is
+         an archive. The default action is to unpack the file.
 
    :term:`SRCDATE`
       The date of the source code used to build the package. This variable

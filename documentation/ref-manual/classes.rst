@@ -590,19 +590,25 @@ Here is an example that uses this class in an image recipe::
        "
 
 Here is an example that adds two users named "tester-jim" and "tester-sue" and assigns
-passwords::
+passwords. First on host, create the password hash::
+
+   mkpasswd -m sha256crypt tester01
+
+The resulting hash is set to a variable and used in ``useradd`` command parameters.
+Remember to escape the character ``$``::
 
    inherit extrausers
+   PASSWD = "\$X\$ABC123\$A-Long-Hash"
    EXTRA_USERS_PARAMS = "\
-       useradd -P tester01 tester-jim; \
-       useradd -P tester01 tester-sue; \
+       useradd -p '${PASSWD}' tester-jim; \
+       useradd -p '${PASSWD}' tester-sue; \
        "
 
-Finally, here is an example that sets the root password to "1876*18"::
+Finally, here is an example that sets the root password::
 
    inherit extrausers
    EXTRA_USERS_PARAMS = "\
-       usermod -P 1876*18 root; \
+       usermod -p '${PASSWD}' root; \
        "
 
 .. _ref-classes-features_check:
@@ -1494,15 +1500,6 @@ messages for various BitBake severity levels (i.e. ``bbplain``,
 This class is enabled by default since it is inherited by the ``base``
 class.
 
-.. _ref-classes-meta:
-
-``meta.bbclass``
-================
-
-The ``meta`` class is inherited by recipes that do not build any output
-packages themselves, but act as a "meta" target for building other
-recipes.
-
 .. _ref-classes-metadata_scm:
 
 ``metadata_scm.bbclass``
@@ -1745,7 +1742,8 @@ Then you can specify writable directories on a recipe basis (e.g. in my-applicat
 
 To support several mount points you can use a different variable flag. Assuming we
 want to have a writable location on the file system, but do not need that the data
-survives a reboot, then we could have a ``mnt-overlay.mount`` unit for a ``tmpfs`` file system.
+survives a reboot, then we could have a ``mnt-overlay.mount`` unit for a ``tmpfs``
+file system.
 
 In your machine configuration::
 
@@ -1754,6 +1752,19 @@ In your machine configuration::
 and then in your recipe::
 
   OVERLAYFS_WRITABLE_PATHS[mnt-overlay] = "/usr/share/another-application"
+
+On a practical note, your application recipe might require multiple
+overlays to be mounted before running to avoid writing to the underlying
+file system (which can be forbidden in case of read-only file system)
+To achieve that :ref:`overlayfs <ref-classes-overlayfs>` provides a ``systemd``
+helper service for mounting overlays. This helper service is named
+``${PN}-overlays.service`` and can be depended on in your application recipe
+(named ``application`` in the following example) ``systemd`` unit by adding
+to the unit the following::
+
+  [Unit]
+  After=application-overlays.service
+  Requires=application-overlays.service
 
 .. note::
 
