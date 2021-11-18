@@ -934,12 +934,13 @@ def sstate_checkhashes(sq_data, d, siginfo=False, currentcount=0, summary=True, 
 
         return spec, extrapath, tname
 
+    def getsstatefile(tid, siginfo, d):
+        spec, extrapath, tname = getpathcomponents(tid, d)
+        return extrapath + generate_sstatefn(spec, gethash(tid), tname, siginfo, d)
 
     for tid in sq_data['hash']:
 
-        spec, extrapath, tname = getpathcomponents(tid, d)
-
-        sstatefile = d.expand("${SSTATE_DIR}/" + extrapath + generate_sstatefn(spec, gethash(tid), tname, siginfo, d))
+        sstatefile = d.expand("${SSTATE_DIR}/" + getsstatefile(tid, siginfo, d))
 
         if os.path.exists(sstatefile):
             found.add(tid)
@@ -989,29 +990,25 @@ def sstate_checkhashes(sq_data, d, siginfo=False, currentcount=0, summary=True, 
                 fetcher.checkstatus()
                 bb.debug(2, "SState: Successful fetch test for %s" % srcuri)
                 found.add(tid)
-                if tid in missed:
-                    missed.remove(tid)
+                missed.remove(tid)
             except bb.fetch2.FetchError as e:
-                missed.add(tid)
                 bb.debug(2, "SState: Unsuccessful fetch test for %s (%s)" % (srcuri, e))
             except Exception as e:
                 bb.error("SState: cannot test %s: %s" % (srcuri, e))
-            if len(tasklist) >= min_tasks:
+
+            if progress:
                 bb.event.fire(bb.event.ProcessProgress(msg, len(tasklist) - thread_worker.tasks.qsize()), d)
 
         tasklist = []
-        min_tasks = 100
-        for tid in sq_data['hash']:
-            if tid in found:
-                continue
-            spec, extrapath, tname = getpathcomponents(tid, d)
-            sstatefile = d.expand(extrapath + generate_sstatefn(spec, gethash(tid), tname, siginfo, d))
+        for tid in missed:
+            sstatefile = d.expand(getsstatefile(tid, siginfo, d))
             tasklist.append((tid, sstatefile))
 
         if tasklist:
             nproc = min(int(d.getVar("BB_NUMBER_THREADS")), len(tasklist))
 
-            if len(tasklist) >= min_tasks:
+            progress = len(tasklist) >= 100
+            if progress:
                 msg = "Checking sstate mirror object availability"
                 bb.event.fire(bb.event.ProcessStarted(msg, len(tasklist)), d)
 
@@ -1024,19 +1021,17 @@ def sstate_checkhashes(sq_data, d, siginfo=False, currentcount=0, summary=True, 
             pool.wait_completion()
             bb.event.disable_threadlock()
 
-            if len(tasklist) >= min_tasks:
+            if progress:
                 bb.event.fire(bb.event.ProcessFinished(msg), d)
 
     inheritlist = d.getVar("INHERIT")
     if "toaster" in inheritlist:
         evdata = {'missed': [], 'found': []};
         for tid in missed:
-            spec, extrapath, tname = getpathcomponents(tid, d)
-            sstatefile = d.expand(extrapath + generate_sstatefn(spec, gethash(tid), tname, False, d))
+            sstatefile = d.expand(getsstatefile(tid, False, d))
             evdata['missed'].append((bb.runqueue.fn_from_tid(tid), bb.runqueue.taskname_from_tid(tid), gethash(tid), sstatefile ) )
         for tid in found:
-            spec, extrapath, tname = getpathcomponents(tid, d)
-            sstatefile = d.expand(extrapath + generate_sstatefn(spec, gethash(tid), tname, False, d))
+            sstatefile = d.expand(getsstatefile(tid, False, d))
             evdata['found'].append((bb.runqueue.fn_from_tid(tid), bb.runqueue.taskname_from_tid(tid), gethash(tid), sstatefile ) )
         bb.event.fire(bb.event.MetadataEvent("MissedSstate", evdata), d)
 
