@@ -543,7 +543,7 @@ HEADID=a6595e22ab27ecbda43f46444df8531f230a7a60
 FILES=conf/layer.conf
 
 [meta-security]
-GITURL=
+GITURL=http://git.yoctoproject.org/git/meta-security
 BRANCH=master
 HEADID=e0fca90835169e21ffabe6f2e4b901678236d36e
 FILES=conf
