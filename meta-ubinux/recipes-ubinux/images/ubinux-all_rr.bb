@@ -627,7 +627,9 @@ UBINUX_PKGS = " \
 	python3-pyasn1-modules \
 	python3-websockify \
 	python3-zopeinterface \
-	\
+	python3-fire \
+	python3-six \
+	python3-termcolor \
 	xmlto \
 	expect \
 	cim-schema-exper \
