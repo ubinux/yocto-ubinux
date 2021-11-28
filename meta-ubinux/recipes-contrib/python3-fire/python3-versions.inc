@@ -1,0 +1,1 @@
+PREFERRED_VERSION_python3-fire = "0.4.0"
