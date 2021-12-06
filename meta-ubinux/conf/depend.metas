@@ -42,6 +42,7 @@ FILES=meta-oe/conf
  meta-oe/classes/gitpkgv.bbclass
  meta-oe/recipes-support/fltk/
  meta-oe/recipes-support/multipath-tools
+ meta-oe/recipes-support/libssh/
  meta-oe/recipes-support/libusb/
  meta-oe/recipes-support/itstool/
  meta-oe/recipes-support/numactl/
@@ -106,7 +107,6 @@ FILES=meta-oe/conf
  meta-oe/recipes-support/openct/
  meta-oe/recipes-support/system-config-keyboard/
  meta-oe/recipes-support/mailcap/
- meta-oe/recipes-support/dstat/
  meta-oe/recipes-support/mcelog/
  meta-oe/recipes-support/procmail
  meta-oe/recipes-support/libutempter
