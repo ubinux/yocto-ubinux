@@ -515,6 +515,7 @@ UBINUX_PKGS = " \
 	opkg \
 	opkg-config-base \
 	pango-modules \
+	pcp \
 	gawk \
 	ppp-l2tp \
 	ppp-minconn \
@@ -599,7 +600,6 @@ UBINUX_PKGS = " \
 	libxml-simple-perl \
 	\
 	nicstat \
-	dstat \
 	tiptop \
 	blktrace \
 	systemtap \
@@ -630,8 +630,6 @@ UBINUX_PKGS = " \
 	python3-fire \
 	python3-six \
 	python3-termcolor \
-	fpga-manager-script \
-	fpga-manager-util \
 	xmlto \
 	expect \
 	cim-schema-exper \
