@@ -34,10 +34,8 @@ SRC_URI = "\
            file://0002-gcc-poison-system-directories.patch \
            file://0004-64-bit-multilib-hack.patch \
            file://0005-optional-libstdc.patch \
-           file://0006-COLLECT_GCC_OPTIONS.patch \
            file://0007-Use-the-defaults.h-in-B-instead-of-S-and-t-oe-in-B.patch \
            file://0009-cpp-honor-sysroot.patch \
-           file://0010-MIPS64-Default-to-N64-ABI.patch \
            file://0011-Define-GLIBC_DYNAMIC_LINKER-and-UCLIBC_DYNAMIC_LINKE.patch \
            file://0012-gcc-Fix-argument-list-too-long-error.patch \
            file://0014-libtool.patch \
@@ -54,7 +52,6 @@ SRC_URI = "\
            file://0028-Add-ssp_nonshared-to-link-commandline-for-musl-targe.patch \
            file://0029-Link-libgcc-using-LDFLAGS-not-just-SHLIB_LDFLAGS.patch \
            file://0030-sync-gcc-stddef.h-with-musl.patch \
-           file://0031-fix-segmentation-fault-in-precompiled-header-generat.patch \
            file://0033-Re-introduce-spe-commandline-options.patch \
            file://0034-libgcc_s-Use-alias-for-__cpu_indicator_init-instead-.patch \
            file://0035-gentypes-genmodes-Do-not-use-__LINE__-for-maintainin.patch \
@@ -115,3 +112,6 @@ EXTRA_OECONF_PATHS = "\
     --with-sysroot=/not/exist \
     --with-build-sysroot=${STAGING_DIR_TARGET} \
 "
+
+# Is a binutils 2.26 issue, not gcc
+CVE_CHECK_WHITELIST += "CVE-2021-37322"

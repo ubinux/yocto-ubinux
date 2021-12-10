@@ -435,6 +435,7 @@ class MirrorUriTest(FetcherTest):
         ("git://someserver.org/bitbake;tag=1234567890123456789012345678901234567890;protocol=git;branch=master", "git://someserver.org/bitbake", "git://someotherserver.org/bitbake;protocol=https")
             : "git://someotherserver.org/bitbake;tag=1234567890123456789012345678901234567890;protocol=https;branch=master",
 
+        ("gitsm://git.qemu.org/git/seabios.git/;protocol=https;name=roms/seabios;subpath=roms/seabios;bareclone=1;nobranch=1;rev=1234567890123456789012345678901234567890", "gitsm://.*/.*", "http://petalinux.xilinx.com/sswreleases/rel-v${XILINX_VER_MAIN}/downloads") : "http://petalinux.xilinx.com/sswreleases/rel-v%24%7BXILINX_VER_MAIN%7D/downloads/git2_git.qemu.org.git.seabios.git..tar.gz",
 
         #Renaming files doesn't work
         #("http://somewhere.org/somedir1/somefile_1.2.3.tar.gz", "http://somewhere.org/somedir1/somefile_1.2.3.tar.gz", "http://somewhere2.org/somedir3/somefile_2.3.4.tar.gz") : "http://somewhere2.org/somedir3/somefile_2.3.4.tar.gz"
@@ -625,6 +626,9 @@ class FetcherLocalTest(FetcherTest):
         os.makedirs(os.path.join(self.localsrcdir, 'dir', 'subdir'))
         touch(os.path.join(self.localsrcdir, 'dir', 'subdir', 'e'))
         touch(os.path.join(self.localsrcdir, r'backslash\x2dsystemd-unit.device'))
+        bb.process.run('tar cf archive.tar -C dir .', cwd=self.localsrcdir)
+        bb.process.run('tar czf archive.tar.gz -C dir .', cwd=self.localsrcdir)
+        bb.process.run('tar cjf archive.tar.bz2 -C dir .', cwd=self.localsrcdir)
         self.d.setVar("FILESPATH", self.localsrcdir)
 
     def fetchUnpack(self, uris):
@@ -678,6 +682,18 @@ class FetcherLocalTest(FetcherTest):
         # Unpacking to an absolute path outside of the root should fail
         with self.assertRaises(bb.fetch2.UnpackError):
             self.fetchUnpack(['file://a;subdir=/bin/sh'])
+
+    def test_local_striplevel(self):
+        tree = self.fetchUnpack(['file://archive.tar;subdir=bar;striplevel=1'])
+        self.assertEqual(tree, ['bar/c', 'bar/d', 'bar/subdir/e'])
+
+    def test_local_striplevel_gzip(self):
+        tree = self.fetchUnpack(['file://archive.tar.gz;subdir=bar;striplevel=1'])
+        self.assertEqual(tree, ['bar/c', 'bar/d', 'bar/subdir/e'])
+
+    def test_local_striplevel_bzip2(self):
+        tree = self.fetchUnpack(['file://archive.tar.bz2;subdir=bar;striplevel=1'])
+        self.assertEqual(tree, ['bar/c', 'bar/d', 'bar/subdir/e'])
 
     def dummyGitTest(self, suffix):
         # Create dummy local Git repo
@@ -1330,6 +1346,12 @@ class FetchLatestVersionTest(FetcherTest):
         # http://ftp.debian.org/debian/pool/main/d/db5.3/
         ("db", "/berkeley-db/db-5.3.21.tar.gz", "/debian/pool/main/d/db5.3/", r"(?P<name>db5\.3_)(?P<pver>\d+(\.\d+)+).+\.orig\.tar\.xz")
             : "5.3.10",
+        #
+        # packages where the tarball compression changed in the new version
+        #
+        # http://ftp.debian.org/debian/pool/main/m/minicom/minicom_2.7.1.orig.tar.gz
+        ("minicom", "/debian/pool/main/m/minicom/minicom_2.7.1.orig.tar.gz", "", "")
+            : "2.8",
     }
 
     @skipIfNoNetwork()

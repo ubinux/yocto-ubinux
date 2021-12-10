@@ -49,6 +49,10 @@ distributions:
 
 -  Fedora 32
 
+-  Fedora 33
+
+-  Fedora 34
+
 -  CentOS 7.x
 
 -  CentOS 8.x
@@ -59,8 +63,11 @@ distributions:
 
 -  Debian GNU/Linux 10.x (Buster)
 
--  openSUSE Leap 15.1
+-  Debian GNU/Linux 11.x (Bullseye)
 
+-  OpenSUSE Leap 15.1
+
+-  OpenSUSE Leap 15.2
 
 .. note::
 
