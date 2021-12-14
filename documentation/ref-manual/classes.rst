@@ -214,13 +214,13 @@ the class.
 =====================
 
 The ``blacklist`` class prevents the OpenEmbedded build system from
-building specific recipes (blacklists them). To use this class, inherit
+building specific recipes. To use this class, inherit
 the class globally and set :term:`PNBLACKLIST` for
-each recipe you wish to blacklist. Specify the :term:`PN`
+each recipe you wish to ignore. Specify the :term:`PN`
 value as a variable flag (varflag) and provide a reason, which is
 reported, if the package is requested to be built as the value. For
-example, if you want to blacklist a recipe called "exoticware", you add
-the following to your ``local.conf`` or distribution configuration::
+example, if you want to ignore a recipe called "exoticware", you
+add the following to your ``local.conf`` or distribution configuration::
 
    INHERIT += "blacklist"
    PNBLACKLIST[exoticware] = "Not supported by our organization."
@@ -570,11 +570,11 @@ be performed using the
 .. note::
 
    The user and group operations added using the
-   extrausers
+   :ref:`extrausers <ref-classes-extrausers>`
    class are not tied to a specific recipe outside of the recipe for the
    image. Thus, the operations can be performed across the image as a
    whole. Use the
-   useradd
+   :ref:`useradd <ref-classes-useradd>`
    class to add user and group configuration to a specific recipe.
 
 Here is an example that uses this class in an image recipe::
@@ -845,10 +845,10 @@ provided by the recipe ``icecc-create-env-native.bb``.
    icecc.
 
 If you do not want the Icecream distributed compile support to apply to
-specific recipes or classes, you can effectively "blacklist" them by
-listing the recipes and classes using the
+specific recipes or classes, you can ask them to be ignored by Icecream
+by listing the recipes and classes using the
 :term:`ICECC_USER_PACKAGE_BL` and
-:term:`ICECC_USER_CLASS_BL`, variables,
+:term:`ICECC_USER_CLASS_BL` variables,
 respectively, in your ``local.conf`` file. Doing so causes the
 OpenEmbedded build system to handle these compilations locally.
 
@@ -2810,11 +2810,10 @@ The ``useradd*`` classes support the addition of users or groups for
 usage by the package on the target. For example, if you have packages
 that contain system services that should be run under their own user or
 group, you can use these classes to enable creation of the user or
-group. The ``meta-skeleton/recipes-skeleton/useradd/useradd-example.bb``
+group. The :oe_git:`meta-skeleton/recipes-skeleton/useradd/useradd-example.bb
+</openembedded-core/tree/meta-skeleton/recipes-skeleton/useradd/useradd-example.bb>`
 recipe in the :term:`Source Directory` provides a simple
 example that shows how to add three users and groups to two packages.
-See the ``useradd-example.bb`` recipe for more information on how to use
-these classes.
 
 The ``useradd_base`` class provides basic functionality for user or
 groups settings.
