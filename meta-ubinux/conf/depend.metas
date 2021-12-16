@@ -520,7 +520,6 @@ FILES=conf/layer.conf
  meta-openstack/recipes-support/chef/
  meta-openstack/recipes-support/deploychef/
  meta-openstack/recipes-connectivity/open-iscsi/files/
- meta-openstack/recipes-connectivity/open-iscsi/open-iscsi-user_2.1.4.bb
  recipes-support/nss-pam-ldapd/
 
 [meta-virtualization]
