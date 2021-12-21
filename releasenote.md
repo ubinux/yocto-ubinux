@@ -236,6 +236,9 @@ libzip:
 lua:
 - CVE-2020-15945
 
+ncurses:
+- CVE-2021-39537
+
 ntp:
 - CVE-2015-5146
 - CVE-2015-5300
