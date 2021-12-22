@@ -1,5 +1,5 @@
 require pcp.inc
-inherit python3native native pkgconfig
+inherit python3native native 
 #autotools-brokensep 
 DEPENDS = "python3-native python3-setuptools-native flex-native bison-native"
 
@@ -12,7 +12,7 @@ B = "${S}"
 do_configure:prepend() {
     export SED=${TMPDIR}/hosttools/sed
     export AR=${TMPDIR}/hosttools/ar
-    export PYTHON=python3
+#    export PYTHON=python3
     
     rm -rf ${S}/include/pcp/configsz.h
     rm -rf ${S}/include/pcp/platformsz.h
@@ -26,7 +26,7 @@ do_compile:prepend() {
            ${S}/src/include/pcp/config.h.in
 
     export AR=${TMPDIR}/hosttools/ar
-    export PYTHON=python3
+#    export PYTHON=python3
 }
 
 do_compile() {

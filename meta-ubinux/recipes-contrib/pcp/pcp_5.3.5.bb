@@ -14,11 +14,10 @@ DEPENDS += "perl-native bison-native flex-native python3-native python3-setuptoo
 SRC_URI += "file://0001-Remove-unsuitble-part-for-cross-compile.patch \
            "
 
-
 export PCP_DIR = "${RECIPE_SYSROOT_NATIVE}"
-#export PCP_RUN_DIR = "${RECIPE_SYSROOT_NATIVE}"
-#EXTRA_OEMAKE = "CC="${CC}" LD="${LD}" AR="${AR}""
-inherit useradd systemd autotools pkgconfig
+export PCP_RUN_DIR = "${RECIPE_SYSROOT_NATIVE}"
+EXTRA_OEMAKE = "CC="${CC}" LD="${LD}" AR="${AR}""
+inherit useradd systemd
 
 SYSTEMD_AUTO_ENABLE:${PN} = "enable"
 SYSTEMD_SERVICE:${PN} = "pmcd.service pmcd.service pmie_check.service pmie_farm_check.service \
@@ -38,18 +37,23 @@ USERADD_PARAM:${PN}-testsuite = "--system --home ${localstatedir}/lib/pcp/testsu
 RDEPENDS:${PN} += "perl"
 RDEPENDS:${PN}-testsuite += "${PN} bash perl"
 
+EXTRA_OECONF += " \
+        ac_subst_vars_enable_python3='true' \
+        ac_subst_vars_enable_python3='yes' \
+"
+
 do_configure:prepend () {
     cp ${WORKDIR}/config.linux ${B}
     rm -rf ${S}/include/pcp/configsz.h
     rm -rf ${S}/include/pcp/platformsz.h
     export SED=${TMPDIR}/hosttools/sed
     export PYTHON=python3
-    sed -i -e 's|="-I/usr/include/${PY_VERSION}m | ="-I${STAGING_DIR_HOST}${includedir}/${PY_VERSION}m|' \
-        -e 's|-I/usr/include/${PY_VERSION}"|-I${STAGING_DIR_HOST}${includedir}/${PY_VERSION}|' \
-      	${S}/configure.ac
+    #sed -i -e 's|="-I/usr/include/${PY_VERSION}m | ="-I${STAGING_DIR_HOST}${includedir}/${PY_VERSION}m|' \
+    #    -e 's|-I/usr/include/${PY_VERSION}"|-I${STAGING_DIR_HOST}${includedir}/${PY_VERSION}|' \
+    #  	${S}/configure.ac
 }
 
-do_compile() {
+do_compile:prepend() {
 	sed -i -e "s,#undef HAVE_64BIT_LONG,,g" \
 		-e "s,#undef HAVE_64BIT_PTR,,g" \
 		-e "s,#undef PM_SIZEOF_SUSECONDS_T,,g" \
@@ -57,8 +61,12 @@ do_compile() {
 		${S}/src/include/pcp/config.h.in
 	sed -i -e "s,HAVE_PYTHON_ORDEREDDICT = false,HAVE_PYTHON_ORDEREDDICT = true,g" \
 		${S}/src/include/builddefs 
+	export PYTHON=python3
+	#export PYTHON3=${STAGING_BINDIR_NATIVE}/${PYTHON_PN}-native/${PYTHON_PN}
+}
 
-        oe_runmake default_pcp
+do_compile() {
+        oe_runmake default_pcp 
 }
 
 do_install () {

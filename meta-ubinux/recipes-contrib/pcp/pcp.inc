@@ -12,16 +12,16 @@ SRC_URI = "https://performancecopilot.jfrog.io/artifactory/pcp-source-release/pc
 
 SRC_URI[sha256sum] = "589a610f753a49af6d2015cede87e9d469bd07880ebef26fe1607b6ded375e97"
 
-inherit pkgconfig autotools
+inherit distutils3-base pkgconfig autotools
 
 B = "${S}"
 
 # Specify any options you want to pass to the configure script using EXTRA_OECONF:
 CACHED_CONFIGUREVARS = "PACKAGE_DISTRIBUTION=arch"
-#EXTRA_OECONF = "--without-python --without-python3 --without-perl --without-qt --without-qt3d"
 EXTRA_OECONF:append = " --with-dstat-symlink=yes --with-infiniband=no \
-                --with-pmdapodman=no --with-python=no --with-perl=no \
+                --with-pmdapodman=no --with-python=no --with-python3=yes --with-perl=no \
 		--with-pmdabcc=no --with-pmdajson=no  --with-perfevent=no \
+		--with-pmdabcc=yes \
 		--with-rundir=${localstatedir}/run \
                 --with-sysconfigdir=${sysconfdir} \
                 --with-logdir=${localstatedir}/log \
