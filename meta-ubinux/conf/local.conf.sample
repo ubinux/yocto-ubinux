@@ -332,9 +332,7 @@ PREFERRED_VERSION_linux-libc-headers = "5.10"
 PREFERRED_VERSION_nativesdk-linux-libc-headers = "5.10"
 PREFERRED_VERSION_linux-yocto = "5.10%"
 PREFERRED_PROVIDER_u-boot-fw-utils = "libubootenv"
-PREFERRED_VERSION_nativesdk-createrepo-c = "0.17.3"
 # Fix installation confilt since 2020.01,so use python-pika provided by meta-openstack
-PREFERRED_VERSION_python-pika = "0.10.0+gitAUTOINC+b907f91415"
 
 ##################################################################
 ## Patch handling.
