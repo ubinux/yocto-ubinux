@@ -426,7 +426,7 @@ class RecipetoolCreateTests(RecipetoolBase):
         checkvars = {}
         checkvars['SUMMARY'] = 'Node Server Example'
         checkvars['HOMEPAGE'] = 'https://github.com/savoirfairelinux/node-server-example#readme'
-        checkvars['LICENSE'] = set(['MIT', 'ISC', 'Unknown'])
+        checkvars['LICENSE'] = 'BSD-3-Clause & ISC & MIT & Unknown'
         urls = []
         urls.append('npm://registry.npmjs.org/;package=@savoirfairelinux/node-server-example;version=${PV}')
         urls.append('npmsw://${THISDIR}/${BPN}/npm-shrinkwrap.json')
@@ -483,7 +483,7 @@ class RecipetoolCreateTests(RecipetoolBase):
         result = runCmd('recipetool create -o %s %s' % (temprecipe, srcuri))
         self.assertTrue(os.path.isfile(recipefile))
         checkvars = {}
-        checkvars['LICENSE'] = set(['PSF', '&', 'BSD-3-Clause', 'GPL'])
+        checkvars['LICENSE'] = 'BSD-3-Clause & GPL & PSF'
         checkvars['LIC_FILES_CHKSUM'] = 'file://COPYING.txt;md5=35a23d42b615470583563132872c97d6'
         checkvars['SRC_URI'] = 'https://files.pythonhosted.org/packages/84/f4/5771e41fdf52aabebbadecc9381d11dea0fa34e4759b4071244fa094804c/docutils-${PV}.tar.gz'
         checkvars['SRC_URI[md5sum]'] = 'c53768d63db3873b7d452833553469de'
@@ -541,9 +541,13 @@ class RecipetoolTests(RecipetoolBase):
 
     @classmethod
     def setUpClass(cls):
+        import sys
+
         super(RecipetoolTests, cls).setUpClass()
         bb_vars = get_bb_vars(['BBPATH'])
         cls.bbpath = bb_vars['BBPATH']
+        libpath = os.path.join(get_bb_var('COREBASE'), 'scripts', 'lib', 'recipetool')
+        sys.path.insert(0, libpath)
 
     def _copy_file_with_cleanup(self, srcfile, basedstdir, *paths):
         dstdir = basedstdir
@@ -587,6 +591,128 @@ class RecipetoolTests(RecipetoolBase):
         finally:
             with open(srcfile, 'w') as fh:
                 fh.writelines(plugincontent)
+
+    def test_recipetool_handle_license_vars(self):
+        from create import handle_license_vars
+        from unittest.mock import Mock
+
+        commonlicdir = get_bb_var('COMMON_LICENSE_DIR')
+
+        d = bb.tinfoil.TinfoilDataStoreConnector
+        d.getVar = Mock(return_value=commonlicdir)
+
+        srctree = tempfile.mkdtemp(prefix='recipetoolqa')
+        self.track_for_cleanup(srctree)
+
+        # Multiple licenses
+        licenses = ['MIT', 'ISC', 'BSD-3-Clause', 'Apache-2.0']
+        for licence in licenses:
+            shutil.copy(os.path.join(commonlicdir, licence), os.path.join(srctree, 'LICENSE.' + licence))
+        # Duplicate license
+        shutil.copy(os.path.join(commonlicdir, 'MIT'), os.path.join(srctree, 'LICENSE'))
+
+        extravalues = {
+            # Duplicate and missing licenses
+            'LICENSE': 'Zlib & BSD-2-Clause & Zlib',
+            'LIC_FILES_CHKSUM': [
+                'file://README.md;md5=0123456789abcdef0123456789abcd'
+            ]
+        }
+        lines_before = []
+        handled = []
+        licvalues = handle_license_vars(srctree, lines_before, handled, extravalues, d)
+        expected_lines_before = [
+            '# WARNING: the following LICENSE and LIC_FILES_CHKSUM values are best guesses - it is',
+            '# your responsibility to verify that the values are complete and correct.',
+            '# NOTE: Original package / source metadata indicates license is: BSD-2-Clause & Zlib',
+            '#',
+            '# NOTE: multiple licenses have been detected; they have been separated with &',
+            '# in the LICENSE value for now since it is a reasonable assumption that all',
+            '# of the licenses apply. If instead there is a choice between the multiple',
+            '# licenses then you should change the value to separate the licenses with |',
+            '# instead of &. If there is any doubt, check the accompanying documentation',
+            '# to determine which situation is applicable.',
+            'LICENSE = "Apache-2.0 & BSD-2-Clause & BSD-3-Clause & ISC & MIT & Zlib"',
+            'LIC_FILES_CHKSUM = "file://LICENSE;md5=0835ade698e0bcf8506ecda2f7b4f302 \\\n'
+            '                    file://LICENSE.Apache-2.0;md5=89aea4e17d99a7cacdbeed46a0096b10 \\\n'
+            '                    file://LICENSE.BSD-3-Clause;md5=550794465ba0ec5312d6919e203a55f9 \\\n'
+            '                    file://LICENSE.ISC;md5=f3b90e78ea0cffb20bf5cca7947a896d \\\n'
+            '                    file://LICENSE.MIT;md5=0835ade698e0bcf8506ecda2f7b4f302 \\\n'
+            '                    file://README.md;md5=0123456789abcdef0123456789abcd"',
+            ''
+        ]
+        self.assertEqual(lines_before, expected_lines_before)
+        expected_licvalues = [
+            ('MIT', 'LICENSE', '0835ade698e0bcf8506ecda2f7b4f302'),
+            ('Apache-2.0', 'LICENSE.Apache-2.0', '89aea4e17d99a7cacdbeed46a0096b10'),
+            ('BSD-3-Clause', 'LICENSE.BSD-3-Clause', '550794465ba0ec5312d6919e203a55f9'),
+            ('ISC', 'LICENSE.ISC', 'f3b90e78ea0cffb20bf5cca7947a896d'),
+            ('MIT', 'LICENSE.MIT', '0835ade698e0bcf8506ecda2f7b4f302')
+        ]
+        self.assertEqual(handled, [('license', expected_licvalues)])
+        self.assertEqual(extravalues, {})
+        self.assertEqual(licvalues, expected_licvalues)
+
+
+    def test_recipetool_split_pkg_licenses(self):
+        from create import split_pkg_licenses
+        licvalues = [
+            # Duplicate licenses
+            ('BSD-2-Clause', 'x/COPYING', None),
+            ('BSD-2-Clause', 'x/LICENSE', None),
+            # Multiple licenses
+            ('MIT', 'x/a/LICENSE.MIT', None),
+            ('ISC', 'x/a/LICENSE.ISC', None),
+            # Alternative licenses
+            ('(MIT | ISC)', 'x/b/LICENSE', None),
+            # Alternative licenses without brackets
+            ('MIT | BSD-2-Clause', 'x/c/LICENSE', None),
+            # Multi licenses with alternatives
+            ('MIT', 'x/d/COPYING', None),
+            ('MIT | BSD-2-Clause', 'x/d/LICENSE', None),
+            # Multi licenses with alternatives and brackets
+            ('Apache-2.0 & ((MIT | ISC) & BSD-3-Clause)', 'x/e/LICENSE', None)
+        ]
+        packages = {
+            '${PN}': '',
+            'a': 'x/a',
+            'b': 'x/b',
+            'c': 'x/c',
+            'd': 'x/d',
+            'e': 'x/e',
+            'f': 'x/f',
+            'g': 'x/g',
+        }
+        fallback_licenses = {
+            # Ignored
+            'a': 'BSD-3-Clause',
+            # Used
+            'f': 'BSD-3-Clause'
+        }
+        outlines = []
+        outlicenses = split_pkg_licenses(licvalues, packages, outlines, fallback_licenses)
+        expected_outlicenses = {
+            '${PN}': ['BSD-2-Clause'],
+            'a': ['ISC', 'MIT'],
+            'b': ['(ISC | MIT)'],
+            'c': ['(BSD-2-Clause | MIT)'],
+            'd': ['(BSD-2-Clause | MIT)', 'MIT'],
+            'e': ['(ISC | MIT)', 'Apache-2.0', 'BSD-3-Clause'],
+            'f': ['BSD-3-Clause'],
+            'g': ['Unknown']
+        }
+        self.assertEqual(outlicenses, expected_outlicenses)
+        expected_outlines = [
+            'LICENSE:${PN} = "BSD-2-Clause"',
+            'LICENSE:a = "ISC & MIT"',
+            'LICENSE:b = "(ISC | MIT)"',
+            'LICENSE:c = "(BSD-2-Clause | MIT)"',
+            'LICENSE:d = "(BSD-2-Clause | MIT) & MIT"',
+            'LICENSE:e = "(ISC | MIT) & Apache-2.0 & BSD-3-Clause"',
+            'LICENSE:f = "BSD-3-Clause"',
+            'LICENSE:g = "Unknown"'
+        ]
+        self.assertEqual(outlines, expected_outlines)
 
 
 class RecipetoolAppendsrcBase(RecipetoolBase):
