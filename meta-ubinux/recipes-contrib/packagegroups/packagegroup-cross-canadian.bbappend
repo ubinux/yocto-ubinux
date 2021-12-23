@@ -3,5 +3,7 @@
 CRASH = "crash-cross-canadian-${TRANSLATED_TARGET_ARCH}"
 
 RDEPENDS:${PN} += "\
-    ${@all_multilib_tune_values(d, 'CRASH')} \
+    ${CRASH} \
     "
+#    ${@all_multilib_tune_values(d, 'CRASH')} 
+
