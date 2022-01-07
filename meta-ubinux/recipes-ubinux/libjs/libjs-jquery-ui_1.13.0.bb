@@ -11,10 +11,8 @@ DEPENDS = "virtual/libc"
 SRC_URI = "https://jqueryui.com/resources/download/jquery-ui-${PV}.zip;name=jui \
 	   https://jqueryui.com/resources/download/jquery-ui-themes-${PV}.zip;name=jui-themes \
 	  "
-SRC_URI[jui.md5sum] = "e0cfea21c9d1acd37fb58592f2c1f50d"
-SRC_URI[jui.sha256sum] = "f8233674366ab36b2c34c577ec77a3d70cac75d2e387d8587f3836345c0f624d"
-SRC_URI[jui-themes.md5sum] = "cd09772bf7206f368bfa15e7b1765947"
-SRC_URI[jui-themes.sha256sum] = "922e4d664c083a9788bd6f46e245e9922f330c2dbba85b344f18af5763f43efb"
+SRC_URI[jui.sha256sum] = "fa6a6c9eb997a18522987dddba2052b9835a646e5e9679f738b1a18caabfe7ce"
+SRC_URI[jui-themes.sha256sum] = "091163207082eac14bca8bd42d8176e85cb57dd5eb3e521d62580dd4d724b811"
 
 PACKAGES = "${PN} ${PN}-doc"
 FILES:${PN} = "${datadir}/javascript/jquery-ui"
