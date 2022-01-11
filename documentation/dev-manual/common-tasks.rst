@@ -4668,7 +4668,7 @@ Following is part of the BitBake configuration file, where you can see
 how the static library files are defined::
 
    PACKAGE_BEFORE_PN ?= ""
-   PACKAGES = "${PN}-dbg ${PN}-staticdev ${PN}-dev ${PN}-doc ${PN}-locale ${PACKAGE_BEFORE_PN} ${PN}"
+   PACKAGES = "${PN}-src ${PN}-dbg ${PN}-staticdev ${PN}-dev ${PN}-doc ${PN}-locale ${PACKAGE_BEFORE_PN} ${PN}"
    PACKAGES_DYNAMIC = "^${PN}-locale-.*"
    FILES = ""
 
@@ -4676,7 +4676,8 @@ how the static library files are defined::
                ${sysconfdir} ${sharedstatedir} ${localstatedir} \
                ${base_bindir}/* ${base_sbindir}/* \
                ${base_libdir}/*${SOLIBS} \
-               ${base_prefix}/lib/udev/rules.d ${prefix}/lib/udev/rules.d \
+               ${base_prefix}/lib/udev ${prefix}/lib/udev \
+               ${base_libdir}/udev ${libdir}/udev \
                ${datadir}/${BPN} ${libdir}/${BPN}/* \
                ${datadir}/pixmaps ${datadir}/applications \
                ${datadir}/idl ${datadir}/omf ${datadir}/sounds \
@@ -4692,7 +4693,8 @@ how the static library files are defined::
    FILES:${PN}-dev = "${includedir} ${FILES_SOLIBSDEV} ${libdir}/*.la \
                    ${libdir}/*.o ${libdir}/pkgconfig ${datadir}/pkgconfig \
                    ${datadir}/aclocal ${base_libdir}/*.o \
-                   ${libdir}/${BPN}/*.la ${base_libdir}/*.la"
+                   ${libdir}/${BPN}/*.la ${base_libdir}/*.la \
+                   ${libdir}/cmake ${datadir}/cmake"
    SECTION:${PN}-dev = "devel"
    ALLOW_EMPTY:${PN}-dev = "1"
    RDEPENDS:${PN}-dev = "${PN} (= ${EXTENDPKGV})"
@@ -4947,8 +4949,7 @@ the x32 psABI. Here is an example::
 Enabling GObject Introspection Support
 ======================================
 
-`GObject
-introspection <https://wiki.gnome.org/Projects/GObjectIntrospection>`__
+`GObject introspection <https://gi.readthedocs.io/en/latest/>`__
 is the standard mechanism for accessing GObject-based software from
 runtime environments. GObject is a feature of the GLib library that
 provides an object framework for the GNOME desktop and related software.
@@ -4960,7 +4961,7 @@ introspection is the only way to do it.
 
 This section describes the Yocto Project support for generating and
 packaging GObject introspection data. GObject introspection data is a
-description of the API provided by libraries built on top of GLib
+description of the API provided by libraries built on top of the GLib
 framework, and, in particular, that framework's GObject mechanism.
 GObject Introspection Repository (GIR) files go to ``-dev`` packages,
 ``typelib`` files go to main packages as they are packaged together with
@@ -5006,7 +5007,7 @@ library package involves the following:
    .. note::
 
       See recipes in the ``oe-core`` repository that use that
-      ``GIR_EXTRA_LIBS_PATH`` variable as an example.
+      :term:`GIR_EXTRA_LIBS_PATH` variable as an example.
 
 4. Look for any other errors, which probably mean that introspection
    support in a package is not entirely standard, and thus breaks down
