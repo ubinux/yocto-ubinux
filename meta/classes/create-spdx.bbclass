@@ -254,6 +254,7 @@ def add_package_sources_from_debug(d, package_doc, spdx_package, package, packag
         Path(d.getVar('PKGD')),
         Path(d.getVar('STAGING_DIR_TARGET')),
         Path(d.getVar('STAGING_DIR_NATIVE')),
+        Path(d.getVar('STAGING_KERNEL_DIR')),
     ]
 
     pkg_data = oe.packagedata.read_subpkgdata_extended(package, d)
@@ -275,7 +276,10 @@ def add_package_sources_from_debug(d, package_doc, spdx_package, package, packag
         for debugsrc in file_data["debugsrc"]:
             ref_id = "NOASSERTION"
             for search in debug_search_paths:
-                debugsrc_path = search / debugsrc.lstrip("/")
+                if debugsrc.startswith("/usr/src/kernel"):
+                    debugsrc_path = search / debugsrc.replace('/usr/src/kernel/', '')
+                else:
+                    debugsrc_path = search / debugsrc.lstrip("/")
                 if not debugsrc_path.exists():
                     continue
 
@@ -870,8 +874,9 @@ python image_combine_spdx() {
     with image_spdx_path.open("wb") as f:
         doc.to_json(f, sort_keys=True)
 
-    image_spdx_link = imgdeploydir / (image_link_name + ".spdx.json")
-    image_spdx_link.symlink_to(os.path.relpath(image_spdx_path, image_spdx_link.parent))
+    if image_link_name:
+        image_spdx_link = imgdeploydir / (image_link_name + ".spdx.json")
+        image_spdx_link.symlink_to(os.path.relpath(image_spdx_path, image_spdx_link.parent))
 
     num_threads = int(d.getVar("BB_NUMBER_THREADS"))
 
@@ -942,8 +947,9 @@ python image_combine_spdx() {
             tar.addfile(info, fileobj=index_str)
 
     def make_image_link(target_path, suffix):
-        link = imgdeploydir / (image_link_name + suffix)
-        link.symlink_to(os.path.relpath(target_path, link.parent))
+        if image_link_name:
+            link = imgdeploydir / (image_link_name + suffix)
+            link.symlink_to(os.path.relpath(target_path, link.parent))
 
     make_image_link(spdx_tar_path, ".spdx.tar.zst")
 

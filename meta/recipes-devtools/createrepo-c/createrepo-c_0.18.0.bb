@@ -8,14 +8,14 @@ SRC_URI = "git://github.com/rpm-software-management/createrepo_c;branch=master;p
            file://0001-Do-not-set-PYTHON_INSTALL_DIR-by-running-python.patch \
            "
 
-SRCREV = "c4e6808c710ec68e56bd93b0366f3b6cbeee3167"
+SRCREV = "09ea861c8ef11927de5a276116ecb83ab8e93462"
 
 S = "${WORKDIR}/git"
 
 DEPENDS = "expat curl glib-2.0 libxml2 openssl bzip2 zlib file sqlite3 xz rpm"
 DEPENDS:append:class-native = " file-replacement-native"
 
-inherit cmake pkgconfig bash-completion distutils3-base
+inherit cmake pkgconfig bash-completion setuptools3-base
 
 EXTRA_OECMAKE = " -DPYTHON_INSTALL_DIR=${PYTHON_SITEPACKAGES_DIR} -DPYTHON_DESIRED=3 -DWITH_ZCHUNK=OFF -DENABLE_DRPM=OFF -DWITH_LIBMODULEMD=OFF"
 

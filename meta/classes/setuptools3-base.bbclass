@@ -1,3 +1,7 @@
+DEPENDS:append:class-target = " ${PYTHON_PN}-native ${PYTHON_PN}"
+DEPENDS:append:class-nativesdk = " ${PYTHON_PN}-native ${PYTHON_PN}"
+RDEPENDS:${PN} += "${@['', '${PYTHON_PN}-core']['${CLASSOVERRIDE}' == 'class-target']}"
+
 export STAGING_INCDIR
 export STAGING_LIBDIR
 
@@ -23,6 +27,5 @@ FILES:${PN}-dev += "\
   ${libdir}/pkgconfig \
   ${PYTHON_SITEPACKAGES_DIR}/*.la \
 "
-python __anonymous() {
-    bb.warn("distutils-common-base.bbclass is deprecated, please use setuptools3-base.bbclass instead")
-}
+inherit python3native python3targetconfig
+
