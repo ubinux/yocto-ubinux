@@ -7,7 +7,7 @@ LIC_FILES_CHKSUM = "file://doc/index.html;md5=167444a13884f84f58f0f17349e2e7ab"
 
 DEPENDS = "virtual/libc"
 
-SRC_URI = "git://github.com/nori0428/jssocket.git;protocol=https"
+SRC_URI = "git://github.com/nori0428/jssocket.git;branch=master;protocol=https"
 SRCREV = "0a73c417f3841a20fa75dc6d51bf879e72bf01e1"
 
 PACKAGES = "${PN} ${PN}-doc"
