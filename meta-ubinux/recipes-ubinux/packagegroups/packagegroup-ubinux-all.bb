@@ -54,6 +54,7 @@ UBINUX_PKGS = " \
 	dhcpcd \
 	dnf \
 	dialog \
+	dool \
 	dosfstools \
 	edac-utils \
 	encodings \
@@ -198,6 +199,8 @@ UBINUX_PKGS = " \
 	powertop \
 	ppp \
 	xorgproto-dev \
+	xorgxrdp \
+	xrdp \
 	rp-pppoe \
 	rp-pppoe-server \
 	rp-pppoe-relay \
@@ -508,7 +511,6 @@ UBINUX_PKGS = " \
 	opkg \
 	opkg-config-base \
 	pango-modules \
-	pcp \
 	gawk \
 	ppp-l2tp \
 	ppp-minconn \
