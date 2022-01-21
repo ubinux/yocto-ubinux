@@ -35,7 +35,7 @@ FILES=conf/
 [meta-oe]
 GITURL=ssh://10.130.70.189/ubinux-dev/common/ubinux-layers/yocto/meta-openembedded.git
 BRANCH=master
-HEADID=de83f98070eeba02f465fe739d9418dd60f749da
+HEADID=0e59a23901652a05af068d770551d452655a95b0
 FILES=meta-oe/conf
  meta-oe/COPYING.MIT
  meta-oe/licenses/
@@ -67,6 +67,7 @@ FILES=meta-oe/conf
  meta-oe/recipes-graphics/xorg-app/sessreg/
  meta-oe/recipes-graphics/libsdl/libsdl_1.2.15.bb
  meta-oe/recipes-graphics/libsdl/libsdl-1.2.15/
+ meta-oe/recipes-graphics/imlib2
  meta-oe/recipes-graphics/tigervnc/
  
  meta-oe/recipes-support/ccid/
@@ -388,7 +389,7 @@ FILES=meta-oe/conf
  meta-gnome/recipes-gnome/tracker/
  meta-gnome/recipes-gnome/nautilus/
  meta-gnome/recipes-gnome/libgsf/
- 
+ meta-gnome/recipes-gnome/libportal/
  meta-webserver/conf/
  meta-webserver/licenses
  meta-webserver/recipes-httpd/apache2
@@ -417,7 +418,7 @@ FILES=meta-oe/conf
  meta-perl/recipes-perl/libdigest/
  meta-perl/recipes-perl/libhtml/libhtml-parser-perl_3.72.bb
  meta-perl/recipes-perl/libhtml/libhtml-tagset-perl_3.20.bb
- meta-perl/recipes-perl/libnet/libnet-dns-perl_1.32.bb
+ meta-perl/recipes-perl/libnet/libnet-dns-perl_1.33.bb
  meta-perl/recipes-perl/libnet/libnet-dns-sec-perl_1.10.bb
  meta-perl/recipes-perl/libproc/
  meta-perl/recipes-perl/libmime/files/
@@ -431,7 +432,7 @@ FILES=meta-oe/conf
 [meta-freescale]
 GITURL=ssh://10.130.70.189/ubinux-dev/common/ubinux-layers/yocto/meta-freescale
 BRANCH=master
-HEADID=58a442bdafae4329a61f656d597c76c5fb8da928
+HEADID=f7f1da7c95325feb96e1cb0f7bc205261374b818
 FILES=conf/layer.conf
  custom-licenses/
  classes/
@@ -448,7 +449,7 @@ FILES=conf/layer.conf
 [meta-cgl]
 GITURL=ssh://10.130.70.189/ubinux-dev/common/ubinux-layers/yocto/meta-cgl.git
 BRANCH=master
-HEADID=d5299ea2f3c15d482621f1ea4474f583620724a1
+HEADID=6634ed8e3274c38d03ed7d5b982a9612e61b68ae
 FILES=meta-cgl-common/conf/layer.conf
  meta-cgl-common/conf/distro/include/cgl_common_security_flags.inc
  meta-cgl-common/recipes-cgl/cluster-glue/
@@ -464,7 +465,7 @@ FILES=meta-cgl-common/conf/layer.conf
 [meta-cloud-services]
 GITURL=ssh://10.130.70.189/ubinux-dev/common/ubinux-layers/yocto/meta-cloud-services
 BRANCH=master
-HEADID=b9d2f911aeb5c70fc6798f0b6aa13199b28a668f
+HEADID=b770408ae220de81c6c33ca97d3992a41de972f7
 FILES=conf/layer.conf
  classes/
  meta-openstack/classes/default_configs.bbclass
@@ -476,7 +477,7 @@ FILES=conf/layer.conf
  meta-openstack/conf/layer.conf
  meta-openstack/licenses
  meta-openstack/recipes-devtools/perl/libconfig-general-perl_2.63.bb
- meta-openstack/recipes-devtools/python/
+ meta-openstack/recipes-devtools/python/python3-websockify_0.9.0.bb
 
  meta-openstack/recipes-devtools/ruby/rack_git.bb
  meta-openstack/recipes-devtools/ruby/rest-client_git.bb
@@ -513,8 +514,7 @@ FILES=conf/layer.conf
  meta-openstack/recipes-devtools/python/python3-websockify_0.9.0.bb
 
  meta-openstack/recipes-extended/libpam/
- meta-openstack/recipes-extended/novnc/novnc_git.bb
- meta-openstack/recipes-extended/qpid/
+ meta-openstack/recipes-extended/novnc/
  meta-openstack/recipes-support/tgt/
  meta-openstack/recipes-support/postgresql/
  meta-openstack/recipes-support/chef/
@@ -526,7 +526,7 @@ FILES=conf/layer.conf
 [meta-virtualization]
 GITURL=ssh://10.130.70.189/ubinux-dev/common/ubinux-layers/yocto/meta-virtualization
 BRANCH=master
-HEADID=dbd37caa6d48772b87426450fb6b816c11acc68a
+HEADID=cb0884d16eaf24304b9b84d730ec152745c3ec69
 FILES=conf/layer.conf
  classes/
  files/
@@ -540,13 +540,13 @@ FILES=conf/layer.conf
 [meta-selinux]
 GITURL=ssh://10.130.70.189/ubinux-dev/common/ubinux-layers/yocto/meta-selinux
 BRANCH=master
-HEADID=b48fa45f56f2361e696991a2966ebe217009d196
+HEADID=eb5b607d396b185aecf7c6732acc9816853a71a6
 FILES=conf/layer.conf
 
 [meta-security]
 GITURL=ssh://10.130.70.189/ubinux-dev/common/ubinux-layers/yocto/meta-security.git
 BRANCH=master
-HEADID=e4a49814e101a8ed437b85beea43ca437a7b96c6
+HEADID=c20b35b5279988fb244d4de5ba5a049404ad440e
 FILES=conf
  classes/sanity-meta-security.bbclass
  meta-tpm/classes/sanity-meta-tpm.bbclass
@@ -606,7 +606,7 @@ FILES=conf/layer.conf
 [meta-spdxscanner]
 GITURL=ssh://10.130.70.189/ubinux-dev/common/ubinux-layers/yocto/meta-spdxscanner
 BRANCH=master
-HEADID=d364d90e57b4cd54b4d86992ed911451d3646d28
+HEADID=4bf7a5ce2b6581aa28b78ec6528e8da1c4879ea8
 FILES=conf/layer.conf
  classes
  recipes-devtools/
@@ -614,7 +614,7 @@ FILES=conf/layer.conf
 [meta-swupdate]
 GITURL=ssh://10.130.70.189/ubinux-dev/common/ubinux-layers/yocto/meta-swupdate
 BRANCH=master
-HEADID=bf0829b9c39a426902d24cab55c23fe3427d0e30
+HEADID=637cf67edaf167577c0dc48fc577387c37466dc0
 FILES=conf/layer.conf
  recipes-support/swupdate/
  recipes-bsp/u-boot/
