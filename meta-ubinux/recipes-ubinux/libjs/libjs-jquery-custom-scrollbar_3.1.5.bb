@@ -7,13 +7,13 @@ LIC_FILES_CHKSUM = "file://LICENSE.txt;md5=fa75702818bab79eacec2c30227fe114"
 
 DEPENDS = "virtual/libc"
 
-SRC_URI = "git://github.com/malihu/malihu-custom-scrollbar-plugin.git;protocol=https;tag=${PV}"
+SRC_URI = "git://github.com/malihu/malihu-custom-scrollbar-plugin.git;branch=master;protocol=https;tag=${PV}"
+
+S = "${WORKDIR}/git"
 
 PACKAGES = "${PN} ${PN}-doc"
 FILES:${PN} += "${datadir}/javascript/jquery-custom-scrollbar"
 FILES:${PN}-doc += "${datadir}/doc/${PN}"
-
-S = "${WORKDIR}/git"
 
 do_install() {
 	install -d ${D}${datadir}/javascript/jquery-custom-scrollbar
