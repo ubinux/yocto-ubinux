@@ -126,5 +126,4 @@ do_install() {
 
 	install -d ${D}${datadir}/doc/${PN}/
 	install -p -m 0644 ${S}/jquery-ui-themes-${PV}/AUTHORS.txt ${D}${datadir}/doc/${PN}/
-	install -p -m 0644 ${LICSSTATEDIR}${PN}/generic_MIT ${D}${datadir}/doc/${PN}/
 }
