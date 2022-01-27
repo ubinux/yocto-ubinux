@@ -40,6 +40,7 @@ FILES=meta-oe/conf
  meta-oe/COPYING.MIT
  meta-oe/licenses/
  meta-oe/classes/gitpkgv.bbclass
+ meta-oe/recipes-support/dool/
  meta-oe/recipes-support/fltk/
  meta-oe/recipes-support/multipath-tools
  meta-oe/recipes-support/libssh/
