@@ -13,7 +13,7 @@ inherit autotools
 
 PNBLACKLIST[apcupsd] = ""
 B = "${S}"
-HOSTTOOLS_NONFATAL:append = "man col shutdown"
+HOSTTOOLS += "man col shutdown"
 
 LD = "${CXX}"
 
