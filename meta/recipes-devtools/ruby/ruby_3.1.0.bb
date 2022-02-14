@@ -11,6 +11,7 @@ SRC_URI += " \
            file://0004-lib-mkmf.rb-sort-list-of-object-files-in-generated-M.patch \
            file://0005-Mark-Gemspec-reproducible-change-fixing-784225-too.patch \
            file://0006-Make-gemspecs-reproducible.patch \
+           file://0001-vm_dump.c-Define-REG_S1-and-REG_S2-for-musl-riscv.patch \
            "
 
 SRC_URI[sha256sum] = "50a0504c6edcb4d61ce6b8cfdbddaa95707195fab0ecd7b5e92654b2a9412854"
@@ -36,21 +37,11 @@ EXTRA_OECONF = "\
 "
 
 EXTRA_OECONF:append:libc-musl = "\
-    LIBS='-lucontext' \
     ac_cv_func_isnan=yes \
     ac_cv_func_isinf=yes \
 "
 
-EXTRA_OECONF:append:libc-musl:riscv64 = "\
-    --with-coroutine=copy \
-"
-EXTRA_OECONF:append:libc-musl:riscv32 = "\
-    --with-coroutine=copy \
-"
-
-do_install() {
-    oe_runmake 'DESTDIR=${D}' install
-}
+PARALLEL_MAKEINST = ""
 
 do_install:append:class-target () {
     # Find out rbconfig.rb from .installed.list
