@@ -1,11 +1,11 @@
 SUMMARY = "Userspace tools for MMC/SD devices"
 HOMEPAGE = "http://git.kernel.org/cgit/linux/kernel/git/cjb/mmc-utils.git/"
 DESCRIPTION = "${SUMMARY}"
-LICENSE = "GPLv2"
+LICENSE = "GPL-2.0-only"
 LIC_FILES_CHKSUM = "file://mmc.c;beginline=1;endline=20;md5=fae32792e20f4d27ade1c5a762d16b7d"
 
 SRCBRANCH ?= "master"
-SRCREV = "fd41dca5b14df7faefdda5dc6c0bbcdc8f6facc0"
+SRCREV = "4637a7c0df49ba349f9f0e4ab0828133fc06cc81"
 
 PV = "0.1+git${SRCPV}"
 

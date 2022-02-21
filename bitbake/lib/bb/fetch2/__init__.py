@@ -113,7 +113,7 @@ class MissingParameterError(BBFetchException):
         self.args = (missing, url)
 
 class ParameterError(BBFetchException):
-    """Exception raised when a url cannot be proccessed due to invalid parameters."""
+    """Exception raised when a url cannot be processed due to invalid parameters."""
     def __init__(self, message, url):
         msg = "URL: '%s' has invalid parameters. %s" % (url, message)
         self.url = url
@@ -182,7 +182,7 @@ class URI(object):
     Some notes about relative URIs: while it's specified that
     a URI beginning with <scheme>:// should either be directly
     followed by a hostname or a /, the old URI handling of the
-    fetch2 library did not comform to this. Therefore, this URI
+    fetch2 library did not conform to this. Therefore, this URI
     class has some kludges to make sure that URIs are parsed in
     a way comforming to bitbake's current usage. This URI class
     supports the following:
@@ -765,6 +765,7 @@ def get_srcrev(d, method_name='sortable_revision'):
     that fetcher provides a method with the given name and the same signature as sortable_revision.
     """
 
+    d.setVar("__BBSEENSRCREV", "1")
     recursion = d.getVar("__BBINSRCREV")
     if recursion:
         raise FetchError("There are recursive references in fetcher variables, likely through SRC_URI")
@@ -849,6 +850,17 @@ FETCH_EXPORT_VARS = ['HOME', 'PATH',
                      'AWS_ACCESS_KEY_ID',
                      'AWS_SECRET_ACCESS_KEY',
                      'AWS_DEFAULT_REGION']
+
+def get_fetcher_environment(d):
+    newenv = {}
+    origenv = d.getVar("BB_ORIGENV")
+    for name in bb.fetch2.FETCH_EXPORT_VARS:
+        value = d.getVar(name)
+        if not value and origenv:
+            value = origenv.getVar(name)
+        if value:
+            newenv[name] = value
+    return newenv
 
 def runfetchcmd(cmd, d, quiet=False, cleanup=None, log=None, workdir=None):
     """

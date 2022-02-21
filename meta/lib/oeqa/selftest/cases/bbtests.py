@@ -63,8 +63,8 @@ class BitbakeTests(OESelftestTestCase):
 
     def test_warnings_errors(self):
         result = bitbake('-b asdf', ignore_status=True)
-        find_warnings = re.search("Summary: There w.{2,3}? [1-9][0-9]* WARNING messages* shown", result.output)
-        find_errors = re.search("Summary: There w.{2,3}? [1-9][0-9]* ERROR messages* shown", result.output)
+        find_warnings = re.search("Summary: There w.{2,3}? [1-9][0-9]* WARNING messages*", result.output)
+        find_errors = re.search("Summary: There w.{2,3}? [1-9][0-9]* ERROR messages*", result.output)
         self.assertTrue(find_warnings, msg="Did not find the mumber of warnings at the end of the build:\n" + result.output)
         self.assertTrue(find_errors, msg="Did not find the mumber of errors at the end of the build:\n" + result.output)
 
@@ -228,8 +228,8 @@ INHERIT:remove = \"report-error\"
         result = bitbake('selftest-ed', ignore_status=True)
         self.assertEqual(result.status, 0, "Bitbake failed, exit code %s, output %s" % (result.status, result.output))
         lic_dir = get_bb_var('LICENSE_DIRECTORY')
-        self.assertFalse(os.path.isfile(os.path.join(lic_dir, 'selftest-ed/generic_GPLv3')))
-        self.assertTrue(os.path.isfile(os.path.join(lic_dir, 'selftest-ed/generic_GPLv2')))
+        self.assertFalse(os.path.isfile(os.path.join(lic_dir, 'selftest-ed/generic_GPL-3.0-or-later')))
+        self.assertTrue(os.path.isfile(os.path.join(lic_dir, 'selftest-ed/generic_GPL-2.0-or-later')))
 
     def test_setscene_only(self):
         """ Bitbake option to restore from sstate only within a build (i.e. execute no real tasks, only setscene)"""
@@ -312,3 +312,27 @@ INHERIT:remove = \"report-error\"
         self.assertFalse(fatal, "Failed to patch using PATCHTOOL=\"git\"")
         self.delete_recipeinc(test_recipe)
         bitbake('-cclean man-db')
+
+    def test_git_unpack_nonetwork(self):
+        """
+        Test that a recipe with a floating tag that needs to be resolved upstream doesn't
+        access the network in a patch task run in a separate builld invocation
+        """
+
+        # Enable the recipe to float using a distro override
+        self.write_config("DISTROOVERRIDES .= \":gitunpack-enable-recipe\"")
+
+        bitbake('gitunpackoffline -c fetch')
+        bitbake('gitunpackoffline -c patch')
+
+    def test_git_unpack_nonetwork_fail(self):
+        """
+        Test that a recipe with a floating tag which doesn't call get_srcrev() in the fetcher
+        raises an error when the fetcher is called.
+        """
+
+        # Enable the recipe to float using a distro override
+        self.write_config("DISTROOVERRIDES .= \":gitunpack-enable-recipe\"")
+
+        result = bitbake('gitunpackoffline-fail -c fetch', ignore_status=True)
+        self.assertTrue("Recipe uses a floating tag/branch without a fixed SRCREV" in result.output, msg = "Recipe without PV set to SRCPV should have failed: %s" % result.output)
