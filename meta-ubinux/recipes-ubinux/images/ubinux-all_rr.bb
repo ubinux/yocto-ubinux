@@ -213,7 +213,6 @@ UBINUX_PKGS = " \
 	rp-pppoe-relay \
 	rpcsvc-proto \
 	ruby \
-	prelink \
 	resource-agents \
 	rgb \
 	rsync \
@@ -446,7 +445,6 @@ UBINUX_PKGS = " \
 	avahi-autoipd \
 	avahi-utils \
 	base-passwd-update \
-	catchsegv \
 	cpp \
 	cpp-symlinks \
 	cxpm \
@@ -493,7 +491,6 @@ UBINUX_PKGS = " \
 	libmemusage \
 	libpam-xtests \
 	libpulsecore \
-	libsegfault \
 	libsotruss \
 	libulockmgr \
 	libxslt-bin \
@@ -526,7 +523,6 @@ UBINUX_PKGS = " \
 	ppp-radius \
 	ppp-tools \
 	ppp-winbind \
-	prelink-cron \
 	psmisc-extras \
 	qtbase \
 	qttools \
