@@ -233,9 +233,6 @@ libuser:
 libzip:
 - CVE-2017-12858
 
-lua:
-- CVE-2020-15945
-
 ncurses:
 - CVE-2021-39537
 
@@ -306,9 +303,6 @@ sblim-sfcb:
 
 strace:
 - CVE-2000-0006
-
-tcl:
-- CVE-2021-35331
 
 tigervnc:
 - CVE-2014-8241
@@ -385,9 +379,6 @@ ubinux-kernel-lsdk:
 uw-imap:
 - CVE-2005-0198
 - CVE-2018-19518
-
-xdg-utils:
-- CVE-2020-27748
 
 xterm:
 - CVE-1999-0965
