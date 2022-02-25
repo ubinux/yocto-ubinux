@@ -410,9 +410,6 @@ sqlite3:
 strace:
 - CVE-2000-0006
 
-tcl:
-- CVE-2021-35331
-
 tigervnc:
 - CVE-2014-8241
 
@@ -482,9 +479,6 @@ uw-imap:
 
 wget:
 - CVE-2021-31879
-
-xdg-utils:
-- CVE-2020-27748
 
 xterm:
 - CVE-1999-0965
