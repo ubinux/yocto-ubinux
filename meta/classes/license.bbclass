@@ -193,7 +193,7 @@ def find_license_files(d):
                                     os.path.join(srcdir, non_generic_lic), None, None))
             non_generic_lics[non_generic_lic] = license_type
         else:
-            # Add explicity avoid of CLOSED license because this isn't generic
+            # Explicitly avoid the CLOSED license because this isn't generic
             if license_type != 'CLOSED':
                 # And here is where we warn people that their licenses are lousy
                 oe.qa.handle_error("license-exists",
@@ -252,7 +252,7 @@ def return_spdx(d, license):
 def canonical_license(d, license):
     """
     Return the canonical (SPDX) form of the license if available (so GPLv3
-    becomes GPL-3.0) or the passed license if there is no canonical form.
+    becomes GPL-3.0-only) or the passed license if there is no canonical form.
     """
     return d.getVarFlag('SPDXLICENSEMAP', license) or license
 
@@ -277,27 +277,27 @@ AVAILABLE_LICENSES := "${@' '.join(available_licenses(d))}"
 
 def expand_wildcard_licenses(d, wildcard_licenses):
     """
-    Return actual spdx format license names if wildcards are used. We expand
-    wildcards from SPDXLICENSEMAP flags and AVAILABLE_LICENSES.
+    There are some common wildcard values users may want to use. Support them
+    here.
     """
-    import fnmatch
+    licenses = set(wildcard_licenses)
+    mapping = {
+        "GPL-3.0*" : ["GPL-3.0-only", "GPL-3.0-or-later"],
+        "LGPL-3.0*" : ["LGPL-3.0-only", "LGPL-3.0-or-later"],
+    }
+    for k in mapping:
+        if k in wildcard_licenses:
+            licenses.remove(k)
+            for item in mapping[k]:
+                licenses.add(item)
 
-    licenses = wildcard_licenses[:]
-    spdxmapkeys = d.getVarFlags('SPDXLICENSEMAP').keys()
-    for wld_lic in wildcard_licenses:
-        spdxflags = fnmatch.filter(spdxmapkeys, wld_lic)
-        licenses += [d.getVarFlag('SPDXLICENSEMAP', flag) for flag in spdxflags]
-        # Assume if we're passed "GPLv3" or "*GPLv3" it means -or-later as well
-        if not wld_lic.endswith(("-or-later", "-only", "*", "+")):
-            spdxflags = fnmatch.filter(spdxmapkeys, wld_lic + "+")
-            licenses += [d.getVarFlag('SPDXLICENSEMAP', flag) for flag in spdxflags]
+    for l in licenses:
+        if l in oe.license.obsolete_license_list():
+            bb.fatal("Error, %s is an obsolete license, please use an SPDX reference in INCOMPATIBLE_LICENSE" % l)
+        if "*" in l:
+            bb.fatal("Error, %s is an invalid license wildcard entry" % l)
 
-    spdx_lics = d.getVar('AVAILABLE_LICENSES').split()
-    for wld_lic in wildcard_licenses:
-        licenses += fnmatch.filter(spdx_lics, wld_lic)
-
-    licenses = list(set(licenses))
-    return licenses
+    return list(licenses)
 
 def incompatible_license_contains(license, truevalue, falsevalue, d):
     license = canonical_license(d, license)
@@ -341,30 +341,31 @@ def incompatible_license(d, dont_want_licenses, package=None):
 def check_license_flags(d):
     """
     This function checks if a recipe has any LICENSE_FLAGS that
-    aren't whitelisted.
+    aren't acceptable.
 
-    If it does, it returns the all LICENSE_FLAGS missing from the whitelist, or
-    all of the LICENSE_FLAGS if there is no whitelist.
+    If it does, it returns the all LICENSE_FLAGS missing from the list
+    of acceptable license flags, or all of the LICENSE_FLAGS if there
+    is no list of acceptable flags.
 
-    If everything is is properly whitelisted, it returns None.
+    If everything is is acceptable, it returns None.
     """
 
-    def license_flag_matches(flag, whitelist, pn):
+    def license_flag_matches(flag, acceptlist, pn):
         """
-        Return True if flag matches something in whitelist, None if not.
+        Return True if flag matches something in acceptlist, None if not.
 
-        Before we test a flag against the whitelist, we append _${PN}
+        Before we test a flag against the acceptlist, we append _${PN}
         to it.  We then try to match that string against the
-        whitelist.  This covers the normal case, where we expect
+        acceptlist.  This covers the normal case, where we expect
         LICENSE_FLAGS to be a simple string like 'commercial', which
-        the user typically matches exactly in the whitelist by
+        the user typically matches exactly in the acceptlist by
         explicitly appending the package name e.g 'commercial_foo'.
         If we fail the match however, we then split the flag across
         '_' and append each fragment and test until we either match or
         run out of fragments.
         """
         flag_pn = ("%s_%s" % (flag, pn))
-        for candidate in whitelist:
+        for candidate in acceptlist:
             if flag_pn == candidate:
                     return True
 
@@ -375,27 +376,27 @@ def check_license_flags(d):
             if flag_cur:
                 flag_cur += "_"
             flag_cur += flagment
-            for candidate in whitelist:
+            for candidate in acceptlist:
                 if flag_cur == candidate:
                     return True
         return False
 
-    def all_license_flags_match(license_flags, whitelist):
+    def all_license_flags_match(license_flags, acceptlist):
         """ Return all unmatched flags, None if all flags match """
         pn = d.getVar('PN')
-        split_whitelist = whitelist.split()
+        split_acceptlist = acceptlist.split()
         flags = []
         for flag in license_flags.split():
-            if not license_flag_matches(flag, split_whitelist, pn):
+            if not license_flag_matches(flag, split_acceptlist, pn):
                 flags.append(flag)
         return flags if flags else None
 
     license_flags = d.getVar('LICENSE_FLAGS')
     if license_flags:
-        whitelist = d.getVar('LICENSE_FLAGS_WHITELIST')
-        if not whitelist:
+        acceptlist = d.getVar('LICENSE_FLAGS_ACCEPTED')
+        if not acceptlist:
             return license_flags.split()
-        unmatched_flags = all_license_flags_match(license_flags, whitelist)
+        unmatched_flags = all_license_flags_match(license_flags, acceptlist)
         if unmatched_flags:
             return unmatched_flags
     return None

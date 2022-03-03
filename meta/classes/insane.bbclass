@@ -27,7 +27,7 @@ WARN_QA ?= " libdir xorg-driver-abi \
             mime mime-xdg unlisted-pkg-lics unhandled-features-check \
             missing-update-alternatives native-last missing-ptest \
             license-exists license-no-generic license-syntax license-format \
-            license-incompatible license-file-missing \
+            license-incompatible license-file-missing obsolete-license \
             "
 ERROR_QA ?= "dev-so debug-deps dev-deps debug-files arch pkgconfig la \
             perms dep-cmp pkgvarcheck perm-config perm-line perm-link \
@@ -48,7 +48,7 @@ enabled tests are listed here, the do_package_qa task will run under fakeroot."
 
 ALL_QA = "${WARN_QA} ${ERROR_QA}"
 
-UNKNOWN_CONFIGURE_WHITELIST ?= "--enable-nls --disable-nls --disable-silent-rules --disable-dependency-tracking --with-libtool-sysroot --disable-static"
+UNKNOWN_CONFIGURE_OPT_IGNORE ?= "--enable-nls --disable-nls --disable-silent-rules --disable-dependency-tracking --with-libtool-sysroot --disable-static"
 
 # This is a list of directories that are expected to be empty.
 QA_EMPTY_DIRS ?= " \
@@ -325,8 +325,8 @@ def package_qa_check_arch(path,name,d, elf, messages):
     if not elf:
         return
 
-    target_os   = d.getVar('TARGET_OS')
-    target_arch = d.getVar('TARGET_ARCH')
+    target_os   = d.getVar('HOST_OS')
+    target_arch = d.getVar('HOST_ARCH')
     provides = d.getVar('PROVIDES')
     bpn = d.getVar('BPN')
 
@@ -549,7 +549,7 @@ python populate_lic_qa_checksum() {
                 import hashlib
                 lineno = 0
                 license = []
-                m = hashlib.md5()
+                m = hashlib.new('MD5', usedforsecurity=False)
                 for line in f:
                     lineno += 1
                     if (lineno >= beginline):
@@ -691,8 +691,8 @@ def prepopulate_objdump_p(elf, d):
 # Walk over all files in a directory and call func
 def package_qa_walk(warnfuncs, errorfuncs, package, d):
     #if this will throw an exception, then fix the dict above
-    target_os   = d.getVar('TARGET_OS')
-    target_arch = d.getVar('TARGET_ARCH')
+    target_os   = d.getVar('HOST_OS')
+    target_arch = d.getVar('HOST_ARCH')
 
     warnings = {}
     errors = {}
@@ -909,14 +909,19 @@ def package_qa_check_unlisted_pkg_lics(package, d, messages):
         return True
 
     recipe_lics_set = oe.license.list_licenses(d.getVar('LICENSE'))
-    unlisted = oe.license.list_licenses(pkg_lics) - recipe_lics_set
-    if not unlisted:
-        return True
-
-    oe.qa.add_message(messages, "unlisted-pkg-lics",
-                           "LICENSE:%s includes licenses (%s) that are not "
-                           "listed in LICENSE" % (package, ' '.join(unlisted)))
-    return False
+    package_lics = oe.license.list_licenses(pkg_lics)
+    unlisted = package_lics - recipe_lics_set
+    if unlisted:
+        oe.qa.add_message(messages, "unlisted-pkg-lics",
+                               "LICENSE:%s includes licenses (%s) that are not "
+                               "listed in LICENSE" % (package, ' '.join(unlisted)))
+        return False
+    obsolete = set(oe.license.obsolete_license_list()) & package_lics - recipe_lics_set
+    if obsolete:
+        oe.qa.add_message(messages, "obsolete-license",
+                               "LICENSE:%s includes obsolete licenses %s" % (package, ' '.join(obsolete)))
+        return False
+    return True
 
 QAPKGTEST[empty-dirs] = "package_qa_check_empty_dirs"
 def package_qa_check_empty_dirs(pkg, d, messages):
@@ -1011,6 +1016,14 @@ python do_package_qa () {
     import oe.packagedata
 
     bb.note("DO PACKAGE QA")
+
+    main_lic = d.getVar('LICENSE')
+
+    # Check for obsolete license references in main LICENSE (packages are checked below for any changes)
+    main_licenses = oe.license.list_licenses(d.getVar('LICENSE'))
+    obsolete = set(oe.license.obsolete_license_list()) & main_licenses
+    if obsolete:
+        oe.qa.handle_error("obsolete-license", "Recipe LICENSE includes obsolete licenses %s" % ' '.join(obsolete), d)
 
     bb.build.exec_func("read_subpackage_metadata", d)
 
@@ -1270,7 +1283,7 @@ Rerun configure task after fixing this."""
             options = set()
             for line in output.splitlines():
                 options |= set(line.partition(flag)[2].split())
-            whitelist = set(d.getVar("UNKNOWN_CONFIGURE_WHITELIST").split())
+            whitelist = set(d.getVar("UNKNOWN_CONFIGURE_OPT_IGNORE").split())
             options -= whitelist
             if options:
                 pn = d.getVar('PN')

@@ -78,12 +78,8 @@ systemd_create_users () {
 			eval groupadd --root ${IMAGE_ROOTFS} $groupadd_params || true
 		elif [ "$type" = "m" ]; then
 			group=$id
-			if [ ! `grep -q "^${group}:" ${IMAGE_ROOTFS}${sysconfdir}/group` ]; then
-				eval groupadd --root ${IMAGE_ROOTFS} --system $group
-			fi
-			if [ ! `grep -q "^${name}:" ${IMAGE_ROOTFS}${sysconfdir}/passwd` ]; then
-				eval useradd --root ${IMAGE_ROOTFS} --shell /sbin/nologin --system $name
-			fi
+			eval groupadd --root ${IMAGE_ROOTFS} --system $group || true
+			eval useradd --root ${IMAGE_ROOTFS} --shell /sbin/nologin --system $name --no-user-group || true
 			eval usermod --root ${IMAGE_ROOTFS} -a -G $group $name
 		fi
 		done
@@ -380,7 +376,7 @@ python overlayfs_qa_check() {
     from oe.overlayfs import mountUnitName
 
     # this is a dumb check for unit existence, not its validity
-    overlayMountPoints = d.getVarFlags("OVERLAYFS_MOUNT_POINT")
+    overlayMountPoints = d.getVarFlags("OVERLAYFS_MOUNT_POINT") or {}
     imagepath = d.getVar("IMAGE_ROOTFS")
     searchpaths = [oe.path.join(imagepath, d.getVar("sysconfdir"), "systemd", "system"),
                    oe.path.join(imagepath, d.getVar("systemd_system_unitdir"))]

@@ -402,7 +402,7 @@ def better_exec(code, context, text = None, realfile = "<code>", pythonexception
         code = better_compile(code, realfile, realfile)
     try:
         exec(code, get_context(), context)
-    except (bb.BBHandledException, bb.parse.SkipRecipe, bb.data_smart.ExpansionError):
+    except (bb.BBHandledException, bb.parse.SkipRecipe, bb.data_smart.ExpansionError, bb.process.ExecutionError):
         # Error already shown so passthrough, no need for traceback
         raise
     except Exception as e:
@@ -538,7 +538,7 @@ def md5_file(filename):
     Return the hex string representation of the MD5 checksum of filename.
     """
     import hashlib
-    return _hasher(hashlib.md5(), filename)
+    return _hasher(hashlib.new('MD5', usedforsecurity=False), filename)
 
 def sha256_file(filename):
     """
@@ -589,8 +589,8 @@ def preserved_envvars():
     v = [
         'BBPATH',
         'BB_PRESERVE_ENV',
-        'BB_ENV_WHITELIST',
-        'BB_ENV_EXTRAWHITE',
+        'BB_ENV_PASSTHROUGH',
+        'BB_ENV_PASSTHROUGH_ADDITIONS',
     ]
     return v + preserved_envvars_exported()
 
@@ -621,21 +621,21 @@ def filter_environment(good_vars):
 
 def approved_variables():
     """
-    Determine and return the list of whitelisted variables which are approved
+    Determine and return the list of variables which are approved
     to remain in the environment.
     """
     if 'BB_PRESERVE_ENV' in os.environ:
         return os.environ.keys()
     approved = []
-    if 'BB_ENV_WHITELIST' in os.environ:
-        approved = os.environ['BB_ENV_WHITELIST'].split()
-        approved.extend(['BB_ENV_WHITELIST'])
+    if 'BB_ENV_PASSTHROUGH' in os.environ:
+        approved = os.environ['BB_ENV_PASSTHROUGH'].split()
+        approved.extend(['BB_ENV_PASSTHROUGH'])
     else:
         approved = preserved_envvars()
-    if 'BB_ENV_EXTRAWHITE' in os.environ:
-        approved.extend(os.environ['BB_ENV_EXTRAWHITE'].split())
-        if 'BB_ENV_EXTRAWHITE' not in approved:
-            approved.extend(['BB_ENV_EXTRAWHITE'])
+    if 'BB_ENV_PASSTHROUGH_ADDITIONS' in os.environ:
+        approved.extend(os.environ['BB_ENV_PASSTHROUGH_ADDITIONS'].split())
+        if 'BB_ENV_PASSTHROUGH_ADDITIONS' not in approved:
+            approved.extend(['BB_ENV_PASSTHROUGH_ADDITIONS'])
     return approved
 
 def clean_environment():

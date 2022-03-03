@@ -10,8 +10,8 @@ HOMEPAGE = "http://avahi.org"
 BUGTRACKER = "https://github.com/lathiat/avahi/issues"
 SECTION = "network"
 
-# major part is under LGPLv2.1+, but several .dtd, .xsl, initscripts and
-# python scripts are under GPLv2+
+# major part is under LGPL-2.1-or-later, but several .dtd, .xsl, initscripts and
+# python scripts are under GPL-2.0-or-later
 LICENSE = "GPL-2.0-or-later & LGPL-2.1-or-later"
 LIC_FILES_CHKSUM = "file://LICENSE;md5=2d5025d4aa3495befef8f17206a5b0a1 \
                     file://avahi-common/address.h;endline=25;md5=b1d1d2cda1c07eb848ea7d6215712d9d \
@@ -33,7 +33,7 @@ SRC_URI[md5sum] = "229c6aa30674fc43c202b22c5f8c2be7"
 SRC_URI[sha256sum] = "060309d7a333d38d951bc27598c677af1796934dbd98e1024e7ad8de798fedda"
 
 # Issue only affects Debian/SUSE, not us
-CVE_CHECK_WHITELIST += "CVE-2021-26720"
+CVE_CHECK_IGNORE += "CVE-2021-26720"
 
 DEPENDS = "expat libcap libdaemon glib-2.0"
 

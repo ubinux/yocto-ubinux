@@ -24,7 +24,7 @@ SYSROOT_DIRS:append:class-cross = " ${SYSROOT_DIRS_NATIVE}"
 SYSROOT_DIRS:append:class-crosssdk = " ${SYSROOT_DIRS_NATIVE}"
 
 # These directories will not be staged in the sysroot
-SYSROOT_DIRS_BLACKLIST = " \
+SYSROOT_DIRS_IGNORE = " \
     ${mandir} \
     ${docdir} \
     ${infodir} \
@@ -65,7 +65,7 @@ sysroot_stage_dirs() {
 	done
 
 	# Remove directories we do not care about
-	for dir in ${SYSROOT_DIRS_BLACKLIST}; do
+	for dir in ${SYSROOT_DIRS_IGNORE}; do
 		rm -rf "$to$dir"
 	done
 }
@@ -104,7 +104,7 @@ python do_populate_sysroot () {
     for f in (d.getVar('SYSROOT_PREPROCESS_FUNCS') or '').split():
         bb.build.exec_func(f, d)
     pn = d.getVar("PN")
-    multiprov = d.getVar("MULTI_PROVIDER_WHITELIST").split()
+    multiprov = d.getVar("BB_MULTI_PROVIDER_ALLOWED").split()
     provdir = d.expand("${SYSROOT_DESTDIR}${base_prefix}/sysroot-providers/")
     bb.utils.mkdirhier(provdir)
     for p in d.getVar("PROVIDES").split():
@@ -116,11 +116,11 @@ python do_populate_sysroot () {
 }
 
 do_populate_sysroot[vardeps] += "${SYSROOT_PREPROCESS_FUNCS}"
-do_populate_sysroot[vardepsexclude] += "MULTI_PROVIDER_WHITELIST"
+do_populate_sysroot[vardepsexclude] += "BB_MULTI_PROVIDER_ALLOWED"
 
 POPULATESYSROOTDEPS = ""
-POPULATESYSROOTDEPS:class-target = "virtual/${MLPREFIX}${TARGET_PREFIX}binutils:do_populate_sysroot"
-POPULATESYSROOTDEPS:class-nativesdk = "virtual/${TARGET_PREFIX}binutils-crosssdk:do_populate_sysroot"
+POPULATESYSROOTDEPS:class-target = "virtual/${MLPREFIX}${HOST_PREFIX}binutils:do_populate_sysroot"
+POPULATESYSROOTDEPS:class-nativesdk = "virtual/${HOST_PREFIX}binutils-crosssdk:do_populate_sysroot"
 do_populate_sysroot[depends] += "${POPULATESYSROOTDEPS}"
 
 SSTATETASKS += "do_populate_sysroot"
