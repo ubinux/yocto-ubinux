@@ -276,11 +276,11 @@ class TerminalFilter(object):
             print(content)
         else:
             if self.quiet:
-                content = "Running tasks (%s of %s/%s of %s)" % (self.helper.setscene_current, self.helper.setscene_total, self.helper.tasknumber_current, self.helper.tasknumber_total)
+                content = "Running tasks (%s of %s, %s of %s)" % (self.helper.setscene_current, self.helper.setscene_total, self.helper.tasknumber_current, self.helper.tasknumber_total)
             elif not len(activetasks):
-                content = "No currently running tasks (%s of %s/%s of %s)" % (self.helper.setscene_current, self.helper.setscene_total, self.helper.tasknumber_current, self.helper.tasknumber_total)
+                content = "Setscene tasks: %s of %s\nNo currently running tasks (%s of %s)" % (self.helper.setscene_current, self.helper.setscene_total, self.helper.tasknumber_current, self.helper.tasknumber_total)
             else:
-                content = "Currently %2s running tasks (%s of %s/%s of %s)" % (len(activetasks), self.helper.setscene_current, self.helper.setscene_total, self.helper.tasknumber_current, self.helper.tasknumber_total)
+                content = "Setscene tasks: %s of %s\nCurrently %2s running tasks (%s of %s)" % (self.helper.setscene_current, self.helper.setscene_total, len(activetasks), self.helper.tasknumber_current, self.helper.tasknumber_total)
             maxtask = self.helper.tasknumber_total
             if not self.main_progress or self.main_progress.maxval != maxtask:
                 widgets = [' ', progressbar.Percentage(), ' ', progressbar.Bar()]
@@ -292,9 +292,9 @@ class TerminalFilter(object):
                 progress = 0
             content = self.main_progress.update(progress)
             print('')
-        lines = 1 + int(len(content) / (self.columns + 1))
+        lines = self.getlines(content)
         if self.quiet == 0:
-            for tasknum, task in enumerate(tasks[:(self.rows - 2)]):
+            for tasknum, task in enumerate(tasks[:(self.rows - 1 - lines)]):
                 if isinstance(task, tuple):
                     pbar, progress, rate, start_time = task
                     if not pbar.start_time:
@@ -311,10 +311,16 @@ class TerminalFilter(object):
                 else:
                     content = "%s: %s" % (tasknum, task)
                     print(content)
-                lines = lines + 1 + int(len(content) / (self.columns + 1))
+                lines = lines + self.getlines(content)
         self.footer_present = lines
         self.lastpids = runningpids[:]
         self.lastcount = self.helper.tasknumber_current
+
+    def getlines(self, content):
+        lines = 0
+        for line in content.split("\n"):
+            lines = lines + 1 + int(len(line) / (self.columns + 1))
+        return lines
 
     def finish(self):
         if self.stdinbackup:

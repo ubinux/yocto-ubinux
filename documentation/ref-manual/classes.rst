@@ -503,35 +503,6 @@ Support for other version control systems such as Subversion is limited
 due to BitBake's automatic fetch dependencies (e.g.
 ``subversion-native``).
 
-.. _ref-classes-distutils3:
-
-``distutils3*.bbclass``
-=======================
-
-The ``distutils3*`` classes support recipes for Python version 3.x
-extensions, which are simple. These recipes usually only need to point
-to the source's archive and then inherit the proper class. Building is
-split into three methods depending on which method the module authors
-used.
-
--  Extensions that use an Autotools-based build system require Autotools
-   and ``distutils``-based classes in their recipes.
-
--  Extensions that use ``distutils``-based build systems require the
-   ``distutils`` class in their recipes.
-
-   .. note::
-
-      ``distutils`` has been deprecated in Python 3.10 and will be removed
-      in Python 3.12. For this reason the ``distutils3*`` classes are now
-      deprecated and will be removed from core in the near future. Instead,
-      use the ``setuptools3*`` classes.
-
-
--  Extensions that use build systems based on ``setuptools3`` require
-   the :ref:`setuptools3 <ref-classes-setuptools3>` class in their
-   recipes.
-
 .. _ref-classes-externalsrc:
 
 ``externalsrc.bbclass``
@@ -603,12 +574,11 @@ Here is an example that uses this class in an image recipe::
        "
 
 Here is an example that adds two users named "tester-jim" and "tester-sue" and assigns
-passwords. First on host, create the password hash::
+passwords. First on host, create the (escaped) password hash::
 
-   mkpasswd -m sha256crypt tester01
+   printf "%q" $(mkpasswd -m sha256crypt tester01)
 
-The resulting hash is set to a variable and used in ``useradd`` command parameters.
-Remember to escape the character ``$``::
+The resulting hash is set to a variable and used in ``useradd`` command parameters::
 
    inherit extrausers
    PASSWD = "\$X\$ABC123\$A-Long-Hash"
@@ -649,6 +619,22 @@ If any conditions specified in the recipe using the above
 variables are not met, the recipe will be skipped, and if the
 build system attempts to build the recipe then an error will be
 triggered.
+
+.. _ref-classes-flit_core:
+
+``flit_core.bbclass``
+=====================
+
+The ``flit_core`` class enables building Python modules which declare
+the  `PEP-517 <https://www.python.org/dev/peps/pep-0517/>`__ compliant
+``flit_core.buildapi`` ``build-backend`` in the ``[build-system]``
+section of ``pyproject.toml`` (See `PEP-518 <https://www.python.org/dev/peps/pep-0518/>`__).
+
+Python modules built with ``flit_core.buildapi`` are pure Python (no
+``C`` or ``Rust`` extensions).
+
+The resulting ``wheel`` (See `PEP-427 <https://www.python.org/dev/peps/pep-0427/>`__)
+is installed with the :ref:`pip_install_wheel <ref-classes-pip_install_wheel>` class.
 
 .. _ref-classes-fontcache:
 
@@ -966,21 +952,6 @@ specified by :term:`EFI_PROVIDER` if
 
 Normally, you do not use this class directly. Instead, you add "live" to
 :term:`IMAGE_FSTYPES`.
-
-.. _ref-classes-image-prelink:
-
-``image-prelink.bbclass``
-=========================
-
-The ``image-prelink`` class enables the use of the ``prelink`` utility
-during the :ref:`ref-tasks-rootfs` task, which optimizes
-the dynamic linking of shared libraries to reduce executable startup
-time.
-
-By default, the class is enabled in the ``local.conf.template`` using
-the :term:`USER_CLASSES` variable as follows::
-
-   USER_CLASSES ?= "buildstats image-prelink"
 
 .. _ref-classes-insane:
 
@@ -2025,6 +1996,26 @@ When inherited by a recipe, the ``perlnative`` class supports using the
 native version of Perl built by the build system rather than using the
 version provided by the build host.
 
+.. _ref-classes-pip_install_wheel:
+
+``pip_install_wheel.bbclass``
+=============================
+
+The ``pip_install_wheel`` class uses ``pip`` to install a Python ``wheel``
+binary archive format (See `PEP-427 <https://www.python.org/dev/peps/pep-0427/>`__)
+
+The Python ``wheel`` can be built with several classes, including :ref:`flit_core <ref-classes-flit_core>`,
+:ref:`setuptools_build_meta <ref-classes-setuptools_build_meta>`, and :ref:`setuptools3 <ref-classes-setuptools3>`.
+
+The absolute path to the built ``wheel`` to be installed is defined by :term:`PYPA_WHEEL` which can be
+overriden for recipes where the filename or version number of the wheel are not easily
+determined by the defaults. Other variables which can be used to customize the behavior
+of the ``pip_install_wheel`` class include:
+
+- :term:`PIP_INSTALL_ARGS`
+- :term:`PIP_INSTALL_PACKAGE`
+- :term:`PIP_INSTALL_DIST_PATH`
+
 .. _ref-classes-pixbufcache:
 
 ``pixbufcache.bbclass``
@@ -2380,14 +2371,49 @@ additional configuration options you want to pass SCons command line.
 The ``sdl`` class supports recipes that need to build software that uses
 the Simple DirectMedia Layer (SDL) library.
 
+.. _ref-classes-setuptools_build_meta:
+
+``setuptools_build_meta.bbclass``
+=================================
+
+The ``setuptools_build_meta`` class enables building Python modules which
+declare the
+`PEP-517 <https://www.python.org/dev/peps/pep-0517/>`__ compliant
+``setuptools.build_meta`` ``build-backend`` in the ``[build-system]``
+section of ``pyproject.toml`` (See `PEP-518 <https://www.python.org/dev/peps/pep-0518/>`__).
+
+Python modules built with ``setuptools.build_meta`` can be pure Python or
+include ``C`` or ``Rust`` extensions).
+
+The resulting ``wheel`` (See `PEP-427 <https://www.python.org/dev/peps/pep-0427/>`__)
+is installed with the :ref:`pip_install_wheel <ref-classes-pip_install_wheel>` class.
+
 .. _ref-classes-setuptools3:
 
 ``setuptools3.bbclass``
 =======================
 
 The ``setuptools3`` class supports Python version 3.x extensions that
-use build systems based on ``setuptools``. If your recipe uses these
-build systems, the recipe needs to inherit the ``setuptools3`` class.
+use build systems based on ``setuptools`` (e.g. only have a ``setup.py`` and
+have not migrated to the official ``pyproject.toml`` format). If your recipe
+uses these build systems, the recipe needs to inherit the ``setuptools3`` class.
+
+   .. note::
+
+      The ``setuptools3`` class ``do_compile()`` task now calls
+      ``setup.py bdist_wheel`` to build the ``wheel`` binary archive format
+      (See `PEP-427 <https://www.python.org/dev/peps/pep-0427/>`__).
+
+      A consequence of this is that legacy software still using deprecated
+      ``distutils`` from the Python standard library cannot be packaged as
+      ``wheels``. A common solution is the replace
+      ``from distutils.core import setup`` with ``from setuptools import setup``.
+
+   .. note::
+
+     The ``setuptools3`` class ``do_install()`` task now calls ``pip install``
+     to install the ``wheel`` binary archive. In current versions of
+     ``setuptools`` the legacy ``setup.py install`` method is deprecated.
 
 .. _ref-classes-setuptools3-base:
 

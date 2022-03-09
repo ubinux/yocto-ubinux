@@ -1982,25 +1982,6 @@ system and gives an overview of their function and contents.
       is included in the default value of
       :term:`OVERRIDES`.
 
-   :term:`DISTUTILS_SETUP_PATH`
-      When used by recipes that inherit the
-      :ref:`distutils3 <ref-classes-distutils3>` class, this variable should
-      be used to specify the directory in which the ``setup.py`` file is
-      located if it is not at the root of the source tree (as specified by
-      :term:`S`). For example, in a recipe where the sources are fetched from
-      a Git repository and ``setup.py`` is in a ``python/pythonmodule``
-      subdirectory, you would have this::
-
-         S = "${WORKDIR}/git"
-         DISTUTILS_SETUP_PATH = "${S}/python/pythonmodule"
-
-      .. note::
-
-         ``distutils`` has been deprecated in Python 3.10 and will be removed
-         in Python 3.12. For this reason, the use of :ref:`distutils3 <ref-classes-distutils3>`
-         is deprecated. Instead use :ref:`setuptools3 <ref-classes-setuptools3>` and the
-         :term:`SETUPTOOLS_SETUP_PATH` variable.
-
    :term:`DL_DIR`
       The central download directory used by the build process to store
       downloads. By default, :term:`DL_DIR` gets files suitable for mirroring
@@ -4348,9 +4329,9 @@ system and gives an overview of their function and contents.
 
       Here are some examples::
 
-         LICENSE = "LGPLv2.1 | GPLv3"
-         LICENSE = "MPL-1 & LGPLv2.1"
-         LICENSE = "GPLv2+"
+         LICENSE = "LGPL-2.1-only | GPL-3.0-only"
+         LICENSE = "MPL-1.0 & LGPL-2.1-only"
+         LICENSE = "GPL-2.0-or-later"
 
       The first example is from the
       recipes for Qt, which the user may choose to distribute under either
@@ -4365,8 +4346,8 @@ system and gives an overview of their function and contents.
       but has accompanying documentation licensed under the GNU Free
       Documentation License 1.2 could be specified as follows::
 
-         LICENSE = "GFDL-1.2 & GPLv2"
-         LICENSE:${PN} = "GPLv2"
+         LICENSE = "GFDL-1.2 & GPL-2.0-only"
+         LICENSE:${PN} = "GPL-2.0.only"
          LICENSE:${PN}-doc = "GFDL-1.2"
 
    :term:`LICENSE_CREATE_PACKAGE`
@@ -5594,6 +5575,25 @@ system and gives an overview of their function and contents.
       ``bash-4.2-r1/``). This variable is comprised of the following:
       ${:term:`PN`}-${:term:`EXTENDPE`}${:term:`PV`}-${:term:`PR`}
 
+   :term:`PIP_INSTALL_ARGS`
+      When used by recipes that inherit the
+      :ref:`pip_install_wheel <ref-classes-pip_install_wheel>` class,
+      denotes the arguments passed to ``pip install`` to adjust the
+      behavior of how the ``wheel`` is installed.
+
+   :term:`PIP_INSTALL_DIST_PATH`
+      When used by recipes that inherit the
+      :ref:`pip_install_wheel <ref-classes-pip_install_wheel>` class,
+      denotes the path to ``dist/`` (short for distribution) where the
+      binary archive ``wheel`` is built. This is used in part to create
+      the :term:`PYPA_WHEEL` variable.
+
+   :term:`PIP_INSTALL_PACKAGE`
+      When used by recipes that inherit the
+      :ref:`pip_install_wheel <ref-classes-pip_install_wheel>` class,
+      denotes the name of the package portion of the ``wheel`` filename.
+      This is used in part to create the :term:`PYPA_WHEEL` variable.
+
    :term:`PIXBUF_PACKAGES`
       When inheriting the :ref:`pixbufcache <ref-classes-pixbufcache>`
       class, this variable identifies packages that contain the pixbuf
@@ -6021,10 +6021,16 @@ system and gives an overview of their function and contents.
 
       :term:`PV` is the default value of the :term:`PKGV` variable.
 
+   :term:`PYPA_WHEEL`
+      When used by recipes that inherit the
+      :ref:`pip_install_wheel <ref-classes-pip_install_wheel>` class, denotes
+      the absolute path to the built ``wheel`` to be installed. Normally the
+      defaults which use :term:`PIP_INSTALL_PACKAGE` and :term:`PIP_INSTALL_DIST_PATH`
+      to build the path to the ``wheel`` should be sufficient.
+
    :term:`PYTHON_ABI`
       When used by recipes that inherit the
-      :ref:`distutils3 <ref-classes-distutils3>`,
-      :ref:`setuptools3 <ref-classes-setuptools3>` classes, denotes the
+      :ref:`setuptools3 <ref-classes-setuptools3>` class, denotes the
       Application Binary Interface (ABI) currently in use for Python. By
       default, the ABI is "m". You do not have to set this variable as the
       OpenEmbedded build system sets it for you.
@@ -6033,14 +6039,9 @@ system and gives an overview of their function and contents.
       names used when installing the Python headers and libraries in
       sysroot (e.g. ``.../python3.3m/...``).
 
-      Recipes that inherit the :ref:`distutils3 <ref-classes-distutils3>` class during cross-builds also
-      use this variable to locate the headers and libraries of the
-      appropriate Python that the extension is targeting.
-
    :term:`PYTHON_PN`
       When used by recipes that inherit the
-      `distutils3 <ref-classes-distutils3>`,
-      :ref:`setuptools3 <ref-classes-setuptools3>` classes, specifies the
+      :ref:`setuptools3 <ref-classes-setuptools3>` classe, specifies the
       major Python version being built. For Python 3.x, :term:`PYTHON_PN` would
       be "python3". You do not have to set this variable as the
       OpenEmbedded build system automatically sets it for you.
@@ -8536,12 +8537,11 @@ system and gives an overview of their function and contents.
 
    :term:`USER_CLASSES`
       A list of classes to globally inherit. These classes are used by the
-      OpenEmbedded build system to enable extra features (e.g.
-      ``buildstats``, ``image-prelink``, and so forth).
+      OpenEmbedded build system to enable extra features.
 
       The default list is set in your ``local.conf`` file::
 
-         USER_CLASSES ?= "buildstats image-prelink"
+         USER_CLASSES ?= "buildstats"
 
       For more information, see
       ``meta-poky/conf/local.conf.sample`` in the :term:`Source Directory`.
