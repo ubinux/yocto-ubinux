@@ -7,7 +7,9 @@ LIC_FILES_CHKSUM = "file://icheck.js;md5=404078d7de9f05ed64d364274f790055"
 
 DEPENDS = "virtual/libc"
 
-SRC_URI = "git://github.com/fronteed/icheck.git;protocol=https;branch=1.0.3;tag=${PV}"
+SRC_URI = "git://github.com/fronteed/icheck.git;protocol=https;branch=1.0.3"
+
+SRCREV = "c8c1af84e4b90b4aea31466aad09bf877619e943"
 
 PACKAGES = "${PN}"
 FILES:${PN} = "${datadir}/javascript/jquery-icheck"

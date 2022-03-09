@@ -7,7 +7,9 @@ LIC_FILES_CHKSUM = "file://LICENSE.txt;md5=fa75702818bab79eacec2c30227fe114"
 
 DEPENDS = "virtual/libc"
 
-SRC_URI = "git://github.com/malihu/malihu-custom-scrollbar-plugin.git;branch=master;protocol=https;tag=${PV}"
+SRC_URI = "git://github.com/malihu/malihu-custom-scrollbar-plugin.git;branch=master;protocol=https"
+
+SRCREV = "eac2b0af71a7ca06cc19e28d15ba60f6db2dfd29"
 
 S = "${WORKDIR}/git"
 

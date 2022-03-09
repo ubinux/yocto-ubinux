@@ -7,7 +7,9 @@ LIC_FILES_CHKSUM = "file://LICENSE;md5=2c0f216b2120ffc367e20f2b56df51b3"
 
 DEPENDS = "php"
 
-SRC_URI = "git://github.com/smarty-php/smarty.git;protocol=https;tag=v${PV}"
+SRC_URI = "git://github.com/smarty-php/smarty.git;branch=master;protocol=https;"
+
+SRCREV = "baebd59bb4da9fca89da382811b38c8313949c49"
 
 PACKAGES = "${PN}"
 FILES:${PN} = "${datadir}/php/smarty3/"

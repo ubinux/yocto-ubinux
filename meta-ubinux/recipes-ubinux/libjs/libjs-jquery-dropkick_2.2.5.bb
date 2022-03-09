@@ -7,7 +7,9 @@ LIC_FILES_CHKSUM = "file://LICENSE;md5=eee7203bfd605319113865c7d40ef2db"
 
 DEPENDS = "virtual/libc"
 
-SRC_URI = "git://github.com/Robdel12/DropKick.git;branch=master;protocol=https;tag=v${PV}"
+SRC_URI = "git://github.com/Robdel12/DropKick.git;branch=master;protocol=https"
+
+SRCREV = "e07e9d445bde22766d4b2fe551e27563ce53ba50"
 
 PACKAGES = "${PN} ${PN}-doc"
 FILES:${PN} = "${datadir}/javascript/jquery-dropkick \

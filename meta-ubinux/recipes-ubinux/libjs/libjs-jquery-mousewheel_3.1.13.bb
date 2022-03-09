@@ -8,7 +8,9 @@ LIC_FILES_CHKSUM = "file://LICENSE.txt;md5=e4f7c2d5fc49e79dce89c5e67a304591"
 
 DEPENDS = "virtual/libc"
 
-SRC_URI = "git://github.com/jquery/jquery-mousewheel.git;nobranch=1;protocol=https;tag=${PV}"
+SRC_URI = "git://github.com/jquery/jquery-mousewheel.git;branch=main;protocol=https"
+
+SRCREV = "67289b6b2aa0066d7d78a5807f520387135ffb22"
 
 PACKAGES = "${PN} ${PN}-doc"
 FILES:${PN} = "${datadir}/javascript/jquery-mousewheel"
