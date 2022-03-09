@@ -39,4 +39,3 @@ BBLAYERS_NON_REMOVABLE ?= " \
   ##COREBASE##/meta \
   ##COREBASE##/meta-yocto \
   "
-LAYERSERIES_COMPAT_ubinux = "kirkstone"
