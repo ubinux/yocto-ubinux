@@ -352,4 +352,4 @@ ARCHIVER_MODE[srpm] = "1"
 ARCHIVER_MODE[src] = "original"
 #INHERIT += "fossology-python"
 COPYLEFT_LICENSE_INCLUDE = "*"
-
+HOSTTOOLS += "man col shutdown"

@@ -7,13 +7,9 @@ LIC_FILES_CHKSUM = "file://COPYING;md5=b234ee4d69f5fce4486a80fdaf4a4263"
 SRC_URI = "https://sourceforge.net/projects/apcupsd/files/apcupsd%20-%20Stable/3.14.14/apcupsd-3.14.14.tar.gz"
 SRC_URI[sha256sum] = "db7748559b6b4c3784f9856561ef6ac6199ef7bd019b3edcd7e0a647bf8f9867"
 
-PNBLACKLIST[apcupsd] ?= "BROKEN: doesn't build with B!=S"
-
 inherit autotools
 
-PNBLACKLIST[apcupsd] = ""
 B = "${S}"
-HOSTTOOLS += "man col shutdown"
 
 LD = "${CXX}"
 
