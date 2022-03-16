@@ -3,12 +3,44 @@ DESCRIPTION = "D-Bus is a message bus system, a simple way for applications to t
 HOMEPAGE = "https://dbus.freedesktop.org"
 SECTION = "base"
 
-require dbus.inc
+inherit autotools pkgconfig gettext upstream-version-is-even ptest-gnome
 
-DEPENDS = "expat virtual/libintl autoconf-archive"
-PACKAGES += "${@bb.utils.contains('DISTRO_FEATURES', 'ptest', '${PN}-ptest', '', d)}"
-ALLOW_EMPTY:dbus-ptest = "1"
-RDEPENDS:dbus-ptest:class-target = "dbus-test-ptest"
+LICENSE = "AFL-2.1 | GPL-2.0-or-later"
+LIC_FILES_CHKSUM = "file://COPYING;md5=10dded3b58148f3f1fd804b26354af3e \
+                    file://dbus/dbus.h;beginline=6;endline=20;md5=866739837ccd835350af94dccd6457d8"
+
+SRC_URI = "https://dbus.freedesktop.org/releases/dbus/dbus-${PV}.tar.xz \
+           file://run-ptest \
+           file://tmpdir.patch \
+           file://dbus-1.init \
+"
+
+SRC_URI[sha256sum] = "ccd7cce37596e0a19558fd6648d1272ab43f011d80c8635aea8fd0bad58aebd4"
+
+EXTRA_OECONF = "--disable-xml-docs \
+                --disable-doxygen-docs \
+                --enable-largefile \
+                --with-system-socket=/run/dbus/system_bus_socket \
+                --enable-tests \
+                --enable-checks \
+                --enable-asserts \
+                "
+EXTRA_OECONF:append:class-target = " SYSTEMCTL=${base_bindir}/systemctl"
+
+PACKAGECONFIG ??= "${@bb.utils.filter('DISTRO_FEATURES', 'systemd x11', d)} \
+                   user-session \
+                  "
+PACKAGECONFIG:class-native = ""
+PACKAGECONFIG:class-nativesdk = ""
+
+PACKAGECONFIG[systemd] = "--enable-systemd --with-systemdsystemunitdir=${systemd_system_unitdir},--disable-systemd --without-systemdsystemunitdir,systemd"
+PACKAGECONFIG[x11] = "--enable-x11-autolaunch,--without-x --disable-x11-autolaunch, virtual/libx11 libsm"
+PACKAGECONFIG[user-session] = "--enable-user-session --with-systemduserunitdir=${systemd_user_unitdir},--disable-user-session"
+PACKAGECONFIG[verbose-mode] = "--enable-verbose-mode,,,"
+PACKAGECONFIG[audit] = "--enable-libaudit,--disable-libaudit,audit"
+PACKAGECONFIG[selinux] = "--enable-selinux,--disable-selinux,libselinux"
+
+DEPENDS = "expat virtual/libintl autoconf-archive glib-2.0"
 RDEPENDS:${PN} += "${PN}-common ${PN}-tools"
 RDEPENDS:${PN}:class-native = ""
 
@@ -73,6 +105,8 @@ FILES:${PN}-lib = "${libdir}/lib*.so.*"
 RRECOMMENDS:${PN}-lib = "${PN}"
 FILES:${PN}-dev += "${libdir}/dbus-1.0/include ${bindir}/dbus-test-tool ${datadir}/xml/dbus-1"
 
+RDEPENDS:${PN}-ptest += "bash make dbus"
+
 PACKAGE_WRITE_DEPS += "${@bb.utils.contains('DISTRO_FEATURES','systemd sysvinit','systemd-systemctl-native','',d)}"
 pkg_postinst:dbus() {
 	# If both systemd and sysvinit are enabled, mask the dbus-1 init script
@@ -88,8 +122,6 @@ pkg_postinst:dbus() {
 	fi
 }
 
-
-EXTRA_OECONF += "--disable-tests"
 
 do_install() {
 	autotools_do_install
@@ -149,5 +181,3 @@ do_install:class-nativesdk() {
 	rm -rf ${D}${localstatedir}/run
 }
 BBCLASSEXTEND = "native nativesdk"
-
-INSANE_SKIP:${PN}-ptest += "build-deps"
