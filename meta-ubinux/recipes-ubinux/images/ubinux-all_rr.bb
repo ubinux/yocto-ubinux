@@ -610,7 +610,6 @@ UBINUX_PKGS = " \
 	opensaf \
 	\
 	python3-cachetools \
-	python3-configparser \
 	python3-editor \
 	python3-fail2ban \
 	python3-pyinotify \
