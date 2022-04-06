@@ -15,6 +15,8 @@ SRC_URI = "file://init \
 S = "${WORKDIR}"
 
 PACKAGECONFIG ??= ""
+PACKAGECONFIG:append:qemuriscv64 = " use-pixman"
+PACKAGECONFIG:append:qemuppc64 = " use-pixman"
 
 PACKAGECONFIG[no-idle-timeout] = ",,"
 PACKAGECONFIG[use-pixman] = ",,"
@@ -61,13 +63,13 @@ do_install() {
 
 INHIBIT_UPDATERCD_BBCLASS = "${@oe.utils.conditional('VIRTUAL-RUNTIME_init_manager', 'systemd', '1', '', d)}"
 
-inherit update-rc.d features_check systemd useradd
+inherit update-rc.d systemd useradd
 
 USERADD_PACKAGES = "${PN}"
 
 # rdepends on weston which depends on virtual/egl
-# requires pam enabled if started via systemd
-REQUIRED_DISTRO_FEATURES = "opengl ${@oe.utils.conditional('VIRTUAL-RUNTIME_init_manager', 'systemd', 'pam', '', d)}"
+#
+require ${THISDIR}/required-distro-features.inc
 
 RDEPENDS:${PN} = "weston kbd"
 

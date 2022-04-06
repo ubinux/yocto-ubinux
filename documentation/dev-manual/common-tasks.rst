@@ -1396,19 +1396,14 @@ another example that specifies these types of files, see the
 ":ref:`dev-manual/common-tasks:autotooled package`" section.
 
 Another way of specifying source is from an SCM. For Git repositories,
-you must specify :term:`SRCREV` and
-you should specify :term:`PV` to include
-the revision with :term:`SRCPV`. Here
-is an example from the recipe
-``meta/recipes-kernel/blktrace/blktrace_git.bb``::
+you must specify :term:`SRCREV` and you should specify :term:`PV` to include
+the revision with :term:`SRCPV`. Here is an example from the recipe
+``meta/recipes-core/musl/gcompat_git.bb``::
 
-   SRCREV = "d6918c8832793b4205ed3bfede78c2f915c23385"
+   SRC_URI = "git://git.adelielinux.org/adelie/gcompat.git;protocol=https;branch=current"
 
-   PR = "r6"
-   PV = "1.0.5+git${SRCPV}"
-
-   SRC_URI = "git://git.kernel.dk/blktrace.git \
-              file://ldflags.patch"
+   PV = "1.0.0+1.1+git${SRCPV}"
+   SRCREV = "af5a49e489fdc04b9cf02547650d7aeaccd43793"
 
 If your :term:`SRC_URI` statement includes URLs pointing to individual files
 fetched from a remote server other than a version control system,
@@ -1480,6 +1475,22 @@ whose names usually end in ``.patch`` or ``.diff`` but can end with
 compressed suffixes such as ``diff.gz`` and ``patch.bz2``, for example.
 The build system automatically applies patches as described in the
 ":ref:`dev-manual/common-tasks:patching code`" section.
+
+Fetching Code Through Firewalls
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Some users are behind firewalls and need to fetch code through a proxy.
+See the ":doc:`/ref-manual/faq`" chapter for advice.
+
+Limiting the Number of Parallel Connections
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Some users are behind firewalls or use servers where the number of parallel
+connections is limited. In such cases, you can limit the number of fetch
+tasks being run in parallel by adding the following to your ``local.conf``
+file::
+
+   do_fetch[number_threads] = "4"
 
 Unpacking Code
 --------------
@@ -2372,41 +2383,39 @@ following example shows this::
 
    CFLAGS:prepend = "-I ${S}/include "
 
-In the following example, ``mtd-utils`` is a makefile-based package::
+In the following example, ``lz4`` is a makefile-based package::
 
-   SUMMARY = "Tools for managing memory technology devices"
-   SECTION = "base"
-   DEPENDS = "zlib lzo e2fsprogs util-linux"
-   HOMEPAGE = "http://www.linux-mtd.infradead.org/"
-   LICENSE = "GPL-2.0-or-later"
-   LIC_FILES_CHKSUM = "file://COPYING;md5=0636e73ff0215e8d672dc4c32c317bb3 \
-       file://include/common.h;beginline=1;endline=17;md5=ba05b07912a44ea2bf81ce409380049c"
+   SUMMARY = "Extremely Fast Compression algorithm"
+   DESCRIPTION = "LZ4 is a very fast lossless compression algorithm, providing compression speed at 400 MB/s per core, scalable with multi-cores CPU. It also features an extremely fast decoder, with speed in multiple GB/s per core, typically reaching RAM speed limits on multi-core systems."
+   HOMEPAGE = "https://github.com/lz4/lz4"
 
-   # Use the latest version at 26 Oct, 2013
-   SRCREV = "9f107132a6a073cce37434ca9cda6917dd8d866b"
-   SRC_URI = "git://git.infradead.org/mtd-utils.git \
-       file://add-exclusion-to-mkfs-jffs2-git-2.patch \
-       "
+   LICENSE = "BSD-2-Clause | GPL-2.0-only"
+   LIC_FILES_CHKSUM = "file://lib/LICENSE;md5=ebc2ea4814a64de7708f1571904b32cc \
+                       file://programs/COPYING;md5=b234ee4d69f5fce4486a80fdaf4a4263 \
+                       file://LICENSE;md5=d57c0d21cb917fb4e0af2454aa48b956 \
+                       "
 
-   PV = "1.5.1+git${SRCPV}"
+   PE = "1"
+
+   SRCREV = "d44371841a2f1728a3f36839fd4b7e872d0927d3"
+
+   SRC_URI = "git://github.com/lz4/lz4.git;branch=release;protocol=https \
+              file://CVE-2021-3520.patch \
+              "
+   UPSTREAM_CHECK_GITTAGREGEX = "v(?P<pver>.*)"
 
    S = "${WORKDIR}/git"
 
-   EXTRA_OEMAKE = "'CC=${CC}' 'RANLIB=${RANLIB}' 'AR=${AR}' 'CFLAGS=${CFLAGS} -I${S}/include -DWITHOUT_XATTR' 'BUILDDIR=${S}'"
+   # Fixed in r118, which is larger than the current version.
+   CVE_CHECK_IGNORE += "CVE-2014-4715"
 
-   do_install () {
-       oe_runmake install DESTDIR=${D} SBINDIR=${sbindir} MANDIR=${mandir} INCLUDEDIR=${includedir}
+   EXTRA_OEMAKE = "PREFIX=${prefix} CC='${CC}' CFLAGS='${CFLAGS}' DESTDIR=${D} LIBDIR=${libdir} INCLUDEDIR=${includedir} BUILD_STATIC=no"
+
+   do_install() {
+           oe_runmake install
    }
 
-   PACKAGES =+ "mtd-utils-jffs2 mtd-utils-ubifs mtd-utils-misc"
-
-   FILES:mtd-utils-jffs2 = "${sbindir}/mkfs.jffs2 ${sbindir}/jffs2dump ${sbindir}/jffs2reader ${sbindir}/sumtool"
-   FILES:mtd-utils-ubifs = "${sbindir}/mkfs.ubifs ${sbindir}/ubi*"
-   FILES:mtd-utils-misc = "${sbindir}/nftl* ${sbindir}/ftl* ${sbindir}/rfd* ${sbindir}/doc* ${sbindir}/serve_image ${sbindir}/recv_image"
-
-   PARALLEL_MAKE = ""
-
-   BBCLASSEXTEND = "native"
+   BBCLASSEXTEND = "native nativesdk"
 
 Splitting an Application into Multiple Packages
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -7901,6 +7910,20 @@ image cannot use this package group. However, it can install SysVinit
 and the appropriate packages will have support for both systemd and
 SysVinit.
 
+Using systemd-journald without a traditional syslog daemon
+----------------------------------------------------------
+
+Counter-intuitively, ``systemd-journald`` is not a syslog runtime or provider,
+and the proper way to use systemd-journald as your sole logging mechanism is to
+effectively disable syslog entirely by setting these variables in your distribution
+configuration file::
+
+   VIRTUAL-RUNTIME_syslog = ""
+   VIRTUAL-RUNTIME_base-utils-syslog = ""
+
+Doing so will prevent ``rsyslog`` / ``busybox-syslog`` from being pulled in by
+default, leaving only ``journald``.
+
 Selecting a Device Manager
 ==========================
 
@@ -11044,17 +11067,17 @@ name and version (after variable expansion)::
 In order for a component restricted by a
 :term:`LICENSE_FLAGS` definition to be enabled and included in an image, it
 needs to have a matching entry in the global
-:term:`LICENSE_FLAGS_WHITELIST`
+:term:`LICENSE_FLAGS_ACCEPTED`
 variable, which is a variable typically defined in your ``local.conf``
 file. For example, to enable the
 ``poky/meta/recipes-multimedia/gstreamer/gst-plugins-ugly`` package, you
 could add either the string "commercial_gst-plugins-ugly" or the more
-general string "commercial" to :term:`LICENSE_FLAGS_WHITELIST`. See the
+general string "commercial" to :term:`LICENSE_FLAGS_ACCEPTED`. See the
 ":ref:`dev-manual/common-tasks:license flag matching`" section for a full
 explanation of how :term:`LICENSE_FLAGS` matching works. Here is the
 example::
 
-   LICENSE_FLAGS_WHITELIST = "commercial_gst-plugins-ugly"
+   LICENSE_FLAGS_ACCEPTED = "commercial_gst-plugins-ugly"
 
 Likewise, to additionally enable the package built from the recipe
 containing ``LICENSE_FLAGS = "license_${PN}_${PV}"``, and assuming that
@@ -11062,7 +11085,7 @@ the actual recipe name was ``emgd_1.10.bb``, the following string would
 enable that package as well as the original ``gst-plugins-ugly``
 package::
 
-   LICENSE_FLAGS_WHITELIST = "commercial_gst-plugins-ugly license_emgd_1.10"
+   LICENSE_FLAGS_ACCEPTED = "commercial_gst-plugins-ugly license_emgd_1.10"
 
 As a convenience, you do not need to specify the
 complete license string for every package. You can use
@@ -11075,7 +11098,7 @@ previously mentioned as well as any other packages that have licenses
 starting with "commercial" or "license".
 ::
 
-   LICENSE_FLAGS_WHITELIST = "commercial license"
+   LICENSE_FLAGS_ACCEPTED = "commercial license"
 
 License Flag Matching
 ~~~~~~~~~~~~~~~~~~~~~
@@ -11083,7 +11106,7 @@ License Flag Matching
 License flag matching allows you to control what recipes the
 OpenEmbedded build system includes in the build. Fundamentally, the
 build system attempts to match :term:`LICENSE_FLAGS` strings found in
-recipes against strings found in :term:`LICENSE_FLAGS_WHITELIST`.
+recipes against strings found in :term:`LICENSE_FLAGS_ACCEPTED`.
 A match causes the build system to include a recipe in the
 build, while failure to find a match causes the build system to exclude
 a recipe.
@@ -11092,19 +11115,19 @@ In general, license flag matching is simple. However, understanding some
 concepts will help you correctly and effectively use matching.
 
 Before a flag defined by a particular recipe is tested against the
-entries of :term:`LICENSE_FLAGS_WHITELIST`, the expanded
+entries of :term:`LICENSE_FLAGS_ACCEPTED`, the expanded
 string ``_${PN}`` is appended to the flag. This expansion makes each
 :term:`LICENSE_FLAGS` value recipe-specific. After expansion, the
 string is then matched against the entries. Thus, specifying
 ``LICENSE_FLAGS = "commercial"`` in recipe "foo", for example, results
 in the string ``"commercial_foo"``. And, to create a match, that string
-must appear among the entries of :term:`LICENSE_FLAGS_WHITELIST`.
+must appear among the entries of :term:`LICENSE_FLAGS_ACCEPTED`.
 
 Judicious use of the :term:`LICENSE_FLAGS` strings and the contents of the
-:term:`LICENSE_FLAGS_WHITELIST` variable allows you a lot of flexibility for
+:term:`LICENSE_FLAGS_ACCEPTED` variable allows you a lot of flexibility for
 including or excluding recipes based on licensing. For example, you can
 broaden the matching capabilities by using license flags string subsets
-in :term:`LICENSE_FLAGS_WHITELIST`.
+in :term:`LICENSE_FLAGS_ACCEPTED`.
 
 .. note::
 
@@ -11113,7 +11136,7 @@ in :term:`LICENSE_FLAGS_WHITELIST`.
    ``usethispart_1.3``, ``usethispart_1.4``, and so forth).
 
 For example, simply specifying the string "commercial" in the
-:term:`LICENSE_FLAGS_WHITELIST` variable matches any expanded
+:term:`LICENSE_FLAGS_ACCEPTED` variable matches any expanded
 :term:`LICENSE_FLAGS` definition that starts with the string
 "commercial" such as "commercial_foo" and "commercial_bar", which
 are the strings the build system automatically generates for
@@ -11131,24 +11154,24 @@ This scheme works even if the :term:`LICENSE_FLAGS` string already has
 ``_${PN}`` appended. For example, the build system turns the license
 flag "commercial_1.2_foo" into "commercial_1.2_foo_foo" and would match
 both the general "commercial" and the specific "commercial_1.2_foo"
-strings found in the :term:`LICENSE_FLAGS_WHITELIST` variable, as expected.
+strings found in the :term:`LICENSE_FLAGS_ACCEPTED` variable, as expected.
 
 Here are some other scenarios:
 
 -  You can specify a versioned string in the recipe such as
    "commercial_foo_1.2" in a "foo" recipe. The build system expands this
    string to "commercial_foo_1.2_foo". Combine this license flag with a
-   :term:`LICENSE_FLAGS_WHITELIST` variable that has the string
+   :term:`LICENSE_FLAGS_ACCEPTED` variable that has the string
    "commercial" and you match the flag along with any other flag that
    starts with the string "commercial".
 
 -  Under the same circumstances, you can add "commercial_foo" in the
-   :term:`LICENSE_FLAGS_WHITELIST` variable and the build system not only
+   :term:`LICENSE_FLAGS_ACCEPTED` variable and the build system not only
    matches "commercial_foo_1.2" but also matches any license flag with
    the string "commercial_foo", regardless of the version.
 
 -  You can be very specific and use both the package and version parts
-   in the :term:`LICENSE_FLAGS_WHITELIST` list (e.g.
+   in the :term:`LICENSE_FLAGS_ACCEPTED` list (e.g.
    "commercial_foo_1.2") to specifically match a versioned recipe.
 
 Other Variables Related to Commercial Licenses
@@ -11170,20 +11193,20 @@ file::
        gst-plugins-ugly-mpegaudioparse"
    COMMERCIAL_VIDEO_PLUGINS = "gst-plugins-ugly-mpeg2dec \
        gst-plugins-ugly-mpegstream gst-plugins-bad-mpegvideoparse"
-   LICENSE_FLAGS_WHITELIST = "commercial_gst-plugins-ugly commercial_gst-plugins-bad commercial_qmmp"
+   LICENSE_FLAGS_ACCEPTED = "commercial_gst-plugins-ugly commercial_gst-plugins-bad commercial_qmmp"
 
 
 Of course, you could also create a matching list for those
 components using the more general "commercial" in the
-:term:`LICENSE_FLAGS_WHITELIST` variable, but that would also enable all
+:term:`LICENSE_FLAGS_ACCEPTED` variable, but that would also enable all
 the other packages with :term:`LICENSE_FLAGS`
 containing "commercial", which you may or may not want::
 
-   LICENSE_FLAGS_WHITELIST = "commercial"
+   LICENSE_FLAGS_ACCEPTED = "commercial"
 
 Specifying audio and video plugins as part of the
 ``COMMERCIAL_AUDIO_PLUGINS`` and ``COMMERCIAL_VIDEO_PLUGINS`` statements
-(along with the enabling :term:`LICENSE_FLAGS_WHITELIST`) includes the
+(along with the enabling :term:`LICENSE_FLAGS_ACCEPTED`) includes the
 plugins or components into built images, thus adding support for media
 formats or components.
 
@@ -11547,7 +11570,7 @@ The NIST database knows which versions are vulnerable and which ones
 are not.
 
 Last but not least, you can choose to ignore vulnerabilities through
-the :term:`CVE_CHECK_PN_WHITELIST` and :term:`CVE_CHECK_WHITELIST`
+the :term:`CVE_CHECK_SKIP_RECIPE` and :term:`CVE_CHECK_IGNORE`
 variables.
 
 Implementation details
@@ -11566,9 +11589,9 @@ Then, the code looks up all the CVE IDs in the NIST database for all the
 products defined in :term:`CVE_PRODUCT`. Then, for each found CVE:
 
  - If the package name (:term:`PN`) is part of
-   :term:`CVE_CHECK_PN_WHITELIST`, it is considered as patched.
+   :term:`CVE_CHECK_SKIP_RECIPE`, it is considered as patched.
 
- - If the CVE ID is part of :term:`CVE_CHECK_WHITELIST`, it is
+ - If the CVE ID is part of :term:`CVE_CHECK_IGNORE`, it is
    considered as patched too.
 
  - If the CVE ID is part of the patched CVE for the recipe, it is

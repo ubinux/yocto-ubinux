@@ -170,8 +170,7 @@ example use for this class.
    are extracted into the subdirectory expected by the default value of
    :term:`S`::
 
-           SRC_URI = "git://example.com/downloads/somepackage.rpm;subpath=${BP}"
-
+      SRC_URI = "git://example.com/downloads/somepackage.rpm;branch=main;subpath=${BP}"
 
    See the ":ref:`bitbake-user-manual/bitbake-user-manual-fetching:fetchers`" section in the BitBake User Manual for
    more information on supported BitBake Fetchers.
@@ -207,23 +206,6 @@ an error in favor of using ``pkg-config`` to query the information. The
 scripts to be disabled should be specified using the
 :term:`BINCONFIG` variable within the recipe inheriting
 the class.
-
-.. _ref-classes-blacklist:
-
-``blacklist.bbclass``
-=====================
-
-The ``blacklist`` class prevents the OpenEmbedded build system from
-building specific recipes. To use this class, inherit
-the class globally and set :term:`PNBLACKLIST` for
-each recipe you wish to ignore. Specify the :term:`PN`
-value as a variable flag (varflag) and provide a reason, which is
-reported, if the package is requested to be built as the value. For
-example, if you want to ignore a recipe called "exoticware", you
-add the following to your ``local.conf`` or distribution configuration::
-
-   INHERIT += "blacklist"
-   PNBLACKLIST[exoticware] = "Not supported by our organization."
 
 .. _ref-classes-buildhistory:
 
@@ -477,7 +459,7 @@ recipe that fetches from an alternative URI (e.g. Git) instead of a
 tarball. Following is an example::
 
    BBCLASSEXTEND = "devupstream:target"
-   SRC_URI:class-devupstream = "git://git.example.com/example"
+   SRC_URI:class-devupstream = "git://git.example.com/example;branch=main"
    SRCREV:class-devupstream = "abcd1234"
 
 Adding the above statements to your recipe creates a variant that has
@@ -619,22 +601,6 @@ If any conditions specified in the recipe using the above
 variables are not met, the recipe will be skipped, and if the
 build system attempts to build the recipe then an error will be
 triggered.
-
-.. _ref-classes-flit_core:
-
-``flit_core.bbclass``
-=====================
-
-The ``flit_core`` class enables building Python modules which declare
-the  `PEP-517 <https://www.python.org/dev/peps/pep-0517/>`__ compliant
-``flit_core.buildapi`` ``build-backend`` in the ``[build-system]``
-section of ``pyproject.toml`` (See `PEP-518 <https://www.python.org/dev/peps/pep-0518/>`__).
-
-Python modules built with ``flit_core.buildapi`` are pure Python (no
-``C`` or ``Rust`` extensions).
-
-The resulting ``wheel`` (See `PEP-427 <https://www.python.org/dev/peps/pep-0427/>`__)
-is installed with the :ref:`pip_install_wheel <ref-classes-pip_install_wheel>` class.
 
 .. _ref-classes-fontcache:
 
@@ -846,13 +812,13 @@ provided by the recipe ``icecc-create-env-native.bb``.
 If you do not want the Icecream distributed compile support to apply to
 specific recipes or classes, you can ask them to be ignored by Icecream
 by listing the recipes and classes using the
-:term:`ICECC_USER_PACKAGE_BL` and
-:term:`ICECC_USER_CLASS_BL` variables,
+:term:`ICECC_RECIPE_DISABLE` and
+:term:`ICECC_CLASS_DISABLE` variables,
 respectively, in your ``local.conf`` file. Doing so causes the
 OpenEmbedded build system to handle these compilations locally.
 
 Additionally, you can list recipes using the
-:term:`ICECC_USER_PACKAGE_WL` variable in
+:term:`ICECC_RECIPE_ENABLE` variable in
 your ``local.conf`` file to force ``icecc`` to be enabled for recipes
 using an empty :term:`PARALLEL_MAKE` variable.
 
@@ -1996,25 +1962,48 @@ When inherited by a recipe, the ``perlnative`` class supports using the
 native version of Perl built by the build system rather than using the
 version provided by the build host.
 
-.. _ref-classes-pip_install_wheel:
+.. _ref-classes-python_flit_core:
 
-``pip_install_wheel.bbclass``
-=============================
+``python_flit_core.bbclass``
+============================
 
-The ``pip_install_wheel`` class uses ``pip`` to install a Python ``wheel``
-binary archive format (See `PEP-427 <https://www.python.org/dev/peps/pep-0427/>`__)
+The ``python_flit_core`` class enables building Python modules which declare
+the  `PEP-517 <https://www.python.org/dev/peps/pep-0517/>`__ compliant
+``flit_core.buildapi`` ``build-backend`` in the ``[build-system]``
+section of ``pyproject.toml`` (See `PEP-518 <https://www.python.org/dev/peps/pep-0518/>`__).
 
-The Python ``wheel`` can be built with several classes, including :ref:`flit_core <ref-classes-flit_core>`,
-:ref:`setuptools_build_meta <ref-classes-setuptools_build_meta>`, and :ref:`setuptools3 <ref-classes-setuptools3>`.
+Python modules built with ``flit_core.buildapi`` are pure Python (no
+``C`` or ``Rust`` extensions).
 
-The absolute path to the built ``wheel`` to be installed is defined by :term:`PYPA_WHEEL` which can be
-overriden for recipes where the filename or version number of the wheel are not easily
-determined by the defaults. Other variables which can be used to customize the behavior
-of the ``pip_install_wheel`` class include:
+Internally this uses the :ref:`python_pep517 <ref-classes-python_pep517>` class.
 
-- :term:`PIP_INSTALL_ARGS`
-- :term:`PIP_INSTALL_PACKAGE`
-- :term:`PIP_INSTALL_DIST_PATH`
+.. _ref-classes-python_pep517:
+
+``python_pep517.bbclass``
+=========================
+
+The ``python_pep517`` class builds and installs a Python ``wheel`` binary
+archive (see `PEP-517 <https://peps.python.org/pep-0517/>`__).
+
+Recipes wouldn't inherit this directly, instead typically another class will
+inherit this, add the relevant native dependencies, and set
+:term:`PEP517_BUILD_API` to the Python class which implements the PEP-517 build
+API.
+
+Examples of classes which do this are :ref:`python_flit_core
+<ref-classes-python_flit_core>`, :ref:`python_setuptools_build_meta
+<ref-classes-python_setuptools_build_meta>`, and :ref:`python_poetry_core
+<ref-classes-python_poetry_core>`.
+
+.. _ref-classes-python_poetry_core:
+
+``python_poetry_core.bbclass``
+==============================
+
+The ``python_poetry_core`` class enables building Python modules which use the
+`Poetry Core <https://python-poetry.org>`__ build system.
+
+Internally this uses the :ref:`python_pep517 <ref-classes-python_pep517>` class.
 
 .. _ref-classes-pixbufcache:
 
@@ -2371,12 +2360,12 @@ additional configuration options you want to pass SCons command line.
 The ``sdl`` class supports recipes that need to build software that uses
 the Simple DirectMedia Layer (SDL) library.
 
-.. _ref-classes-setuptools_build_meta:
+.. _ref-classes-python_setuptools_build_meta:
 
-``setuptools_build_meta.bbclass``
-=================================
+``python_setuptools_build_meta.bbclass``
+========================================
 
-The ``setuptools_build_meta`` class enables building Python modules which
+The ``python_setuptools_build_meta`` class enables building Python modules which
 declare the
 `PEP-517 <https://www.python.org/dev/peps/pep-0517/>`__ compliant
 ``setuptools.build_meta`` ``build-backend`` in the ``[build-system]``
@@ -2385,8 +2374,7 @@ section of ``pyproject.toml`` (See `PEP-518 <https://www.python.org/dev/peps/pep
 Python modules built with ``setuptools.build_meta`` can be pure Python or
 include ``C`` or ``Rust`` extensions).
 
-The resulting ``wheel`` (See `PEP-427 <https://www.python.org/dev/peps/pep-0427/>`__)
-is installed with the :ref:`pip_install_wheel <ref-classes-pip_install_wheel>` class.
+Internally this uses the :ref:`python_pep517 <ref-classes-python_pep517>` class.
 
 .. _ref-classes-setuptools3:
 
@@ -2411,9 +2399,25 @@ uses these build systems, the recipe needs to inherit the ``setuptools3`` class.
 
    .. note::
 
-     The ``setuptools3`` class ``do_install()`` task now calls ``pip install``
-     to install the ``wheel`` binary archive. In current versions of
-     ``setuptools`` the legacy ``setup.py install`` method is deprecated.
+     The ``setuptools3`` class ``do_install()`` task now installs the ``wheel``
+     binary archive. In current versions of ``setuptools`` the legacy ``setup.py
+     install`` method is deprecated. If the ``setup.py`` cannot be used with
+     wheels, for example it creates files outside of the Python module or
+     standard entry points, then :ref:`setuptools3_legacy
+     <ref-classes-setuptools3_legacy>` should be used.
+
+.. _ref-classes-setuptools3_legacy:
+
+``setuptools3_legacy.bbclass``
+==============================
+
+The ``setuptools3_legacy`` class supports Python version 3.x extensions that use
+build systems based on ``setuptools`` (e.g. only have a ``setup.py`` and have
+not migrated to the official ``pyproject.toml`` format). Unlike
+``setuptools3.bbclass``, this uses the traditional ``setup.py`` ``build`` and
+``install`` commands and not wheels. This use of ``setuptools`` like this is
+`deprecated <https://github.com/pypa/setuptools/blob/main/CHANGES.rst#v5830>`_
+but still relatively common.
 
 .. _ref-classes-setuptools3-base:
 
@@ -2515,7 +2519,7 @@ stages:
    subset of files is controlled by the
    :term:`SYSROOT_DIRS`,
    :term:`SYSROOT_DIRS_NATIVE`, and
-   :term:`SYSROOT_DIRS_BLACKLIST`
+   :term:`SYSROOT_DIRS_IGNORE`
    variables.
 
    .. note::

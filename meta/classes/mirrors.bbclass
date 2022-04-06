@@ -42,6 +42,7 @@ ftp://sourceware.org/pub http://ftp.gwdg.de/pub/linux/sources.redhat.com/sourcew
 cvs://.*/.*     http://downloads.yoctoproject.org/mirror/sources/ \
 svn://.*/.*     http://downloads.yoctoproject.org/mirror/sources/ \
 git://.*/.*     http://downloads.yoctoproject.org/mirror/sources/ \
+gitsm://.*/.*   http://downloads.yoctoproject.org/mirror/sources/ \
 hg://.*/.*      http://downloads.yoctoproject.org/mirror/sources/ \
 bzr://.*/.*     http://downloads.yoctoproject.org/mirror/sources/ \
 p4://.*/.*      http://downloads.yoctoproject.org/mirror/sources/ \
@@ -52,6 +53,7 @@ npm://.*/?.*    http://downloads.yoctoproject.org/mirror/sources/ \
 cvs://.*/.*     http://sources.openembedded.org/ \
 svn://.*/.*     http://sources.openembedded.org/ \
 git://.*/.*     http://sources.openembedded.org/ \
+gitsm://.*/.*   http://sources.openembedded.org/ \
 hg://.*/.*      http://sources.openembedded.org/ \
 bzr://.*/.*     http://sources.openembedded.org/ \
 p4://.*/.*      http://sources.openembedded.org/ \
@@ -74,3 +76,14 @@ git://git.gnome.org/.*        git://gitlab.gnome.org/GNOME/PATH;protocol=https \
 git://.*/.*                   git://HOST/PATH;protocol=https \
 git://.*/.*                   git://HOST/git/PATH;protocol=https \
 "
+
+# Switch glibc and binutils recipes to use shallow clones as they're large and this
+# improves user experience whilst allowing the flexibility of git urls in the recipes
+BB_GIT_SHALLOW:pn-binutils = "1"
+BB_GIT_SHALLOW:pn-binutils-cross-${TARGET_ARCH} = "1"
+BB_GIT_SHALLOW:pn-binutils-cross-canadian-${TRANSLATED_TARGET_ARCH} = "1"
+BB_GIT_SHALLOW:pn-binutils-cross-testsuite = "1"
+BB_GIT_SHALLOW:pn-binutils-crosssdk-${SDK_SYS} = "1"
+BB_GIT_SHALLOW:pn-glibc = "1"
+PREMIRRORS += "git://sourceware.org/git/glibc.git https://downloads.yoctoproject.org/mirror/sources/ \
+              git://sourceware.org/git/binutils-gdb.git https://downloads.yoctoproject.org/mirror/sources/"

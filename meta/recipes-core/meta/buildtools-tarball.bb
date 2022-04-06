@@ -7,13 +7,12 @@ TOOLCHAIN_TARGET_TASK ?= ""
 
 TOOLCHAIN_HOST_TASK ?= "\
     nativesdk-sdk-provides-dummy \
-    nativesdk-python3-core \
-    nativesdk-python3-modules \
-    nativesdk-python3-misc \
+    nativesdk-python3 \
     nativesdk-python3-git \
     nativesdk-python3-jinja2 \
     nativesdk-python3-testtools \
     nativesdk-python3-subunit \
+    nativesdk-python3-pyyaml \
     nativesdk-ncurses-terminfo-base \
     nativesdk-chrpath \
     nativesdk-tar \
@@ -99,11 +98,14 @@ TOOLCHAIN_NEED_CONFIGSITE_CACHE = ""
 # The recipe doesn't need any default deps
 INHIBIT_DEFAULT_DEPS = "1"
 
+# Directory in testsdk that contains testcases
+TESTSDK_CASES = "buildtools-cases"
+
 python do_testsdk() {
     import oeqa.sdk.testsdk
     testsdk = oeqa.sdk.testsdk.TestSDK()
 
-    cases_path = os.path.join(os.path.abspath(os.path.dirname(oeqa.sdk.testsdk.__file__)), "buildtools-cases")
+    cases_path = os.path.join(os.path.abspath(os.path.dirname(oeqa.sdk.testsdk.__file__)), d.getVar("TESTSDK_CASES"))
     testsdk.context_executor_class.default_cases = cases_path
 
     testsdk.run(d)
