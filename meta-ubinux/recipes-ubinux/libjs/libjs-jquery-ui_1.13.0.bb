@@ -20,6 +20,8 @@ FILES:${PN}-doc += "${datadir}/doc/${PN}"
 
 S = "${WORKDIR}"
 
+addtask populate_lic before do_install
+
 do_install() {
 	install -d ${D}${datadir}/javascript/jquery-ui/
 	install -p -m 0644 ${S}/jquery-ui-${PV}/*.js ${D}${datadir}/javascript/jquery-ui/
