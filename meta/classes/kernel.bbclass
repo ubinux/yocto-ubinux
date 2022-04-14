@@ -221,8 +221,6 @@ export CMDLINE_CONSOLE = "console=${@d.getVar("KERNEL_CONSOLE") or "ttyS0"}"
 
 KERNEL_VERSION = "${@get_kernelversion_headers('${B}')}"
 
-KERNEL_LOCALVERSION ?= ""
-
 # kernels are generally machine specific
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 
@@ -711,7 +709,7 @@ python do_strip() {
     extra_sections = d.getVar('KERNEL_IMAGE_STRIP_EXTRA_SECTIONS')
     kernel_image = d.getVar('B') + "/" + d.getVar('KERNEL_OUTPUT_DIR') + "/vmlinux"
 
-    if (extra_sections and kernel_image.find('${KERNEL_IMAGEDEST}/vmlinux') != -1):
+    if (extra_sections and kernel_image.find(d.getVar('KERNEL_IMAGEDEST') + '/vmlinux') != -1):
         kernel_image_stripped = kernel_image + ".stripped"
         shutil.copy2(kernel_image, kernel_image_stripped)
         oe.package.runstrip((kernel_image_stripped, 8, strip, extra_sections))
