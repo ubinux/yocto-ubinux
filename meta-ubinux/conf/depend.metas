@@ -1,5 +1,5 @@
 [DEPEND_META]
- meta-oe
+metas=meta-oe
  meta-freescale
  meta-cgl
  meta-cloud-services
