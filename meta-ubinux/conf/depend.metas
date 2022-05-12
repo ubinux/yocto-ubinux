@@ -192,6 +192,7 @@ FILES=meta-oe/conf
  meta-oe/recipes-devtools/autoconf-2.13/
  meta-oe/recipes-devtools/doxygen/
  meta-oe/recipes-devtools/perl/libparse-yapp-perl_1.21.bb
+ meta-oe/recipes-devtools/valijson/
  
  meta-oe/recipes-connectivity/libnet/
  meta-oe/recipes-connectivity/krb5/
