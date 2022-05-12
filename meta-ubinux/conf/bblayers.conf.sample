@@ -10,7 +10,6 @@ BBLAYERS ?= " \
   ##COREBASE##/meta \
   ##COREBASE##/meta-poky \
   ##COREBASE##/meta-yocto-bsp \
-  ##COREBASE##/meta-gplv2 \
   ##COREBASE##/meta-freescale \
   ##COREBASE##/meta-oe/meta-filesystems \
   ##COREBASE##/meta-oe/meta-gnome \
