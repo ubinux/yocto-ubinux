@@ -25,6 +25,7 @@ PTESTS_FAST = "\
     json-glib-ptest \
     libconvert-asn1-perl-ptest \
     liberror-perl-ptest \
+    libgpg-error-ptest\
     libnl-ptest \
     libmodule-build-perl-ptest \
     libpcre-ptest \
@@ -86,6 +87,7 @@ PTESTS_SLOW = "\
     glib-2.0-ptest \
     gstreamer1.0-ptest \
     libevent-ptest \
+    libgcrypt-ptest \
     lttng-tools-ptest \
     openssh-ptest \
     openssl-ptest \

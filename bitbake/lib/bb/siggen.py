@@ -40,7 +40,6 @@ def init(d):
     for sg in siggens:
         if desired == sg.name:
             return sg(d)
-            break
     else:
         logger.error("Invalid signature generator '%s', using default 'noop'\n"
                      "Available generators: %s", desired,
@@ -1027,6 +1026,7 @@ def compare_sigfiles(a, b, recursecb=None, color=False, collapsed=False):
                             # If a dependent hash changed, might as well print the line above and then defer to the changes in
                             # that hash since in all likelyhood, they're the same changes this task also saw.
                             output = [output[-1]] + recout
+                            break
 
     a_taint = a_data.get('taint', None)
     b_taint = b_data.get('taint', None)

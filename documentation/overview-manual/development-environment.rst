@@ -176,7 +176,7 @@ development:
    repositories for each of these areas.
 
    .. image:: figures/source-repos.png
-      :align: center
+      :width: 100%
 
    For steps on how to view and access these upstream Git repositories,
    see the ":ref:`dev-manual/start:accessing source repositories`"
@@ -191,6 +191,7 @@ development:
 
    .. image:: figures/index-downloads.png
       :align: center
+      :width: 50%
 
    For steps on how to view and access these files, see the
    ":ref:`dev-manual/start:accessing index of releases`"
@@ -205,7 +206,7 @@ development:
    :yocto_dl:`Index of /releases: </releases>` area.
 
    .. image:: figures/yp-download.png
-      :align: center
+      :width: 100%
 
    For steps on how to use the "DOWNLOADS" page, see the
    ":ref:`dev-manual/start:using the downloads page`"
@@ -616,13 +617,9 @@ this history, you can find basic information here:
 In general, the Yocto Project is broadly licensed under the
 Massachusetts Institute of Technology (MIT) License. MIT licensing
 permits the reuse of software within proprietary software as long as the
-license is distributed with that software. MIT is also compatible with
-the GNU General Public License (GPL). Patches to the Yocto Project
+license is distributed with that software. Patches to the Yocto Project
 follow the upstream licensing scheme. You can find information on the
-MIT license
-`here <https://www.opensource.org/licenses/mit-license.php>`__. You can
-find information on the GNU GPL
-`here <https://www.opensource.org/licenses/LGPL-3.0>`__.
+MIT license `here <https://en.wikipedia.org/wiki/MIT_License>`__.
 
 When you build an image using the Yocto Project, the build process uses
 a known list of licenses to ensure compliance. You can find this list in
