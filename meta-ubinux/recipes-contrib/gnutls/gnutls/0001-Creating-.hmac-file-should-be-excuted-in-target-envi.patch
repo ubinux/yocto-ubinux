@@ -1,0 +1,29 @@
+From 6bcb1823564ffd98005dd354c49c290b1d522d01 Mon Sep 17 00:00:00 2001
+From: Lei Maohui <leimaohui@fujitsu.com>
+Date: Thu, 19 May 2022 12:49:19 +0900
+Subject: [PATCH] Creating .hmac file should be excuted in target environment, 
+ so deleted it from build process.
+
+Upstream-Status: Inappropriate [Embedded]
+Signed-off-by: Lei Maohui <leimaohui@fujitsu.com>
+---
+ lib/Makefile.am | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/lib/Makefile.am b/lib/Makefile.am
+index c3d7b6e..b1c472f 100644
+--- a/lib/Makefile.am
++++ b/lib/Makefile.am
+@@ -206,8 +206,7 @@ hmac_files = .libs/.$(gnutls_so).hmac
+ 
+ all-local: $(hmac_files)
+ 
+-.libs/.$(gnutls_so).hmac: libgnutls.la fipshmac
+-	$(AM_V_GEN) $(builddir)/fipshmac .libs/$(gnutls_so) > $@-t && mv $@-t $@
++.libs/.$(gnutls_so).hmac: 
+ 
+ CLEANFILES = $(hmac_files)
+ endif
+-- 
+2.25.1
+
