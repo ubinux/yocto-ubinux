@@ -1,0 +1,54 @@
+From 569886070a273e914f2662d10b03e1767d488aee Mon Sep 17 00:00:00 2001
+From: Lei Maohui <leimaohui@fujitsu.com>
+Date: Wed, 18 May 2022 11:32:29 +0900
+Subject: [PATCH] Fix /usr/bin/sed to sed.
+
+Signed-off-by: Lei Maohui <leimaohui@fujitsu.com>
+---
+ doc/Makefile   | 2 +-
+ etc/Makefile   | 2 +-
+ utils/Makefile | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/doc/Makefile b/doc/Makefile
+index 9ed025d..e121270 100644
+--- a/doc/Makefile
++++ b/doc/Makefile
+@@ -7,7 +7,7 @@ ifeq ($(TOPDIR),)
+ 	TOPDIR = ..
+ endif
+ 
+-SED = /usr/bin/sed
++SED = sed
+ INSTALL = install
+ 
+ DESTDIR ?=
+diff --git a/etc/Makefile b/etc/Makefile
+index d065319..2d98027 100644
+--- a/etc/Makefile
++++ b/etc/Makefile
+@@ -19,7 +19,7 @@ initddir ?= $(etcdir)/init.d
+ 
+ HOMEDIR ?= $(etcdir)/iscsi
+ 
+-SED = /usr/bin/sed
++SED = sed
+ INSTALL = install
+ 
+ SYSTEMD_SOURCE_FILES	= iscsid.socket iscsiuio.socket
+diff --git a/utils/Makefile b/utils/Makefile
+index a7eb352..15539eb 100644
+--- a/utils/Makefile
++++ b/utils/Makefile
+@@ -7,7 +7,7 @@
+ # from the top-level make file.
+ #
+ 
+-SED = /usr/bin/sed
++SED = sed
+ INSTALL = install
+ CHMOD = chmod
+ 
+-- 
+2.25.1
+
