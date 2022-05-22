@@ -1,28 +1,31 @@
-DEPENDS:append:class-target = " gnutls-native"
-DEPENDS:append:class-nativesdk = " gnutls-native"
+FILESEXTRAPATHS:prepend := "${THISDIR}/${PN}:"
 
-PACKAGECONFIG:append = " fips "
+SRC_URI:append = "\
+                 file://0001-Creating-.hmac-file-should-be-excuted-in-target-envi.patch \ 
+                 "
 
 PACKAGECONFIG[fips] = "--enable-fips140-mode --with-libdl-prefix=${STAGING_BASELIBDIR},--disable-fips140-mode"
 
-do_compile:prepend:class-target () {
+PACKAGECONFIG:append = " fips "
+
+do_install:append:class-target() {
         if ${@bb.utils.contains('PACKAGECONFIG', 'fips', 'true', 'false', d)}; then
-          sed -i -e "s#\$(builddir)/fipshmac#${STAGING_DIR_NATIVE}/lib/fipshmac#g" ${B}/lib/Makefile
+          install -d ${D}${bindir}/bin
+          install -m 0755 ${B}/lib/.libs/fipshmac ${D}/${bindir}/
         fi
 }
 
-do_compile:prepend:class-nativesdk () {
-        if ${@bb.utils.contains('PACKAGECONFIG', 'fips', 'true', 'false', d)}; then
-          sed -i -e "s#\$(builddir)/fipshmac#${STAGING_DIR_NATIVE}/lib/fipshmac#g" ${B}/lib/Makefile
+PACKAGES =+ "${PN}-fips"
+
+FILES:${PN}-fips += "${bindir}/fipshmac"
+
+pkg_postinst:${PN}-fips:class-target() {
+        if test -z "$D"
+        then
+                if test -x ${bindir}/fipshmac
+                then
+                        ${bindir}/fipshmac ${libdir}/libgnutls.so.30.*.* > ${libdir}/.libgnutls.so.30.hmac
+                        ${bindir}/fipshmac ${libdir}/libnettle.so.8.* > .libnettle.so.8.hmac
+                fi
         fi
 }
-
-do_install:append:class-native() {
-        if ${@bb.utils.contains('PACKAGECONFIG', 'fips', 'true', 'false', d)}; then
-          install -d ${D}${base_prefix}/lib
-          install -d ${D}${base_prefix}/lib/.libs
-          install -m 0755 ${B}/lib/fipshmac ${D}${base_prefix}/lib/
-          install -m 0755 ${B}/lib/.libs/fipshmac ${D}/${base_prefix}/lib/.libs/
-        fi
-}
-
