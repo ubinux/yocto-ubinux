@@ -430,6 +430,7 @@ FILES=conf/layer.conf
  recipes-kernel/linux/linux-qoriq
  recipes-kernel/linux/linux-qoriq.inc
  recipes-kernel/linux/linux-qoriq_5.4.bb
+ recipes-dpaa2/restool/
  recipes-core/udev/
  conf/
  README/
