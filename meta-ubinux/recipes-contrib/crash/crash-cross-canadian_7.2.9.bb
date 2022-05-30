@@ -21,7 +21,7 @@ DEPENDS = "virtual/${HOST_PREFIX}gcc-crosssdk virtual/nativesdk-libc nativesdk-z
 FILESEXTRAPATHS:prepend := "${THISDIR}/crash:"
 
 S = "${WORKDIR}/git"
-SRC_URI = "git://github.com/crash-utility/crash.git \
+SRC_URI = "git://github.com/crash-utility/crash.git;branch=master;protocol=https \
            ${GNU_MIRROR}/gdb/gdb-7.6.tar.gz;name=gdb;subdir=git \
            file://7001force_define_architecture.patch \
            file://7003cross_ranlib.patch \
