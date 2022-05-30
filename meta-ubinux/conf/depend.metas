@@ -536,7 +536,7 @@ FILES=conf/layer.conf
 [meta-security]
 GITURL=ssh://10.130.70.189/ubinux-dev/common/ubinux-layers/yocto/meta-security.git
 BRANCH=master
-HEADID=8a6722eaee257d75d280bcfcbf4fa83504c4d7fe
+HEADID=5dd17d202e2a256b819dcd5583750b0f01babde9
 FILES=conf
  classes/sanity-meta-security.bbclass
  meta-tpm/classes/sanity-meta-tpm.bbclass
