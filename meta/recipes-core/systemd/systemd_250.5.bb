@@ -23,16 +23,14 @@ SRC_URI += "file://touchscreen.rules \
            file://systemd-pager.sh \
            file://0001-binfmt-Don-t-install-dependency-links-at-install-tim.patch \
            file://0003-implment-systemd-sysv-install-for-OE.patch \
-           file://0001-systemd.pc.in-use-ROOTPREFIX-without-suffixed-slash.patch \
-           file://0001-test-parse-argument-Include-signal.h.patch \
+           file://0001-Move-sysusers.d-sysctl.d-binfmt.d-modules-load.d-to-.patch \
            file://0001-resolve-Use-sockaddr-pointer-type-for-bind.patch \
            "
 
 # patches needed by musl
 SRC_URI:append:libc-musl = " ${SRC_URI_MUSL}"
 SRC_URI_MUSL = "\
-               file://0002-don-t-use-glibc-specific-qsort_r.patch \
-               file://0003-missing_type.h-add-__compare_fn_t-and-comparison_fn_.patch \
+               file://0003-missing_type.h-add-comparison_fn_t.patch \
                file://0004-add-fallback-parse_printf_format-implementation.patch \
                file://0005-src-basic-missing.h-check-for-missing-strndupa.patch \
                file://0007-don-t-fail-if-GLOB_BRACE-and-GLOB_ALTDIRFUNC-is-not-.patch \
@@ -44,11 +42,7 @@ SRC_URI_MUSL = "\
                file://0013-Define-glibc-compatible-basename-for-non-glibc-syste.patch \
                file://0014-Do-not-disable-buffering-when-writing-to-oom_score_a.patch \
                file://0015-distinguish-XSI-compliant-strerror_r-from-GNU-specif.patch \
-               file://0016-Hide-__start_BUS_ERROR_MAP-and-__stop_BUS_ERROR_MAP.patch \
-               file://0017-missing_type.h-add-__compar_d_fn_t-definition.patch \
                file://0018-avoid-redefinition-of-prctl_mm_map-structure.patch \
-               file://0019-Handle-missing-LOCK_EX.patch \
-               file://0020-Fix-incompatible-pointer-type-struct-sockaddr_un.patch \
                file://0021-test-json.c-define-M_PIl.patch \
                file://0022-do-not-disable-buffer-in-writing-files.patch \
                file://0025-Handle-__cpu_mask-usage.patch \
@@ -244,6 +238,9 @@ EXTRA_OEMESON += "-Dkexec-path=${sbindir}/kexec \
                   -Dnologin-path=${base_sbindir}/nologin \
                   -Dumount-path=${base_bindir}/umount"
 
+# The 60 seconds is watchdog's default vaule.
+WATCHDOG_TIMEOUT ??= "60"
+
 do_install() {
 	meson_do_install
 	install -d ${D}/${base_sbindir}
@@ -343,6 +340,11 @@ do_install() {
 
 	# add a profile fragment to disable systemd pager with busybox less
 	install -Dm 0644 ${WORKDIR}/systemd-pager.sh ${D}${sysconfdir}/profile.d/systemd-pager.sh
+
+    if [ -n "${WATCHDOG_TIMEOUT}" ]; then
+        sed -i -e 's/#RebootWatchdogSec=10min/RebootWatchdogSec=${WATCHDOG_TIMEOUT}/' \
+            ${D}/${sysconfdir}/systemd/system.conf
+    fi
 }
 
 python populate_packages:prepend (){

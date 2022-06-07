@@ -4828,7 +4828,7 @@ configuration would be as follows::
    require conf/multilib.conf
    MULTILIBS = "multilib:lib32"
    DEFAULTTUNE:virtclass-multilib-lib32 = "x86"
-   IMAGE_INSTALL:append = "lib32-glib-2.0"
+   IMAGE_INSTALL:append = " lib32-glib-2.0"
 
 This example enables an additional library named
 ``lib32`` alongside the normal target packages. When combining these
@@ -5481,7 +5481,9 @@ system needs to meet the following requirements:
    variable.
 
 -  Include the name of the :ref:`wic kickstart file <openembedded-kickstart-wks-reference>`
-   as part of the :term:`WKS_FILE` variable
+   as part of the :term:`WKS_FILE` variable. If multiple candidate files can
+   be provided by different layers, specify all the possible names through the
+   :term:`WKS_FILES` variable instead.
 
 Getting Help
 ------------
@@ -5882,7 +5884,7 @@ Directory onto a USB stick, or whatever media for which you built your
 image, and boot from the media. You can write the image by using
 ``bmaptool`` or ``dd``::
 
-   $ oe-run-native bmaptool copy mkefidisk-201804191017-sda.direct /dev/sdX
+   $ oe-run-native bmap-tools-native bmaptool copy mkefidisk-201804191017-sda.direct /dev/sdX
 
 or ::
 

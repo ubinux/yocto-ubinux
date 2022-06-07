@@ -4064,10 +4064,10 @@ system and gives an overview of their function and contents.
       statements add specific configurations to targeted machine types::
 
          KERNEL_EXTRA_FEATURES ?= "features/netfilter/netfilter.scc features/taskstats/taskstats.scc"
-         KERNEL_FEATURES:append = "${KERNEL_EXTRA_FEATURES}"
-         KERNEL_FEATURES:append:qemuall = "cfg/virtio.scc"
-         KERNEL_FEATURES:append:qemux86 = " cfg/sound.scc cfg/paravirt_kvm.scc"
-         KERNEL_FEATURES:append:qemux86-64 = "cfg/sound.scc"
+         KERNEL_FEATURES:append = " ${KERNEL_EXTRA_FEATURES}"
+         KERNEL_FEATURES:append:qemuall = " cfg/virtio.scc"
+         KERNEL_FEATURES:append:qemux86 = "  cfg/sound.scc cfg/paravirt_kvm.scc"
+         KERNEL_FEATURES:append:qemux86-64 = " cfg/sound.scc"
 
    :term:`KERNEL_FIT_LINK_NAME`
       The link name of the kernel flattened image tree (FIT) image. This
@@ -4255,7 +4255,7 @@ system and gives an overview of their function and contents.
          SRCREV_machine:core2-32-intel-common = "43b9eced9ba8a57add36af07736344dcc383f711"
          KMACHINE:core2-32-intel-common = "intel-core2-32"
          KBRANCH:core2-32-intel-common = "standard/base"
-         KERNEL_FEATURES:append:core2-32-intel-common = "${KERNEL_FEATURES_INTEL_COMMON}"
+         KERNEL_FEATURES:append:core2-32-intel-common = " ${KERNEL_FEATURES_INTEL_COMMON}"
 
       The :term:`KMACHINE` statement says
       that the kernel understands the machine name as "intel-core2-32".
@@ -8766,6 +8766,19 @@ system and gives an overview of their function and contents.
       In the
       previous example, some-native-tool would be replaced with an actual
       native tool on which the build would depend.
+
+   :term:`WKS_FILES`
+      Specifies a list of candidate Wic kickstart files to be used by the
+      OpenEmbedded build system to create a partitioned image. Only the
+      first one that is found, from left to right, will be used.
+
+      This is only useful when there are multiple ``.wks`` files that can be
+      used to produce an image. A typical case is when multiple layers are
+      used for different hardware platforms, each supplying a different
+      ``.wks`` file. In this case, you specify all possible ones through
+      :term:`WKS_FILES`.
+
+      If only one ``.wks`` file is used, set :term:`WKS_FILE` instead.
 
    :term:`WORKDIR`
       The pathname of the work directory in which the OpenEmbedded build
