@@ -1,0 +1,26 @@
+From 4413c50912aebf424a7f80782f6ed3fabff03fee Mon Sep 17 00:00:00 2001
+From: Lei Maohui <leimaohui@fujitsu.com>
+Date: Thu, 2 Jun 2022 11:24:06 +0900
+Subject: [PATCH] postinst-intercepts: Fix the directory name and path.
+
+Signed-off-by: Lei Maohui <leimaohui@fujitsu.com>
+---
+ dnf-plugins/dnf-host | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/dnf-plugins/dnf-host b/dnf-plugins/dnf-host
+index bebe851..0c4b9c6 100755
+--- a/dnf-plugins/dnf-host
++++ b/dnf-plugins/dnf-host
+@@ -100,7 +100,7 @@ export_env () {
+     echo "OFFLINE_ROOT=$HIDDEN_ROOTFS_DIR" >> $WORKDIR/.env-dnf
+     echo "IPKG_OFFLINE_ROOT=$HIDDEN_ROOTFS_DIR" >> $WORKDIR/.env-dnf
+     echo "OPKG_OFFLINE_ROOT=$HIDDEN_ROOTFS_DIR" >> $WORKDIR/.env-dnf
+-    echo "INTERCEPT_DIR=$WORKDIR/intercept_scripts" >> $WORKDIR/.env-dnf
++    echo "INTERCEPT_DIR=${SDKPATH}/postinst-intercepts" >> $WORKDIR/.env-dnf
+     echo "NATIVE_ROOT=$OECORE_NATIVE_SYSROOT" >> $WORKDIR/.env-dnf
+     echo "RPM_ETCCONFIGDIR=$HIDDEN_ROOTFS_DIR" >> $WORKDIR/.env-dnf
+ }
+-- 
+2.25.1
+
