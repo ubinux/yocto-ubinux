@@ -35,6 +35,16 @@ SYSTEMD_SERVICE:${PN} = "iscsi.service \
 "
 SYSTEMD_AUTO_ENABLE = "disable"
 
+do_install:append() {
+    rm -rf ${D}${systemd_unitdir}/
+    
+    install -d ${D}${systemd_unitdir}/system
+    install -d ${D}${systemd_unitdir}/system-generators
+    install -m 0644 ${S}/etc/systemd/*.service ${D}${systemd_unitdir}/system/
+    install -m 0644 ${S}/etc/systemd/*.socket ${D}${systemd_unitdir}/system/
+    install -m 0644 ${S}/etc/systemd/ibft-rule-generator ${D}${systemd_unitdir}/system-generators/
+}
+
 
 #FILES:${PN}-dev += "${libdir}/libopeniscsiusr.so*" 
 # systemd support
