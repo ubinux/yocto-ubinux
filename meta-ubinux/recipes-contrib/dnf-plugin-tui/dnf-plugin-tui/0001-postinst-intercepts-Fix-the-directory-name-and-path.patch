@@ -17,7 +17,7 @@ index bebe851..0c4b9c6 100755
      echo "IPKG_OFFLINE_ROOT=$HIDDEN_ROOTFS_DIR" >> $WORKDIR/.env-dnf
      echo "OPKG_OFFLINE_ROOT=$HIDDEN_ROOTFS_DIR" >> $WORKDIR/.env-dnf
 -    echo "INTERCEPT_DIR=$WORKDIR/intercept_scripts" >> $WORKDIR/.env-dnf
-+    echo "INTERCEPT_DIR=${SDKPATH}/postinst-intercepts" >> $WORKDIR/.env-dnf
++    echo "POSTINST_INTERCEPTS=${SDKPATH}/postinst-intercepts" >> $WORKDIR/.env-dnf
      echo "NATIVE_ROOT=$OECORE_NATIVE_SYSROOT" >> $WORKDIR/.env-dnf
      echo "RPM_ETCCONFIGDIR=$HIDDEN_ROOTFS_DIR" >> $WORKDIR/.env-dnf
  }

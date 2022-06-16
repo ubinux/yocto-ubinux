@@ -1,3 +1,5 @@
+PACKAGECONFIG:append = " fips "
+
 EXTRA_OECONF:remove = " \
     --enable-openssl-compatibility \
 "
