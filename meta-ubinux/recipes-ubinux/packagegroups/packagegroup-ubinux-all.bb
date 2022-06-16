@@ -386,6 +386,7 @@ UBINUX_PKGS = " \
 	ptpd \
 	quagga \
 	radvd \
+	lib32-run-postinsts \
 	rarpd \
 	samhain-client \
 	sblim-sfcb \
