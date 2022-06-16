@@ -1,8 +1,7 @@
 FILESEXTRAPATHS:prepend := "${THISDIR}/${PN}:"
+RDEPENDS:${PN} += " nativesdk-systemd-systemctl "
 
-SRC_URI:append = "\
-    file://0001-postinst-intercepts-Fix-the-directory-name-and-path.patch \
-"
+SRCREV = "f6ee3fa8fe6f3d7ca8d5b104aa73c1a5c938a403"
 
 do_install:append() {
     install -d -p ${D}/${SDKPATH}/postinst-intercepts
