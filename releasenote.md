@@ -62,7 +62,7 @@ ubinux-kernel:
 
 ### 2.2 Added packages
 
-N/A
+- restool
 
 ### 2.3 Removed packages
 
