@@ -19,6 +19,7 @@ EXTRA_OECONF:append:libc-musl = " LIBS=-lfts "
 # is set to -O0 or frame pointers have been enabled by -fno-omit-frame-pointer
 # earlier in CFLAGS, etc.
 CFLAGS:append:x86-64 = " -fomit-frame-pointer"
+TUNE_CCARGS:remove:x86 = "-mfpmath=sse"
 
 CFLAGS:append:powerpc64 = " -D__SANE_USERSPACE_TYPES__"
 CFLAGS:append:mipsarchn64 = " -D__SANE_USERSPACE_TYPES__"
@@ -79,6 +80,9 @@ do_install(){
     # The controllers memcg_stree test seems to cause us hangs and takes 900s
     # (maybe we expect more regular output?), anyhow, skip it
     sed -e '/^memcg_stress/d' -i ${D}${prefix}/runtest/controllers
+
+    # We don't need to ship the compile logs that open_posix_testsuite writes
+    rm -f ${D}${prefix}/testcases/open_posix_testsuite/logfile.*
 }
 
 RDEPENDS:${PN} = "\
