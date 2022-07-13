@@ -1,3 +1,6 @@
+PACKAGE_ARCH = "${SDK_ARCH}-${SDKPKGSUFFIX}"
+
+
 RDEPENDS:${PN} = "\
     nativesdk-pkgconfig \
     nativesdk-qemu-xilinx \
@@ -26,4 +29,5 @@ RDEPENDS:${PN} += "nativesdk-libnewt-python \
 		   nativesdk-e2fsprogs \
 		   nativesdk-gpgme \
 		   nativesdk-update-rc.d \
+                   nativesdk-gdk-pixbuf \
 		   "
