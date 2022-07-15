@@ -29,5 +29,6 @@ RDEPENDS:${PN} += "nativesdk-libnewt-python \
 		   nativesdk-e2fsprogs \
 		   nativesdk-gpgme \
 		   nativesdk-update-rc.d \
+                   nativesdk-systemd-systemctl \
                    nativesdk-gdk-pixbuf \
 		   "

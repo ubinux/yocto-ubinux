@@ -1,7 +1,4 @@
 FILESEXTRAPATHS:prepend := "${THISDIR}/${PN}:"
-RDEPENDS:${PN} += " nativesdk-systemd-systemctl \
-                    nativesdk-gdk-pixbuf \
-                  "
 
 SRCREV = "1e202f109a07ded81e4c7d4bbee9bc191cd03220"
 
