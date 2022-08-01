@@ -382,6 +382,11 @@ def splitdebuginfo(file, dvar, dv, d):
     debugfile = dvar + dest
     sources = []
 
+    if file.endswith(".ko") and file.find("/lib/modules/") != -1:
+        if oe.package.is_kernel_module_signed(file):
+            bb.debug(1, "Skip strip on signed module %s" % file)
+            return (file, sources)
+
     # Split the file...
     bb.utils.mkdirhier(os.path.dirname(debugfile))
     #bb.note("Split %s -> %s" % (file, debugfile))
@@ -561,7 +566,7 @@ def copydebugsources(debugsrcdir, sources, d):
 
         # If S isnt based on WORKDIR we can infer our sources are located elsewhere,
         # e.g. using externalsrc; use S as base for our dirs
-        if workdir in sdir:
+        if workdir in sdir or 'work-shared' in sdir:
             basedir = workbasedir
             parentdir = workparentdir
         else:
