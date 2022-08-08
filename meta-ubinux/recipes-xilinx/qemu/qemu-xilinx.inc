@@ -2,7 +2,7 @@ SUMMARY = "Xilinx's fork of a fast open source processor emulator"
 HOMEPAGE = "https://github.com/xilinx/qemu/"
 
 # x86_64 is needed to build nativesdks
-QEMU_TARGETS = "aarch64 arm microblaze microblazeel x86_64"
+QEMU_TARGETS = "aarch64 arm microblaze microblazeel x86_64 i386"
 
 LIC_FILES_CHKSUM = " \
 		file://COPYING;md5=441c28d2cf86e15a37fa47e15a72fbac \
