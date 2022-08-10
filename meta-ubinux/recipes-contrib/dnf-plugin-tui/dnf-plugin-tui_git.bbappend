@@ -1,6 +1,5 @@
-FILESEXTRAPATHS:prepend := "${THISDIR}/${PN}:"
-
-SRCREV = "1e202f109a07ded81e4c7d4bbee9bc191cd03220"
+SRCREV = "bac88927b253cdcfe0d06ac7dc5afb876cd2d996"
+DEPENDS:append:class-nativesdk = " file-replacement-nativesdk"
 
 do_install:append() {
     install -d -p ${D}/${SDKPATH}/postinst-intercepts
