@@ -234,7 +234,6 @@ UBINUX_PKGS = " \
 	xdelta3 \
 	xdpyinfo \
 	xf86-input-evdev \
-	xf86-input-keyboard \
 	xf86-input-mouse \
 	xf86-input-synaptics \
 	xf86-video-fbdev \
