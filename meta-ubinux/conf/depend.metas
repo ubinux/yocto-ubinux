@@ -13,7 +13,7 @@ metas=meta-oe
 [meta-oe]
 GITURL=ssh://10.130.70.189/ubinux-dev/common/ubinux-layers/yocto/meta-openembedded.git
 BRANCH=master
-HEADID=cd14aec0541ca2d9e7f8bb6f5d081be535623fb9
+HEADID=2eb39477a784673baefa59640909b827ebb689b2
 FILES=meta-oe/conf
  meta-oe/COPYING.MIT
  meta-oe/licenses/
@@ -421,12 +421,12 @@ FILES=meta-oe/conf
 [meta-freescale]
 GITURL=ssh://10.130.70.189/ubinux-dev/common/ubinux-layers/yocto/meta-freescale
 BRANCH=master
-HEADID=02870132a53fed8620302984541a623cfa5d3149
+HEADID=effeb16a8f18d8bec59b4c0ce5fb9ce3d2a92f5e
 FILES=conf/layer.conf
  custom-licenses/
  classes/
  wic /
- recipes-devtools/cst/
+ recipes-devtools/qoriq-cst/
  recipes-kernel/linux/linux-qoriq
  recipes-kernel/linux/linux-qoriq.inc
  recipes-kernel/linux/linux-qoriq_5.4.bb
@@ -510,13 +510,13 @@ FILES=conf/layer.conf
  meta-openstack/recipes-support/chef/
  meta-openstack/recipes-support/deploychef/
  meta-openstack/recipes-connectivity/open-iscsi/files/
- meta-openstack/recipes-connectivity/open-iscsi/open-iscsi-user_2.1.4.bb
+ meta-openstack/recipes-connectivity/open-iscsi/open-iscsi-user_2.1.7.bb
  recipes-support/nss-pam-ldapd/
 
 [meta-virtualization]
 GITURL=ssh://10.130.70.189/ubinux-dev/common/ubinux-layers/yocto/meta-virtualization
 BRANCH=master
-HEADID=40a4c292e31b831ef8f311cb0409c5ee751c4628
+HEADID=cca772a457a75b2661371932ff79c392da3118db
 FILES=conf/layer.conf
  classes/
  files/
@@ -536,7 +536,7 @@ FILES=conf/layer.conf
 [meta-security]
 GITURL=ssh://10.130.70.189/ubinux-dev/common/ubinux-layers/yocto/meta-security.git
 BRANCH=master
-HEADID=7ad5f6a9da1b5a55699d5b8e7ad80476ad5a4695
+HEADID=c352530c1374a7a08e147864bf1215b35087f900
 FILES=conf
  classes/sanity-meta-security.bbclass
  meta-tpm/classes/sanity-meta-tpm.bbclass
@@ -559,7 +559,7 @@ FILES=conf
 [meta-qt5]
 GITURL=ssh://10.130.70.189/ubinux-dev/common/ubinux-layers/yocto/meta-qt5
 BRANCH=master
-HEADID=d466c12ed432f6d811dac6a80528a637ef5c658d
+HEADID=9287d6355940ca24ce62bf0e18fcdf83050cf795
 FILES=conf/layer.conf
  recipes-qt/qt5/qttools_git.bb
  recipes-qt/qt5/qt5-git.inc
@@ -596,7 +596,7 @@ FILES=conf/layer.conf
 [meta-spdxscanner]
 GITURL=ssh://10.130.70.189/ubinux-dev/common/ubinux-layers/yocto/meta-spdxscanner
 BRANCH=master
-HEADID=d4552a3d36cdc614f8aff2d737948945442676be
+HEADID=8b07df1535fe1203b07fc87f8c6a1e34311e2a1d
 FILES=conf/layer.conf
  classes
  recipes-devtools/
