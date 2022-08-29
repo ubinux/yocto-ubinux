@@ -7,12 +7,13 @@ LICENSE = "MIT"
 
 MODIFYTOS = "0"
 
+# Need to use our SDK's sh here, see #14878
 create_sdk_wrapper () {
         file="$1"
         shift
 
         cat <<- EOF > "${file}"
-		#!/bin/sh
+		#!${base_prefix}/bin/sh
 		\$$1 \$@
 		EOF
 
@@ -36,17 +37,17 @@ do_install () {
 
     ENV_SETUP_DIR=${D}${base_prefix}/environment-setup.d
     mkdir "${ENV_SETUP_DIR}"
-    ENV_SETUP_SH="${ENV_SETUP_DIR}/rust.sh"
+    RUST_ENV_SETUP_SH="${ENV_SETUP_DIR}/rust.sh"
 
-    cat <<- EOF > "${ENV_SETUP_SH}"
+    cat <<- EOF > "${RUST_ENV_SETUP_SH}"
 	export RUSTFLAGS="--sysroot=\$OECORE_TARGET_SYSROOT/usr -C link-arg=--sysroot=\$OECORE_TARGET_SYSROOT"
 	export RUST_TARGET_PATH="\$OECORE_NATIVE_SYSROOT/usr/lib/${TARGET_SYS}/rustlib"
 	EOF
 
     chown -R root.root ${D}
 
-    ENV_SETUP_SH="${ENV_SETUP_DIR}/cargo.sh"
-    cat <<- EOF > "${ENV_SETUP_SH}"
+    CARGO_ENV_SETUP_SH="${ENV_SETUP_DIR}/cargo.sh"
+    cat <<- EOF > "${CARGO_ENV_SETUP_SH}"
 	export CARGO_HOME="\$OECORE_TARGET_SYSROOT/home/cargo"
 	mkdir -p "\$CARGO_HOME"
         # Init the default target once, it might be otherwise user modified.
