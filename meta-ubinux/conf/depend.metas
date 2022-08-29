@@ -13,7 +13,7 @@ metas=meta-oe
 [meta-oe]
 GITURL=ssh://10.130.70.189/ubinux-dev/common/ubinux-layers/yocto/meta-openembedded.git
 BRANCH=master
-HEADID=2eb39477a784673baefa59640909b827ebb689b2
+HEADID=78fe37bb9c1456263df3a6ec450a486a2d8464db
 FILES=meta-oe/conf
  meta-oe/COPYING.MIT
  meta-oe/licenses/
@@ -214,7 +214,7 @@ FILES=meta-oe/conf
  meta-oe/recipes-graphics/xorg-app/xkbutils_1.0.4.bb
  meta-oe/recipes-graphics/xorg-app/xlsatoms_1.1.3.bb
  meta-oe/recipes-graphics/xorg-app/xlsclients_1.1.4.bb
- meta-oe/recipes-graphics/xorg-app/xrefresh_1.0.6.bb
+ meta-oe/recipes-graphics/xorg-app/xrefresh_1.0.7.bb
  meta-oe/recipes-graphics/xorg-app/xsetmode_1.0.0.bb
  meta-oe/recipes-graphics/xorg-app/xsetroot_1.1.2.bb
  meta-oe/recipes-graphics/xorg-app/xstdcmap_1.0.4.bb
