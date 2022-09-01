@@ -378,7 +378,7 @@ def create_rootfs(d, manifest_dir=None, progress_reporter=None, logcatcher=None)
     img_type = d.getVar('IMAGE_PKGTYPE')
 
     cls = get_class_for_type(img_type)
-    cls(d, manifest_dir, progress_reporter, logcatcher).create()
+#    cls(d, manifest_dir, progress_reporter, logcatcher).create()
     os.environ.clear()
     os.environ.update(env_bkp)
 
