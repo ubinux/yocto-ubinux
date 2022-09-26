@@ -8,7 +8,10 @@ LIC_FILES_CHKSUM = "file://COPYING;md5=6bc538ed5bd9a7fc9398086aedcd7e46"
 
 KERNEL_BRANCH ?= "linux-5.10"
 KERNEL_SRC ?= "git://source.codeaurora.org/external/qoriq/qoriq-components/linux.git;protocol=https"
-SRC_URI = "${KERNEL_SRC};branch=${KERNEL_BRANCH}"
+SRC_URI = "${KERNEL_SRC};branch=${KERNEL_BRANCH} \
+           file://init_disassemble_info-signature-changes-causes-compile-failures.patch \
+           "
+
 SRCREV = "ef3f2cfc6010c13feb40cfb7fd7490832cf86f45"
 
 S = "${WORKDIR}/git"
