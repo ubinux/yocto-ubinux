@@ -13,7 +13,7 @@ fi
 
 MACHINE=$1
 BUILD=$2
-export TEMPLATECONF="meta-ubinux/conf"
+export TEMPLATECONF="meta-ubinux/conf/templates/default/"
 
 #. trunk/poky-ubinux/oe-init-build-env ${BUILD}
 . ./oe-init-build-env ${BUILD}
