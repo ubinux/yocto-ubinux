@@ -13,7 +13,7 @@ metas=meta-oe
 [meta-oe]
 GITURL=ssh://10.130.70.189/ubinux-dev/common/ubinux-layers/yocto/meta-openembedded.git
 BRANCH=master
-HEADID=b33c428230493f32fa786e21ebf1bfe0d0954efc
+HEADID=aa20821f171471cd59c38a3d4b1c3cbb5d90b311
 FILES=meta-oe/conf
  meta-oe/COPYING.MIT
  meta-oe/licenses/
@@ -37,13 +37,13 @@ FILES=meta-oe/conf
  meta-oe/recipes-graphics/xorg-app/bdftopcf_1.1.bb
  meta-oe/recipes-graphics/graphene/
  meta-oe/recipes-graphics/tslib/
- meta-oe/recipes-graphics/xorg-app/xlsfonts_1.0.6.bb
+ meta-oe/recipes-graphics/xorg-app/xlsfonts_1.0.7.bb
  meta-oe/recipes-graphics/xorg-app/xrdb_1.2.0.bb
- meta-oe/recipes-graphics/xorg-app/xterm_372.bb
+ meta-oe/recipes-graphics/xorg-app/xterm_373.bb
  meta-oe/recipes-graphics/xorg-app/xterm/
  meta-oe/recipes-graphics/xorg-app/xwd_1.0.8.bb
- meta-oe/recipes-graphics/xorg-app/iceauth_1.0.8.bb
- meta-oe/recipes-graphics/xorg-app/setxkbmap_1.3.2.bb
+ meta-oe/recipes-graphics/xorg-app/iceauth_1.0.9.bb
+ meta-oe/recipes-graphics/xorg-app/setxkbmap_1.3.3.bb
  meta-oe/recipes-graphics/xorg-data/
  meta-oe/recipes-graphics/xorg-driver/xf86-input-void_1.4.1.bb
  meta-oe/recipes-graphics/xorg-lib/libxaw_1.0.14.bb
@@ -211,14 +211,14 @@ FILES=meta-oe/conf
  meta-oe/recipes-graphics/xorg-app/xgamma_1.0.6.bb
  meta-oe/recipes-graphics/xorg-app/xkbevd_1.1.4.bb
  meta-oe/recipes-graphics/xorg-app/xkbprint_1.0.5.bb
- meta-oe/recipes-graphics/xorg-app/xkbutils_1.0.4.bb
+ meta-oe/recipes-graphics/xorg-app/xkbutils_1.0.5.bb
  meta-oe/recipes-graphics/xorg-app/xlsatoms_1.1.3.bb
  meta-oe/recipes-graphics/xorg-app/xlsclients_1.1.4.bb
  meta-oe/recipes-graphics/xorg-app/xrefresh_1.0.7.bb
  meta-oe/recipes-graphics/xorg-app/xsetmode_1.0.0.bb
  meta-oe/recipes-graphics/xorg-app/xsetroot_1.1.2.bb
  meta-oe/recipes-graphics/xorg-app/xstdcmap_1.0.4.bb
- meta-oe/recipes-graphics/xorg-app/xwud_1.0.5.bb
+ meta-oe/recipes-graphics/xorg-app/xwud_1.0.6.bb
  meta-oe/recipes-graphics/takao-fonts/
  meta-oe/recipes-graphics/openjpeg/
 
@@ -401,7 +401,7 @@ FILES=meta-oe/conf
  meta-oe/recipes-devtools/perl/libdbi-perl_1.643.bb
  meta-oe/recipes-devtools/perl/libdbi-perl/
  meta-oe/recipes-devtools/perl/libdbd-mysql-perl_4.050.bb
- meta-oe/recipes-devtools/perl/libdev-checklib-perl_1.14.bb
+ meta-oe/recipes-devtools/perl/libdev-checklib-perl_1.16.bb
  meta-oe/recipes-devtools/perl/libdev-checklib-perl/
  meta-perl/recipes-perl/libdigest/files/
  meta-perl/recipes-perl/libdigest/
@@ -421,7 +421,7 @@ FILES=meta-oe/conf
 [meta-freescale]
 GITURL=ssh://10.130.70.189/ubinux-dev/common/ubinux-layers/yocto/meta-freescale
 BRANCH=master
-HEADID=84b9ae5d0859cb6920056a1f9295917bad83383a
+HEADID=7fae1797f511e53ec67e59fca5e128f55125a10d
 FILES=conf/layer.conf
  custom-licenses/
  classes/
@@ -439,7 +439,7 @@ FILES=conf/layer.conf
 [meta-cgl]
 GITURL=ssh://10.130.70.189/ubinux-dev/common/ubinux-layers/yocto/meta-cgl.git
 BRANCH=master
-HEADID=2c01834826d08670dcfca6eed5d0e50f259604bd
+HEADID=64b8d64a7c4d8ee92bd9857f1bfaa67db699f743
 FILES=meta-cgl-common/conf/layer.conf
  meta-cgl-common/conf/distro/include/cgl_common_security_flags.inc
  meta-cgl-common/recipes-cgl/cluster-glue/
@@ -455,7 +455,7 @@ FILES=meta-cgl-common/conf/layer.conf
 [meta-cloud-services]
 GITURL=ssh://10.130.70.189/ubinux-dev/common/ubinux-layers/yocto/meta-cloud-services
 BRANCH=master
-HEADID=05f4d675c0fa8e4411f33b8c39b83656c2682f97
+HEADID=83c836dc5dd39fbd0f661afabc56449d7caf1cd4
 FILES=conf/layer.conf
  classes/
  meta-openstack/classes/default_configs.bbclass
@@ -516,7 +516,7 @@ FILES=conf/layer.conf
 [meta-virtualization]
 GITURL=ssh://10.130.70.189/ubinux-dev/common/ubinux-layers/yocto/meta-virtualization
 BRANCH=master
-HEADID=538e94e674dc1be0b0fee5da54083ca040b2f7b9
+HEADID=8177e4a6b72d5b701b92b2028baf1a8860cf18e6
 FILES=conf/layer.conf
  classes/
  files/
@@ -530,13 +530,13 @@ FILES=conf/layer.conf
 [meta-selinux]
 GITURL=ssh://10.130.70.189/ubinux-dev/common/ubinux-layers/yocto/meta-selinux
 BRANCH=master
-HEADID=6683a43e618b8cf2dc8905a38a593ec9c164f233
+HEADID=506daf988c844e857c674ef70a46476a005bf17b
 FILES=conf/layer.conf
 
 [meta-security]
 GITURL=ssh://10.130.70.189/ubinux-dev/common/ubinux-layers/yocto/meta-security.git
 BRANCH=master
-HEADID=10fdc2b13aea01aeea9c0a48a50d0327ee76a1e5
+HEADID=e8e731818928fcc822688a53d244a98ef5f02488
 FILES=conf
  classes/sanity-meta-security.bbclass
  meta-tpm/classes/sanity-meta-tpm.bbclass
@@ -559,7 +559,7 @@ FILES=conf
 [meta-qt5]
 GITURL=ssh://10.130.70.189/ubinux-dev/common/ubinux-layers/yocto/meta-qt5
 BRANCH=master
-HEADID=edf4825428920c7425f907933991eaf33c6273a7
+HEADID=11ef27b254a574269e0cf860c06d79d518e65bce
 FILES=conf/layer.conf
  recipes-qt/qt5/qttools_git.bb
  recipes-qt/qt5/qt5-git.inc
@@ -604,7 +604,7 @@ FILES=conf/layer.conf
 [meta-swupdate]
 GITURL=ssh://10.130.70.189/ubinux-dev/common/ubinux-layers/yocto/meta-swupdate
 BRANCH=master
-HEADID=ea21eccbd117da250d04430155ed61b39042835a
+HEADID=65338c18929be7b5c7199827511cc324f3d7102a
 FILES=conf/layer.conf
  recipes-support/swupdate/
  recipes-bsp/u-boot/
