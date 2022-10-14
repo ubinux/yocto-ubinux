@@ -1,5 +1,5 @@
-#!/usr/bin/env python2.7
-import ConfigParser
+#!/usr/bin/env python3
+import configparser 
 import string, os, sys
 import getpass
 
@@ -14,7 +14,7 @@ def checkout_repository(name, url, branch, headid, files):
     os.system(command)
 
 def checkout_all_repository():
-    cf = ConfigParser.ConfigParser()
+    cf = configparser.ConfigParser()
     cf.read("meta-ubinux/conf/depend.metas")
     sec = cf.sections()
 
@@ -33,7 +33,7 @@ def main():
     if len(sys.argv) == 1:
         checkout_all_repository()
     else:
-        cf = ConfigParser.ConfigParser()
+        cf = configparser.ConfigParser()
         cf.read("meta-ubinux/conf/depend.metas")
         sec = cf.sections()
         metas = cf.get("DEPEND_META", "metas")
