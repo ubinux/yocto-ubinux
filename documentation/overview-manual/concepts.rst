@@ -233,13 +233,12 @@ for creating actual configuration files when you source
 :ref:`structure-core-script`, which is the
 build environment script.
 
-Sourcing the build environment script creates a
-:term:`Build Directory` if one does not
-already exist. BitBake uses the Build Directory for all its work during
-builds. The Build Directory has a ``conf`` directory that contains
-default versions of your ``local.conf`` and ``bblayers.conf``
+Sourcing the build environment script creates a :term:`Build Directory`
+if one does not already exist. BitBake uses the :term:`Build Directory`
+for all its work during builds. The Build Directory has a ``conf`` directory
+that contains default versions of your ``local.conf`` and ``bblayers.conf``
 configuration files. These default configuration files are created only
-if versions do not already exist in the Build Directory at the time you
+if versions do not already exist in the :term:`Build Directory` at the time you
 source the build environment setup script.
 
 Because the Poky repository is fundamentally an aggregation of existing
@@ -251,9 +250,9 @@ assumes the script is executed from within a cloned or unpacked version
 of Poky.
 
 Depending on where the script is sourced, different sub-scripts are
-called to set up the Build Directory (Yocto or OpenEmbedded).
+called to set up the :term:`Build Directory` (Yocto or OpenEmbedded).
 Specifically, the script ``scripts/oe-setup-builddir`` inside the poky
-directory sets up the Build Directory and seeds the directory (if
+directory sets up the :term:`Build Directory` and seeds the directory (if
 necessary) with configuration files appropriate for the Yocto Project
 development environment.
 
@@ -428,7 +427,7 @@ The distribution layer provides policy configurations for your
 distribution. Best practices dictate that you isolate these types of
 configurations into their own layer. Settings you provide in
 ``conf/distro/distro.conf`` override similar settings that BitBake finds
-in your ``conf/local.conf`` file in the Build Directory.
+in your ``conf/local.conf`` file in the :term:`Build Directory`.
 
 The following list provides some explanation and references for what you
 typically find in the distribution layer:
@@ -531,10 +530,11 @@ repositories, which is not the default behavior, and store them in the
 variable.
 
 Judicious use of a :term:`DL_DIR` directory can save the build system a trip
-across the Internet when looking for files. A good method for using a
-download directory is to have :term:`DL_DIR` point to an area outside of
-your Build Directory. Doing so allows you to safely delete the Build
-Directory if needed without fear of removing any downloaded source file.
+across the Internet when looking for files. A good method for using a download
+directory is to have :term:`DL_DIR` point to an area outside of your
+:term:`Build Directory`. Doing so allows you to safely delete the
+:term:`Build Directory` if needed without fear of removing any downloaded
+source file.
 
 The remainder of this section provides a deeper look into the source
 files and the mirrors. Here is a more detailed look at the source file
@@ -632,15 +632,14 @@ process validates them with generated output quality assurance checks
 through the :ref:`insane <ref-classes-insane>`
 class.
 
-The package feed area resides in the Build Directory. The directory the
+The package feed area resides in the :term:`Build Directory`. The directory the
 build system uses to temporarily store packages is determined by a
 combination of variables and the particular package manager in use. See
 the "Package Feeds" box in the illustration and note the information to
 the right of that area. In particular, the following defines where
 package files are kept:
 
--  :term:`DEPLOY_DIR`: Defined as
-   ``tmp/deploy`` in the Build Directory.
+-  :term:`DEPLOY_DIR`: Defined as ``tmp/deploy`` in the :term:`Build Directory`.
 
 -  ``DEPLOY_DIR_*``: Depending on the package manager used, the package
    type sub-folder. Given RPM, IPK, or DEB packaging and tarball
@@ -696,10 +695,8 @@ code:
 .. image:: figures/source-fetching.png
    :width: 100%
 
-The :ref:`ref-tasks-fetch` and
-:ref:`ref-tasks-unpack` tasks fetch
-the source files and unpack them into the
-:term:`Build Directory`.
+The :ref:`ref-tasks-fetch` and :ref:`ref-tasks-unpack` tasks fetch
+the source files and unpack them into the :term:`Build Directory`.
 
 .. note::
 
@@ -710,17 +707,16 @@ the source files and unpack them into the
    file has been modified, the :ref:`ref-tasks-fetch` task and all
    tasks that depend on it are re-executed.
 
-By default, everything is accomplished in the Build Directory, which has
-a defined structure. For additional general information on the Build
-Directory, see the ":ref:`structure-core-build`" section in
+By default, everything is accomplished in the :term:`Build Directory`, which has
+a defined structure. For additional general information on the
+:term:`Build Directory`, see the ":ref:`structure-core-build`" section in
 the Yocto Project Reference Manual.
 
-Each recipe has an area in the Build Directory where the unpacked source
-code resides. The :term:`S` variable points
-to this area for a recipe's unpacked source code. The name of that
-directory for any given recipe is defined from several different
-variables. The preceding figure and the following list describe the
-Build Directory's hierarchy:
+Each recipe has an area in the :term:`Build Directory` where the unpacked
+source code resides. The :term:`S` variable points to this area for a recipe's
+unpacked source code. The name of that directory for any given recipe is
+defined from several different variables. The preceding figure and the
+following list describe the :term:`Build Directory`'s hierarchy:
 
 -  :term:`TMPDIR`: The base directory
    where the OpenEmbedded build system performs all its work during the
@@ -853,7 +849,7 @@ This step in the build process consists of the following tasks:
    variables. For information on how this variable works within that
    class, see the
    :ref:`autotools <ref-classes-autotools>` class
-   :yocto_git:`here </poky/tree/meta/classes/autotools.bbclass>`.
+   :yocto_git:`here </poky/tree/meta/classes-recipe/autotools.bbclass>`.
 
 -  *do_compile*: Once a configuration task has been satisfied,
    BitBake compiles the source using the
@@ -931,7 +927,7 @@ The :term:`FILES` variable defines the
 files that go into each package in
 :term:`PACKAGES`. If you want
 details on how this is accomplished, you can look at
-:yocto_git:`package.bbclass </poky/tree/meta/classes/package.bbclass>`.
+:yocto_git:`package.bbclass </poky/tree/meta/classes-global/package.bbclass>`.
 
 Depending on the type of packages being created (RPM, DEB, or IPK), the
 :ref:`do_package_write_* <ref-tasks-package_write_deb>`
@@ -1014,7 +1010,7 @@ processing includes creation of a manifest file and optimizations.
 The manifest file (``.manifest``) resides in the same directory as the
 root filesystem image. This file lists out, line-by-line, the installed
 packages. The manifest file is useful for the
-:ref:`testimage <ref-classes-testimage*>` class,
+:ref:`testimage <ref-classes-testimage>` class,
 for example, to determine whether or not to run specific tests. See the
 :term:`IMAGE_MANIFEST`
 variable for additional information.
@@ -1258,15 +1254,12 @@ this output:
    ":doc:`/ref-manual/images`" chapter in the Yocto Project Reference
    Manual.
 
-The build process writes images out to the :term:`Build Directory`
-inside the
-``tmp/deploy/images/machine/`` folder as shown in the figure. This
+The build process writes images out to the :term:`Build Directory` inside
+the ``tmp/deploy/images/machine/`` folder as shown in the figure. This
 folder contains any files expected to be loaded on the target device.
-The :term:`DEPLOY_DIR` variable
-points to the ``deploy`` directory, while the
-:term:`DEPLOY_DIR_IMAGE`
-variable points to the appropriate directory containing images for the
-current configuration.
+The :term:`DEPLOY_DIR` variable points to the ``deploy`` directory, while the
+:term:`DEPLOY_DIR_IMAGE` variable points to the appropriate directory
+containing images for the current configuration.
 
 -  kernel-image: A kernel binary file. The
    :term:`KERNEL_IMAGETYPE`
@@ -1340,10 +1333,9 @@ can initialize the environment before using the tools.
       the :doc:`/sdk-manual/index` manual.
 
 All the output files for an SDK are written to the ``deploy/sdk`` folder
-inside the :term:`Build Directory` as
-shown in the previous figure. Depending on the type of SDK, there are
-several variables to configure these files. Here are the variables
-associated with an extensible SDK:
+inside the :term:`Build Directory` as shown in the previous figure. Depending
+on the type of SDK, there are several variables to configure these files.
+Here are the variables associated with an extensible SDK:
 
 -  :term:`DEPLOY_DIR`: Points to
    the ``deploy`` directory.
@@ -1431,7 +1423,7 @@ toolchain construction and use.
    :width: 100%
 
 Most of the work occurs on the Build Host. This is the machine used to
-build images and generally work within the the Yocto Project
+build images and generally work within the Yocto Project
 environment. When you run
 :term:`BitBake` to create an image, the
 OpenEmbedded build system uses the host ``gcc`` compiler to bootstrap a
@@ -1482,12 +1474,11 @@ relocatable SDK used to develop applications. When you run the
 installer, it installs the toolchain, which contains the development
 tools (e.g., ``gcc-cross-canadian``, ``binutils-cross-canadian``, and
 other ``nativesdk-*`` tools), which are tools native to the SDK (i.e.
-native to :term:`SDK_ARCH`), you
-need to cross-compile and test your software. The figure shows the
-commands you use to easily build out this toolchain. This
-cross-development toolchain is built to execute on the
-:term:`SDKMACHINE`, which might or
-might not be the same machine as the Build Host.
+native to :term:`SDK_ARCH`), you need to cross-compile and test your
+software. The figure shows the commands you use to easily build out
+this toolchain. This cross-development toolchain is built to execute on the
+:term:`SDKMACHINE`, which might or might not be the same machine as
+the Build Host.
 
 .. note::
 
