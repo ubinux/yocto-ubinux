@@ -314,9 +314,9 @@ PREFERRED_PROVIDER_bluez-hcidump = "bluez5"
 
 PACKAGECONFIG:append:pn-curl = " libssh2"
 PACKAGECONFIG:pn-opensaf = " openhpi"
-PREFERRED_VERSION_linux-libc-headers = "5.10"
-PREFERRED_VERSION_nativesdk-linux-libc-headers = "5.10"
-PREFERRED_VERSION_linux-yocto = "5.10%"
+PREFERRED_VERSION_linux-libc-headers = "5.15"
+PREFERRED_VERSION_nativesdk-linux-libc-headers = "5.15"
+PREFERRED_VERSION_linux-yocto = "5.15%"
 PREFERRED_PROVIDER_u-boot-fw-utils = "libubootenv"
 # Fix installation confilt since 2020.01,so use python-pika provided by meta-openstack
 
