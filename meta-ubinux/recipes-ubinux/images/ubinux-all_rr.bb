@@ -630,6 +630,7 @@ UBINUX_PKGS = " \
 	xmlto \
 	expect \
 	cim-schema-exper \
+	libgpiod \
 "
 
 
