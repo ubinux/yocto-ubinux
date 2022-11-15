@@ -5,8 +5,6 @@ LIC_FILES_CHKSUM = "file://${COREBASE}/meta/COPYING.MIT;md5=3da9cfbcb788c80a0384
 
 PR = "r6"
 
-inherit nativesdk
-
 SRC_URI = "file://systemctl"
 
 S = "${WORKDIR}"
@@ -15,3 +13,6 @@ do_install() {
 	install -d ${D}${bindir}
 	install -m 0755 ${WORKDIR}/systemctl ${D}${bindir}
 }
+
+
+BBCLASSEXTEND = "native nativesdk"
