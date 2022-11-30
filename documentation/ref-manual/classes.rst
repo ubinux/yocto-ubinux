@@ -741,8 +741,8 @@ class.
 
 .. _ref-classes-github-releases:
 
-``github-releases``
-===================
+``github-releases.bbclass``
+===========================
 
 For recipes that fetch release tarballs from github, the :ref:`github-releases <ref-classes-github-releases>`
 class sets up a standard way for checking available upstream versions
@@ -977,7 +977,7 @@ Yocto Project Overview and Concepts Manual.
 
 The :ref:`image-buildinfo <ref-classes-image-buildinfo>` class writes a plain text file containing
 build information to the target filesystem at ``${sysconfdir}/buildinfo``
-by default (as specified by :term:`IMAGE_BUILDINFO_FILE`.
+by default (as specified by :term:`IMAGE_BUILDINFO_FILE`).
 This can be useful for manually determining the origin of any given
 image. It writes out two sections:
 

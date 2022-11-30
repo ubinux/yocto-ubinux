@@ -4,14 +4,16 @@ BitBake 'Data' implementations
 Functions for interacting with the data structure used by the
 BitBake build tools.
 
-The expandKeys and update_data are the most expensive
-operations. At night the cookie monster came by and
+expandKeys and datastore iteration are the most expensive
+operations. Updating overrides is now "on the fly" but still based
+on the idea of the cookie monster introduced by zecke:
+"At night the cookie monster came by and
 suggested 'give me cookies on setting the variables and
 things will work out'. Taking this suggestion into account
 applying the skills from the not yet passed 'Entwurf und
 Analyse von Algorithmen' lecture and the cookie
 monster seems to be right. We will track setVar more carefully
-to have faster update_data and expandKeys operations.
+to have faster datastore operations."
 
 This is a trade-off between speed and memory again but
 the speed is more critical here.
@@ -26,11 +28,6 @@ the speed is more critical here.
 
 import sys, os, re
 import hashlib
-if sys.argv[0][-5:] == "pydoc":
-    path = os.path.dirname(os.path.dirname(sys.argv[1]))
-else:
-    path = os.path.dirname(os.path.dirname(sys.argv[0]))
-sys.path.insert(0, path)
 from itertools import groupby
 
 from bb import data_smart
@@ -69,10 +66,6 @@ def initVar(var, d):
 def keys(d):
     """Return a list of keys in d"""
     return d.keys()
-
-
-__expand_var_regexp__ = re.compile(r"\${[^{}]+}")
-__expand_python_regexp__ = re.compile(r"\${@.+?}")
 
 def expand(s, d, varname = None):
     """Variable expansion using the data store"""
@@ -268,10 +261,6 @@ def emit_func_python(func, o=sys.__stdout__, d = init()):
                newdeps |= set((d.getVarFlag(dep, "vardeps") or "").split())
         newdeps -= seen
 
-def update_data(d):
-    """Performs final steps upon the datastore, including application of overrides"""
-    d.finalize(parent = True)
-
 def build_dependencies(key, keys, shelldeps, varflagsexcl, ignored_vars, d):
     deps = set()
     try:
@@ -282,7 +271,8 @@ def build_dependencies(key, keys, shelldeps, varflagsexcl, ignored_vars, d):
             value, parser = d.getVarFlag(vf[0], vf[1], False, retparser=True)
             deps |= parser.references
             deps = deps | (keys & parser.execs)
-            return deps, value
+            deps -= ignored_vars
+            return frozenset(deps), value
         varflags = d.getVarFlags(key, ["vardeps", "vardepvalue", "vardepsexclude", "exports", "postfuncs", "prefuncs", "lineno", "filename"]) or {}
         vardeps = varflags.get("vardeps")
         exclusions = varflags.get("vardepsexclude", "").split()
@@ -365,12 +355,13 @@ def build_dependencies(key, keys, shelldeps, varflagsexcl, ignored_vars, d):
 
         deps |= set((vardeps or "").split())
         deps -= set(exclusions)
+        deps -= ignored_vars
     except bb.parse.SkipRecipe:
         raise
     except Exception as e:
         bb.warn("Exception during build_dependencies for %s" % key)
         raise
-    return deps, value
+    return frozenset(deps), value
     #bb.note("Variable %s references %s and calls %s" % (key, str(deps), str(execs)))
     #d.setVarFlag(key, "vardeps", deps)
 
@@ -389,7 +380,7 @@ def generate_dependencies(d, ignored_vars):
         newdeps = deps[task]
         seen = set()
         while newdeps:
-            nextdeps = newdeps - ignored_vars
+            nextdeps = newdeps
             seen |= nextdeps
             newdeps = set()
             for dep in nextdeps:
@@ -413,7 +404,6 @@ def generate_dependency_hash(tasklist, gendeps, lookupcache, ignored_vars, fn):
         else:
             data = [data]
 
-        gendeps[task] -= ignored_vars
         newdeps = gendeps[task]
         seen = set()
         while newdeps:
@@ -421,9 +411,6 @@ def generate_dependency_hash(tasklist, gendeps, lookupcache, ignored_vars, fn):
             seen |= nextdeps
             newdeps = set()
             for dep in nextdeps:
-                if dep in ignored_vars:
-                    continue
-                gendeps[dep] -= ignored_vars
                 newdeps |= gendeps[dep]
             newdeps -= seen
 
@@ -435,7 +422,7 @@ def generate_dependency_hash(tasklist, gendeps, lookupcache, ignored_vars, fn):
                 data.append(str(var))
         k = fn + ":" + task
         basehash[k] = hashlib.sha256("".join(data).encode("utf-8")).hexdigest()
-        taskdeps[task] = alldeps
+        taskdeps[task] = frozenset(seen)
 
     return taskdeps, basehash
 

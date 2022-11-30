@@ -617,8 +617,7 @@ class BBCooker:
 
         if fn:
             try:
-                bb_caches = bb.cache.MulticonfigCache(self.databuilder, self.data_hash, self.caches_array)
-                envdata = bb_caches[mc].loadDataFull(fn, self.collections[mc].get_file_appends(fn))
+                envdata = self.databuilder.parseRecipe(fn, self.collections[mc].get_file_appends(fn))
             except Exception as e:
                 parselog.exception("Unable to read %s", fn)
                 raise
@@ -2288,8 +2287,8 @@ class CookerParser(object):
 
     def load_cached(self):
         for mc, cache, filename, appends in self.fromcache:
-            cached, infos = cache.load(filename, appends)
-            yield not cached, mc, infos
+            infos = cache.loadCached(filename, appends)
+            yield False, mc, infos
 
     def parse_generator(self):
         empty = False
