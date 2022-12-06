@@ -130,6 +130,11 @@ The following directory changes exist:
    it easier to delete :term:`TMPDIR` and preserve the build history.
    Additionally, data for produced SDKs is now split by :term:`IMAGE_NAME`.
 
+-  When :ref:`buildhistory <ref-classes-buildhistory>` is enabled, its output
+   is now written under the :term:`Build Directory` rather than :term:`TMPDIR`.
+   Doing so makes it easier to delete :term:`TMPDIR` and preserve the build
+   history. Additionally, data for produced SDKs is now split by :term:`IMAGE_NAME`.
+
 -  The ``pkgdata`` directory produced as part of the packaging process
    has been collapsed into a single machine-specific directory. This
    directory is located under ``sysroots`` and uses a machine-specific
@@ -216,8 +221,8 @@ Task Recipes
 
 The previously deprecated ``task.bbclass`` has now been dropped. For
 recipes that previously inherited from this class, you should rename
-them from ``task-*`` to ``packagegroup-*`` and inherit packagegroup
-instead.
+them from ``task-*`` to ``packagegroup-*`` and inherit
+:ref:`packagegroup <ref-classes-packagegroup>` instead.
 
 For more information, see the ":ref:`ref-classes-packagegroup`" section.
 
@@ -243,7 +248,7 @@ A new automated image testing framework has been added through the
 framework replaces the older ``imagetest-qemu`` framework.
 
 You can learn more about performing automated image tests in the
-":ref:`dev-manual/common-tasks:performing automated runtime testing`"
+":ref:`dev-manual/runtime-testing:performing automated runtime testing`"
 section in the Yocto Project Development Tasks Manual.
 
 .. _migration-1.5-build-history:
@@ -266,7 +271,7 @@ Following are changes to Build History:
    option for each utility for more information on the new syntax.
 
 For more information on Build History, see the
-":ref:`dev-manual/common-tasks:maintaining build output quality`"
+":ref:`dev-manual/build-quality:maintaining build output quality`"
 section in the Yocto Project Development Tasks Manual.
 
 .. _migration-1.5-udev:

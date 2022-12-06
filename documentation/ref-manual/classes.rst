@@ -74,7 +74,7 @@ The :ref:`archiver <ref-classes-archiver>` class supports releasing source code 
 materials with the binaries.
 
 For more details on the source :ref:`archiver <ref-classes-archiver>`, see the
-":ref:`dev-manual/common-tasks:maintaining open source license compliance during your product's lifecycle`"
+":ref:`dev-manual/licenses:maintaining open source license compliance during your product's lifecycle`"
 section in the Yocto Project Development Tasks Manual. You can also see
 the :term:`ARCHIVER_MODE` variable for information
 about the variable flags (varflags) that help control archive creation.
@@ -93,7 +93,7 @@ standardization. This class defines a set of tasks (e.g. ``configure``,
 should usually be enough to define a few standard variables and then
 simply ``inherit autotools``. These classes can also work with software
 that emulates Autotools. For more information, see the
-":ref:`dev-manual/common-tasks:autotooled package`" section
+":ref:`dev-manual/new-recipe:autotooled package`" section
 in the Yocto Project Development Tasks Manual.
 
 By default, the :ref:`autotools* <ref-classes-autotools>` classes use out-of-tree builds (i.e.
@@ -210,9 +210,8 @@ information.
 An alternative version of the :ref:`binconfig <ref-classes-binconfig>`
 class, which disables binary configuration scripts by making them return
 an error in favor of using ``pkg-config`` to query the information. The
-scripts to be disabled should be specified using the
-:term:`BINCONFIG` variable within the recipe inheriting
-the class.
+scripts to be disabled should be specified using the :term:`BINCONFIG`
+variable within the recipe inheriting the class.
 
 .. _ref-classes-buildhistory:
 
@@ -223,7 +222,7 @@ The :ref:`buildhistory <ref-classes-buildhistory>` class records a history of bu
 which can be used to detect possible regressions as well as used for
 analysis of the build output. For more information on using Build
 History, see the
-":ref:`dev-manual/common-tasks:maintaining build output quality`"
+":ref:`dev-manual/build-quality:maintaining build output quality`"
 section in the Yocto Project Development Tasks Manual.
 
 .. _ref-classes-buildstats:
@@ -391,7 +390,7 @@ by the :term:`SPDX_PRETTY`, :term:`SPDX_ARCHIVE_PACKAGED`,
 :term:`SPDX_ARCHIVE_SOURCES` and :term:`SPDX_INCLUDE_SOURCES` variables.
 
 See the description of these variables and the
-":ref:`dev-manual/common-tasks:creating a software bill of materials`"
+":ref:`dev-manual/sbom:creating a software bill of materials`"
 section in the Yocto Project Development Manual for more details.
 
 .. _ref-classes-cross:
@@ -485,7 +484,7 @@ These can only be detected by reviewing the details of the issues and iterating 
 and following what happens in other Linux distributions and in the greater open source community.
 
 You will find some more details in the
-":ref:`dev-manual/common-tasks:checking for vulnerabilities`"
+":ref:`dev-manual/vulnerabilities:checking for vulnerabilities`"
 section in the Development Tasks Manual.
 
 .. _ref-classes-debian:
@@ -525,7 +524,7 @@ staging the files from :term:`DEPLOYDIR` to :term:`DEPLOY_DIR_IMAGE`.
 ====================
 
 The :ref:`devshell <ref-classes-devshell>` class adds the :ref:`ref-tasks-devshell` task. Distribution
-policy dictates whether to include this class. See the ":ref:`dev-manual/common-tasks:using a development shell`"
+policy dictates whether to include this class. See the ":ref:`dev-manual/development-shell:using a development shell`"
 section in the Yocto Project Development Tasks Manual for more
 information about using :ref:`devshell <ref-classes-devshell>`.
 
@@ -580,8 +579,7 @@ By default, the OpenEmbedded build system uses the :term:`S`
 and :term:`B` variables to locate unpacked recipe source code
 and to build it, respectively. When your recipe inherits the
 :ref:`externalsrc <ref-classes-externalsrc>` class, you use the
-:term:`EXTERNALSRC` and
-:term:`EXTERNALSRC_BUILD` variables to
+:term:`EXTERNALSRC` and :term:`EXTERNALSRC_BUILD` variables to
 ultimately define :term:`S` and :term:`B`.
 
 By default, this class expects the source code to support recipe builds
@@ -600,7 +598,7 @@ For more information on the :ref:`externalsrc <ref-classes-externalsrc>` class, 
 ``meta/classes/externalsrc.bbclass`` in the :term:`Source Directory`.
 For information on how to use the
 :ref:`externalsrc <ref-classes-externalsrc>` class, see the
-":ref:`dev-manual/common-tasks:building software from an external source`"
+":ref:`dev-manual/building:building software from an external source`"
 section in the Yocto Project Development Tasks Manual.
 
 .. _ref-classes-extrausers:
@@ -734,9 +732,9 @@ register and unregister the schemas in the target image.
 ``gettext.bbclass``
 ===================
 
-The :ref:`gettext <ref-classes-gettext>` class provides support for building software that uses
-the GNU ``gettext`` internationalization and localization system. All
-recipes building software that use ``gettext`` should inherit this
+The :ref:`gettext <ref-classes-gettext>` class provides support for building
+software that uses the GNU ``gettext`` internationalization and localization
+system. All recipes building software that use ``gettext`` should inherit this
 class.
 
 .. _ref-classes-github-releases:
@@ -964,7 +962,7 @@ then one or more image files are created.
    install into the image.
 
 For information on customizing images, see the
-":ref:`dev-manual/common-tasks:customizing images`" section
+":ref:`dev-manual/customizing-images:customizing images`" section
 in the Yocto Project Development Tasks Manual. For information on how
 images are created, see the
 ":ref:`overview-manual/concepts:images`" section in the
@@ -1366,7 +1364,7 @@ packages such as ``kernel-vmlinux``.
 The :ref:`kernel <ref-classes-kernel>` class contains logic that allows you to embed an initial
 RAM filesystem (:term:`Initramfs`) image when you build the kernel image. For
 information on how to build an :term:`Initramfs`, see the
-":ref:`dev-manual/common-tasks:building an initial ram filesystem (Initramfs) image`" section in
+":ref:`dev-manual/building:building an initial ram filesystem (Initramfs) image`" section in
 the Yocto Project Development Tasks Manual.
 
 Various other classes are used by the :ref:`kernel <ref-classes-kernel>` and :ref:`module <ref-classes-module>` classes
@@ -1406,7 +1404,7 @@ an optional Initramfs bundle, an optional RAM disk, and any number of
 device tree.
 
 To create a FIT image, it is required that :term:`KERNEL_CLASSES`
-is set to include "kernel-fitimage" and :term:`KERNEL_IMAGETYPE`
+is set to include ":ref:`kernel-fitimage <ref-classes-kernel-fitimage>`" and :term:`KERNEL_IMAGETYPE`
 is set to "fitImage".
 
 The options for the device tree compiler passed to ``mkimage -D``
@@ -1676,7 +1674,7 @@ different target optimizations or target architectures and installing
 them side-by-side in the same image.
 
 For more information on using the Multilib feature, see the
-":ref:`dev-manual/common-tasks:combining multiple versions of library files into one image`"
+":ref:`dev-manual/libraries:combining multiple versions of library files into one image`"
 section in the Yocto Project Development Tasks Manual.
 
 .. _ref-classes-native:
@@ -1784,7 +1782,7 @@ Provides support for building Node.js software fetched using the
    fetcher to have dependencies fetched and packaged automatically.
 
 For information on how to create NPM packages, see the
-":ref:`dev-manual/common-tasks:creating node package manager (npm) packages`"
+":ref:`dev-manual/packages:creating node package manager (npm) packages`"
 section in the Yocto Project Development Tasks Manual.
 
 .. _ref-classes-oelint:
@@ -1960,7 +1958,7 @@ If you take the optional step to set up a repository (package feed) on
 the development host that can be used by DNF, you can install packages
 from the feed while you are running the image on the target (i.e.
 runtime installation of packages). For more information, see the
-":ref:`dev-manual/common-tasks:using runtime package management`"
+":ref:`dev-manual/packages:using runtime package management`"
 section in the Yocto Project Development Tasks Manual.
 
 The package-specific class you choose can affect build-time performance
@@ -2079,7 +2077,7 @@ so forth). It is highly recommended that all package group recipes
 inherit this class.
 
 For information on how to use this class, see the
-":ref:`dev-manual/common-tasks:customizing images using custom package groups`"
+":ref:`dev-manual/customizing-images:customizing images using custom package groups`"
 section in the Yocto Project Development Tasks Manual.
 
 Previously, this class was called the ``task`` class.
@@ -2294,7 +2292,7 @@ The :ref:`primport <ref-classes-primport>` class provides functionality for impo
 ==================
 
 The :ref:`prserv <ref-classes-prserv>` class provides functionality for using a :ref:`PR
-service <dev-manual/common-tasks:working with a pr service>` in order to
+service <dev-manual/packages:working with a pr service>` in order to
 automatically manage the incrementing of the :term:`PR`
 variable for each recipe.
 
@@ -2314,7 +2312,7 @@ runtime tests for recipes that build software that provides these tests.
 This class is intended to be inherited by individual recipes. However,
 the class' functionality is largely disabled unless "ptest" appears in
 :term:`DISTRO_FEATURES`. See the
-":ref:`dev-manual/common-tasks:testing packages with ptest`"
+":ref:`dev-manual/packages:testing packages with ptest`"
 section in the Yocto Project Development Tasks Manual for more information
 on ptest.
 
@@ -2327,7 +2325,7 @@ Enables package tests (ptests) specifically for GNOME packages, which
 have tests intended to be executed with ``gnome-desktop-testing``.
 
 For information on setting up and running ptests, see the
-":ref:`dev-manual/common-tasks:testing packages with ptest`"
+":ref:`dev-manual/packages:testing packages with ptest`"
 section in the Yocto Project Development Tasks Manual.
 
 .. _ref-classes-python3-dir:
@@ -2415,7 +2413,7 @@ override the removal by setting ``REMOVE_LIBTOOL_LA`` to "0" as follows::
 ========================
 
 The :ref:`report-error <ref-classes-report-error>` class supports enabling the :ref:`error reporting
-tool <dev-manual/common-tasks:using the error reporting tool>`",
+tool <dev-manual/error-reporting-tool:using the error reporting tool>`",
 which allows you to submit build error information to a central database.
 
 The class collects debug information for recipe, recipe version, task,
@@ -2566,11 +2564,12 @@ uses these build systems, the recipe needs to inherit the :ref:`setuptools3 <ref
 ``setuptools3_legacy.bbclass``
 ==============================
 
-The :ref:`setuptools3_legacy <ref-classes-setuptools3_legacy>` class supports Python version 3.x extensions that use
-build systems based on ``setuptools`` (e.g. only have a ``setup.py`` and have
-not migrated to the official ``pyproject.toml`` format). Unlike
-``setuptools3.bbclass``, this uses the traditional ``setup.py`` ``build`` and
-``install`` commands and not wheels. This use of ``setuptools`` like this is
+The :ref:`setuptools3_legacy <ref-classes-setuptools3_legacy>` class supports
+Python version 3.x extensions that use build systems based on ``setuptools``
+(e.g. only have a ``setup.py`` and have not migrated to the official
+``pyproject.toml`` format). Unlike :ref:`setuptools3 <ref-classes-setuptools3>`,
+this uses the traditional ``setup.py`` ``build`` and ``install`` commands and
+not wheels. This use of ``setuptools`` like this is
 `deprecated <https://github.com/pypa/setuptools/blob/main/CHANGES.rst#v5830>`__
 but still relatively common.
 
@@ -2591,14 +2590,6 @@ in the :ref:`setuptools3 <ref-classes-setuptools3>` class and inherit this class
 ====================
 
 The :ref:`sign_rpm <ref-classes-sign_rpm>` class supports generating signed RPM packages.
-
-.. _ref-classes-sip:
-
-``sip.bbclass``
-===============
-
-The :ref:`sip <ref-classes-sip>` class supports recipes that build or package SIP-based
-Python bindings.
 
 .. _ref-classes-siteconfig:
 
@@ -2819,7 +2810,7 @@ unless you have set
 :term:`SYSTEMD_AUTO_ENABLE` to "disable".
 
 For more information on :ref:`systemd <ref-classes-systemd>`, see the
-":ref:`dev-manual/common-tasks:selecting an initialization manager`"
+":ref:`dev-manual/init-manager:selecting an initialization manager`"
 section in the Yocto Project Development Tasks Manual.
 
 .. _ref-classes-systemd-boot:
@@ -2894,7 +2885,7 @@ after it is built, you can set :term:`TESTIMAGE_AUTO`::
    TESTIMAGE_AUTO = "1"
 
 For information on how to enable, run, and create new tests, see the
-":ref:`dev-manual/common-tasks:performing automated runtime testing`"
+":ref:`dev-manual/runtime-testing:performing automated runtime testing`"
 section in the Yocto Project Development Tasks Manual.
 
 .. _ref-classes-testsdk:
