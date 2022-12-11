@@ -247,8 +247,15 @@ class SignatureGeneratorBasic(SignatureGenerator):
         #for task in self.taskdeps[fn]:
         #    self.dump_sigtask(fn, task, d.getVar("STAMP"), False)
 
+        basehashes = {}
         for task in taskdeps:
-            d.setVar("BB_BASEHASH:task-%s" % task, self.basehash[fn + ":" + task])
+            basehashes[task] = self.basehash[fn + ":" + task]
+
+        d.setVar("__siggen_basehashes", basehashes)
+        d.setVar("__siggen_gendeps", self.gendeps[fn])
+        d.setVar("__siggen_varvals", self.lookupcache[fn])
+        d.setVar("__siggen_taskdeps", self.taskdeps[fn])
+
 
     def postparsing_clean_cache(self):
         #

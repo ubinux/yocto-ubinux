@@ -17,6 +17,7 @@ import warnings
 import fcntl
 import time
 import traceback
+import datetime
 
 import bb
 from bb import event
@@ -384,6 +385,9 @@ def bitbake_main(configParams, configuration):
 
     return 1
 
+def timestamp():
+    return datetime.datetime.now().strftime('%H:%M:%S.%f')
+
 def setup_bitbake(configParams, extrafeatures=None):
     # Ensure logging messages get sent to the UI as events
     handler = bb.event.LogHandler()
@@ -418,7 +422,7 @@ def setup_bitbake(configParams, extrafeatures=None):
         retries = 8
         while retries:
             try:
-                topdir, lock = lockBitbake()
+                topdir, lock, lockfile = lockBitbake()
                 sockname = topdir + "/bitbake.sock"
                 if lock:
                     if configParams.status_only or configParams.kill_server:
@@ -434,13 +438,16 @@ def setup_bitbake(configParams, extrafeatures=None):
                 else:
                     logger.info("Reconnecting to bitbake server...")
                     if not os.path.exists(sockname):
-                        logger.info("Previous bitbake instance shutting down?, waiting to retry...")
+                        logger.info("Previous bitbake instance shutting down?, waiting to retry... (%s)" % timestamp())
+                        procs = bb.server.process.get_lockfile_process_msg(lockfile)
+                        if procs:
+                            logger.info("Processes holding bitbake.lock:\n%s" % procs)
                         i = 0
                         lock = None
                         # Wait for 5s or until we can get the lock
                         while not lock and i < 50:
                             time.sleep(0.1)
-                            _, lock = lockBitbake()
+                            _, lock, _ = lockBitbake()
                             i += 1
                         if lock:
                             bb.utils.unlockfile(lock)
@@ -459,9 +466,9 @@ def setup_bitbake(configParams, extrafeatures=None):
                 retries -= 1
                 tryno = 8 - retries
                 if isinstance(e, (bb.server.process.ProcessTimeout, BrokenPipeError, EOFError, SystemExit)):
-                    logger.info("Retrying server connection (#%d)..." % tryno)
+                    logger.info("Retrying server connection (#%d)... (%s)" % (tryno, timestamp()))
                 else:
-                    logger.info("Retrying server connection (#%d)... (%s)" % (tryno, traceback.format_exc()))
+                    logger.info("Retrying server connection (#%d)... (%s, %s)" % (tryno, traceback.format_exc(), timestamp()))
 
             if not retries:
                 bb.fatal("Unable to connect to bitbake server, or start one (server startup failures would be in bitbake-cookerdaemon.log).")
@@ -490,5 +497,5 @@ def lockBitbake():
         bb.error("Unable to find conf/bblayers.conf or conf/bitbake.conf. BBPATH is unset and/or not in a build directory?")
         raise BBMainFatal
     lockfile = topdir + "/bitbake.lock"
-    return topdir, bb.utils.lockfile(lockfile, False, False)
+    return topdir, bb.utils.lockfile(lockfile, False, False), lockfile
 

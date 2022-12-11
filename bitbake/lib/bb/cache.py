@@ -28,7 +28,7 @@ import shutil
 
 logger = logging.getLogger("BitBake.Cache")
 
-__cache_version__ = "154"
+__cache_version__ = "155"
 
 def getCacheFile(path, filename, mc, data_hash):
     mcspec = ''
@@ -105,7 +105,7 @@ class CoreRecipeInfo(RecipeInfoCommon):
 
         self.tasks = metadata.getVar('__BBTASKS', False)
 
-        self.basetaskhashes = self.taskvar('BB_BASEHASH', self.tasks, metadata)
+        self.basetaskhashes = metadata.getVar('__siggen_basehashes', False) or {}
         self.hashfilename = self.getvar('BB_HASHFILENAME', metadata)
 
         self.task_deps = metadata.getVar('_task_deps', False) or {'tasks': [], 'parents': {}}
@@ -237,6 +237,31 @@ class CoreRecipeInfo(RecipeInfoCommon):
         cachedata.fakerootdirs[fn] = self.fakerootdirs
         cachedata.fakerootlogs[fn] = self.fakerootlogs
         cachedata.extradepsfunc[fn] = self.extradepsfunc
+
+
+class SiggenRecipeInfo(RecipeInfoCommon):
+    __slots__ = ()
+
+    classname = "SiggenRecipeInfo"
+    cachefile = "bb_cache_" + classname +".dat"
+    # we don't want to show this information in graph files so don't set cachefields
+    #cachefields = []
+
+    def __init__(self, filename, metadata):
+        self.siggen_gendeps = metadata.getVar("__siggen_gendeps", False)
+        self.siggen_varvals = metadata.getVar("__siggen_varvals", False)
+        self.siggen_taskdeps = metadata.getVar("__siggen_taskdeps", False)
+
+    @classmethod
+    def init_cacheData(cls, cachedata):
+        cachedata.siggen_taskdeps = {}
+        cachedata.siggen_gendeps = {}
+        cachedata.siggen_varvals = {}
+
+    def add_cacheData(self, cachedata, fn):
+        cachedata.siggen_gendeps[fn] = self.siggen_gendeps
+        cachedata.siggen_varvals[fn] = self.siggen_varvals
+        cachedata.siggen_taskdeps[fn] = self.siggen_taskdeps
 
 def virtualfn2realfn(virtualfn):
     """
