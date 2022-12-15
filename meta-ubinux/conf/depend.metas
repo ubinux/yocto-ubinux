@@ -13,7 +13,7 @@ metas=meta-oe
 [meta-oe]
 GITURL=ssh://10.130.70.189/ubinux-dev/common/ubinux-layers/yocto/meta-openembedded.git
 BRANCH=master
-HEADID=d04444509a220fcb61496d7e64f3ba09c647543b
+HEADID=f3d14d41ad60d2d52a0ea795ae10fe0882146ed1
 FILES=meta-oe/conf
  meta-oe/COPYING.MIT
  meta-oe/licenses/
@@ -425,7 +425,7 @@ FILES=meta-oe/conf
 [meta-freescale]
 GITURL=ssh://10.130.70.189/ubinux-dev/common/ubinux-layers/yocto/meta-freescale
 BRANCH=master
-HEADID=66d738d4ab1270c2e87f5afabc085bdff205e5ac
+HEADID=6f6b3a65548969de0097153f13d1dfd690b9be54
 FILES=conf/layer.conf
  custom-licenses/
  classes/
@@ -459,7 +459,7 @@ FILES=meta-cgl-common/conf/layer.conf
 [meta-cloud-services]
 GITURL=ssh://10.130.70.189/ubinux-dev/common/ubinux-layers/yocto/meta-cloud-services
 BRANCH=master
-HEADID=83c836dc5dd39fbd0f661afabc56449d7caf1cd4
+HEADID=c2448d546c50b392a410c9e2a7014364852f895d
 FILES=conf/layer.conf
  classes/
  meta-openstack/classes/default_configs.bbclass
@@ -520,7 +520,7 @@ FILES=conf/layer.conf
 [meta-virtualization]
 GITURL=ssh://10.130.70.189/ubinux-dev/common/ubinux-layers/yocto/meta-virtualization
 BRANCH=master
-HEADID=9f41aca8e6cd31ba2752dba5d375cf19009a6ec3
+HEADID=d3acb1a378e644fe2784a8357390b19695640f78
 FILES=conf/layer.conf
  classes/
  files/
@@ -540,7 +540,7 @@ FILES=conf/layer.conf
 [meta-security]
 GITURL=ssh://10.130.70.189/ubinux-dev/common/ubinux-layers/yocto/meta-security.git
 BRANCH=master
-HEADID=2aa48e6f4e519abc7d6bd56da2c067309a303e80
+HEADID=f991b20f56de8cdf40556681e0e9276ae6b81cfa
 FILES=conf
  classes/sanity-meta-security.bbclass
  meta-tpm/classes/sanity-meta-tpm.bbclass
@@ -563,7 +563,7 @@ FILES=conf
 [meta-qt5]
 GITURL=ssh://10.130.70.189/ubinux-dev/common/ubinux-layers/yocto/meta-qt5
 BRANCH=master
-HEADID=1a917695e439d602ec85e1db4e0478533cfbfaa8
+HEADID=c22b8fac9ca18687c3a163807dd74853101945a8
 FILES=conf/layer.conf
  recipes-qt/qt5/qttools_git.bb
  recipes-qt/qt5/qt5-git.inc
@@ -608,7 +608,7 @@ FILES=conf/layer.conf
 [meta-swupdate]
 GITURL=ssh://10.130.70.189/ubinux-dev/common/ubinux-layers/yocto/meta-swupdate
 BRANCH=master
-HEADID=5e611f44db1b9333342ed61d77a3c3ed7be69c2b
+HEADID=f853505464baa22ca016dadce37e9d65b68cc2ba
 FILES=conf/layer.conf
  recipes-support/swupdate/
  recipes-bsp/u-boot/
