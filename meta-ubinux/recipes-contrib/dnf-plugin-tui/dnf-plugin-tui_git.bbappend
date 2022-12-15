@@ -1,2 +1,2 @@
-SRCREV = "4b59b820dd1e3401c75e1c623284e64a051ec0f1"
+SRCREV = "8d21f52577aa03958732a5a346a678c699e98cb6"
 DEPENDS:append:class-nativesdk = " file-replacement-nativesdk"
