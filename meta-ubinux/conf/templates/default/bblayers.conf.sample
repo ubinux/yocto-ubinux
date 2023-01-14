@@ -32,6 +32,7 @@ BBLAYERS ?= " \
   ##COREBASE##/meta-qt5 \
   ##COREBASE##/meta-swupdate \
   ##COREBASE##/meta-spdxscanner \
+  ##COREBASE##/meta-java \
   "
 BBLAYERS_NON_REMOVABLE ?= " \
   ##COREBASE##/meta-ubinux \
