@@ -7,6 +7,10 @@ LSB_IMAGE_FEATURES = " splash ssh-server-openssh hwcodecs package-management "
 IMAGE_FEATURES += " ${LSB_IMAGE_FEATURES} "
 IMAGE_FEATURES += " dev-pkgs staticdev-pkgs "
 
+IMAGE_LINGUAS = " "
+
+IMAGE_ROOTFS_EXTRA_SPACE:append = "${@bb.utils.contains("DISTRO_FEATURES", "systemd", " + 4096", "", d)}"
+
 BASE_PKG_GROUPS = " \
 	packagegroup-core-boot \
 	${CORE_IMAGE_EXTRA_INSTALL} \
