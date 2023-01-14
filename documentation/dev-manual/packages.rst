@@ -220,7 +220,7 @@ The alternative to setting up a PR Service is to manually "bump" the
 :term:`PR` variable.
 
 If a committed change results in changing the package output, then the
-value of the PR variable needs to be increased (or "bumped") as part of
+value of the :term:`PR` variable needs to be increased (or "bumped") as part of
 that commit. For new recipes you should add the :term:`PR` variable and set
 its initial value equal to "r0", which is the default. Even though the
 default value is "r0", the practice of adding it to a new recipe makes
@@ -554,10 +554,10 @@ to use. In your configuration, you use the
 :term:`PACKAGE_CLASSES`
 variable to specify the format:
 
-1. Open the ``local.conf`` file inside your :term:`Build Directory` (e.g.
+#. Open the ``local.conf`` file inside your :term:`Build Directory` (e.g.
    ``poky/build/conf/local.conf``).
 
-2. Select the desired package format as follows::
+#. Select the desired package format as follows::
 
       PACKAGE_CLASSES ?= "package_packageformat"
 
@@ -643,8 +643,7 @@ Lighttpd, or Nginx), take the appropriate steps to do so.
 From within the :term:`Build Directory` where you have built an image based on
 your packaging choice (i.e. the :term:`PACKAGE_CLASSES` setting), simply start
 the server. The following example assumes a :term:`Build Directory` of ``poky/build``
-and a :term:`PACKAGE_CLASSES` setting of
-":ref:`package_rpm <ref-classes-package_rpm>`"::
+and a :term:`PACKAGE_CLASSES` setting of ":ref:`ref-classes-package_rpm`"::
 
    $ cd poky/build/tmp/deploy/rpm
    $ python3 -m http.server
@@ -909,8 +908,8 @@ see the :yocto_wiki:`Ptest </Ptest>` wiki page.
 
 .. note::
 
-   A recipe is "ptest-enabled" if it inherits the
-   :ref:`ptest <ref-classes-ptest>` class.
+   A recipe is "ptest-enabled" if it inherits the :ref:`ref-classes-ptest`
+   class.
 
 Adding ptest to Your Build
 --------------------------
@@ -940,7 +939,7 @@ In order to enable a recipe to run installed ptests on target hardware,
 you need to prepare the recipes that build the packages you want to
 test. Here is what you have to do for each recipe:
 
--  *Be sure the recipe inherits the* :ref:`ptest <ref-classes-ptest>` *class:*
+-  *Be sure the recipe inherits the* :ref:`ref-classes-ptest` *class:*
    Include the following line in each recipe::
 
       inherit ptest
@@ -991,7 +990,7 @@ test. Here is what you have to do for each recipe:
    special configurations prior to compiling the test code, you must
    insert a ``do_configure_ptest`` function into the recipe.
 
--  *Install the test suite:* The :ref:`ptest <ref-classes-ptest>` class
+-  *Install the test suite:* The :ref:`ref-classes-ptest` class
    automatically copies the file ``run-ptest`` to the target and then runs make
    ``install-ptest`` to run the tests. If this is not enough, you need
    to create a ``do_install_ptest`` function and make sure it gets
@@ -1145,9 +1144,8 @@ Here are three key points in the previous example:
    sub-module's license is unavailable, the sub-module's name appears in
    the comments.
 
--  The ``inherit npm`` statement causes the
-   :ref:`npm <ref-classes-npm>` class to package
-   up all the modules.
+-  The ``inherit npm`` statement causes the :ref:`ref-classes-npm` class to
+   package up all the modules.
 
 You can run the following command to build the ``cute-files`` package::
 

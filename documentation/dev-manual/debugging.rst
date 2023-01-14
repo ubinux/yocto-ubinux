@@ -153,7 +153,7 @@ In addition to variable values, the output of the ``bitbake -e`` and
    classes included globally, recursively listing the files they include
    or inherit in turn. Much of the behavior of the OpenEmbedded build
    system (including the behavior of the :ref:`ref-manual/tasks:normal recipe build tasks`) is
-   implemented in the :ref:`base <ref-classes-base>` class and the
+   implemented in the :ref:`ref-classes-base` class and the
    classes it inherits, rather than being built into BitBake itself.
 
 -  After the variable values, all functions appear in the output. For
@@ -196,8 +196,7 @@ Following are a few of the available ``oe-pkgdata-util`` subcommands.
       which contains the files stored in that package.
 
       If you want to inspect the ``${WORKDIR}/packages-split``
-      directory, make sure that
-      :ref:`rm_work <ref-classes-rm-work>` is not
+      directory, make sure that :ref:`ref-classes-rm-work` is not
       enabled when you build the recipe.
 
 -  ``oe-pkgdata-util find-path path ...``: Lists the names of
@@ -297,11 +296,11 @@ If you are unsure whether a variable dependency is being picked up
 automatically for a given task, you can list the variable dependencies
 BitBake has determined by doing the following:
 
-1. Build the recipe containing the task::
+#. Build the recipe containing the task::
 
    $ bitbake recipename
 
-2. Inside the :term:`STAMPS_DIR`
+#. Inside the :term:`STAMPS_DIR`
    directory, find the signature data (``sigdata``) file that
    corresponds to the task. The ``sigdata`` files contain a pickled
    Python database of all the metadata that went into creating the input
@@ -319,7 +318,7 @@ BitBake has determined by doing the following:
    the cached task output. The ``siginfo`` files contain exactly the
    same information as ``sigdata`` files.
 
-3. Run ``bitbake-dumpsig`` on the ``sigdata`` or ``siginfo`` file. Here
+#. Run ``bitbake-dumpsig`` on the ``sigdata`` or ``siginfo`` file. Here
    is an example::
 
       $ bitbake-dumpsig ${BUILDDIR}/tmp/stamps/i586-poky-linux/db/6.0.30-r1.do_fetch.sigdata.7c048c18222b16ff0bcee2000ef648b1
@@ -327,8 +326,7 @@ BitBake has determined by doing the following:
    In the output of the above command, you will find a line like the
    following, which lists all the (inferred) variable dependencies for
    the task. This list also includes indirect dependencies from
-   variables depending on other variables, recursively.
-   ::
+   variables depending on other variables, recursively::
 
       Task dependencies: ['PV', 'SRCREV', 'SRC_URI', 'SRC_URI[md5sum]', 'SRC_URI[sha256sum]', 'base_do_fetch']
 
@@ -599,8 +597,7 @@ log to ``${T}/log.do_``\ `task`, and can also log to standard output
 
 The same logging functions are also available in shell functions, under
 the names ``bbplain``, ``bbnote``, ``bbdebug``, ``bbwarn``, ``bberror``,
-and ``bbfatal``. The
-:ref:`logging <ref-classes-logging>` class
+and ``bbfatal``. The :ref:`ref-classes-logging` class
 implements these functions. See that class in the ``meta/classes``
 folder of the :term:`Source Directory` for information.
 
@@ -641,8 +638,7 @@ The syntax you use for recipes written in Bash is similar to that of
 recipes written in Python described in the previous section.
 
 Following is an example written in Bash. The code logs the progress of
-the ``do_my_function`` function.
-::
+the ``do_my_function`` function::
 
    do_my_function() {
        bbdebug 2 "Running do_my_function"
@@ -994,7 +990,7 @@ site <https://sourceware.org/gdb/documentation/>`__.
 The following steps show you how to debug using the GNU project
 debugger.
 
-1. *Configure your build system to construct the companion debug
+#. *Configure your build system to construct the companion debug
    filesystem:*
 
    In your ``local.conf`` file, set the following::
@@ -1014,7 +1010,7 @@ debugger.
    the full filesystem for debugging. Subsequent steps in this procedure
    show how to combine the partial filesystem with the full filesystem.
 
-2. *Configure the system to include gdbserver in the target filesystem:*
+#. *Configure the system to include gdbserver in the target filesystem:*
 
    Make the following addition in your ``local.conf`` file::
 
@@ -1023,7 +1019,7 @@ debugger.
    The change makes
    sure the ``gdbserver`` package is included.
 
-3. *Build the environment:*
+#. *Build the environment:*
 
    Use the following command to construct the image and the companion
    Debug Filesystem::
@@ -1059,7 +1055,7 @@ debugger.
       the actual image (e.g. ``gdb-cross-i586``). The suggestion is usually the
       actual name you want to use.
 
-4. *Set up the* ``debugfs``\ *:*
+#. *Set up the* ``debugfs``\ *:*
 
    Run the following commands to set up the ``debugfs``::
 
@@ -1068,7 +1064,7 @@ debugger.
       $ tar xvfj build-dir/tmp/deploy/images/machine/image.rootfs.tar.bz2
       $ tar xvfj build-dir/tmp/deploy/images/machine/image-dbg.rootfs.tar.bz2
 
-5. *Set up GDB:*
+#. *Set up GDB:*
 
    Install the SDK (if you built one) and then source the correct
    environment file. Sourcing the environment file puts the SDK in your
@@ -1077,7 +1073,7 @@ debugger.
    If you are using the build system, Gdb is located in
    `build-dir`\ ``/tmp/sysroots/``\ `host`\ ``/usr/bin/``\ `architecture`\ ``/``\ `architecture`\ ``-gdb``
 
-6. *Boot the target:*
+#. *Boot the target:*
 
    For information on how to run QEMU, see the `QEMU
    Documentation <https://wiki.qemu.org/Documentation/GettingStartedDevelopers>`__.
@@ -1086,7 +1082,7 @@ debugger.
 
       Be sure to verify that your host can access the target via TCP.
 
-7. *Debug a program:*
+#. *Debug a program:*
 
    Debugging a program involves running gdbserver on the target and then
    running Gdb on the host. The example in this step debugs ``gzip``:
@@ -1118,7 +1114,7 @@ debugger.
       users ``~/.gdbinit`` file. Upon starting, Gdb automatically runs whatever
       commands are in that file.
 
-8. *Deploying without a full image rebuild:*
+#. *Deploying without a full image rebuild:*
 
    In many cases, during development you want a quick method to deploy a
    new binary to the target and debug it, without waiting for a full

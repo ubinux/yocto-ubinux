@@ -59,8 +59,7 @@ this information is required to use Wic, you might find it interesting.
 
 -  Wic is a completely independent standalone utility that initially
    provides easier-to-use and more flexible replacements for an existing
-   functionality in OE-Core's
-   :ref:`image-live <ref-classes-image-live>`
+   functionality in OE-Core's :ref:`ref-classes-image-live`
    class. The difference between Wic and those examples is that with Wic
    the functionality of those scripts is implemented by a
    general-purpose partitioning language, which is based on Redhat
@@ -539,8 +538,7 @@ will need to boot from ``sdb`` instead of ``sda``, which is what the
 
 The example begins by making a copy of the ``directdisk-gpt.wks`` file
 in the ``scripts/lib/image/canned-wks`` directory and then by changing
-the lines that specify the target disk from which to boot.
-::
+the lines that specify the target disk from which to boot::
 
    $ cp /home/stephano/yocto/poky/scripts/lib/wic/canned-wks/directdisk-gpt.wks \
         /home/stephano/yocto/poky/scripts/lib/wic/canned-wks/directdisksdb-gpt.wks
@@ -557,8 +555,7 @@ Once the lines are changed, the
 example generates the ``directdisksdb-gpt`` image. The command points
 the process at the ``core-image-minimal`` artifacts for the Next Unit of
 Computing (nuc) :term:`MACHINE` the
-``local.conf``.
-::
+``local.conf``::
 
    $ wic create directdisksdb-gpt -e core-image-minimal
    INFO: Building wic-tools...
@@ -643,7 +640,7 @@ modify the kernel.
 The following example examines the contents of the Wic image, deletes
 the existing kernel, and then inserts a new kernel:
 
-1. *List the Partitions:* Use the ``wic ls`` command to list all the
+#. *List the Partitions:* Use the ``wic ls`` command to list all the
    partitions in the Wic image::
 
       $ wic ls tmp/deploy/images/qemux86/core-image-minimal-qemux86.wic
@@ -654,7 +651,7 @@ the existing kernel, and then inserts a new kernel:
    The previous output shows two partitions in the
    ``core-image-minimal-qemux86.wic`` image.
 
-2. *Examine a Particular Partition:* Use the ``wic ls`` command again
+#. *Examine a Particular Partition:* Use the ``wic ls`` command again
    but in a different form to examine a particular partition.
 
    .. note::
@@ -702,12 +699,12 @@ the existing kernel, and then inserts a new kernel:
                Add mtools_skip_check=1 to your .mtoolsrc file to skip this test
 
 
-3. *Remove the Old Kernel:* Use the ``wic rm`` command to remove the
+#. *Remove the Old Kernel:* Use the ``wic rm`` command to remove the
    ``vmlinuz`` file (kernel)::
 
       $ wic rm tmp/deploy/images/qemux86/core-image-minimal-qemux86.wic:1/vmlinuz
 
-4. *Add In the New Kernel:* Use the ``wic cp`` command to add the
+#. *Add In the New Kernel:* Use the ``wic cp`` command to add the
    updated kernel to the Wic image. Depending on how you built your
    kernel, it could be in different places. If you used ``devtool`` and
    an SDK to build your kernel, it resides in the ``tmp/work`` directory

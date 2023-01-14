@@ -121,11 +121,10 @@ def worker_child_fire(event, d):
 
     data = b"<event>" + pickle.dumps(event) + b"</event>"
     try:
-        worker_pipe_lock.acquire()
-        while(len(data)):
-            written = worker_pipe.write(data)
-            data = data[written:]
-        worker_pipe_lock.release()
+        with bb.utils.lock_timeout(worker_pipe_lock):
+            while(len(data)):
+                written = worker_pipe.write(data)
+                data = data[written:]
     except IOError:
         sigterm_handler(None, None)
         raise
@@ -266,6 +265,7 @@ def fork_off_task(cfg, data, databuilder, workerdata, extraconfigdata, runtask):
                 the_data = databuilder.parseRecipe(fn, appends)
                 the_data.setVar('BB_TASKHASH', taskhash)
                 the_data.setVar('BB_UNIHASH', unihash)
+                bb.parse.siggen.setup_datacache_from_datastore(fn, the_data)
 
                 bb.utils.set_process_name("%s:%s" % (the_data.getVar("PN"), taskname.replace("do_", "")))
 

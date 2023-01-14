@@ -13,10 +13,7 @@ SRC_URI = "${GNOME_MIRROR}/${BPN}/${MAJ_VER}/${BPN}-${PV}.tar.xz"
 
 SRC_URI[sha256sum] = "aa0c86c79f7a8d67bae49a5b7a5ab08430c608cffe6e33bf47a72f41ab03c3d0"
 
-X11DEPENDS = "virtual/libx11 libxi libxtst"
-
 DEPENDS = "dbus glib-2.0 libxml2"
-DEPENDS += "${@bb.utils.contains('DISTRO_FEATURES', 'x11', '${X11DEPENDS}', '', d)}"
 
 # For backwards compatibility
 PROVIDES += "atk at-spi2-atk"
@@ -25,11 +22,14 @@ RPROVIDES:${PN} += "atk at-spi2-atk"
 inherit meson gtk-doc gettext systemd pkgconfig upstream-version-is-even gobject-introspection
 
 EXTRA_OEMESON = " -Dsystemd_user_dir=${systemd_user_unitdir} \
-                  -Ddbus_daemon=${bindir}/dbus-daemon \
-                  ${@bb.utils.contains('DISTRO_FEATURES', 'x11', '-Dx11=yes', '-Dx11=no', d)} \
-"
+                  -Ddbus_daemon=${bindir}/dbus-daemon"
+
+PACKAGECONFIG ??= "${@bb.utils.filter('DISTRO_FEATURES', 'x11', d)}"
+PACKAGECONFIG[x11] = "-Dx11=yes,-Dx11=no,virtual/libx11 libxi libxtst"
 
 GTKDOC_MESON_OPTION = "docs"
+# The documentation doesn't build if X11 is disabled. Appears to be fixed post 2.46.0.
+EXTRA_OEMESON += "${@bb.utils.contains("DISTRO_FEATURES", "x11", "", "-Ddocs=false", d)}"
 
 GIR_MESON_OPTION = 'introspection'
 GIR_MESON_ENABLE_FLAG = 'yes'
