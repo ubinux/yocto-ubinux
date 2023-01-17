@@ -9,11 +9,12 @@ metas=meta-oe
  meta-qt5
  meta-swupdate
  meta-spdxscanner
+ meta-java
 
 [meta-oe]
 GITURL=ssh://10.130.70.189/ubinux-dev/common/ubinux-layers/yocto/meta-openembedded.git
 BRANCH=master
-HEADID=f3d14d41ad60d2d52a0ea795ae10fe0882146ed1
+HEADID=cd1388161143e9cbc3eb7d8c2edbc3b751728e75
 FILES=meta-oe/conf
  meta-oe/COPYING.MIT
  meta-oe/licenses/
@@ -27,12 +28,14 @@ FILES=meta-oe/conf
  meta-oe/recipes-support/fltk/
  meta-oe/recipes-support/multipath-tools
  meta-oe/recipes-support/libssh/
+ meta-oe/recipes-support/libstemmer/
  meta-oe/recipes-support/libusb/
  meta-oe/recipes-support/itstool/
  meta-oe/recipes-support/numactl/
  meta-oe/recipes-support/uhubctl/
  meta-oe/recipes-support/fmt/
  meta-oe/recipes-support/sass/
+ meta-oe/recipes-support/bdwgc/ 
 
  meta-oe/recipes-core/ell
  meta-oe/recipes-graphics/xorg-app/bdftopcf_1.1.bb
@@ -67,6 +70,7 @@ FILES=meta-oe/conf
  meta-oe/recipes-support/hwdata/
  meta-oe/recipes-support/nss/
  meta-oe/recipes-support/nspr/
+ meta-oe/recipes-support/unixodbc/
  meta-oe/recipes-dbs/libdbi/libdbi_0.9.0.bb
  meta-oe/recipes-dbs/libdbi/libdbi.inc
  meta-oe/recipes-security/audit/
@@ -74,6 +78,7 @@ FILES=meta-oe/conf
  meta-oe/recipes-security/tomoyo-tools/
  meta-oe/recipes-security/nmap/
  meta-oe/recipes-security/keyutils/
+ meta-oe/recipes-security/bubblewrap
  meta-oe/recipes-support/libol/
  meta-oe/recipes-support/libsmi/
  meta-oe/recipes-support/libssh2/
@@ -234,6 +239,8 @@ FILES=meta-oe/conf
  meta-oe/recipes-kernel/bpftool/
  meta-oe/recipes-kernel/kpatch/
  meta-oe/recipes-kernel/trace-cmd/
+ meta-oe/recipes-kernel/libtracefs/
+ meta-oe/recipes-kernel/libtraceevent
  meta-oe/recipes-extended/iotop
  meta-oe/recipes-connectivity/zabbix/
  meta-oe/recipes-connectivity/libndp/
@@ -244,6 +251,7 @@ FILES=meta-oe/conf
  meta-oe/recipes-bsp/cpufrequtils/
  meta-oe/recipes-devtools/uftrace/
  meta-oe/recipes-devtools/iptraf/
+ meta-oe/recipes-devtools/giflib
  meta-oe/recipes-support/spitools/
  meta-oe/recipes-bsp/edac-utils/
  meta-oe/recipes-extended/upm/
@@ -302,6 +310,7 @@ FILES=meta-oe/conf
  meta-networking/recipes-support/ntp/
  meta-networking/recipes-support/netcf/
  meta-networking/recipes-support/mtr/
+ meta-networking/recipes-support/libmemcached
  meta-networking/recipes-daemons/vsftpd/
  meta-networking/recipes-daemons/ptpd/
  meta-networking/recipes-daemons/radvd/
@@ -371,8 +380,10 @@ FILES=meta-oe/conf
 
  meta-gnome/conf/
  meta-gnome/classes/
+ meta-gnome/recipes-support/appstream-glib
  meta-gnome/recipes-support/libuser/
  meta-gnome/recipes-support/libstemmer/
+ meta-gnome/recipes-support/libcloudproviders/
  meta-gnome/recipes-gnome/sysprof/
  meta-gnome/recipes-gnome/yelp/
  meta-gnome/recipes-gnome/gexiv2/
@@ -383,6 +394,7 @@ FILES=meta-oe/conf
  meta-gnome/recipes-gnome/nautilus/
  meta-gnome/recipes-gnome/libgsf/
  meta-gnome/recipes-gnome/libportal/
+ meta-gnome/recipes-gnome/libadwaita
  meta-webserver/conf/
  meta-webserver/licenses
  meta-webserver/recipes-httpd/apache2
@@ -415,8 +427,9 @@ FILES=meta-oe/conf
  meta-perl/recipes-perl/libnet/libnet-dns-sec-perl_1.10.bb
  meta-perl/recipes-perl/libproc/
  meta-perl/recipes-perl/libmime/files/
- meta-perl/recipes-perl/libmime/libmime-types-perl_2.22.bb
+ meta-perl/recipes-perl/libmime/libmime-types-perl_2.24.bb
  meta-perl/recipes-perl/libipc/
+ meta-perl/recipes-perl/libnet/
  
 
  meta-systemd/oe-core/recipes-core/dbus/
@@ -425,7 +438,7 @@ FILES=meta-oe/conf
 [meta-freescale]
 GITURL=ssh://10.130.70.189/ubinux-dev/common/ubinux-layers/yocto/meta-freescale
 BRANCH=master
-HEADID=6f6b3a65548969de0097153f13d1dfd690b9be54
+HEADID=7599db533f0b9b1f6b44ee6a78729fadf700a446
 FILES=conf/layer.conf
  custom-licenses/
  classes/
@@ -459,7 +472,7 @@ FILES=meta-cgl-common/conf/layer.conf
 [meta-cloud-services]
 GITURL=ssh://10.130.70.189/ubinux-dev/common/ubinux-layers/yocto/meta-cloud-services
 BRANCH=master
-HEADID=c2448d546c50b392a410c9e2a7014364852f895d
+HEADID=911bc278afd98987f30cc41913bf051ee1576671
 FILES=conf/layer.conf
  classes/
  meta-openstack/classes/default_configs.bbclass
@@ -520,7 +533,7 @@ FILES=conf/layer.conf
 [meta-virtualization]
 GITURL=ssh://10.130.70.189/ubinux-dev/common/ubinux-layers/yocto/meta-virtualization
 BRANCH=master
-HEADID=d3acb1a378e644fe2784a8357390b19695640f78
+HEADID=543f4e6b5f6be0d397bcc78e22d5ca9a970b7111
 FILES=conf/layer.conf
  classes/
  files/
@@ -534,7 +547,7 @@ FILES=conf/layer.conf
 [meta-selinux]
 GITURL=ssh://10.130.70.189/ubinux-dev/common/ubinux-layers/yocto/meta-selinux
 BRANCH=master
-HEADID=506daf988c844e857c674ef70a46476a005bf17b
+HEADID=696662e9f0a09d756cb030ee5618e7379e77b518
 FILES=conf/layer.conf
 
 [meta-security]
@@ -563,7 +576,7 @@ FILES=conf
 [meta-qt5]
 GITURL=ssh://10.130.70.189/ubinux-dev/common/ubinux-layers/yocto/meta-qt5
 BRANCH=master
-HEADID=c22b8fac9ca18687c3a163807dd74853101945a8
+HEADID=1d1b19ff577835bf847152eed44d52e8267d9093
 FILES=conf/layer.conf
  recipes-qt/qt5/qttools_git.bb
  recipes-qt/qt5/qt5-git.inc
@@ -600,7 +613,7 @@ FILES=conf/layer.conf
 [meta-spdxscanner]
 GITURL=ssh://10.130.70.189/ubinux-dev/common/ubinux-layers/yocto/meta-spdxscanner
 BRANCH=master
-HEADID=8b07df1535fe1203b07fc87f8c6a1e34311e2a1d
+HEADID=94642a0a718b94a42655251963a594b04855786d
 FILES=conf/layer.conf
  classes
  recipes-devtools/synopsys/
@@ -608,9 +621,18 @@ FILES=conf/layer.conf
 [meta-swupdate]
 GITURL=ssh://10.130.70.189/ubinux-dev/common/ubinux-layers/yocto/meta-swupdate
 BRANCH=master
-HEADID=f853505464baa22ca016dadce37e9d65b68cc2ba
+HEADID=4b99b93b4225723cf9ff3a29abb4bd7811ce071c
 FILES=conf/layer.conf
  recipes-support/swupdate/
  recipes-bsp/u-boot/
  recipes-devtools/mtd/
+
+[meta-java]
+GITURL=ssh://10.130.70.189/ubinux-dev/common/ubinux-layers/yocto/meta-java
+BRANCH=master
+HEADID=79df369e89ed72ebdfe84a4a520ed590751ae5d9
+FILES=conf/layer.conf
+ classes
+ conf/
+ recipes-core/
 
