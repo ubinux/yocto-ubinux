@@ -1022,7 +1022,11 @@ class BaseConfig(object):
             # Use '%s' since they are integers
             os.putenv(k, '%s' % v)
 
-        self.unfs_opts="nfsvers=3,port=%s,tcp,mountport=%s" % (nfsd_port, mountd_port)
+        qb_nfsrootfs_extra_opt = self.get("QB_NFSROOTFS_EXTRA_OPT")
+        if qb_nfsrootfs_extra_opt and not qb_nfsrootfs_extra_opt.startswith(","):
+            qb_nfsrootfs_extra_opt = "," + qb_nfsrootfs_extra_opt
+
+        self.unfs_opts="nfsvers=3,port=%s,tcp,mountport=%s%s" % (nfsd_port, mountd_port, qb_nfsrootfs_extra_opt)
 
         # Extract .tar.bz2 or .tar.bz if no nfs dir
         if not (self.rootfs and os.path.isdir(self.rootfs)):
@@ -1309,7 +1313,7 @@ class BaseConfig(object):
         """attempt to determine the appropriate qemu-system binary"""
         mach = self.get('MACHINE')
         if not mach:
-            search = '.*(qemux86-64|qemux86|qemuarm64|qemuarm|qemumips64|qemumips64el|qemumipsel|qemumips|qemuppc).*'
+            search = '.*(qemux86-64|qemux86|qemuarm64|qemuarm|qemuloongarch64|qemumips64|qemumips64el|qemumipsel|qemumips|qemuppc).*'
             if self.rootfs:
                 match = re.match(search, self.rootfs)
                 if match:
@@ -1332,6 +1336,8 @@ class BaseConfig(object):
             qbsys = 'x86_64'
         elif mach == 'qemuppc':
             qbsys = 'ppc'
+        elif mach == 'qemuloongarch64':
+            qbsys = 'loongarch64'
         elif mach == 'qemumips':
             qbsys = 'mips'
         elif mach == 'qemumips64':

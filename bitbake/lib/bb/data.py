@@ -114,8 +114,8 @@ def emit_var(var, o=sys.__stdout__, d = init(), all=False):
     if d.getVarFlag(var, 'python', False) and func:
         return False
 
-    export = d.getVarFlag(var, "export", False)
-    unexport = d.getVarFlag(var, "unexport", False)
+    export = bb.utils.to_boolean(d.getVarFlag(var, "export"))
+    unexport = bb.utils.to_boolean(d.getVarFlag(var, "unexport"))
     if not all and not export and not unexport and not func:
         return False
 
@@ -188,8 +188,8 @@ def emit_env(o=sys.__stdout__, d = init(), all=False):
 
 def exported_keys(d):
     return (key for key in d.keys() if not key.startswith('__') and
-                                      d.getVarFlag(key, 'export', False) and
-                                      not d.getVarFlag(key, 'unexport', False))
+                                      bb.utils.to_boolean(d.getVarFlag(key, 'export')) and
+                                      not bb.utils.to_boolean(d.getVarFlag(key, 'unexport')))
 
 def exported_vars(d):
     k = list(exported_keys(d))
@@ -261,7 +261,7 @@ def emit_func_python(func, o=sys.__stdout__, d = init()):
                newdeps |= set((d.getVarFlag(dep, "vardeps") or "").split())
         newdeps -= seen
 
-def build_dependencies(key, keys, mod_funcs, shelldeps, varflagsexcl, ignored_vars, d):
+def build_dependencies(key, keys, mod_funcs, shelldeps, varflagsexcl, ignored_vars, d, codeparsedata):
     def handle_contains(value, contains, exclusions, d):
         newvalue = []
         if value:
@@ -312,14 +312,14 @@ def build_dependencies(key, keys, mod_funcs, shelldeps, varflagsexcl, ignored_va
             value = varflags.get("vardepvalue")
         elif varflags.get("func"):
             if varflags.get("python"):
-                value = d.getVarFlag(key, "_content", False)
+                value = codeparsedata.getVarFlag(key, "_content", False)
                 parser = bb.codeparser.PythonParser(key, logger)
                 parser.parse_python(value, filename=varflags.get("filename"), lineno=varflags.get("lineno"))
                 deps = deps | parser.references
                 deps = deps | (keys & parser.execs)
                 value = handle_contains(value, parser.contains, exclusions, d)
             else:
-                value, parsedvar = d.getVarFlag(key, "_content", False, retparser=True)
+                value, parsedvar = codeparsedata.getVarFlag(key, "_content", False, retparser=True)
                 parser = bb.codeparser.ShellParser(key, logger)
                 parser.parse_shell(parsedvar.value)
                 deps = deps | shelldeps
@@ -375,15 +375,20 @@ def generate_dependencies(d, ignored_vars):
 
     mod_funcs = set(bb.codeparser.modulecode_deps.keys())
     keys = set(key for key in d if not key.startswith("__")) | mod_funcs
-    shelldeps = set(key for key in d.getVar("__exportlist", False) if d.getVarFlag(key, "export", False) and not d.getVarFlag(key, "unexport", False))
+    shelldeps = set(key for key in d.getVar("__exportlist", False) if bb.utils.to_boolean(d.getVarFlag(key, "export")) and not bb.utils.to_boolean(d.getVarFlag(key, "unexport")))
     varflagsexcl = d.getVar('BB_SIGNATURE_EXCLUDE_FLAGS')
+
+    codeparserd = d.createCopy()
+    for forced in (d.getVar('BB_HASH_CODEPARSER_VALS') or "").split():
+        key, value = forced.split("=", 1)
+        codeparserd.setVar(key, value)
 
     deps = {}
     values = {}
 
     tasklist = d.getVar('__BBTASKS', False) or []
     for task in tasklist:
-        deps[task], values[task] = build_dependencies(task, keys, mod_funcs, shelldeps, varflagsexcl, ignored_vars, d)
+        deps[task], values[task] = build_dependencies(task, keys, mod_funcs, shelldeps, varflagsexcl, ignored_vars, d, codeparserd)
         newdeps = deps[task]
         seen = set()
         while newdeps:
@@ -392,7 +397,7 @@ def generate_dependencies(d, ignored_vars):
             newdeps = set()
             for dep in nextdeps:
                 if dep not in deps:
-                    deps[dep], values[dep] = build_dependencies(dep, keys, mod_funcs, shelldeps, varflagsexcl, ignored_vars, d)
+                    deps[dep], values[dep] = build_dependencies(dep, keys, mod_funcs, shelldeps, varflagsexcl, ignored_vars, d, codeparserd)
                 newdeps |=  deps[dep]
             newdeps -= seen
         #print "For %s: %s" % (task, str(deps[task]))

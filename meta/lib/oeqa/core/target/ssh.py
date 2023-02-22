@@ -34,6 +34,8 @@ class OESSHTarget(OETarget):
         self.timeout = timeout
         self.user = user
         ssh_options = [
+                '-o', 'ServerAliveCountMax=2',
+                '-o', 'ServerAliveInterval=30',
                 '-o', 'UserKnownHostsFile=/dev/null',
                 '-o', 'StrictHostKeyChecking=no',
                 '-o', 'LogLevel=ERROR'
@@ -240,7 +242,7 @@ def SSHCall(command, logger, timeout=None, **opts):
                             eof = True
                         else:
                             output += data
-                            logger.debug('Partial data from SSH call: %s' % data)
+                            logger.debug('Partial data from SSH call:\n%s' % data)
                             endtime = time.time() + timeout
                 except InterruptedError:
                     continue
@@ -256,12 +258,12 @@ def SSHCall(command, logger, timeout=None, **opts):
                 endtime = time.time() - starttime
                 lastline = ("\nProcess killed - no output for %d seconds. Total"
                             " running time: %d seconds." % (timeout, endtime))
-                logger.debug('Received data from SSH call %s ' % lastline)
+                logger.debug('Received data from SSH call:\n%s ' % lastline)
                 output += lastline
 
         else:
             output = process.communicate()[0].decode('utf-8', errors='ignore')
-            logger.debug('Data from SSH call: %s' % output.rstrip())
+            logger.debug('Data from SSH call:\n%s' % output.rstrip())
 
     options = {
         "stdout": subprocess.PIPE,

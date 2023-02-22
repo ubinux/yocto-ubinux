@@ -7,7 +7,7 @@ SRC_URI += "https://static.rust-lang.org/dist/rustc-${RUST_VERSION}-src.tar.xz;n
             file://0001-Do-not-use-LFS64-on-linux-with-musl.patch;patchdir=${RUSTSRC} \
             file://zlib-off64_t.patch;patchdir=${RUSTSRC} \
 "
-SRC_URI[rust.sha256sum] = "0dc176e34fae9871f855a6ba4cb30fa19d69c5b4428d29281a07419c4950715c"
+SRC_URI[rust.sha256sum] = "77e0615011f887d9533d5374bf9c15c590c3caf32bbb035b392d1c2ae502a682"
 
 RUSTSRC = "${WORKDIR}/rustc-${RUST_VERSION}-src"
 

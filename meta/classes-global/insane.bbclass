@@ -29,7 +29,7 @@
 WARN_QA ?= " libdir xorg-driver-abi buildpaths \
             textrel incompatible-license files-invalid \
             infodir build-deps src-uri-bad symlink-to-sysroot multilib \
-            invalid-packageconfig host-user-contaminated uppercase-pn patch-fuzz \
+            invalid-packageconfig host-user-contaminated uppercase-pn \
             mime mime-xdg unlisted-pkg-lics unhandled-features-check \
             missing-update-alternatives native-last missing-ptest \
             license-exists license-no-generic license-syntax license-format \
@@ -44,6 +44,7 @@ ERROR_QA ?= "dev-so debug-deps dev-deps debug-files arch pkgconfig la \
             already-stripped installed-vs-shipped ldflags compile-host-path \
             install-host-path pn-overrides unknown-configure-option \
             useless-rpaths rpaths staticdev empty-dirs \
+            patch-fuzz patch-status-core\
             "
 # Add usrmerge QA check based on distro feature
 ERROR_QA:append = "${@bb.utils.contains('DISTRO_FEATURES', 'usrmerge', ' usrmerge', '', d)}"
@@ -1334,39 +1335,33 @@ python do_qa_patch() {
             msg += "    devtool modify %s\n" % d.getVar('PN')
             msg += "    devtool finish --force-patch-refresh %s <layer_path>\n\n" % d.getVar('PN')
             msg += "Don't forget to review changes done by devtool!\n"
-            if bb.utils.filter('ERROR_QA', 'patch-fuzz', d):
-                bb.error(msg)
-            elif bb.utils.filter('WARN_QA', 'patch-fuzz', d):
-                bb.warn(msg)
-            msg = "Patch log indicates that patches do not apply cleanly."
+            msg += "\nPatch log indicates that patches do not apply cleanly."
             oe.qa.handle_error("patch-fuzz", msg, d)
 
     # Check if the patch contains a correctly formatted and spelled Upstream-Status
     import re
     from oe import patch
 
+    allpatches = False
+    if bb.utils.filter('ERROR_QA', 'patch-status-noncore', d) or bb.utils.filter('WARN_QA', 'patch-status-noncore', d):
+        allpatches = True
+
     coremeta_path = os.path.join(d.getVar('COREBASE'), 'meta', '')
     for url in patch.src_patches(d):
-       (_, _, fullpath, _, _, _) = bb.fetch.decodeurl(url)
+        (_, _, fullpath, _, _, _) = bb.fetch.decodeurl(url)
 
-       # skip patches not in oe-core
-       if not os.path.abspath(fullpath).startswith(coremeta_path):
-           continue
+        # skip patches not in oe-core
+        patchtype = "patch-status-core"
+        if not os.path.abspath(fullpath).startswith(coremeta_path):
+            patchtype = "patch-status-noncore"
+            if not allpatches:
+                continue
 
-       kinda_status_re = re.compile(r"^.*upstream.*status.*$", re.IGNORECASE | re.MULTILINE)
-       strict_status_re = re.compile(r"^Upstream-Status: (Pending|Submitted|Denied|Accepted|Inappropriate|Backport|Inactive-Upstream)( .+)?$", re.MULTILINE)
-       guidelines = "https://www.openembedded.org/wiki/Commit_Patch_Message_Guidelines#Patch_Header_Recommendations:_Upstream-Status"
+        msg = oe.qa.check_upstream_status(fullpath)
+        if msg:
+            oe.qa.handle_error(patchtype, msg, d)
 
-       with open(fullpath, encoding='utf-8', errors='ignore') as f:
-           file_content = f.read()
-           match_kinda = kinda_status_re.search(file_content)
-           match_strict = strict_status_re.search(file_content)
-
-           if not match_strict:
-               if match_kinda:
-                   bb.error("Malformed Upstream-Status in patch\n%s\nPlease correct according to %s :\n%s" % (fullpath, guidelines, match_kinda.group(0)))
-               else:
-                   bb.error("Missing Upstream-Status in patch\n%s\nPlease add according to %s ." % (fullpath, guidelines))
+    oe.qa.exit_if_errors(d)
 }
 
 python do_qa_configure() {
