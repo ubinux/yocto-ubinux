@@ -270,7 +270,6 @@ UBINUX_PKGS = " \
 	bridge-utils \
 	ca-certificates \
 	corosync \
-	crda \
 	cryptsetup \
 	ctapi-common \
 	cyrus-sasl \
@@ -310,7 +309,6 @@ UBINUX_PKGS = " \
 	liblockfile \
 	libnet \
 	libnotify \
-	libol \
 	libp11 \
 	libsmi \
 	libssh2 \

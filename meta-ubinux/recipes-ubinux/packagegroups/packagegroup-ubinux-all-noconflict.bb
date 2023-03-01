@@ -232,7 +232,6 @@ UBINUX_PKGS_NOCONFLICT = " \
         bridge-utils \
         ca-certificates \
         corosync \
-        crda \
         cryptsetup \
         ctapi-common \
         cyrus-sasl \
