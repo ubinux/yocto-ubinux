@@ -279,6 +279,7 @@ FILES=meta-oe/conf
  meta-oe/recipes-networking/cyrus-sasl
  meta-oe/recipes-test/catch2
  meta-oe/recipes-test/bats
+ meta-oe/recipes-dbs/psqlodbc/
 
  meta-networking/classes/ 
  meta-networking/licenses/
