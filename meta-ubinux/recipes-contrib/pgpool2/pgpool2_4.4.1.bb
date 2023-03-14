@@ -19,7 +19,7 @@ SRC_URI[sha256sum] = "4b379bbba8e178128a1cee4a5bd1ae116dedb3da6121b728c18f0f54c8
 
 S = "${WORKDIR}/pgpool-II-${PV}"
 
-inherit autotools systemd pkgconfig 
+inherit autotools systemd 
 
 SYSTEMD_SERVICE:${PN} = "pgpool.service"
 
@@ -29,7 +29,7 @@ PACKAGECONFIG ??= " openssl libmemcached postgresql \
 PACKAGECONFIG[pam] = "--with-pam,--without-pam,libpam,"
 PACKAGECONFIG[openssl] = "--with-openssl,--without-openssl,openssl"
 PACKAGECONFIG[libmemcached] = "--with-memcached=${STAGING_INCDIR}/libmemcachedutil-1.0,--without-memcached,libmemcached"
-PACKAGECONFIG[postgresql] = "--with-pgsql-includedir=${STAGING_INCDIR}/postgresql --with-pgsql=${STAGING_LIBDIR}/../ ,,postgresql"
+PACKAGECONFIG[postgresql] = "--with-pgsql-includedir=${STAGING_INCDIR}/postgresql,--without-pgsql, postgresql"
 
 EXTRA_OECONF += "--disable-static \
 	         --disable-rpath \
