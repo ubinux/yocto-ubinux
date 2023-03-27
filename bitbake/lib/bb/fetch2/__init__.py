@@ -749,10 +749,13 @@ def subprocess_setup():
     # SIGPIPE errors are known issues with gzip/bash
     signal.signal(signal.SIGPIPE, signal.SIG_DFL)
 
-def get_autorev(d):
-    #  only not cache src rev in autorev case
+def mark_recipe_nocache(d):
     if d.getVar('BB_SRCREV_POLICY') != "cache":
         d.setVar('BB_DONT_CACHE', '1')
+
+def get_autorev(d):
+    mark_recipe_nocache(d)
+    d.setVar("__BBAUTOREV_SEEN", True)
     return "AUTOINC"
 
 def get_srcrev(d, method_name='sortable_revision'):
@@ -769,7 +772,7 @@ def get_srcrev(d, method_name='sortable_revision'):
     that fetcher provides a method with the given name and the same signature as sortable_revision.
     """
 
-    d.setVar("__BBSEENSRCREV", "1")
+    d.setVar("__BBSRCREV_SEEN", "1")
     recursion = d.getVar("__BBINSRCREV")
     if recursion:
         raise FetchError("There are recursive references in fetcher variables, likely through SRC_URI")
@@ -1219,6 +1222,7 @@ def srcrev_internal_helper(ud, d, name):
     if srcrev == "INVALID" or not srcrev:
         raise FetchError("Please set a valid SRCREV for url %s (possible key names are %s, or use a ;rev=X URL parameter)" % (str(attempts), ud.url), ud.url)
     if srcrev == "AUTOINC":
+        d.setVar("__BBAUTOREV_ACTED_UPON", True)
         srcrev = ud.method.latest_revision(ud, d, name)
 
     return srcrev

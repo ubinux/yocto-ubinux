@@ -117,10 +117,10 @@ def check_tun():
     if not os.access(dev_tun, os.W_OK):
         raise RunQemuError("TUN control device %s is not writable, please fix (e.g. sudo chmod 666 %s)" % (dev_tun, dev_tun))
 
-def get_first_file(cmds):
-    """Return first file found in wildcard cmds"""
-    for cmd in cmds:
-        all_files = glob.glob(cmd)
+def get_first_file(globs):
+    """Return first file found in wildcard globs"""
+    for g in globs:
+        all_files = glob.glob(g)
         if all_files:
             for f in all_files:
                 if not os.path.isdir(f):
@@ -450,30 +450,16 @@ class BaseConfig(object):
             self.set("MACHINE", arg)
 
     def set_dri_path(self):
-        # As runqemu can be run within bitbake (when using testimage, for example),
-        # we need to ensure that we run host pkg-config, and that it does not
-        # get mis-directed to native build paths set by bitbake.
-        env = os.environ.copy()
-        try:
-            del env['PKG_CONFIG_PATH']
-            del env['PKG_CONFIG_DIR']
-            del env['PKG_CONFIG_LIBDIR']
-            del env['PKG_CONFIG_SYSROOT_DIR']
-        except KeyError:
-            pass
-        try:
-            dripath = subprocess.check_output("PATH=/bin:/usr/bin:$PATH pkg-config --variable=dridriverdir dri", shell=True, env=env)
-        except subprocess.CalledProcessError as e:
-            raise RunQemuError("Could not determine the path to dri drivers on the host via pkg-config.\nPlease install Mesa development files (particularly, dri.pc) on the host machine.")
-        self.qemu_environ['LIBGL_DRIVERS_PATH'] = dripath.decode('utf-8').strip()
-
-        # This preloads uninative libc pieces and therefore ensures that RPATH/RUNPATH
-        # in host mesa drivers doesn't trick uninative into loading host libc.
-        preload_items = ['libdl.so.2', 'librt.so.1', 'libpthread.so.0']
-        uninative_path = os.path.dirname(self.get("UNINATIVE_LOADER"))
-        if os.path.exists(uninative_path):
-            preload_paths = [os.path.join(uninative_path, i) for i in preload_items]
-            self.qemu_environ['LD_PRELOAD'] = " ".join(preload_paths)
+        drivers_path = os.path.join(self.bindir_native, '../lib/dri')
+        if not os.path.exists(drivers_path) or not os.listdir(drivers_path):
+            raise RunQemuError("""
+qemu has been built without opengl support and accelerated graphics support is not available.
+To enable it, add:
+DISTRO_FEATURES_NATIVE:append = " opengl"
+DISTRO_FEATURES_NATIVESDK:append = " opengl"
+to your build configuration.
+""")
+        self.qemu_environ['LIBGL_DRIVERS_PATH'] = drivers_path
 
     def check_args(self):
         for debug in ("-d", "--debug"):
@@ -683,12 +669,12 @@ class BaseConfig(object):
                     self.rootfs, self.get('MACHINE'),
                     self.fstype)
         elif not self.rootfs:
-            cmd_name = '%s/%s*.%s' % (self.get('DEPLOY_DIR_IMAGE'), self.get('IMAGE_NAME'), self.fstype)
-            cmd_link = '%s/%s*.%s' % (self.get('DEPLOY_DIR_IMAGE'), self.get('IMAGE_LINK_NAME'), self.fstype)
-            cmds = (cmd_name, cmd_link)
-            self.rootfs = get_first_file(cmds)
+            glob_name = '%s/%s*.%s' % (self.get('DEPLOY_DIR_IMAGE'), self.get('IMAGE_NAME'), self.fstype)
+            glob_link = '%s/%s*.%s' % (self.get('DEPLOY_DIR_IMAGE'), self.get('IMAGE_LINK_NAME'), self.fstype)
+            globs = (glob_name, glob_link)
+            self.rootfs = get_first_file(globs)
             if not self.rootfs:
-                raise RunQemuError("Failed to find rootfs: %s or %s" % cmds)
+                raise RunQemuError("Failed to find rootfs: %s or %s" % globs)
 
         if not os.path.exists(self.rootfs):
             raise RunQemuError("Can't find rootfs: %s" % self.rootfs)
@@ -748,10 +734,10 @@ class BaseConfig(object):
             kernel_match_name = "%s/%s" % (deploy_dir_image, kernel_name)
             kernel_match_link = "%s/%s" % (deploy_dir_image, self.get('KERNEL_IMAGETYPE'))
             kernel_startswith = "%s/%s*" % (deploy_dir_image, self.get('KERNEL_IMAGETYPE'))
-            cmds = (kernel_match_name, kernel_match_link, kernel_startswith)
-            self.kernel = get_first_file(cmds)
+            globs = (kernel_match_name, kernel_match_link, kernel_startswith)
+            self.kernel = get_first_file(globs)
             if not self.kernel:
-                raise RunQemuError('KERNEL not found: %s, %s or %s' % cmds)
+                raise RunQemuError('KERNEL not found: %s, %s or %s' % globs)
 
         if not os.path.exists(self.kernel):
             raise RunQemuError("KERNEL %s not found" % self.kernel)
@@ -768,13 +754,13 @@ class BaseConfig(object):
         dtb = self.get('QB_DTB')
         if dtb:
             deploy_dir_image = self.get('DEPLOY_DIR_IMAGE')
-            cmd_match = "%s/%s" % (deploy_dir_image, dtb)
-            cmd_startswith = "%s/%s*" % (deploy_dir_image, dtb)
-            cmd_wild = "%s/*.dtb" % deploy_dir_image
-            cmds = (cmd_match, cmd_startswith, cmd_wild)
-            self.dtb = get_first_file(cmds)
+            glob_match = "%s/%s" % (deploy_dir_image, dtb)
+            glob_startswith = "%s/%s*" % (deploy_dir_image, dtb)
+            glob_wild = "%s/*.dtb" % deploy_dir_image
+            globs = (glob_match, glob_startswith, glob_wild)
+            self.dtb = get_first_file(globs)
             if not os.path.exists(self.dtb):
-                raise RunQemuError('DTB not found: %s, %s or %s' % cmds)
+                raise RunQemuError('DTB not found: %s, %s or %s' % globs)
 
     def check_bios(self):
         """Check and set bios"""
@@ -825,7 +811,7 @@ class BaseConfig(object):
         self.set('QB_MEM', qb_mem)
 
         mach = self.get('MACHINE')
-        if not mach.startswith(('qemumips', 'qemux86')):
+        if not mach.startswith(('qemumips', 'qemux86', 'qemuloongarch64')):
             self.kernel_cmdline_script += ' mem=%s' % self.get('QB_MEM').replace('-m','').strip() + 'M'
 
         self.qemu_opt_script += ' %s' % self.get('QB_MEM')
@@ -1056,7 +1042,7 @@ class BaseConfig(object):
                 cmd = ('runqemu-extract-sdk', src, dest)
                 logger.info('Running %s...' % str(cmd))
                 if subprocess.call(cmd) != 0:
-                    raise RunQemuError('Failed to run %s' % cmd)
+                    raise RunQemuError('Failed to run %s' % str(cmd))
                 self.rootfs = dest
                 self.cleanup_files.append(self.rootfs)
                 self.cleanup_files.append('%s.pseudo_state' % self.rootfs)
@@ -1065,7 +1051,7 @@ class BaseConfig(object):
         cmd = ('runqemu-export-rootfs', 'start', self.rootfs)
         logger.info('Running %s...' % str(cmd))
         if subprocess.call(cmd) != 0:
-            raise RunQemuError('Failed to run %s' % cmd)
+            raise RunQemuError('Failed to run %s' % str(cmd))
 
         self.nfs_running = True
 
@@ -1074,7 +1060,7 @@ class BaseConfig(object):
         if cmd != '':
             logger.info('Running setup command %s' % str(cmd))
             if subprocess.call(cmd, shell=True) != 0:
-                raise RunQemuError('Failed to run %s' % cmd)
+                raise RunQemuError('Failed to run %s' % str(cmd))
 
     def setup_net_bridge(self):
         self.set('NETWORK_CMD', '-netdev bridge,br=%s,id=net0,helper=%s -device virtio-net-pci,netdev=net0 ' % (
@@ -1568,7 +1554,7 @@ class BaseConfig(object):
         if cmd != '':
             logger.info('Running cleanup command %s' % str(cmd))
             if subprocess.call(cmd, shell=True) != 0:
-                raise RunQemuError('Failed to run %s' % cmd)
+                raise RunQemuError('Failed to run %s' % str(cmd))
 
     def cleanup(self):
         if self.cleaned:
@@ -1677,7 +1663,7 @@ class BaseConfig(object):
                 return result
             raise RunQemuError("Native sysroot directory %s doesn't exist" % result)
         else:
-            raise RunQemuError("Can't find STAGING_BINDIR_NATIVE in '%s' output" % cmd)
+            raise RunQemuError("Can't find STAGING_BINDIR_NATIVE in '%s' output" % str(cmd))
 
 
 def main():
