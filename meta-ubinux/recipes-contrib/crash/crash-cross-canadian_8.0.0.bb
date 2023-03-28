@@ -52,8 +52,8 @@ EXTRA_OEMAKE = 'RPMPKG="${PV}" \
                 GDB_MAKE_JOBS=" " \
                '
 #target=${TARGET_ARCH} 
-#EXTRA_OEMAKE:append = "${HOST_CC_ARCH} LDFLAGS='${BUILD_LDFLAGS}'"
-EXTRA_OEMAKE:append = " LDFLAGS='${LDFLAGS}'"
+EXTRA_OEMAKE:append = "${HOST_CC_ARCH} LDFLAGS='${BUILD_LDFLAGS}'"
+#EXTRA_OEMAKE:append = " LDFLAGS='${LDFLAGS}'"
 
 do_configure() {
     :
