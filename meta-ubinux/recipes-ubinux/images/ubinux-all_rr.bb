@@ -78,6 +78,7 @@ UBINUX_PKGS = " \
 	font-util \
 	fontconfig \
 	freetype \
+	frr \
 	f2fs-tools \
 	fscryptctl \
 	fuse3 \
@@ -392,7 +393,6 @@ UBINUX_PKGS = " \
 	postfix \
 	procmail \
 	ptpd \
-	quagga \
 	radvd \
 	run-postinsts \
 	rarpd \
@@ -508,7 +508,6 @@ UBINUX_PKGS = " \
 	ncurses-tools \
 	nfs-utils-stats \
 	nscd \
-	ntpdate \
 	openssh-misc \
 	openssh-sftp \
 	openssh-sftp-server \
@@ -542,14 +541,6 @@ UBINUX_PKGS = " \
 	qtquickcontrols \
 	qtscript \
 	pulseaudio-lib-alsa-util \
-	quagga-bgpd \
-	quagga-isisd \
-	quagga-ospf6d \
-	quagga-ospfclient \
-	quagga-ospfd \
-	quagga-ripd \
-	quagga-ripngd \
-	quagga-doc \
 	rpm-build \
 	shared-mime-info-data \
 	sln \
