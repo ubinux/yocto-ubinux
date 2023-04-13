@@ -200,7 +200,7 @@ rust_runx () {
 
     # Copy the natively built llvm-config into the target so we can run it. Horrible,
     # but works!
-    if [ ${RUST_ALTERNATE_EXE_PATH_NATIVE} != ${RUST_ALTERNATE_EXE_PATH} ]; then
+    if [ ${RUST_ALTERNATE_EXE_PATH_NATIVE} != ${RUST_ALTERNATE_EXE_PATH} -a ! -f ${RUST_ALTERNATE_EXE_PATH} ]; then
         mkdir -p `dirname ${RUST_ALTERNATE_EXE_PATH}`
         cp ${RUST_ALTERNATE_EXE_PATH_NATIVE} ${RUST_ALTERNATE_EXE_PATH}
         chrpath -d ${RUST_ALTERNATE_EXE_PATH}
@@ -221,17 +221,6 @@ FILES:${PN} += "${libdir}/*.so"
 FILES:${PN}-dev = ""
 
 do_compile () {
-    rust_runx build --stage 2
-}
-
-do_compile:append:class-target () {
-    rust_runx build --stage 2 src/tools/clippy
-    rust_runx build --stage 2 src/tools/rustfmt
-}
-
-do_compile:append:class-nativesdk () {
-    rust_runx build --stage 2 src/tools/clippy
-    rust_runx build --stage 2 src/tools/rustfmt
 }
 
 ALLOW_EMPTY:${PN} = "1"
@@ -256,6 +245,8 @@ rust_do_install() {
 rust_do_install:class-nativesdk() {
     export PSEUDO_UNLOAD=1
     rust_runx install
+    rust_runx install clippy
+    rust_runx install rustfmt
     unset PSEUDO_UNLOAD
 
     install -d ${D}${bindir}
@@ -274,6 +265,8 @@ EXTRA_TOOLS ?= "cargo-clippy clippy-driver rustfmt"
 rust_do_install:class-target() {
     export PSEUDO_UNLOAD=1
     rust_runx install
+    rust_runx install clippy
+    rust_runx install rustfmt
     unset PSEUDO_UNLOAD
 
     install -d ${D}${bindir}
