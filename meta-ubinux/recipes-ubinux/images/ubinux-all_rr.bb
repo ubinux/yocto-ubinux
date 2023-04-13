@@ -38,6 +38,8 @@ UBINUX_PKGS = " \
 	bdftopcf \
 	bind \
 	bind-utils \
+	binutils-doc \
+	gdb-doc \
 	bison \
 	babeld \
 	blktool \
@@ -312,6 +314,7 @@ UBINUX_PKGS = " \
 	libnotify \
 	libp11 \
 	libsmi \
+	libsmi-yang \
 	libssh2 \
 	libutempter \
 	libunwind \
