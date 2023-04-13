@@ -69,6 +69,7 @@ UBINUX_PKGS_NOCONFLICT = " \
 	font-util \
 	fontconfig \
 	freetype \
+	frr \
 	f2fs-tools \
 	fscryptctl \
 	fuse3 \
@@ -156,7 +157,6 @@ UBINUX_PKGS_NOCONFLICT = " \
 	libzip \
 	linux-libc-headers-dev \
 	lksctp-tools \
-	ltp \
 	lrzsz \
 	lsof \
 	lxc \
