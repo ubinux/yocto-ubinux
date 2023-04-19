@@ -41,8 +41,6 @@ UBINUX_PKGS_NOCONFLICT = " \
 	ccs-tools \
 	checksec \
 	cifs-utils \
-	cluster-glue \
-	cluster-glue-plugin-interfacemgr \
 	consolekit \
 	coreutils-doc \
 	cpufrequtils \
@@ -69,7 +67,6 @@ UBINUX_PKGS_NOCONFLICT = " \
 	font-util \
 	fontconfig \
 	freetype \
-	frr \
 	f2fs-tools \
 	fscryptctl \
 	fuse3 \
