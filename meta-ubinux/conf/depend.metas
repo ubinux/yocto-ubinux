@@ -14,7 +14,7 @@ metas=meta-oe
 [meta-oe]
 GITURL=ssh://10.130.70.199/ubinux-dev/common/ubinux-layers/yocto/meta-openembedded.git
 BRANCH=master
-HEADID=a67da92aa4cf973a20e57284b41222ebe3349b7e
+HEADID=1b7380bc0fb523f0cbc2df853846a2dcfebfb2b3
 FILES=meta-oe/conf
  meta-oe/COPYING.MIT
  meta-oe/licenses/
@@ -37,10 +37,13 @@ FILES=meta-oe/conf
  meta-oe/recipes-support/sass/
  meta-oe/recipes-support/bdwgc/
  meta-oe/recipes-support/libiodbc/
+ meta-oe/recipes-support/libraw/
+ meta-oe/recipes-support/upower/
 
  meta-oe/recipes-core/ell
  meta-oe/recipes-graphics/xorg-app/bdftopcf_1.1.bb
  meta-oe/recipes-graphics/graphene/
+ meta-oe/recipes-graphics/jasper
  meta-oe/recipes-graphics/tslib/
  meta-oe/recipes-graphics/xorg-app/xlsfonts_1.0.7.bb
  meta-oe/recipes-graphics/xorg-app/xrdb_1.2.0.bb
@@ -445,7 +448,7 @@ FILES=meta-oe/conf
 [meta-freescale]
 GITURL=ssh://10.130.70.199/ubinux-dev/common/ubinux-layers/yocto/meta-freescale
 BRANCH=master
-HEADID=7a761ee7b29847cf1e441699dfae4ca56bb2fe66
+HEADID=5dd6bfebacd3bbae8b824fff20d426cd14249459
 FILES=conf/layer.conf
  custom-licenses/
  classes/
@@ -479,7 +482,7 @@ FILES=meta-cgl-common/conf/layer.conf
 [meta-cloud-services]
 GITURL=ssh://10.130.70.199/ubinux-dev/common/ubinux-layers/yocto/meta-cloud-services
 BRANCH=master
-HEADID=911bc278afd98987f30cc41913bf051ee1576671
+HEADID=589cdff6528b3b677b2a76a18d80694ccd9991fb
 FILES=conf/layer.conf
  classes/
  meta-openstack/classes/default_configs.bbclass
@@ -554,13 +557,13 @@ FILES=conf/layer.conf
 [meta-selinux]
 GITURL=ssh://10.130.70.199/ubinux-dev/common/ubinux-layers/yocto/meta-selinux
 BRANCH=master
-HEADID=91c8ba58140cbc05e9bf9b43113007ed3bb3d052
+HEADID=c370b82cde33c542d86b66fe929c35497a6f5075
 FILES=conf/layer.conf
 
 [meta-security]
 GITURL=ssh://10.130.70.199/ubinux-dev/common/ubinux-layers/yocto/meta-security.git
 BRANCH=master
-HEADID=a397a38ed9e54378e66ce750a005bda14991b719
+HEADID=53c5cc794f44df96c47c614d736c8ccd4f25139f
 FILES=conf
  classes/sanity-meta-security.bbclass
  meta-tpm/classes/sanity-meta-tpm.bbclass
@@ -583,7 +586,7 @@ FILES=conf
 [meta-qt5]
 GITURL=ssh://10.130.70.199/ubinux-dev/common/ubinux-layers/yocto/meta-qt5
 BRANCH=master
-HEADID=190e326fb3f15f2d0ca93dfa4815f4050cf44f25
+HEADID=41fefb7cf44a89022a381e672c44a48dd9fb533c
 FILES=conf/layer.conf
  recipes-qt/qt5/qttools_git.bb
  recipes-qt/qt5/qt5-git.inc
