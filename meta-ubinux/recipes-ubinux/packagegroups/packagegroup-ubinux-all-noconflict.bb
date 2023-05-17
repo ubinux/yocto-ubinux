@@ -21,6 +21,8 @@ UBINUX_PKGS_NOCONFLICT = " \
 	acpid \
 	alsa-utils \
 	anthy \
+	at \
+	at-spi2-atk \
 	atk \
 	audit \
 	auditd \
@@ -33,6 +35,7 @@ UBINUX_PKGS_NOCONFLICT = " \
 	blktool \
 	bluez5 \
 	bmap-tools \
+	brotli \
 	boost \
 	byacc \
 	pbzip2 \
@@ -41,10 +44,13 @@ UBINUX_PKGS_NOCONFLICT = " \
 	ccs-tools \
 	checksec \
 	cifs-utils \
+	cmpi-bindings \
 	consolekit \
 	coreutils-doc \
+	cpio \
 	cpufrequtils \
 	crash \
+	cronie \
 	cryptodev-linux \
 	czmq \
 	daq \
@@ -55,9 +61,13 @@ UBINUX_PKGS_NOCONFLICT = " \
 	dialog \
 	dool \
 	dosfstools \
+	dovecot \
 	pbzip2 \
+	ed \
 	edac-utils \
+	ecryptfs-utils \
 	encodings \
+	ethtool \
 	expat-bin \
 	fatresize \
 	flex \
@@ -66,6 +76,7 @@ UBINUX_PKGS_NOCONFLICT = " \
 	font-alias \
 	font-util \
 	fontconfig \
+	formfactor \
 	freetype \
 	f2fs-tools \
 	fscryptctl \
@@ -191,6 +202,7 @@ UBINUX_PKGS_NOCONFLICT = " \
 	pkgconfig \
 	pm-utils \
 	polkit \
+	pointercal \
 	powertop \
 	ppp \
 	xorgproto-dev \

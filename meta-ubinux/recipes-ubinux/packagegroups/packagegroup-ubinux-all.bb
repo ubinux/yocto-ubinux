@@ -21,6 +21,9 @@ UBINUX_PKGS = " \
         acpid \
         alsa-utils \
         anthy \
+	at \
+	at-spi2-atk \
+	brotli \
         atk \
         audit \
         auditd \
@@ -40,9 +43,12 @@ UBINUX_PKGS = " \
         ccs-tools \
         checksec \
         cifs-utils \
+	cmpi-bindings \
         consolekit \
         coreutils-doc \
+	cpio \
         cpufrequtils \
+	cronie \
         cryptodev-linux \
         devmem2 \
         dfu-util \
@@ -51,8 +57,12 @@ UBINUX_PKGS = " \
         dialog \
         dool \
         dosfstools \
+	dovecot \
+	ed \
         edac-utils \
+	ecryptfs-utils \
         encodings \
+	ethtool \
         expat-bin \
         fatresize \
         flex \
@@ -61,6 +71,7 @@ UBINUX_PKGS = " \
         font-alias \
         font-util \
         fontconfig \
+	formfactor \
         freetype \
         f2fs-tools \
         fscryptctl \
@@ -182,6 +193,7 @@ UBINUX_PKGS = " \
         pixman \
         pkgconfig \
         polkit \
+	pointercal \
         powertop \
         ppp \
         xorgproto-dev \
