@@ -543,7 +543,7 @@ FILES=conf/layer.conf
 [meta-virtualization]
 GITURL=ssh://10.130.70.199/ubinux-dev/common/ubinux-layers/yocto/meta-virtualization
 BRANCH=master
-HEADID=56494933803b4347a37ea5e264e9c088ef4a676e
+HEADID=876a9da42acde2a72ad1e052df4f565d15160e54
 FILES=conf/layer.conf
  classes/
  files/
