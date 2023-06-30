@@ -29,6 +29,7 @@ SOURCE_MIRROR_URL ?= "file://${DOWNLOADS}"
 INHERIT += "own-mirrors"
 BB_GENERATE_MIRROR_TARBALLS = "1"
 DL_DIR ?= "${DOWNLOADS}"
+INHERIT:remove = "create-spdx"
 EOF
 }
 
