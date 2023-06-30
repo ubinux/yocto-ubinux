@@ -18,6 +18,15 @@ inherit image-artifact-names
 
 TESTIMAGE_AUTO ??= "0"
 
+# When any test fails, TESTIMAGE_FAILED_QA ARTIFACTS will be parsed and for
+# each entry in it, if artifact pointed by path description exists on target,
+# it will be retrieved onto host
+
+TESTIMAGE_FAILED_QA_ARTIFACTS ??= "\
+    ${localstatedir}/log \
+    ${sysconfdir}/version \
+    ${sysconfdir}/os-release"
+
 # You can set (or append to) TEST_SUITES in local.conf to select the tests
 # which you want to run for your target.
 # The test names are the module names in meta/lib/oeqa/runtime/cases.
@@ -115,18 +124,6 @@ testimage_dump_target () {
     find /var/log/ -type f 2>/dev/null -exec echo "====================" \; -exec echo {} \; -exec echo "====================" \; -exec cat {} \; -exec echo "" \;
 }
 
-testimage_dump_host () {
-    top -bn1
-    iostat -x -z -N -d -p ALL 20 2
-    ps -ef
-    free
-    df
-    memstat
-    dmesg
-    ip -s link
-    netstat -an
-}
-
 testimage_dump_monitor () {
     query-status
     query-block
@@ -192,6 +189,39 @@ def get_testimage_boot_patterns(d):
                 boot_patterns[flag] = flagval.encode().decode('unicode-escape')
     return boot_patterns
 
+def get_artifacts_list(target, raw_list):
+    result = []
+    # Passed list may contains patterns in paths, expand them directly on target
+    for raw_path in raw_list.split():
+        cmd = f"for p in {raw_path}; do if [ -e $p ]; then echo $p; fi; done"
+        try:
+            status, output = target.run(cmd)
+            if status != 0 or not output:
+                raise Exception()
+            result += output.split()
+        except:
+            bb.note(f"No file/directory matching path {raw_path}")
+
+    return result
+
+def retrieve_test_artifacts(target, artifacts_list, target_dir):
+    import shutil
+
+    local_artifacts_dir = os.path.join(target_dir, "artifacts")
+    if os.path.isdir(local_artifacts_dir):
+        shutil.rmtree(local_artifacts_dir)
+
+    os.makedirs(local_artifacts_dir)
+    for artifact_path in artifacts_list:
+        if not os.path.isabs(artifact_path):
+            bb.warn(f"{artifact_path} is not an absolute path")
+            continue
+        try:
+            dest_dir = os.path.join(local_artifacts_dir, os.path.dirname(artifact_path[1:]))
+            os.makedirs(dest_dir, exist_ok=True)
+            target.copyFrom(artifact_path, dest_dir)
+        except:
+            bb.warn(f"Can not retrieve {artifact_path} from test target")
 
 def testimage_main(d):
     import os
@@ -339,19 +369,13 @@ def testimage_main(d):
     # runtime use network for download projects for build
     export_proxies(d)
 
-    # we need the host dumper in test context
-    host_dumper = OERuntimeTestContextExecutor.getHostDumper(
-        d.getVar("testimage_dump_host"),
-        d.getVar("TESTIMAGE_DUMP_DIR"))
-
     # the robot dance
     target = OERuntimeTestContextExecutor.getTarget(
         d.getVar("TEST_TARGET"), logger, d.getVar("TEST_TARGET_IP"),
         d.getVar("TEST_SERVER_IP"), **target_kwargs)
 
     # test context
-    tc = OERuntimeTestContext(td, logger, target, host_dumper,
-                              image_packages, extract_dir)
+    tc = OERuntimeTestContext(td, logger, target, image_packages, extract_dir)
 
     # Load tests before starting the target
     test_paths = get_runtime_paths(d)
@@ -383,6 +407,12 @@ def testimage_main(d):
             pass
         results = tc.runTests()
         complete = True
+        if results.hasAnyFailingTest():
+            artifacts_list = get_artifacts_list(tc.target, d.getVar("TESTIMAGE_FAILED_QA_ARTIFACTS"))
+            if not artifacts_list:
+                bb.warn("Could not load artifacts list, skip artifacts retrieval")
+            else:
+                retrieve_test_artifacts(tc.target, artifacts_list, get_testimage_json_result_dir(d))
     except (KeyboardInterrupt, BlockingIOError) as err:
         if isinstance(err, KeyboardInterrupt):
             bb.error('testimage interrupted, shutting down...')

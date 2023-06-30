@@ -34,6 +34,7 @@ WARN_QA ?= " libdir xorg-driver-abi buildpaths \
             missing-update-alternatives native-last missing-ptest \
             license-exists license-no-generic license-syntax license-format \
             license-incompatible license-file-missing obsolete-license \
+            32bit-time \
             "
 ERROR_QA ?= "dev-so debug-deps dev-deps debug-files arch pkgconfig la \
             perms dep-cmp pkgvarcheck perm-config perm-line perm-link \
@@ -44,10 +45,11 @@ ERROR_QA ?= "dev-so debug-deps dev-deps debug-files arch pkgconfig la \
             already-stripped installed-vs-shipped ldflags compile-host-path \
             install-host-path pn-overrides unknown-configure-option \
             useless-rpaths rpaths staticdev empty-dirs \
-            patch-fuzz patch-status-core\
+            patch-fuzz \
             "
 # Add usrmerge QA check based on distro feature
 ERROR_QA:append = "${@bb.utils.contains('DISTRO_FEATURES', 'usrmerge', ' usrmerge', '', d)}"
+ERROR_QA:append:layer-core = " patch-status"
 
 FAKEROOT_QA = "host-user-contaminated"
 FAKEROOT_QA[doc] = "QA tests which need to run under fakeroot. If any \
@@ -512,6 +514,11 @@ def check_32bit_symbols(path, packagename, d, elf, messages):
     """
     Check that ELF files do not use any 32 bit time APIs from glibc.
     """
+    thirtytwo_bit_time_archs = set(('arm','armeb','mipsarcho32','powerpc','x86'))
+    overrides = set(d.getVar('OVERRIDES').split(':'))
+    if not(thirtytwo_bit_time_archs & overrides):
+        return
+
     import re
     # This list is manually constructed by searching the image folder of the
     # glibc recipe for __USE_TIME_BITS64.  There is no good way to do this
@@ -1334,24 +1341,13 @@ python do_qa_patch() {
     import re
     from oe import patch
 
-    allpatches = False
-    if bb.utils.filter('ERROR_QA', 'patch-status-noncore', d) or bb.utils.filter('WARN_QA', 'patch-status-noncore', d):
-        allpatches = True
-
     coremeta_path = os.path.join(d.getVar('COREBASE'), 'meta', '')
     for url in patch.src_patches(d):
         (_, _, fullpath, _, _, _) = bb.fetch.decodeurl(url)
 
-        # skip patches not in oe-core
-        patchtype = "patch-status-core"
-        if not os.path.abspath(fullpath).startswith(coremeta_path):
-            patchtype = "patch-status-noncore"
-            if not allpatches:
-                continue
-
         msg = oe.qa.check_upstream_status(fullpath)
         if msg:
-            oe.qa.handle_error(patchtype, msg, d)
+            oe.qa.handle_error("patch-status", msg, d)
 
     oe.qa.exit_if_errors(d)
 }
