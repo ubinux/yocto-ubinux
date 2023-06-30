@@ -1,0 +1,34 @@
+From 121111562e7f88bf41c7b79d4aea730b5060fbc9 Mon Sep 17 00:00:00 2001
+From: Lei Maohui <leimaohui@fujitsu.com>
+Date: Sun, 11 Jun 2023 05:18:39 +0000
+Subject: [PATCH] Fix build error as following:
+
+kernel-source/drivers/mxc/gpu-viv/hal/os/linux/kernel/gc_hal_kernel_os.c:5835:1: error: conflicting types for '_QuerySignal' due to enum/integer mismatch; have 'gceSTATUS(struct _gckOS *, void *)' {aka 'enum _gceSTATUS(struct _gckOS *, void *)'} [-Werror=enum-int-mismatch]
+|  5835 | _QuerySignal(
+|       | ^~~~~~~~~~~~
+| In file included from kernel-source/drivers/mxc/gpu-viv/hal/os/linux/kernel/gc_hal_kernel_os.c:56:
+| kernel-source/drivers/mxc/gpu-viv/hal/os/linux/kernel/gc_hal_kernel_linux.h:322:1: note: previous declaration of '_QuerySignal' with type 'gctBOOL(struct _gckOS *, void *)' {aka 'int(struct _gckOS *, void *)'}
+|   322 | _QuerySignal(
+|       | ^~~~~~~~~~~~
+
+Signed-off-by: Lei Maohui <leimaohui@fujitsu.com>
+---
+ drivers/mxc/gpu-viv/hal/os/linux/kernel/gc_hal_kernel_linux.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/mxc/gpu-viv/hal/os/linux/kernel/gc_hal_kernel_linux.h b/drivers/mxc/gpu-viv/hal/os/linux/kernel/gc_hal_kernel_linux.h
+index a436edb11d9a..43beb7a06f73 100644
+--- a/drivers/mxc/gpu-viv/hal/os/linux/kernel/gc_hal_kernel_linux.h
++++ b/drivers/mxc/gpu-viv/hal/os/linux/kernel/gc_hal_kernel_linux.h
+@@ -318,7 +318,7 @@ _ConvertLogical2Physical(
+     OUT gctPHYS_ADDR_T * Physical
+     );
+ 
+-gctBOOL
++gceSTATUS
+ _QuerySignal(
+     IN gckOS Os,
+     IN gctSIGNAL Signal
+-- 
+2.34.1
+

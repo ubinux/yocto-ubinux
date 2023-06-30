@@ -89,6 +89,7 @@ do_merge_delta_config() {
             ${S}/scripts/kconfig/merge_config.sh -m .config ${deltacfg}
         fi
     done
+    sed -i 's%CONFIG_MXC_GPU_VIV=y%# CONFIG_MXC_GPU_VIV is not set%' .config
     cp .config ${WORKDIR}/defconfig
 }
 addtask merge_delta_config before do_kernel_localversion after do_patch
