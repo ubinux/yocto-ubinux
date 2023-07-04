@@ -13,12 +13,12 @@ fi
 
 MACHINE=$1
 BUILD=$2
-DOWNLOADS=/ubinux-dev/ubinux003/common/downloads/202307/
-export TEMPLATECONF="meta-ubinux/conf/templates/default"
+export TEMPLATECONF="meta-ubinux/conf/templates/default/"
 
 #. trunk/poky-ubinux/oe-init-build-env ${BUILD}
 . ./oe-init-build-env ${BUILD}
 
+DOWNLOADS=$(readlink -f $2)/downloads/downloads-ubinux202307
 add_conf_append ()
 {
 cat << EOF >> conf/local.conf
@@ -29,7 +29,6 @@ SOURCE_MIRROR_URL ?= "file://${DOWNLOADS}"
 INHERIT += "own-mirrors"
 BB_GENERATE_MIRROR_TARBALLS = "1"
 DL_DIR ?= "${DOWNLOADS}"
-INHERIT:remove = "create-spdx"
 EOF
 }
 
