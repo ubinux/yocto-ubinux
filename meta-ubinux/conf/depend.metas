@@ -14,7 +14,7 @@ metas=meta-oe
 [meta-oe]
 GITURL=ssh://10.130.70.199/ubinux-dev/common/ubinux-layers/yocto/meta-openembedded.git
 BRANCH=master
-HEADID=def4759e95fc8e20272fb337ac349c2fddab357e
+HEADID=c50ef4e5f33eb11ce1a0c4e1847f4d39cd4e503f
 FILES=meta-oe/conf
  meta-oe/COPYING.MIT
  meta-oe/licenses/
@@ -47,7 +47,7 @@ FILES=meta-oe/conf
  meta-oe/recipes-graphics/tslib/
  meta-oe/recipes-graphics/xorg-app/xlsfonts_1.0.7.bb
  meta-oe/recipes-graphics/xorg-app/xrdb_1.2.0.bb
- meta-oe/recipes-graphics/xorg-app/xterm_382.bb
+ meta-oe/recipes-graphics/xorg-app/xterm_383.bb
  meta-oe/recipes-graphics/xorg-app/xterm/
  meta-oe/recipes-graphics/xorg-app/xwd_1.0.9.bb
  meta-oe/recipes-graphics/xorg-app/iceauth_1.0.9.bb
@@ -448,7 +448,7 @@ FILES=meta-oe/conf
 [meta-freescale]
 GITURL=ssh://10.130.70.199/ubinux-dev/common/ubinux-layers/yocto/meta-freescale
 BRANCH=master
-HEADID=27cf70dfc044a5675aee0448e604621808da4b9d
+HEADID=a4fa050975779d84f4b30f825597fd4d83ac3482
 FILES=conf/layer.conf
  custom-licenses/
  classes/
@@ -543,7 +543,7 @@ FILES=conf/layer.conf
 [meta-virtualization]
 GITURL=ssh://10.130.70.199/ubinux-dev/common/ubinux-layers/yocto/meta-virtualization
 BRANCH=master
-HEADID=28eda60a5228143014a4fc5d0ee9f4253047237c
+HEADID=4bc2f6e550c4f8cdad1944e159a3a12b5c2f148a
 FILES=conf/layer.conf
  classes/
  files/
@@ -563,7 +563,7 @@ FILES=conf/layer.conf
 [meta-security]
 GITURL=ssh://10.130.70.199/ubinux-dev/common/ubinux-layers/yocto/meta-security.git
 BRANCH=master
-HEADID=180dac9aece2f9ae50566762103c2088e0b868fd
+HEADID=405cca40288d1c44f8cba12513f72dc578364313
 FILES=conf
  classes/sanity-meta-security.bbclass
  meta-tpm/classes/sanity-meta-tpm.bbclass
@@ -574,7 +574,7 @@ FILES=conf
  recipes-mac/ccs-tools/
  recipes-scanners/checksec/
  recipes-security/fscryptctl/
- meta-security-compliance/recipes-auditors/lynis/
+ recipes-compliance/lynis/
  recipes-security/paxctl/
  recipes-mac/smack/
  meta-tpm/conf
@@ -586,44 +586,17 @@ FILES=conf
 [meta-qt5]
 GITURL=ssh://10.130.70.199/ubinux-dev/common/ubinux-layers/yocto/meta-qt5
 BRANCH=master
-HEADID=cf6ffcbad5275a3428f6046468a0c9d572e813d1
+HEADID=d86e2e82c15d186141713515dfd1373013aaebd5
 FILES=conf/layer.conf
- recipes-qt/qt5/qttools_git.bb
- recipes-qt/qt5/qt5-git.inc
- recipes-qt/qt5/qt5-ptest.inc
- recipes-qt/qt5/qttools
- recipes-qt/qt5/qtquickcontrols
- recipes-qt/qtchooser/
- recipes-qt/qt5/qtwebsockets_git.bb
- recipes-qt/qt5/qtmultimedia_git.bb
- recipes-qt/qt5/qtbase-native_git.bb
- recipes-qt/qt5/qtwebchannel_git.bb
- recipes-qt/qt5/qtscript_git.bb
- recipes-qt/qt5/qtdeclarative
- recipes-qt/qt5/qtquick1_git.bb
- recipes-qt/qt5/qtmultimedia
- recipes-qt/qt5/qtsensors_git.bb
- recipes-qt/qt5/qtlocation_git.bb
- recipes-qt/qt5/qtquickcontrols_git.bb
- recipes-qt/qt5/qtsvg
- recipes-qt/qt5/qtsvg_git.bb
- recipes-qt/qt5/qtbase
- recipes-qt/qt5/qt5-native.inc
- recipes-qt/qt5/qtbase_git.bb
- recipes-qt/qt5/qtxmlpatterns_git.bb
- recipes-qt/qt5/qt5.inc
- recipes-qt/qt5/qtdeclarative_git.bb
- recipes-qt/qt5/qtwebkit_git.bb
- recipes-qt/qt5/qtwebkit
- recipes-qt/qt5/qtscript
- recipes-qt/qt5/ptest/
+ recipes-qt/qt5
+ recipes-qt/qtchooser
  classes/
  licenses/
 
 [meta-spdxscanner]
 GITURL=ssh://10.130.70.199/ubinux-dev/common/ubinux-layers/yocto/meta-spdxscanner
 BRANCH=master
-HEADID=b99352637cfb4ce539b6fc62d9ed5500a3b7f9bb
+HEADID=fc69f32ab72de52e6abfbcf0703157b723c1bddc
 FILES=conf/layer.conf
  classes
  recipes-devtools/synopsys/
@@ -640,7 +613,7 @@ FILES=conf/layer.conf
 [meta-java]
 GITURL=ssh://10.130.70.199/ubinux-dev/common/ubinux-layers/yocto/meta-java
 BRANCH=master
-HEADID=bf6ae1dac46dc9894f206c7f81570548dbf6785c
+HEADID=6642d7842cddeb5cdd29973eb8db78f0078c1baf
 FILES=conf/layer.conf
  classes
  conf/
