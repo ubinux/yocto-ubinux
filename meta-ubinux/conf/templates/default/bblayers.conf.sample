@@ -27,7 +27,6 @@ BBLAYERS ?= " \
   ##COREBASE##/meta-virtualization \
   ##COREBASE##/meta-selinux \
   ##COREBASE##/meta-security \
-  ##COREBASE##/meta-security/meta-security-compliance \
   ##COREBASE##/meta-security/meta-tpm \
   ##COREBASE##/meta-qt5 \
   ##COREBASE##/meta-swupdate \
