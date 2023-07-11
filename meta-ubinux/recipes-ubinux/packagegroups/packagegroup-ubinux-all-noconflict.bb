@@ -346,7 +346,6 @@ UBINUX_PKGS_NOCONFLICT = " \
 	pam-plugin-group \
 	pam-plugin-issue \
 	pam-plugin-keyinit \
-	pam-plugin-lastlog \
 	pam-plugin-limits \
 	pam-plugin-listfile \
 	pam-plugin-localuser \
