@@ -1,9 +1,9 @@
-KBRANCH ?= "v6.1/standard/preempt-rt/base"
+KBRANCH ?= "v6.4/standard/preempt-rt/base"
 
 require recipes-kernel/linux/linux-yocto.inc
 
 # CVE exclusions
-include recipes-kernel/linux/cve-exclusion_6.1.inc
+include recipes-kernel/linux/cve-exclusion_6.4.inc
 
 # Skip processing of this recipe if it is not explicitly specified as the
 # PREFERRED_PROVIDER for virtual/kernel. This avoids errors when trying
@@ -14,13 +14,13 @@ python () {
         raise bb.parse.SkipRecipe("Set PREFERRED_PROVIDER_virtual/kernel to linux-yocto-rt to enable it")
 }
 
-SRCREV_machine ?= "efb2c857761e865cd7947aab42eaa5ba77ef6ee7"
-SRCREV_meta ?= "2eaed50911009f9ddbc74460093e17b22ef7daa0"
+SRCREV_machine ?= "0c7d2016a3a548fd8f7caf7b1f46abd71008cd5c"
+SRCREV_meta ?= "fa08cd6bd6f9415c91da0dd72f4338bff3c68c68"
 
 SRC_URI = "git://git.yoctoproject.org/linux-yocto.git;branch=${KBRANCH};name=machine;protocol=https \
-           git://git.yoctoproject.org/yocto-kernel-cache;type=kmeta;name=meta;branch=yocto-6.1;destsuffix=${KMETA};protocol=https"
+           git://git.yoctoproject.org/yocto-kernel-cache;type=kmeta;name=meta;branch=yocto-6.4;destsuffix=${KMETA};protocol=https"
 
-LINUX_VERSION ?= "6.1.38"
+LINUX_VERSION ?= "6.4.2"
 
 LIC_FILES_CHKSUM = "file://COPYING;md5=6bc538ed5bd9a7fc9398086aedcd7e46"
 
