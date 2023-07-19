@@ -626,6 +626,8 @@ UBINUX_PKGS = " \
 	expect \
 	cim-schema-exper \
 	libgpiod \
+	wtmpdb \
+	lastlog2 \
 "
 
 

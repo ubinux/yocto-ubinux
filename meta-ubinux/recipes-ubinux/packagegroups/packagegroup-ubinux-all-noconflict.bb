@@ -560,6 +560,8 @@ UBINUX_PKGS_NOCONFLICT = " \
 	font-util \
 	fontconfig \
 	freetype \
+	wtmpdb \
+	lastlog2 \
 "	
 
 RDEPENDS:packagegroup-ubinux-all-noconflict = " \
