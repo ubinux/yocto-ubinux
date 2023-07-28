@@ -47,15 +47,13 @@ UPSTREAM_CHECK_URI = "https://www.python.org/downloads/source/"
 
 CVE_PRODUCT = "python"
 
-# Upstream consider this expected behaviour
-CVE_CHECK_IGNORE += "CVE-2007-4559"
-# This is not exploitable when glibc has CVE-2016-10739 fixed.
-CVE_CHECK_IGNORE += "CVE-2019-18348"
-# These are specific to Microsoft Windows
-CVE_CHECK_IGNORE += "CVE-2020-15523 CVE-2022-26488"
-# The mailcap module is insecure by design, so this can't be fixed in a meaningful way.
+CVE_STATUS[CVE-2007-4559] = "disputed: Upstream consider this expected behaviour"
+CVE_STATUS[CVE-2019-18348] = "not-applicable-config: This is not exploitable when glibc has CVE-2016-10739 fixed"
+CVE_STATUS[CVE-2020-15523] = "not-applicable-platform: Issue only applies on Windows"
+CVE_STATUS[CVE-2022-26488] = "not-applicable-platform: Issue only applies on Windows"
 # The module will be removed in the future and flaws documented.
-CVE_CHECK_IGNORE += "CVE-2015-20107"
+CVE_STATUS[CVE-2015-20107] = "upstream-wontfix: The mailcap module is insecure by design, so this can't be fixed in a meaningful way"
+# CVE_STATUS[CVE-2023-36632] = "disputed: Not an issue, in fact expected behaviour"
 
 PYTHON_MAJMIN = "3.11"
 
@@ -426,7 +424,7 @@ FILES:${PN}-man = "${datadir}/man"
 # See https://bugs.python.org/issue18748 and https://bugs.python.org/issue37395
 RDEPENDS:libpython3:append:libc-glibc = " libgcc"
 RDEPENDS:${PN}-ctypes:append:libc-glibc = " ${MLPREFIX}ldconfig"
-RDEPENDS:${PN}-ptest = "${PN}-modules ${PN}-tests ${PN}-dev ${PN}-cgitb ${PN}-zipapp unzip bzip2 libgcc tzdata coreutils sed"
+RDEPENDS:${PN}-ptest = "${PN}-modules ${PN}-tests ${PN}-dev ${PN}-cgitb ${PN}-zipapp unzip bzip2 libgcc tzdata coreutils sed gcc g++ binutils"
 RDEPENDS:${PN}-ptest:append:libc-glibc = " locale-base-fr-fr locale-base-en-us locale-base-tr-tr locale-base-de-de"
 RDEPENDS:${PN}-tkinter += "${@bb.utils.contains('PACKAGECONFIG', 'tk', '${MLPREFIX}tk ${MLPREFIX}tk-lib', '', d)}"
 RDEPENDS:${PN}-idle += "${@bb.utils.contains('PACKAGECONFIG', 'tk', '${PN}-tkinter ${MLPREFIX}tcl', '', d)}"

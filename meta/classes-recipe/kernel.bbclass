@@ -181,13 +181,14 @@ do_unpack[cleandirs] += " ${S} ${STAGING_KERNEL_DIR} ${B} ${STAGING_KERNEL_BUILD
 do_clean[cleandirs] += " ${S} ${STAGING_KERNEL_DIR} ${B} ${STAGING_KERNEL_BUILDDIR}"
 python do_symlink_kernsrc () {
     s = d.getVar("S")
-    if s[-1] == '/':
-        # drop trailing slash, so that os.symlink(kernsrc, s) doesn't use s as directory name and fail
-        s=s[:-1]
     kernsrc = d.getVar("STAGING_KERNEL_DIR")
     if s != kernsrc:
         bb.utils.mkdirhier(kernsrc)
         bb.utils.remove(kernsrc, recurse=True)
+        if s[-1] == '/':
+            # drop trailing slash, so that os.symlink(kernsrc, s) doesn't use s as
+            # directory name and fail
+            s = s[:-1]
         if d.getVar("EXTERNALSRC"):
             # With EXTERNALSRC S will not be wiped so we can symlink to it
             os.symlink(s, kernsrc)
@@ -354,6 +355,9 @@ kernel_do_compile() {
 	export PKG_CONFIG_PATH="$PKG_CONFIG_DIR:${STAGING_DATADIR_NATIVE}/pkgconfig"
 	export PKG_CONFIG_LIBDIR="$PKG_CONFIG_DIR"
 	export PKG_CONFIG_SYSROOT_DIR=""
+
+	# for newer kernels (5.19+) there's a dedicated variable
+	export HOSTPKG_CONFIG="pkg-config-native"
 
 	if [ "${KERNEL_DEBUG_TIMESTAMPS}" != "1" ]; then
 		# kernel sources do not use do_unpack, so SOURCE_DATE_EPOCH may not
@@ -547,6 +551,7 @@ do_shared_workdir () {
 	#
 
 	echo "${KERNEL_VERSION}" > $kerneldir/${KERNEL_PACKAGE_NAME}-abiversion
+	echo "${KERNEL_LOCALVERSION}" > $kerneldir/${KERNEL_PACKAGE_NAME}-localversion
 
 	# Copy files required for module builds
 	cp System.map $kerneldir/System.map-${KERNEL_VERSION}
@@ -635,6 +640,19 @@ python check_oldest_kernel() {
 
 check_oldest_kernel[vardepsexclude] += "OLDEST_KERNEL KERNEL_VERSION"
 do_configure[prefuncs] += "check_oldest_kernel"
+
+KERNEL_LOCALVERSION ??= ""
+
+# 6.3+ requires the variable LOCALVERSION to be set to not get a "+" in
+# the local version. Having it empty means nothing will be added, and any
+# value will be appended to the local kernel version. This replaces the
+# use of .scmversion file for setting a localversion without using
+# the CONFIG_LOCALVERSION option.
+#
+# Note: This class saves the value of localversion to a file
+# so other recipes like make-mod-scripts can restore it via the
+# helper function get_kernellocalversion_file
+export LOCALVERSION="${KERNEL_LOCALVERSION}"
 
 kernel_do_configure() {
 	# fixes extra + in /lib/modules/2.6.37+
