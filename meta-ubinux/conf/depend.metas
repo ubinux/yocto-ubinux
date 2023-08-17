@@ -14,7 +14,7 @@ metas=meta-oe
 [meta-oe]
 GITURL=ssh://10.130.70.199/ubinux-dev/common/ubinux-layers/yocto/meta-openembedded.git
 BRANCH=master
-HEADID=c50ef4e5f33eb11ce1a0c4e1847f4d39cd4e503f
+HEADID=74e70284acb2eb2f2a47a1ab1aa5ee0928d46344
 FILES=meta-oe/conf
  meta-oe/COPYING.MIT
  meta-oe/licenses/
@@ -47,7 +47,7 @@ FILES=meta-oe/conf
  meta-oe/recipes-graphics/tslib/
  meta-oe/recipes-graphics/xorg-app/xlsfonts_1.0.7.bb
  meta-oe/recipes-graphics/xorg-app/xrdb_1.2.0.bb
- meta-oe/recipes-graphics/xorg-app/xterm_383.bb
+ meta-oe/recipes-graphics/xorg-app/xterm_384.bb
  meta-oe/recipes-graphics/xorg-app/xterm/
  meta-oe/recipes-graphics/xorg-app/xwd_1.0.9.bb
  meta-oe/recipes-graphics/xorg-app/iceauth_1.0.9.bb
@@ -226,7 +226,6 @@ FILES=meta-oe/conf
  meta-oe/recipes-graphics/xorg-app/xlsatoms_1.1.3.bb
  meta-oe/recipes-graphics/xorg-app/xlsclients_1.1.4.bb
  meta-oe/recipes-graphics/xorg-app/xrefresh_1.0.7.bb
- meta-oe/recipes-graphics/xorg-app/xsetmode_1.0.0.bb
  meta-oe/recipes-graphics/xorg-app/xsetroot_1.1.2.bb
  meta-oe/recipes-graphics/xorg-app/xstdcmap_1.0.4.bb
  meta-oe/recipes-graphics/xorg-app/xwud_1.0.6.bb
@@ -345,6 +344,7 @@ FILES=meta-oe/conf
  meta-networking/recipes-filter/ebtables/
  meta-networking/recipes-filter/libnftnl/
  meta-networking/recipes-filter/nftables/
+ meta-networking/recipes-filter/libnfnetlink/
  
  meta-networking/recipes-netkit/netkit-telnet/
  meta-networking/recipes-daemons/postfix/
@@ -361,6 +361,7 @@ FILES=meta-oe/conf
  meta-networking/recipes-extended/kronosnet/
  meta-networking/dynamic-layers/meta-python/recipes-connectivity/firewalld
  meta-networking/dynamic-layers/meta-python/recipes-connectivity/crda
+ meta-networking/recipes-filter/libnetfilter/
 
  meta-filesystems/conf/
  meta-filesystems/COPYING.MIT
@@ -448,7 +449,7 @@ FILES=meta-oe/conf
 [meta-freescale]
 GITURL=ssh://10.130.70.199/ubinux-dev/common/ubinux-layers/yocto/meta-freescale
 BRANCH=master
-HEADID=a4fa050975779d84f4b30f825597fd4d83ac3482
+HEADID=166bef5ec76438d4a1fe9aa192081e97c8acc022
 FILES=conf/layer.conf
  custom-licenses/
  classes/
@@ -543,7 +544,7 @@ FILES=conf/layer.conf
 [meta-virtualization]
 GITURL=ssh://10.130.70.199/ubinux-dev/common/ubinux-layers/yocto/meta-virtualization
 BRANCH=master
-HEADID=4bc2f6e550c4f8cdad1944e159a3a12b5c2f148a
+HEADID=5bb2ad0d25969f93964c7870ebafeab92271013f
 FILES=conf/layer.conf
  classes/
  files/
@@ -586,7 +587,7 @@ FILES=conf
 [meta-qt5]
 GITURL=ssh://10.130.70.199/ubinux-dev/common/ubinux-layers/yocto/meta-qt5
 BRANCH=master
-HEADID=d86e2e82c15d186141713515dfd1373013aaebd5
+HEADID=c83b6529359fe21d6825f4fd4c9fdea2f8000a85
 FILES=conf/layer.conf
  recipes-qt/qt5
  recipes-qt/qtchooser
@@ -604,7 +605,7 @@ FILES=conf/layer.conf
 [meta-swupdate]
 GITURL=ssh://10.130.70.199/ubinux-dev/common/ubinux-layers/yocto/meta-swupdate
 BRANCH=master
-HEADID=dac7b2d10ec84b2b6de9afadc12419398ea73615
+HEADID=26e15ee5c6c46afa19d42f4f35eb3ee6fe7ed8f2
 FILES=conf/layer.conf
  recipes-support/swupdate/
  recipes-bsp/u-boot/
