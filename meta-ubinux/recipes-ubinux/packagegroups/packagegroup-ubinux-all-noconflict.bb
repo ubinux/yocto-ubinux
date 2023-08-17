@@ -113,7 +113,6 @@ UBINUX_PKGS_NOCONFLICT = " \
 	kexec-tools \
 	less \
 	libcap-ng \
-	libdmx \
 	libdrm \
 	libffi \
 	libfontenc \
@@ -411,7 +410,6 @@ UBINUX_PKGS_NOCONFLICT = " \
 	xlsfonts \
 	xrdb \
 	xrefresh \
-	xsetmode \
 	xsetroot \
 	xstdcmap \
 	twm \
@@ -562,6 +560,7 @@ UBINUX_PKGS_NOCONFLICT = " \
 	freetype \
 	wtmpdb \
 	lastlog2 \
+	xinput \
 "	
 
 RDEPENDS:packagegroup-ubinux-all-noconflict = " \

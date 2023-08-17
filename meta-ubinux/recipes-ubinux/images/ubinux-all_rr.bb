@@ -120,7 +120,6 @@ UBINUX_PKGS = " \
 	kexec-tools \
 	less \
 	libcap-ng \
-	libdmx \
 	libdrm \
 	libffi \
 	libfontenc \
@@ -436,7 +435,6 @@ UBINUX_PKGS = " \
 	xlsfonts \
 	xrdb \
 	xrefresh \
-	xsetmode \
 	xsetroot \
 	xstdcmap \
 	twm \
@@ -628,6 +626,7 @@ UBINUX_PKGS = " \
 	libgpiod \
 	wtmpdb \
 	lastlog2 \
+	xinput \
 "
 
 
