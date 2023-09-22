@@ -485,7 +485,7 @@ FILES=meta-cgl-common/conf/layer.conf
 [meta-cloud-services]
 GITURL=ssh://10.130.70.199/ubinux-dev/common/ubinux-layers/yocto/meta-cloud-services
 BRANCH=master
-HEADID=fc06da339561c5739e5722cbd34d2c949993e51c
+HEADID=cd048e11c4600636714051c787264a52be19c3f8
 FILES=conf/layer.conf
  classes/
  meta-openstack/classes/default_configs.bbclass
