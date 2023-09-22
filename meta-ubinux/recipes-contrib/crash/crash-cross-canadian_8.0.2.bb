@@ -26,10 +26,11 @@ SRC_URI = "git://github.com/crash-utility/crash.git;branch=master;protocol=https
            file://7001force_define_architecture.patch \
            file://7003cross_ranlib.patch \
            file://0001-cross_add_configure_option.patch \
-	   file://donnot-extract-gdb-during-do-compile.patch \
+           file://donnot-extract-gdb-during-do-compile.patch \
            file://gdb_build_jobs_and_not_write_crash_target.patch \
+           file://0001-make-src-string-const-in-strlcpy.patch \
            "
-SRCREV = "ec568e2ea515b66343d3488d5d4b9a625d55b7ae"
+SRCREV = "f1cd581d1c4afa5b8ffdfaa6a3ea9f545fe4ec91"
 
 SRC_URI[gdb.sha256sum] = "b33ad58d687487a821ec8d878daab0f716be60d0936f2e3ac5cf08419ce70350"
 
