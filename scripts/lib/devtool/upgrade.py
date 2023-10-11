@@ -429,6 +429,7 @@ def _create_new_recipe(newpv, md5, sha256, srcrev, srcbranch, srcsubdir_old, src
         newvalues["LIC_FILES_CHKSUM"] = newlicchksum
         _add_license_diff_to_recipe(fullpath, license_diff)
 
+    tinfoil.modified_files()
     try:
         rd = tinfoil.parse_recipe_file(fullpath, False)
     except bb.tinfoil.TinfoilCommandFailed as e:
@@ -441,7 +442,7 @@ def _create_new_recipe(newpv, md5, sha256, srcrev, srcbranch, srcsubdir_old, src
 def _check_git_config():
     def getconfig(name):
         try:
-            value = bb.process.run('git config --global %s' % name)[0].strip()
+            value = bb.process.run('git config %s' % name)[0].strip()
         except bb.process.ExecutionError as e:
             if e.exitcode == 1:
                 value = None
