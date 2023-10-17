@@ -6,8 +6,8 @@
 
 import subprocess
 import base
-import re
 import os
+import pyparsing
 from data import PatchTestInput, PatchTestDataStore
 
 class SrcUri(base.Metadata):
@@ -15,7 +15,7 @@ class SrcUri(base.Metadata):
     metadata  = 'SRC_URI'
     md5sum    = 'md5sum'
     sha256sum = 'sha256sum'
-    git_regex = re.compile('^git\:\/\/.*')
+    git_regex = pyparsing.Regex('^git\:\/\/.*')
 
     def setUp(self):
         # these tests just make sense on patches that can be merged
@@ -69,7 +69,6 @@ class SrcUri(base.Metadata):
                 # TODO: we are not taking into account  renames, so test may raise false positives
                 not_removed = filesremoved_from_usr_uri - filesremoved_from_patchset
                 if not_removed:
-                    self.fail('Patches not removed from tree',
-                              'Amend the patch containing the software patch file removal',
+                    self.fail('Patches not removed from tree. Remove them and amend the submitted mbox',
                               data=[('Patch', f) for f in not_removed])
 
