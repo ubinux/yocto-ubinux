@@ -14,16 +14,16 @@ inherit kernel-yocto
 inherit pkgconfig
 inherit qoriq_build_64bit_kernel siteinfo
 # board specific branches
-KBRANCH:ubinux-armv8  ?= "v5.15/standard/nxp-sdk-5.15/nxp-soc"
+KBRANCH:ubinux-armv8  ?= "v6.1/standard/nxp-sdk-6.1/nxp-soc"
 
-SRCREV = "aba3eb2ce023befdd3b86cae6a2be97e272df7b1"
+SRCREV = "d4d6da68ee02fbffdfa588f067fe859bae8d23aa"
 
 SRC_URI = "git://git.yoctoproject.org/linux-yocto.git;name=machine;branch=${KBRANCH}; \
            file://ubinux_defconfig \
           "
 
 LIC_FILES_CHKSUM = "file://COPYING;md5=6bc538ed5bd9a7fc9398086aedcd7e46"
-LINUX_VERSION ?= "5.15.72"
+LINUX_VERSION ?= "6.1.57"
 
 DEPENDS += "${@bb.utils.contains('ARCH', 'x86', 'elfutils-native', '', d)}"
 DEPENDS += "openssl-native util-linux-native"
