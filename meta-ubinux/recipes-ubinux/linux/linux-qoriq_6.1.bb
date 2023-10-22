@@ -16,7 +16,7 @@ inherit qoriq_build_64bit_kernel siteinfo
 # board specific branches
 KBRANCH:ubinux-armv8  ?= "v6.1/standard/nxp-sdk-6.1/nxp-soc"
 
-SRCREV = "d4d6da68ee02fbffdfa588f067fe859bae8d23aa"
+SRCREV = "c4355676c93ced426f4df06b35827477474a385a"
 
 SRC_URI = "git://git.yoctoproject.org/linux-yocto.git;name=machine;branch=${KBRANCH}; \
            file://ubinux_defconfig \
