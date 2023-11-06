@@ -27,6 +27,9 @@ def setUpModule():
     corecopydir = os.path.join(templayerdir, 'core-copy')
     bblayers_conf = os.path.join(os.environ['BUILDDIR'], 'conf', 'bblayers.conf')
     edited_layers = []
+    # make sure user doesn't have a local workspace
+    result = runCmd('bitbake-layers show-layers')
+    assert "workspacelayer" not in result.output, "Devtool test suite cannot be run with a local workspace directory"
 
     # We need to take a copy of the meta layer so we can modify it and not
     # have any races against other tests that might be running in parallel
@@ -572,7 +575,7 @@ class DevtoolAddTests(DevtoolBase):
         checkvars['S'] = '${WORKDIR}/MarkupSafe-%s' % testver
         checkvars['SRC_URI'] = url
         self._test_recipe_contents(recipefile, checkvars, [])
-     
+
     def test_devtool_add_fetch_git(self):
         tempdir = tempfile.mkdtemp(prefix='devtoolqa')
         self.track_for_cleanup(tempdir)

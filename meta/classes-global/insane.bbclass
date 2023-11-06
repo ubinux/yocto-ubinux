@@ -923,8 +923,12 @@ def package_qa_check_rdepends(pkg, pkgdest, skip, taskdeps, packages, d):
 
         if "file-rdeps" not in skip:
             ignored_file_rdeps = set(['/bin/sh', '/usr/bin/env', 'rtld(GNU_HASH)'])
+            if bb.utils.contains('DISTRO_FEATURES', 'usrmerge', True, False, d):
+                ignored_file_rdeps |= set(['/usr/bin/sh'])
             if bb.data.inherits_class('nativesdk', d):
                 ignored_file_rdeps |= set(['/bin/bash', '/usr/bin/perl', 'perl'])
+                if bb.utils.contains('DISTRO_FEATURES', 'usrmerge', True, False, d):
+                    ignored_file_rdeps |= set(['/usr/bin/bash'])
             # For Saving the FILERDEPENDS
             filerdepends = {}
             rdep_data = oe.packagedata.read_subpkgdata(pkg, d)
@@ -1353,16 +1357,22 @@ python do_qa_patch() {
     ###########################################################################
     def match_line_in_files(toplevel, filename_glob, line_regex):
         import pathlib
-        toppath = pathlib.Path(toplevel)
-        for entry in toppath.glob(filename_glob):
-            try:
-                with open(entry, 'r', encoding='utf-8', errors='ignore') as f:
-                    for line in f.readlines():
-                        if re.match(line_regex, line):
-                            return True
-            except FileNotFoundError:
-                # Broken symlink in source
-                pass
+        try:
+            toppath = pathlib.Path(toplevel)
+            for entry in toppath.glob(filename_glob):
+                try:
+                    with open(entry, 'r', encoding='utf-8', errors='ignore') as f:
+                        for line in f.readlines():
+                            if re.match(line_regex, line):
+                                return True
+                except FileNotFoundError:
+                    # Broken symlink in source
+                    pass
+        except FileNotFoundError:
+            # pathlib.Path.glob() might throw this when file/directory
+            # disappear while scanning.
+            bb.note("unimplemented-ptest: FileNotFoundError exception while scanning (disappearing file while scanning?). Check was ignored." % d.getVar('PN'))
+            pass
         return False
 
     srcdir = d.getVar('S')
@@ -1370,6 +1380,8 @@ python do_qa_patch() {
         pass
     elif bb.data.inherits_class('ptest', d):
         bb.note("Package %s QA: skipping unimplemented-ptest: ptest implementation detected" % d.getVar('PN'))
+    elif srcdir == d.getVar('WORKDIR'):
+        bb.note("Package %s QA: skipping unimplemented-ptest: This check is not supported for recipe with \"S = \"${WORKDIR}\"" % d.getVar('PN'))
 
     # Detect perl Test:: based tests
     elif os.path.exists(os.path.join(srcdir, "t")) and any(filename.endswith('.t') for filename in os.listdir(os.path.join(srcdir, 't'))):
