@@ -3802,9 +3802,9 @@ system and gives an overview of their function and contents.
    :term:`IMAGE_POSTPROCESS_COMMAND`
       Specifies a list of functions to call once the OpenEmbedded build
       system creates the final image output files. You can specify
-      functions separated by semicolons::
+      functions separated by spaces::
 
-         IMAGE_POSTPROCESS_COMMAND += "function; ... "
+         IMAGE_POSTPROCESS_COMMAND += "function"
 
       If you need to pass the root filesystem path to a command within the
       function, you can use ``${IMAGE_ROOTFS}``, which points to the
@@ -3815,9 +3815,9 @@ system and gives an overview of their function and contents.
    :term:`IMAGE_PREPROCESS_COMMAND`
       Specifies a list of functions to call before the OpenEmbedded build
       system creates the final image output files. You can specify
-      functions separated by semicolons::
+      functions separated by spaces::
 
-         IMAGE_PREPROCESS_COMMAND += "function; ... "
+         IMAGE_PREPROCESS_COMMAND += "function"
 
       If you need to pass the root filesystem path to a command within the
       function, you can use ``${IMAGE_ROOTFS}``, which points to the
@@ -6488,9 +6488,9 @@ system and gives an overview of their function and contents.
    :term:`POPULATE_SDK_POST_HOST_COMMAND`
       Specifies a list of functions to call once the OpenEmbedded build
       system has created the host part of the SDK. You can specify
-      functions separated by semicolons::
+      functions separated by spaces::
 
-          POPULATE_SDK_POST_HOST_COMMAND += "function; ... "
+          POPULATE_SDK_POST_HOST_COMMAND += "function"
 
       If you need to pass the SDK path to a command within a function, you
       can use ``${SDK_DIR}``, which points to the parent directory used by
@@ -6500,9 +6500,9 @@ system and gives an overview of their function and contents.
    :term:`POPULATE_SDK_POST_TARGET_COMMAND`
       Specifies a list of functions to call once the OpenEmbedded build
       system has created the target part of the SDK. You can specify
-      functions separated by semicolons::
+      functions separated by spaces::
 
-         POPULATE_SDK_POST_TARGET_COMMAND += "function; ... "
+         POPULATE_SDK_POST_TARGET_COMMAND += "function"
 
       If you need to pass the SDK path to a command within a function, you
       can use ``${SDK_DIR}``, which points to the parent directory used by
@@ -6989,6 +6989,22 @@ system and gives an overview of their function and contents.
       ":ref:`bitbake-user-manual/bitbake-user-manual-execution:dependencies`" sections in the
       BitBake User Manual for additional information on tasks and dependencies.
 
+   :term:`RECIPE_MAINTAINER`
+      This variable defines the name and e-mail address of the maintainer of a
+      recipe. Such information can be used by human users submitted changes,
+      and by automated tools to send notifications, for example about
+      vulnerabilities or source updates.
+
+      The variable can be defined in a global distribution :oe_git:`maintainers.inc
+      </openembedded-core/tree/meta/conf/distro/include/maintainers.inc>` file::
+
+          meta/conf/distro/include/maintainers.inc:RECIPE_MAINTAINER:pn-sysvinit = "Ross Burton <ross.burton@arm.com>"
+
+      It can also be directly defined in a recipe,
+      for example in the ``libgpiod`` one::
+
+          RECIPE_MAINTAINER = "Bartosz Golaszewski <brgl@bgdev.pl>"
+
    :term:`RECIPE_NO_UPDATE_REASON`
       If a recipe should not be replaced by a more recent upstream version,
       putting the reason why in this variable in a recipe allows
@@ -7088,9 +7104,9 @@ system and gives an overview of their function and contents.
    :term:`ROOTFS_POSTINSTALL_COMMAND`
       Specifies a list of functions to call after the OpenEmbedded build
       system has installed packages. You can specify functions separated by
-      semicolons::
+      spaces::
 
-         ROOTFS_POSTINSTALL_COMMAND += "function; ... "
+         ROOTFS_POSTINSTALL_COMMAND += "function"
 
       If you need to pass the root filesystem path to a command within a
       function, you can use ``${IMAGE_ROOTFS}``, which points to the
@@ -7101,9 +7117,9 @@ system and gives an overview of their function and contents.
    :term:`ROOTFS_POSTPROCESS_COMMAND`
       Specifies a list of functions to call once the OpenEmbedded build
       system has created the root filesystem. You can specify functions
-      separated by semicolons::
+      separated by spaces::
 
-         ROOTFS_POSTPROCESS_COMMAND += "function; ... "
+         ROOTFS_POSTPROCESS_COMMAND += "function"
 
       If you need to pass the root filesystem path to a command within a
       function, you can use ``${IMAGE_ROOTFS}``, which points to the
@@ -7116,9 +7132,9 @@ system and gives an overview of their function and contents.
       system has removed unnecessary packages. When runtime package
       management is disabled in the image, several packages are removed
       including ``base-passwd``, ``shadow``, and ``update-alternatives``.
-      You can specify functions separated by semicolons::
+      You can specify functions separated by spaces::
 
-         ROOTFS_POSTUNINSTALL_COMMAND += "function; ... "
+         ROOTFS_POSTUNINSTALL_COMMAND += "function"
 
       If you need to pass the root filesystem path to a command within a
       function, you can use ``${IMAGE_ROOTFS}``, which points to the
@@ -7129,9 +7145,9 @@ system and gives an overview of their function and contents.
    :term:`ROOTFS_PREPROCESS_COMMAND`
       Specifies a list of functions to call before the OpenEmbedded build
       system has created the root filesystem. You can specify functions
-      separated by semicolons::
+      separated by spaces::
 
-         ROOTFS_PREPROCESS_COMMAND += "function; ... "
+         ROOTFS_PREPROCESS_COMMAND += "function"
 
       If you need to pass the root filesystem path to a command within a
       function, you can use ``${IMAGE_ROOTFS}``, which points to the
@@ -7406,13 +7422,16 @@ system and gives an overview of their function and contents.
       :term:`SDK_EXT_TYPE` is set to "full".
 
    :term:`SDK_NAME`
-      The base name for SDK output files. The name is derived from the
-      :term:`DISTRO`, :term:`TCLIBC`,
-      :term:`SDK_ARCH`,
-      :term:`IMAGE_BASENAME`, and
-      :term:`TUNE_PKGARCH` variables::
+      The base name for SDK output files. The default value (as set in
+      ``meta-poky/conf/distro/poky.conf``) is derived from the
+      :term:`DISTRO`,
+      :term:`TCLIBC`,
+      :term:`SDKMACHINE`,
+      :term:`IMAGE_BASENAME`,
+      :term:`TUNE_PKGARCH`, and
+      :term:`MACHINE` variables::
 
-         SDK_NAME = "${DISTRO}-${TCLIBC}-${SDK_ARCH}-${IMAGE_BASENAME}-${TUNE_PKGARCH}"
+         SDK_NAME = "${DISTRO}-${TCLIBC}-${SDKMACHINE}-${IMAGE_BASENAME}-${TUNE_PKGARCH}-${MACHINE}"
 
    :term:`SDK_OS`
       Specifies the operating system for which the SDK will be built. The
@@ -7443,7 +7462,9 @@ system and gives an overview of their function and contents.
    :term:`SDK_POSTPROCESS_COMMAND`
       Specifies a list of functions to call once the OpenEmbedded build
       system creates the SDK. You can specify functions separated by
-      semicolons: SDK_POSTPROCESS_COMMAND += "function; ... "
+      spaces:
+
+         SDK_POSTPROCESS_COMMAND += "function"
 
       If you need to pass an SDK path to a command within a function, you
       can use ``${SDK_DIR}``, which points to the parent directory used by
@@ -7624,23 +7645,6 @@ system and gives an overview of their function and contents.
       Use spaces to separate multiple devices::
 
          SERIAL_CONSOLES = "115200;ttyS0 115200;ttyS1"
-
-   :term:`SERIAL_CONSOLES_CHECK`
-      Specifies serial consoles, which must be listed in
-      :term:`SERIAL_CONSOLES`, to check against
-      ``/proc/console`` before enabling them using getty. This variable
-      allows aliasing in the format: <device>:<alias>. If a device was
-      listed as "sclp_line0" in ``/dev/`` and "ttyS0" was listed in
-      ``/proc/console``, you would do the following::
-
-         SERIAL_CONSOLES_CHECK = "slcp_line0:ttyS0"
-
-      This variable is currently only supported with SysVinit (i.e. not
-      with systemd). Note that :term:`SERIAL_CONSOLES_CHECK` also requires
-      ``/etc/inittab`` to be writable when used with SysVinit. This makes it
-      incompatible with customizations such as the following::
-
-         EXTRA_IMAGE_FEATURES += "read-only-rootfs"
 
    :term:`SETUPTOOLS_BUILD_ARGS`
       When used by recipes that inherit the :ref:`ref-classes-setuptools3`
@@ -8213,6 +8217,16 @@ system and gives an overview of their function and contents.
          SSTATE_MIRRORS ?= "\
              file://.* https://someserver.tld/share/sstate/PATH;downloadfilename=PATH \
              file://.* file:///some-local-dir/sstate/PATH"
+
+      The Yocto Project actually shares the cache data objects built by its
+      autobuilder::
+
+         SSTATE_MIRRORS ?= "file://.* http://cdn.jsdelivr.net/yocto/sstate/all/PATH;downloadfilename=PATH"
+
+      As such binary artifacts are built for the generic QEMU machines
+      supported by the various Poky releases, they are less likely to be
+      reusable in real projects building binaries optimized for a specific
+      CPU family.
 
    :term:`SSTATE_SCAN_FILES`
       Controls the list of files the OpenEmbedded build system scans for
