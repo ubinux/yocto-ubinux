@@ -1021,6 +1021,7 @@ class RunQueueData:
 
                 for tid in list(runall_tids):
                     mark_active(tid, 1)
+                    self.target_tids.append(tid)
                     if self.cooker.configuration.force:
                         invalidate_task(tid, False)
 
@@ -1766,14 +1767,14 @@ class RunQueue:
         for tid in invalidtasks:
             (mc, fn, taskname, taskfn) = split_tid_mcfn(tid)
             pn = self.rqdata.dataCaches[mc].pkg_fn[taskfn]
-            h = self.rqdata.runtaskentries[tid].hash
+            h = self.rqdata.runtaskentries[tid].unihash
             matches = bb.siggen.find_siginfo(pn, taskname, [], self.cooker.databuilder.mcdata[mc])
             match = None
             for m in matches:
                 if h in m:
                     match = m
             if match is None:
-                bb.fatal("Can't find a task we're supposed to have written out? (hash: %s)?" % h)
+                bb.fatal("Can't find a task we're supposed to have written out? (hash: %s tid: %s)?" % (h, tid))
             matches = {k : v for k, v in iter(matches.items()) if h not in k}
             if matches:
                 latestmatch = sorted(matches.keys(), key=lambda f: matches[f])[-1]

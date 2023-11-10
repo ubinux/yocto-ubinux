@@ -28,6 +28,9 @@ PACKAGECONFIG[audit] = ",NO_LIBAUDIT=1,audit"
 PACKAGECONFIG[manpages] = ",,xmlto-native asciidoc-native"
 PACKAGECONFIG[cap] = ",,libcap"
 PACKAGECONFIG[libtraceevent] = ",NO_LIBTRACEEVENT=1,libtraceevent"
+# jevents requires host python for generating a .c file, but is
+# unrelated to the python item.
+PACKAGECONFIG[jevents] = ",NO_JEVENTS=1,python3-native"
 # Arm CoreSight
 PACKAGECONFIG[coresight] = "CORESIGHT=1,,opencsd"
 PACKAGECONFIG[pfm4] = ",NO_LIBPFM4=1,libpfm4"
@@ -135,6 +138,7 @@ PERF_SRC ?= "Makefile \
              tools/perf \
              tools/scripts \
              scripts/ \
+             arch/arm64/tools \
              arch/${ARCH}/Makefile \
 "
 
@@ -180,7 +184,8 @@ python copy_perf_source_from_kernel() {
         src = oe.path.join(src_dir, s)
         dest = oe.path.join(dest_dir, s)
         if not os.path.exists(src):
-            bb.fatal("Path does not exist: %s. Maybe PERF_SRC does not match the kernel version." % src)
+            bb.warn("Path does not exist: %s. Maybe PERF_SRC lists more files than what your kernel version provides and needs." % src)
+            continue
         if os.path.isdir(src):
             oe.path.copyhardlinktree(src, dest)
         else:
