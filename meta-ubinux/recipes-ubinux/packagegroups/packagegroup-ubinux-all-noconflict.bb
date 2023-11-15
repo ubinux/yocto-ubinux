@@ -92,6 +92,7 @@ UBINUX_PKGS_NOCONFLICT = " \
 	groff \
 	grpc \
 	gtk+ \
+	hdf5 \
 	hdparm \
 	hexedit \
 	hicolor-icon-theme \
