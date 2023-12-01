@@ -600,7 +600,7 @@ FILES=conf/layer.conf
 [meta-spdxscanner]
 GITURL=ssh://10.130.70.199/ubinux-dev/common/ubinux-layers/yocto/meta-spdxscanner
 BRANCH=master
-HEADID=c2cb6ab15e1bf985e35052ccd32e1888406091f0
+HEADID=5453a9c0c72b9833a633d54da095333ef661858e
 FILES=conf/layer.conf
  classes
  recipes-devtools/synopsys/
