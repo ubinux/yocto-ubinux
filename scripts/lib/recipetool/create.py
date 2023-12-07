@@ -423,6 +423,36 @@ def create_recipe(args):
     storeTagName = ''
     pv_srcpv = False
 
+    handled = []
+    classes = []
+
+    # Find all plugins that want to register handlers
+    logger.debug('Loading recipe handlers')
+    raw_handlers = []
+    for plugin in plugins:
+        if hasattr(plugin, 'register_recipe_handlers'):
+            plugin.register_recipe_handlers(raw_handlers)
+    # Sort handlers by priority
+    handlers = []
+    for i, handler in enumerate(raw_handlers):
+        if isinstance(handler, tuple):
+            handlers.append((handler[0], handler[1], i))
+        else:
+            handlers.append((handler, 0, i))
+    handlers.sort(key=lambda item: (item[1], -item[2]), reverse=True)
+    for handler, priority, _ in handlers:
+        logger.debug('Handler: %s (priority %d)' % (handler.__class__.__name__, priority))
+        setattr(handler, '_devtool', args.devtool)
+    handlers = [item[0] for item in handlers]
+
+    fetchuri = None
+    for handler in handlers:
+        if hasattr(handler, 'process_url'):
+            ret = handler.process_url(args, classes, handled, extravalues)
+            if 'url' in handled and ret:
+                fetchuri = ret
+                break
+
     if os.path.isfile(source):
         source = 'file://%s' % os.path.abspath(source)
 
@@ -431,7 +461,8 @@ def create_recipe(args):
         if re.match(r'https?://github.com/[^/]+/[^/]+/archive/.+(\.tar\..*|\.zip)$', source):
             logger.warning('github archive files are not guaranteed to be stable and may be re-generated over time. If the latter occurs, the checksums will likely change and the recipe will fail at do_fetch. It is recommended that you point to an actual commit or tag in the repository instead (using the repository URL in conjunction with the -S/--srcrev option).')
         # Fetch a URL
-        fetchuri = reformat_git_uri(urldefrag(source)[0])
+        if not fetchuri:
+            fetchuri = reformat_git_uri(urldefrag(source)[0])
         if args.binary:
             # Assume the archive contains the directory structure verbatim
             # so we need to extract to a subdirectory
@@ -638,8 +669,6 @@ def create_recipe(args):
     # We'll come back and replace this later in handle_license_vars()
     lines_before.append('##LICENSE_PLACEHOLDER##')
 
-    handled = []
-    classes = []
 
     # FIXME This is kind of a hack, we probably ought to be using bitbake to do this
     pn = None
@@ -717,25 +746,6 @@ def create_recipe(args):
 
     if args.npm_dev:
         extravalues['NPM_INSTALL_DEV'] = 1
-
-    # Find all plugins that want to register handlers
-    logger.debug('Loading recipe handlers')
-    raw_handlers = []
-    for plugin in plugins:
-        if hasattr(plugin, 'register_recipe_handlers'):
-            plugin.register_recipe_handlers(raw_handlers)
-    # Sort handlers by priority
-    handlers = []
-    for i, handler in enumerate(raw_handlers):
-        if isinstance(handler, tuple):
-            handlers.append((handler[0], handler[1], i))
-        else:
-            handlers.append((handler, 0, i))
-    handlers.sort(key=lambda item: (item[1], -item[2]), reverse=True)
-    for handler, priority, _ in handlers:
-        logger.debug('Handler: %s (priority %d)' % (handler.__class__.__name__, priority))
-        setattr(handler, '_devtool', args.devtool)
-    handlers = [item[0] for item in handlers]
 
     # Apply the handlers
     if args.binary:
@@ -873,8 +883,10 @@ def create_recipe(args):
         outlines.append('')
     outlines.extend(lines_after)
 
+    outlines = [ line.rstrip('\n') +"\n" for line in outlines]
+
     if extravalues:
-        _, outlines = oe.recipeutils.patch_recipe_lines(outlines, extravalues, trailing_newline=False)
+        _, outlines = oe.recipeutils.patch_recipe_lines(outlines, extravalues, trailing_newline=True)
 
     if args.extract_to:
         scriptutils.git_convert_standalone_clone(srctree)
@@ -890,7 +902,7 @@ def create_recipe(args):
         log_info_cond('Source extracted to %s' % args.extract_to, args.devtool)
 
     if outfile == '-':
-        sys.stdout.write('\n'.join(outlines) + '\n')
+        sys.stdout.write(''.join(outlines) + '\n')
     else:
         with open(outfile, 'w') as f:
             lastline = None
@@ -898,7 +910,7 @@ def create_recipe(args):
                 if not lastline and not line:
                     # Skip extra blank lines
                     continue
-                f.write('%s\n' % line)
+                f.write('%s' % line)
                 lastline = line
         log_info_cond('Recipe %s has been created; further editing may be required to make it fully functional' % outfile, args.devtool)
         tinfoil.modified_files()
@@ -1401,6 +1413,7 @@ def register_commands(subparsers):
     parser_create.add_argument('-B', '--srcbranch', help='Branch in source repository if fetching from an SCM such as git (default master)')
     parser_create.add_argument('--keep-temp', action="store_true", help='Keep temporary directory (for debugging)')
     parser_create.add_argument('--npm-dev', action="store_true", help='For npm, also fetch devDependencies')
+    parser_create.add_argument('--no-pypi', action="store_true", help='Do not inherit pypi class')
     parser_create.add_argument('--devtool', action="store_true", help=argparse.SUPPRESS)
     parser_create.add_argument('--mirrors', action="store_true", help='Enable PREMIRRORS and MIRRORS for source tree fetching (disabled by default).')
     parser_create.set_defaults(func=create_recipe)

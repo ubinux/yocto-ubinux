@@ -664,19 +664,23 @@ def get_bbappend_path(d, destlayerdir, wildcardver=False):
     return (appendpath, pathok)
 
 
-def bbappend_recipe(rd, destlayerdir, srcfiles, install=None, wildcardver=False, machine=None, extralines=None, removevalues=None, redirect_output=None, params=None):
+def bbappend_recipe(rd, destlayerdir, srcfiles, install=None, wildcardver=False, machine=None, extralines=None, removevalues=None, redirect_output=None, params=None, update_original_recipe=False):
     """
     Writes a bbappend file for a recipe
     Parameters:
         rd: data dictionary for the recipe
         destlayerdir: base directory of the layer to place the bbappend in
             (subdirectory path from there will be determined automatically)
-        srcfiles: dict of source files to add to SRC_URI, where the value
-            is the full path to the file to be added, and the value is the
-            original filename as it would appear in SRC_URI or None if it
-            isn't already present. You may pass None for this parameter if
-            you simply want to specify your own content via the extralines
-            parameter.
+        srcfiles: dict of source files to add to SRC_URI, where the key
+            is the full path to the file to be added, and the value is a
+            dict with following optional keys:
+                path: the original filename as it would appear in SRC_URI
+                    or None if it isn't already present.
+                patchdir: the patchdir parameter
+                newname: the name to give to the new added file. None to use
+                    the default value: basename(path)
+            You may pass None for this parameter if you simply want to specify
+            your own content via the extralines parameter.
         install: dict mapping entries in srcfiles to a tuple of two elements:
             install path (*without* ${D} prefix) and permission value (as a
             string, e.g. '0644').
@@ -697,18 +701,29 @@ def bbappend_recipe(rd, destlayerdir, srcfiles, install=None, wildcardver=False,
         params:
             Parameters to use when adding entries to SRC_URI. If specified,
             should be a list of dicts with the same length as srcfiles.
+        update_original_recipe:
+            Force to update the original recipe instead of creating/updating
+            a bbapend. destlayerdir must contain the original recipe
     """
 
     if not removevalues:
         removevalues = {}
 
-    # Determine how the bbappend should be named
-    appendpath, pathok = get_bbappend_path(rd, destlayerdir, wildcardver)
-    if not appendpath:
-        bb.error('Unable to determine layer directory containing %s' % recipefile)
-        return (None, None)
-    if not pathok:
-        bb.warn('Unable to determine correct subdirectory path for bbappend file - check that what %s adds to BBFILES also matches .bbappend files. Using %s for now, but until you fix this the bbappend will not be applied.' % (os.path.join(destlayerdir, 'conf', 'layer.conf'), os.path.dirname(appendpath)))
+    recipefile = rd.getVar('FILE')
+    if update_original_recipe:
+        if destlayerdir not in recipefile:
+            bb.error("destlayerdir %s doesn't contain the original recipe (%s), cannot update it" % (destlayerdir, recipefile))
+            return (None, None)
+
+        appendpath = recipefile
+    else:
+        # Determine how the bbappend should be named
+        appendpath, pathok = get_bbappend_path(rd, destlayerdir, wildcardver)
+        if not appendpath:
+            bb.error('Unable to determine layer directory containing %s' % recipefile)
+            return (None, None)
+        if not pathok:
+            bb.warn('Unable to determine correct subdirectory path for bbappend file - check that what %s adds to BBFILES also matches .bbappend files. Using %s for now, but until you fix this the bbappend will not be applied.' % (os.path.join(destlayerdir, 'conf', 'layer.conf'), os.path.dirname(appendpath)))
 
     appenddir = os.path.dirname(appendpath)
     if not redirect_output:
@@ -753,7 +768,7 @@ def bbappend_recipe(rd, destlayerdir, srcfiles, install=None, wildcardver=False,
             bbappendlines.append((varname, op, value))
 
     destsubdir = rd.getVar('PN')
-    if srcfiles:
+    if not update_original_recipe and srcfiles:
         bbappendlines.append(('FILESEXTRAPATHS:prepend', ':=', '${THISDIR}/${PN}:'))
 
     appendoverride = ''
@@ -763,22 +778,38 @@ def bbappend_recipe(rd, destlayerdir, srcfiles, install=None, wildcardver=False,
     copyfiles = {}
     if srcfiles:
         instfunclines = []
-        for i, (newfile, origsrcfile) in enumerate(srcfiles.items()):
-            srcfile = origsrcfile
+        for i, (newfile, param) in enumerate(srcfiles.items()):
             srcurientry = None
-            if not srcfile:
-                srcfile = os.path.basename(newfile)
+            if not 'path' in param or not param['path']:
+                if 'newname' in param and param['newname']:
+                    srcfile = param['newname']
+                else:
+                    srcfile = os.path.basename(newfile)
                 srcurientry = 'file://%s' % srcfile
+                oldentry = None
+                for uri in rd.getVar('SRC_URI').split():
+                    if srcurientry in uri:
+                        oldentry = uri
                 if params and params[i]:
                     srcurientry = '%s;%s' % (srcurientry, ';'.join('%s=%s' % (k,v) for k,v in params[i].items()))
                 # Double-check it's not there already
                 # FIXME do we care if the entry is added by another bbappend that might go away?
                 if not srcurientry in rd.getVar('SRC_URI').split():
                     if machine:
+                        if oldentry:
+                            appendline('SRC_URI:remove%s' % appendoverride, '=', ' ' + oldentry)
                         appendline('SRC_URI:append%s' % appendoverride, '=', ' ' + srcurientry)
                     else:
+                        if oldentry:
+                            if update_original_recipe:
+                                removevalues['SRC_URI'] = oldentry
+                            else:
+                                appendline('SRC_URI:remove', '=', oldentry)
                         appendline('SRC_URI', '+=', srcurientry)
-            copyfiles[newfile] = srcfile
+                param['path'] = srcfile
+            else:
+                srcfile = param['path']
+            copyfiles[newfile] = param
             if install:
                 institem = install.pop(newfile, None)
                 if institem:
@@ -798,6 +829,8 @@ def bbappend_recipe(rd, destlayerdir, srcfiles, install=None, wildcardver=False,
         # multiple times per operation when we're handling overrides)
         if os.path.exists(appendpath) and not os.path.exists(outfile):
             shutil.copy2(appendpath, outfile)
+    elif update_original_recipe:
+        outfile = recipefile
     else:
         bb.note('Writing append file %s' % appendpath)
         outfile = appendpath
@@ -901,7 +934,12 @@ def bbappend_recipe(rd, destlayerdir, srcfiles, install=None, wildcardver=False,
             outdir = redirect_output
         else:
             outdir = appenddir
-        for newfile, srcfile in copyfiles.items():
+        for newfile, param in copyfiles.items():
+            srcfile = param['path']
+            patchdir = param.get('patchdir', ".")
+
+            if patchdir != ".":
+                newfile = os.path.join(os.path.split(newfile)[0], patchdir, os.path.split(newfile)[1])
             filedest = os.path.join(outdir, destsubdir, os.path.basename(srcfile))
             if os.path.abspath(newfile) != os.path.abspath(filedest):
                 if newfile.startswith(tempfile.gettempdir()):
@@ -1035,7 +1073,7 @@ def get_recipe_upstream_version(rd):
             revision = ud.method.latest_revision(ud, rd, 'default')
             upversion = pv
             if revision != rd.getVar("SRCREV"):
-                upversion = upversion + "-new-commits-available" 
+                upversion = upversion + "-new-commits-available"
         else:
             pupver = ud.method.latest_versionstring(ud, rd)
             (upversion, revision) = pupver

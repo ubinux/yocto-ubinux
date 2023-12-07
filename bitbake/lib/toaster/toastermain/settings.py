@@ -89,14 +89,17 @@ else:
                 from pytz.exceptions import UnknownTimeZoneError
                 try:
                     if pytz.timezone(zonename) is not None:
-                        zonefilelist[hashlib.md5(open(filepath, 'rb').read()).hexdigest()] = zonename
+                        with open(filepath, 'rb') as f:
+                            zonefilelist[hashlib.md5(f.read()).hexdigest()] = zonename
                 except UnknownTimeZoneError as ValueError:
                     # we expect timezone failures here, just move over
                     pass
             except ImportError:
-                zonefilelist[hashlib.md5(open(filepath, 'rb').read()).hexdigest()] = zonename
+                with open(filepath, 'rb') as f:
+                    zonefilelist[hashlib.md5(f.read()).hexdigest()] = zonename
 
-    TIME_ZONE = zonefilelist[hashlib.md5(open('/etc/localtime', 'rb').read()).hexdigest()]
+    with open('/etc/localtime', 'rb') as f:
+        TIME_ZONE = zonefilelist[hashlib.md5(f.read()).hexdigest()]
 
 # Language code for this installation. All choices can be found here:
 # http://www.i18nguy.com/unicode/language-identifiers.html
@@ -107,10 +110,6 @@ SITE_ID = 1
 # If you set this to False, Django will make some optimizations so as not
 # to load the internationalization machinery.
 USE_I18N = True
-
-# If you set this to False, Django will not format dates, numbers and
-# calendars according to the current locale.
-USE_L10N = True
 
 # If you set this to False, Django will not use timezone-aware datetimes.
 USE_TZ = True
@@ -151,6 +150,8 @@ STATICFILES_FINDERS = (
 
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = 'NOT_SUITABLE_FOR_HOSTED_DEPLOYMENT'
+
+TMPDIR = os.environ.get('TOASTER_DJANGO_TMPDIR', '/tmp')
 
 class InvalidString(str):
     def __mod__(self, other):
@@ -218,7 +219,7 @@ CACHES = {
     #        },
            'default': {
                'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
-               'LOCATION': '/tmp/toaster_cache_%d' % os.getuid(),
+               'LOCATION': '%s/toaster_cache_%d' % (TMPDIR, os.getuid()),
                'TIMEOUT': 1,
             }
           }
@@ -316,7 +317,7 @@ for t in os.walk(os.path.dirname(currentdir)):
 LOGGING = LOGGING_SETTINGS
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BUILDDIR = os.environ.get("BUILDDIR", "/tmp")
+BUILDDIR = os.environ.get("BUILDDIR", TMPDIR)
 
 # LOG VIEWER
 # https://pypi.org/project/django-log-viewer/
@@ -328,7 +329,6 @@ LOG_VIEWER_PATTERNS = ['INFO', 'DEBUG', 'WARNING', 'ERROR', 'CRITICAL']
 
 # Optionally you can set the next variables in order to customize the admin:
 LOG_VIEWER_FILE_LIST_TITLE = "Logs list"
-
 
 if DEBUG and SQL_DEBUG:
     LOGGING['loggers']['django.db.backends'] = {
