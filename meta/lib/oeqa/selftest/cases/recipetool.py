@@ -4,6 +4,7 @@
 # SPDX-License-Identifier: MIT
 #
 
+import errno
 import os
 import shutil
 import tempfile
@@ -348,7 +349,6 @@ class RecipetoolCreateTests(RecipetoolBase):
         checkvars['LICENSE'] = 'GPL-2.0-only'
         checkvars['LIC_FILES_CHKSUM'] = 'file://COPYING;md5=b234ee4d69f5fce4486a80fdaf4a4263'
         checkvars['SRC_URI'] = 'https://github.com/logrotate/logrotate/releases/download/${PV}/logrotate-${PV}.tar.xz'
-        checkvars['SRC_URI[md5sum]'] = 'a560c57fac87c45b2fc17406cdf79288'
         checkvars['SRC_URI[sha256sum]'] = '2e6a401cac9024db2288297e3be1a8ab60e7401ba8e91225218aaf4a27e82a07'
         self._test_recipe_contents(recipefile, checkvars, [])
 
@@ -406,7 +406,6 @@ class RecipetoolCreateTests(RecipetoolBase):
         checkvars = {}
         checkvars['LICENSE'] = set(['LGPL-2.1-only', 'MPL-1.1-only'])
         checkvars['SRC_URI'] = 'http://taglib.github.io/releases/taglib-${PV}.tar.gz'
-        checkvars['SRC_URI[md5sum]'] = 'cee7be0ccfc892fa433d6c837df9522a'
         checkvars['SRC_URI[sha256sum]'] = 'b6d1a5a610aae6ff39d93de5efd0fdc787aa9e9dc1e7026fa4c961b26563526b'
         checkvars['DEPENDS'] = set(['boost', 'zlib'])
         inherits = ['cmake']
@@ -471,7 +470,6 @@ class RecipetoolCreateTests(RecipetoolBase):
         checkvars['LICENSE'] = set(['MIT'])
         checkvars['LIC_FILES_CHKSUM'] = 'file://LICENSE;md5=16a934f165e8c3245f241e77d401bb88'
         checkvars['SRC_URI'] = 'https://files.pythonhosted.org/packages/84/30/80932401906eaf787f2e9bd86dc458f1d2e75b064b4c187341f29516945c/python-magic-${PV}.tar.gz'
-        checkvars['SRC_URI[md5sum]'] = 'e384c95a47218f66c6501cd6dd45ff59'
         checkvars['SRC_URI[sha256sum]'] = 'f3765c0f582d2dfc72c15f3b5a82aecfae9498bd29ca840d72f37d7bd38bfcd5'
         inherits = ['setuptools3']
         self._test_recipe_contents(recipefile, checkvars, inherits)
@@ -489,6 +487,7 @@ class RecipetoolCreateTests(RecipetoolBase):
         checkvars = {}
         checkvars['LICENSE'] = set(['MIT'])
         checkvars['LIC_FILES_CHKSUM'] = 'file://LICENSE;md5=16a934f165e8c3245f241e77d401bb88'
+        checkvars['SRC_URI[sha256sum]'] = 'f3765c0f582d2dfc72c15f3b5a82aecfae9498bd29ca840d72f37d7bd38bfcd5'
         checkvars['PYPI_PACKAGE'] = pn
         inherits = ['setuptools3', 'pypi']
         self._test_recipe_contents(recipefile, checkvars, inherits)
@@ -510,6 +509,7 @@ class RecipetoolCreateTests(RecipetoolBase):
         checkvars = {}
         checkvars['LICENSE'] = set(['MIT'])
         checkvars['LIC_FILES_CHKSUM'] = 'file://LICENSE;md5=16a934f165e8c3245f241e77d401bb88'
+        checkvars['SRC_URI[sha256sum]'] = 'f3765c0f582d2dfc72c15f3b5a82aecfae9498bd29ca840d72f37d7bd38bfcd5'
         checkvars['PYPI_PACKAGE'] = pn
         inherits = ['setuptools3', "pypi"]
         self._test_recipe_contents(recipefile, checkvars, inherits)
@@ -523,6 +523,7 @@ class RecipetoolCreateTests(RecipetoolBase):
         checkvars = {}
         checkvars['LICENSE'] = set(['MIT'])
         checkvars['LIC_FILES_CHKSUM'] = 'file://LICENSE;md5=16a934f165e8c3245f241e77d401bb88'
+        checkvars['SRC_URI[sha256sum]'] = 'f3765c0f582d2dfc72c15f3b5a82aecfae9498bd29ca840d72f37d7bd38bfcd5'
         checkvars['PYPI_PACKAGE'] = pn
         inherits = ['setuptools3', "pypi"]
         self._test_recipe_contents(recipefile, checkvars, inherits)
@@ -545,7 +546,7 @@ class RecipetoolCreateTests(RecipetoolBase):
         latest_pv = match.group(1)
         self.assertTrue(latest_pv != pv)
         recipefile = os.path.join(temprecipe, '%s_%s.bb' % (pn, latest_pv))
-        # Do not check LIC_FILES_CHKSUM here to avoid having updating the test on each release
+        # Do not check LIC_FILES_CHKSUM and SRC_URI checksum here to avoid having updating the test on each release
         checkvars = {}
         checkvars['LICENSE'] = set(['MIT'])
         checkvars['PYPI_PACKAGE'] = pn
@@ -576,6 +577,7 @@ class RecipetoolCreateTests(RecipetoolBase):
         checkvars['SUMMARY'] = 'A library for working with the color formats defined by HTML and CSS.'
         checkvars['LICENSE'] = set(['BSD-3-Clause'])
         checkvars['LIC_FILES_CHKSUM'] = 'file://LICENSE;md5=702b1ef12cf66832a88f24c8f2ee9c19'
+        checkvars['SRC_URI[sha256sum]'] = 'c225b674c83fa923be93d235330ce0300373d02885cef23238813b0d5668304a'
         inherits = ['python_setuptools_build_meta', 'pypi']
 
         self._test_recipe_contents(recipefile, checkvars, inherits)
@@ -604,6 +606,7 @@ class RecipetoolCreateTests(RecipetoolBase):
         checkvars['SUMMARY'] = 'Simple module to parse ISO 8601 dates'
         checkvars['LICENSE'] = set(['MIT'])
         checkvars['LIC_FILES_CHKSUM'] = 'file://LICENSE;md5=aab31f2ef7ba214a5a341eaa47a7f367'
+        checkvars['SRC_URI[sha256sum]'] = '6b1d3829ee8921c4301998c909f7829fa9ed3cbdac0d3b16af2d743aed1ba8df'
         inherits = ['python_poetry_core', 'pypi']
 
         self._test_recipe_contents(recipefile, checkvars, inherits)
@@ -632,6 +635,7 @@ class RecipetoolCreateTests(RecipetoolBase):
         checkvars['SUMMARY'] = 'Backported and Experimental Type Hints for Python 3.8+'
         checkvars['LICENSE'] = set(['PSF-2.0'])
         checkvars['LIC_FILES_CHKSUM'] = 'file://LICENSE;md5=fcf6b249c2641540219a727f35d8d2c2'
+        checkvars['SRC_URI[sha256sum]'] = 'df8e4339e9cb77357558cbdbceca33c303714cf861d1eef15e1070055ae8b7ef'
         inherits = ['python_flit_core', 'pypi']
 
         self._test_recipe_contents(recipefile, checkvars, inherits)
@@ -661,6 +665,7 @@ class RecipetoolCreateTests(RecipetoolBase):
         checkvars['HOMEPAGE'] = 'https://github.com/python-jsonschema/jsonschema'
         checkvars['LICENSE'] = set(['MIT'])
         checkvars['LIC_FILES_CHKSUM'] = 'file://COPYING;md5=7a60a81c146ec25599a3e1dabb8610a8 file://json/LICENSE;md5=9d4de43111d33570c8fe49b4cb0e01af'
+        checkvars['SRC_URI[sha256sum]'] = 'ec84cc37cfa703ef7cd4928db24f9cb31428a5d0fa77747b8b51a847458e0bbf'
         inherits = ['python_hatchling', 'pypi']
 
         self._test_recipe_contents(recipefile, checkvars, inherits)
@@ -914,7 +919,15 @@ class RecipetoolTests(RecipetoolBase):
         for p in paths:
             dstdir = os.path.join(dstdir, p)
             if not os.path.exists(dstdir):
-                os.makedirs(dstdir)
+                try:
+                    os.makedirs(dstdir)
+                except PermissionError:
+                    return False
+                except OSError as e:
+                    if e.errno == errno.EROFS:
+                        return False
+                    else:
+                        raise e
                 if p == "lib":
                     # Can race with other tests
                     self.add_command_to_tearDown('rmdir --ignore-fail-on-non-empty %s' % dstdir)
@@ -922,8 +935,12 @@ class RecipetoolTests(RecipetoolBase):
                     self.track_for_cleanup(dstdir)
         dstfile = os.path.join(dstdir, os.path.basename(srcfile))
         if srcfile != dstfile:
-            shutil.copy(srcfile, dstfile)
+            try:
+                shutil.copy(srcfile, dstfile)
+            except PermissionError:
+                return False
             self.track_for_cleanup(dstfile)
+        return True
 
     def test_recipetool_load_plugin(self):
         """Test that recipetool loads only the first found plugin in BBPATH."""
@@ -937,15 +954,17 @@ class RecipetoolTests(RecipetoolBase):
             plugincontent = fh.readlines()
         try:
             self.assertIn('meta-selftest', srcfile, 'wrong bbpath plugin found')
-            for path in searchpath:
-                self._copy_file_with_cleanup(srcfile, path, 'lib', 'recipetool')
+            searchpath = [
+                path for path in searchpath
+                if self._copy_file_with_cleanup(srcfile, path, 'lib', 'recipetool')
+            ]
             result = runCmd("recipetool --quiet count")
             self.assertEqual(result.output, '1')
             result = runCmd("recipetool --quiet multiloaded")
             self.assertEqual(result.output, "no")
             for path in searchpath:
                 result = runCmd("recipetool --quiet bbdir")
-                self.assertEqual(result.output, path)
+                self.assertEqual(os.path.realpath(result.output), os.path.realpath(path))
                 os.unlink(os.path.join(result.output, 'lib', 'recipetool', 'bbpath.py'))
         finally:
             with open(srcfile, 'w') as fh:
@@ -1248,25 +1267,16 @@ class RecipetoolAppendsrcTests(RecipetoolAppendsrcBase):
         self.test_recipetool_appendsrcfile_existing_in_src_uri_diff_params(machine='mymachine')
 
     def test_recipetool_appendsrcfile_update_recipe_basic(self):
-        testrecipe = "base-files"
+        testrecipe = "mtd-utils-selftest"
         recipefile = get_bb_var('FILE', testrecipe)
-        result = runCmd('bitbake-layers show-layers')
-        layerrecipe = None
-        for line in result.output.splitlines()[3:]:
-            with open("/tmp/juju.txt", "a") as file:
-                layer = line.split()[1]
-                print(layer, file=file)
-                if layer in recipefile:
-                    layerrecipe = layer
-                    break
-        self.assertTrue(layerrecipe, 'Unable to find the layer containing %s' % testrecipe)
-        cmd = 'recipetool appendsrcfile -u %s %s %s' % (layerrecipe, testrecipe, self.testfile)
+        self.assertIn('meta-selftest', recipefile, 'This test expect %s recipe to be in meta-selftest')
+        cmd = 'recipetool appendsrcfile -W -u meta-selftest %s %s' % (testrecipe, self.testfile)
         result = runCmd(cmd)
         self.assertNotIn('Traceback', result.output)
         self.add_command_to_tearDown('cd %s; rm -f %s/%s; git checkout .' % (os.path.dirname(recipefile), testrecipe, os.path.basename(self.testfile)))
 
         expected_status = [(' M', '.*/%s$' % os.path.basename(recipefile)),
-                           ('??', '.*/%s/%s/%s$' % (testrecipe, testrecipe, os.path.basename(self.testfile)))]
+                           ('??', '.*/%s/%s$' % (testrecipe, os.path.basename(self.testfile)))]
         self._check_repo_status(os.path.dirname(recipefile), expected_status)
         result = runCmd('git diff %s' % os.path.basename(recipefile), cwd=os.path.dirname(recipefile))
         removelines = []

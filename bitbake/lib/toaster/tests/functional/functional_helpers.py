@@ -28,17 +28,23 @@ class SeleniumFunctionalTestCase(SeleniumTestCaseBase):
         # So that the buildinfo helper uses the test database'
         if os.environ.get('DJANGO_SETTINGS_MODULE', '') != \
             'toastermain.settings_test':
-            raise RuntimeError("Please initialise django with the tests settings:  " \
+            raise RuntimeError("Please initialise django with the tests settings:  "
                 "DJANGO_SETTINGS_MODULE='toastermain.settings_test'")
 
         # start toaster
         cmd = "bash -c 'source toaster start'"
-        p = subprocess.Popen(
+        cls.p = subprocess.Popen(
             cmd,
             cwd=os.environ.get("BUILDDIR"),
             shell=True)
-        if p.wait() != 0:
-            raise RuntimeError("Can't initialize toaster")
+        if cls.p.wait() != 0:
+            port_use = os.popen("lsof -i -P -n | grep '8000 (LISTEN)'").read().strip()
+            message = ''
+            if port_use:
+                process_id = port_use.split()[1]
+                process = os.popen(f"ps -o cmd= -p {process_id}").read().strip()
+                message = f"Port 8000 occupied by {process}"
+            raise RuntimeError(f"Can't initialize toaster. {message}")
 
         super(SeleniumFunctionalTestCase, cls).setUpClass()
         cls.live_server_url = 'http://localhost:8000/'
@@ -58,11 +64,12 @@ class SeleniumFunctionalTestCase(SeleniumTestCaseBase):
         with open(os.path.join(builddir, '.runbuilds.pid'), 'r') as f:
             runbuilds_pid = int(f.read())
             os.kill(runbuilds_pid, signal.SIGTERM)
+        cls.p.kill()
 
 
     def get_URL(self):
          rc=self.get_page_source()
-         project_url=re.search("(projectPageUrl\s:\s\")(.*)(\",)",rc)
+         project_url=re.search(r"(projectPageUrl\s:\s\")(.*)(\",)",rc)
          return project_url.group(2)
 
 
