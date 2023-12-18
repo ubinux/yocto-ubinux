@@ -191,9 +191,6 @@ UBINUX_PKGS = " \
 	mtd-utils \
 	mtd-utils-jffs2 \
 	nautilus \
-	netkit-telnet \
-	netkit-rsh-client \
-	netkit-rsh-server \
 	nfs-export-root \
 	novnc \
 	openhpi \
