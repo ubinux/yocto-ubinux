@@ -250,6 +250,7 @@ UBINUX_PKGS = " \
 	xhost \
 	xinit \
 	xkbcomp \
+	xinetd \
 	xinit \
 	xkbcomp \
 	xkeyboard-config \
@@ -624,6 +625,7 @@ UBINUX_PKGS = " \
 	wtmpdb \
 	lastlog2 \
 	xinput \
+	wget \
 "
 
 

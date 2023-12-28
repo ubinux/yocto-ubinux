@@ -238,6 +238,7 @@ UBINUX_PKGS_NOCONFLICT = " \
 	xf86-input-synaptics \
 	xf86-video-fbdev \
 	xhost \
+	xinetd \
 	xinit \
 	xkbcomp \
 	xinit \
@@ -558,6 +559,7 @@ UBINUX_PKGS_NOCONFLICT = " \
 	wtmpdb \
 	lastlog2 \
 	xinput \
+	wget \
 "	
 
 RDEPENDS:packagegroup-ubinux-all-noconflict = " \
