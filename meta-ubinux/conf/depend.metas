@@ -142,6 +142,7 @@ FILES=meta-oe/conf
  
  meta-oe/recipes-extended/byacc/
  meta-oe/recipes-extended/hexedit/
+ meta-oe/recipes-extended/hwloc/
  meta-oe/recipes-extended/libconfig/
  meta-oe/recipes-extended/dialog/
  meta-oe/recipes-extended/polkit/
@@ -607,7 +608,7 @@ FILES=conf/layer.conf
 [meta-swupdate]
 GITURL=ssh://10.130.70.199/ubinux-dev/common/ubinux-layers/yocto/meta-swupdate
 BRANCH=master
-HEADID=78561a6cea61593e948bf9c1b8392c16ab6756ff
+HEADID=4c1a75f43ea1fe1063b45aa372627e6c67e2875c
 FILES=conf/layer.conf
  recipes-support/swupdate/
  recipes-bsp/u-boot/
