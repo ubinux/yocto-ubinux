@@ -19,7 +19,9 @@ import os
 import time
 import unittest
 
+import pytest
 from selenium import webdriver
+from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
@@ -35,7 +37,7 @@ def create_selenium_driver(cls,browser='chrome'):
 
     if browser == 'chrome':
         options = webdriver.ChromeOptions()
-        options.add_argument('headless')
+        options.add_argument('--headless')
         options.add_argument('--disable-infobars')
         options.add_argument('--disable-dev-shm-usage')
         options.add_argument('--no-sandbox')
@@ -43,22 +45,23 @@ def create_selenium_driver(cls,browser='chrome'):
         try:
             return webdriver.Chrome(options=options)
         except SessionNotCreatedException as e:
+            exit_message = "Halting tests prematurely to avoid cascading errors."
             # check if chrome / chromedriver exists
             chrome_path = os.popen("find ~/.cache/selenium/chrome/ -name 'chrome' -type f -print -quit").read().strip()
             if not chrome_path:
-                raise SessionNotCreatedException("Failed to install/find chrome")
+                pytest.exit(f"Failed to install/find chrome.\n{exit_message}")
             chromedriver_path = os.popen("find ~/.cache/selenium/chromedriver/ -name 'chromedriver' -type f -print -quit").read().strip()
             if not chromedriver_path:
-                raise SessionNotCreatedException("Failed to install/find chromedriver")
+                pytest.exit(f"Failed to install/find chromedriver.\n{exit_message}")
             # check if depends on each are fulfilled
             depends_chrome = os.popen(f"ldd {chrome_path} | grep 'not found'").read().strip()
             if depends_chrome:
-                raise SessionNotCreatedException(f"Missing chrome dependencies\n{depends_chrome}")
+                pytest.exit(f"Missing chrome dependencies.\n{depends_chrome}\n{exit_message}")
             depends_chromedriver = os.popen(f"ldd {chromedriver_path} | grep 'not found'").read().strip()
             if depends_chromedriver:
-                raise SessionNotCreatedException(f"Missing chrome dependencies\n{depends_chromedriver}")
-            # raise original error otherwise
-            raise e
+                pytest.exit(f"Missing chromedriver dependencies.\n{depends_chromedriver}\n{exit_message}")
+            # print original error otherwise
+            pytest.exit(f"Failed to start chromedriver.\n{e}\n{exit_message}")
     elif browser == 'firefox':
         return webdriver.Firefox()
     elif browser == 'marionette':
@@ -164,6 +167,8 @@ class SeleniumTestCaseBase(unittest.TestCase):
         """ Clean up webdriver driver """
 
         cls.driver.quit()
+        # Allow driver resources to be properly freed before proceeding with further tests
+        time.sleep(5)
         super(SeleniumTestCaseBase, cls).tearDownClass()
 
     def get(self, url):
@@ -209,6 +214,19 @@ class SeleniumTestCaseBase(unittest.TestCase):
         msg = 'An element matching "%s" should be visible' % selector
         Wait(self.driver, poll=poll).until(is_visible, msg)
         time.sleep(poll)  # wait for visibility to settle
+        return self.find(selector)
+
+    def wait_until_clickable(self, selector, poll=1):
+        """ Wait until element matching CSS selector is visible on the page """
+        WebDriverWait(
+            self.driver,
+            Wait._TIMEOUT,
+            poll_frequency=poll
+        ).until(
+            EC.element_to_be_clickable((By.ID, selector.removeprefix('#')
+                                        )
+                                       )
+        )
         return self.find(selector)
 
     def wait_until_focused(self, selector):
