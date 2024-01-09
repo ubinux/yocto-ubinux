@@ -16,9 +16,9 @@ Note
 
 ## 2.2 Build environment
 
-Please refer to the build environment of poky3.0.
-Ubuntu 18.04 is recommended.
-More than 100g space needs to be prepared for build.
+Please refer to the build environment of poky4.3(Nanbield).
+Ubuntu 22.04 is recommended.
+More than 400G space needs to be prepared for build.
 
 # 3. Usage
 ## 3.1 Download repos
