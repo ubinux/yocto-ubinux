@@ -820,14 +820,16 @@ TMPDIR = "${{TOPDIR}}/tmp-sstateprintdiff-difftmp-{}"
 
 
     # Check if printdiff walks the full dependency chain from the image target to where the change is in a specific recipe
-    def test_image_minimal_vs_quilt(self):
-        expected_output = ("Task quilt-native:do_install couldn't be used from the cache because:",
+    def test_image_minimal_vs_perlcross(self):
+        expected_output = ("Task perlcross-native:do_install couldn't be used from the cache because:",
 "We need hash",
 "most recent matching task was")
-        expected_sametmp_output = expected_output + ("Variable do_install value changed",'+    echo "this changes the task signature"')
+        expected_sametmp_output = expected_output + (
+"Variable do_install value changed",
+'+    echo "this changes the task signature"')
         expected_difftmp_output = expected_output
 
-        self.run_test_printdiff_changerecipe("core-image-minimal", "quilt-native", "-c do_install quilt-native",
+        self.run_test_printdiff_changerecipe("core-image-minimal", "perlcross", "-c do_install perlcross-native",
 """
 do_install:append() {
     echo "this changes the task signature"
@@ -836,16 +838,16 @@ do_install:append() {
 expected_sametmp_output, expected_difftmp_output)
 
     # Check if changes to gcc-source (which uses tmp/work-shared) are correctly discovered
-    def _test_gcc_runtime_vs_gcc_source(self):
+    def test_gcc_runtime_vs_gcc_source(self):
         gcc_source_pn = 'gcc-source-%s' % get_bb_vars(['PV'], 'gcc')['PV']
 
         expected_output = ("Task {}:do_preconfigure couldn't be used from the cache because:".format(gcc_source_pn),
 "We need hash",
 "most recent matching task was")
-        expected_sametmp_output = expected_output + ("Variable do_preconfigure value changed",'+    print("this changes the task signature")')
-        #FIXME: printdiff is supposed to find at least one preconfigure task signature in the sstate cache, but isn't able to
-        #expected_difftmp_output = expected_output
-        expected_difftmp_output = ()
+        expected_sametmp_output = expected_output + (
+"Variable do_preconfigure value changed",
+'+    print("this changes the task signature")')
+        expected_difftmp_output = expected_output
 
         self.run_test_printdiff_changerecipe("gcc-runtime", "gcc-source", "-c do_preconfigure {}".format(gcc_source_pn),
 """
@@ -869,7 +871,9 @@ expected_sametmp_output, expected_difftmp_output)
 "Task gnu-config-native:do_configure couldn't be used from the cache because:",
 "We need hash",
 "most recent matching task was")
-        expected_sametmp_output = expected_output + ("Variable base_do_configure value changed",'+	echo "this changes base_do_configure() definiton "')
+        expected_sametmp_output = expected_output + (
+"Variable base_do_configure value changed",
+'+	echo "this changes base_do_configure() definiton "')
         expected_difftmp_output = expected_output
 
         self.run_test_printdiff_changeconfig("core-image-minimal",
@@ -901,6 +905,7 @@ class SStateMirrors(SStateBase):
             self.fail("Did not find 'Sstate summary' line in bitbake output")
 
         failed_urls = []
+        failed_urls_extrainfo = []
         for l in output_l:
             if "SState: Unsuccessful fetch test for" in l and check_cdn:
                 missing_object = l.split()[6]
@@ -914,8 +919,11 @@ class SStateMirrors(SStateBase):
                 else:
                     missing_objects -= 1
 
-        self.assertEqual(len(failed_urls), missing_objects, "Amount of reported missing objects does not match failed URLs: {}\nFailed URLs:\n{}".format(missing_objects, "\n".join(failed_urls)))
-        self.assertEqual(len(failed_urls), 0, "Missing objects in the cache:\n{}".format("\n".join(failed_urls)))
+            if "urlopen failed for" in l:
+                failed_urls_extrainfo.append(l)
+
+        self.assertEqual(len(failed_urls), missing_objects, "Amount of reported missing objects does not match failed URLs: {}\nFailed URLs:\n{}\nFetcher diagnostics:\n{}".format(missing_objects, "\n".join(failed_urls), "\n".join(failed_urls_extrainfo)))
+        self.assertEqual(len(failed_urls), 0, "Missing objects in the cache:\n{}\nFetcher diagnostics:\n{}".format("\n".join(failed_urls), "\n".join(failed_urls_extrainfo)))
 
     def run_test(self, machine, targets, exceptions, check_cdn = True):
         # sstate is checked for existence of these, but they never get written out to begin with
