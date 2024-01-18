@@ -1,0 +1,35 @@
+From 1a85dc9138c468bee5cf594b1f230f2fc6479ec5 Mon Sep 17 00:00:00 2001
+From: Lei Maohui <leimaohui@fujitsu.com>
+Date: Tue, 9 Jan 2024 02:11:08 +0000
+Subject: [PATCH] Fix build error when enable multilib on x86-64.
+
+Signed-off-by: Lei Maohui <leimaohui@fujitsu.com>
+---
+ modules/fdlibm/src/math_private.h | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/modules/fdlibm/src/math_private.h b/modules/fdlibm/src/math_private.h
+index f4373f2783..f09eb96dab 100644
+--- a/modules/fdlibm/src/math_private.h
++++ b/modules/fdlibm/src/math_private.h
+@@ -29,11 +29,16 @@
+  * Emulate FreeBSD internal double types.
+  * Adapted from https://github.com/freebsd/freebsd-src/search?q=__double_t
+  */
+-
++#ifdef __LP64__
+ typedef double      __double_t;
++#else
++typedef long double __double_t;
++#endif
+ typedef __double_t  double_t;
+ typedef float       __float_t;
+ 
++typedef float   __float_t;
++
+ /*
+  * The original fdlibm code used statements like:
+  *	n0 = ((*(int*)&one)>>29)^1;		* index of high word *
+-- 
+2.34.1
+
