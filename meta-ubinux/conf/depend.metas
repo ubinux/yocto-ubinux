@@ -14,7 +14,7 @@ metas=meta-oe
 [meta-oe]
 GITURL=ssh://10.130.70.199/ubinux-dev/common/ubinux-layers/yocto/meta-openembedded.git
 BRANCH=master
-HEADID=0a0ea87b8dda01a2887a525cef78eb6c3f4c2c32
+HEADID=c076a263517e4dc52b115acc4ead8e3ddfcdded1
 FILES=meta-oe/conf
  meta-oe/COPYING.MIT
  meta-oe/licenses/
@@ -452,7 +452,7 @@ FILES=meta-oe/conf
 [meta-freescale]
 GITURL=ssh://10.130.70.199/ubinux-dev/common/ubinux-layers/yocto/meta-freescale
 BRANCH=master
-HEADID=35b48452c393f3e27d6efe39de631ab29e91f917
+HEADID=88b87bd387c8921b60279d09b22560f9e08fd9c0
 FILES=conf/layer.conf
  custom-licenses/
  classes/
@@ -486,7 +486,7 @@ FILES=meta-cgl-common/conf/layer.conf
 [meta-cloud-services]
 GITURL=ssh://10.130.70.199/ubinux-dev/common/ubinux-layers/yocto/meta-cloud-services
 BRANCH=master
-HEADID=28fcb27fbbab03a412f2126da3bec79acda6d9b0
+HEADID=d02fe61c35a7c5dcec5f4e7e6b9f89eae0da8440
 FILES=conf/layer.conf
  classes/
  meta-openstack/classes/default_configs.bbclass
@@ -547,7 +547,7 @@ FILES=conf/layer.conf
 [meta-virtualization]
 GITURL=ssh://10.130.70.199/ubinux-dev/common/ubinux-layers/yocto/meta-virtualization
 BRANCH=master
-HEADID=caa14c63f158fdd13382ccf1ff4e20a8ba6ad667
+HEADID=fb67ee2b7ae76e315711bc6d1ff587f7f0f729c2
 FILES=conf/layer.conf
  classes/
  files/
@@ -561,13 +561,13 @@ FILES=conf/layer.conf
 [meta-selinux]
 GITURL=ssh://10.130.70.199/ubinux-dev/common/ubinux-layers/yocto/meta-selinux
 BRANCH=master
-HEADID=ff95c536a54a758185958bcfeff86d9ba595b13e
+HEADID=7d5dc44b356d16290a36f0399f2d175b88eba83e
 FILES=conf/layer.conf
 
 [meta-security]
 GITURL=ssh://10.130.70.199/ubinux-dev/common/ubinux-layers/yocto/meta-security.git
 BRANCH=master
-HEADID=070a1e82cc59424d230a23c0b2a104b01fbaa2ad
+HEADID=b2e1511338705f90f34f19f938650c185200c067
 FILES=conf
  classes/sanity-meta-security.bbclass
  meta-tpm/classes/sanity-meta-tpm.bbclass
@@ -585,12 +585,13 @@ FILES=conf
  meta-tpm/recipes-tpm1/trousers/
  dynamic-layers/meta-perl/recipes-security/bastille/
  dynamic-layers/meta-python/recipes-security/fail2ban/
+ dynamic-layers/meta-python/recipes-devtools/python/python3-pyinotify_0.9.6.bb
  
 
 [meta-qt5]
 GITURL=ssh://10.130.70.199/ubinux-dev/common/ubinux-layers/yocto/meta-qt5
 BRANCH=master
-HEADID=25d86278e4e8b277e9d3c88061c1a2268a20082a
+HEADID=526b61e10908f733701c2bf0e4db629b428c0384
 FILES=conf/layer.conf
  recipes-qt/qt5
  recipes-qt/qtchooser
@@ -600,7 +601,7 @@ FILES=conf/layer.conf
 [meta-spdxscanner]
 GITURL=ssh://10.130.70.199/ubinux-dev/common/ubinux-layers/yocto/meta-spdxscanner
 BRANCH=master
-HEADID=5453a9c0c72b9833a633d54da095333ef661858e
+HEADID=78561a6cea61593e948bf9c1b8392c16ab6756ff
 FILES=conf/layer.conf
  classes
  recipes-devtools/synopsys/
@@ -608,7 +609,7 @@ FILES=conf/layer.conf
 [meta-swupdate]
 GITURL=ssh://10.130.70.199/ubinux-dev/common/ubinux-layers/yocto/meta-swupdate
 BRANCH=master
-HEADID=4c1a75f43ea1fe1063b45aa372627e6c67e2875c
+HEADID=ce322aa47aeb2beff3bb6b29d58224867753a5e8
 FILES=conf/layer.conf
  recipes-support/swupdate/
  recipes-bsp/u-boot/
