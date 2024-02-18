@@ -28,6 +28,16 @@ def tearDownModule():
     runCmd('rm -rf %s' % templayerdir)
 
 
+def needTomllib(test):
+    # This test require python 3.11 or above for the tomllib module or tomli module to be installed
+    try:
+        import tomllib
+    except ImportError:
+        try:
+            import tomli
+        except ImportError:
+            test.skipTest('Test requires python 3.11 or above for tomllib module or tomli module')
+
 class RecipetoolBase(devtool.DevtoolTestCase):
 
     def setUpLocal(self):
@@ -441,16 +451,18 @@ class RecipetoolCreateTests(RecipetoolBase):
         self._test_recipe_contents(recipefile, checkvars, inherits)
 
     def test_recipetool_create_github(self):
-        # Basic test to see if github URL mangling works
+        # Basic test to see if github URL mangling works. Deliberately use an
+        # older release of Meson at present so we don't need a toml parser.
         temprecipe = os.path.join(self.tempdir, 'recipe')
         os.makedirs(temprecipe)
         recipefile = os.path.join(temprecipe, 'python3-meson_git.bb')
-        srcuri = 'https://github.com/mesonbuild/meson;rev=0.32.0'
-        result = runCmd(['recipetool', 'create', '-o', temprecipe, srcuri])
-        self.assertTrue(os.path.isfile(recipefile))
+        srcuri = 'https://github.com/mesonbuild/meson;rev=0.52.1'
+        cmd = ['recipetool', 'create', '-o', temprecipe, srcuri]
+        result = runCmd(cmd)
+        self.assertTrue(os.path.isfile(recipefile), msg="recipe %s not created for command %s, output %s" % (recipefile, " ".join(cmd), result.output))
         checkvars = {}
-        checkvars['LICENSE'] = set(['Apache-2.0'])
-        checkvars['SRC_URI'] = 'git://github.com/mesonbuild/meson;protocol=https;branch=master'
+        checkvars['LICENSE'] = set(['Apache-2.0', "Unknown"])
+        checkvars['SRC_URI'] = 'git://github.com/mesonbuild/meson;protocol=https;branch=0.52'
         inherits = ['setuptools3']
         self._test_recipe_contents(recipefile, checkvars, inherits)
 
@@ -554,15 +566,8 @@ class RecipetoolCreateTests(RecipetoolBase):
         self._test_recipe_contents(recipefile, checkvars, inherits)
 
     def test_recipetool_create_python3_pep517_setuptools_build_meta(self):
-        # This test require python 3.11 or above for the tomllib module
-        # or tomli module to be installed
-        try:
-            import tomllib
-        except ImportError:
-            try:
-                import tomli
-            except ImportError:
-                self.skipTest('Test requires python 3.11 or above for tomllib module or tomli module')
+        # This test require python 3.11 or above for the tomllib module or tomli module to be installed
+        needTomllib(self)
 
         # Test creating python3 package from tarball (using setuptools.build_meta class)
         temprecipe = os.path.join(self.tempdir, 'recipe')
@@ -583,15 +588,8 @@ class RecipetoolCreateTests(RecipetoolBase):
         self._test_recipe_contents(recipefile, checkvars, inherits)
 
     def test_recipetool_create_python3_pep517_poetry_core_masonry_api(self):
-        # This test require python 3.11 or above for the tomllib module
-        # or tomli module to be installed
-        try:
-            import tomllib
-        except ImportError:
-            try:
-                import tomli
-            except ImportError:
-                self.skipTest('Test requires python 3.11 or above for tomllib module or tomli module')
+        # This test require python 3.11 or above for the tomllib module or tomli module to be installed
+        needTomllib(self)
 
         # Test creating python3 package from tarball (using poetry.core.masonry.api class)
         temprecipe = os.path.join(self.tempdir, 'recipe')
@@ -612,15 +610,8 @@ class RecipetoolCreateTests(RecipetoolBase):
         self._test_recipe_contents(recipefile, checkvars, inherits)
 
     def test_recipetool_create_python3_pep517_flit_core_buildapi(self):
-        # This test require python 3.11 or above for the tomllib module
-        # or tomli module to be installed
-        try:
-            import tomllib
-        except ImportError:
-            try:
-                import tomli
-            except ImportError:
-                self.skipTest('Test requires python 3.11 or above for tomllib module or tomli module')
+        # This test require python 3.11 or above for the tomllib module or tomli module to be installed
+        needTomllib(self)
 
         # Test creating python3 package from tarball (using flit_core.buildapi class)
         temprecipe = os.path.join(self.tempdir, 'recipe')
@@ -641,15 +632,8 @@ class RecipetoolCreateTests(RecipetoolBase):
         self._test_recipe_contents(recipefile, checkvars, inherits)
 
     def test_recipetool_create_python3_pep517_hatchling(self):
-        # This test require python 3.11 or above for the tomllib module
-        # or tomli module to be installed
-        try:
-            import tomllib
-        except ImportError:
-            try:
-                import tomli
-            except ImportError:
-                self.skipTest('Test requires python 3.11 or above for tomllib module or tomli module')
+        # This test require python 3.11 or above for the tomllib module or tomli module to be installed
+        needTomllib(self)
 
         # Test creating python3 package from tarball (using hatchling class)
         temprecipe = os.path.join(self.tempdir, 'recipe')
@@ -671,15 +655,8 @@ class RecipetoolCreateTests(RecipetoolBase):
         self._test_recipe_contents(recipefile, checkvars, inherits)
 
     def test_recipetool_create_python3_pep517_maturin(self):
-        # This test require python 3.11 or above for the tomllib module
-        # or tomli module to be installed
-        try:
-            import tomllib
-        except ImportError:
-            try:
-                import tomli
-            except ImportError:
-                self.skipTest('Test requires python 3.11 or above for tomllib module or tomli module')
+        # This test require python 3.11 or above for the tomllib module or tomli module to be installed
+        needTomllib(self)
 
         # Test creating python3 package from tarball (using maturin class)
         temprecipe = os.path.join(self.tempdir, 'recipe')
@@ -700,10 +677,11 @@ class RecipetoolCreateTests(RecipetoolBase):
         self._test_recipe_contents(recipefile, checkvars, inherits)
 
     def test_recipetool_create_github_tarball(self):
-        # Basic test to ensure github URL mangling doesn't apply to release tarballs
+        # Basic test to ensure github URL mangling doesn't apply to release tarballs.
+        # Deliberately use an older release of Meson at present so we don't need a toml parser.
         temprecipe = os.path.join(self.tempdir, 'recipe')
         os.makedirs(temprecipe)
-        pv = '0.32.0'
+        pv = '0.52.1'
         recipefile = os.path.join(temprecipe, 'python3-meson_%s.bb' % pv)
         srcuri = 'https://github.com/mesonbuild/meson/releases/download/%s/meson-%s.tar.gz' % (pv, pv)
         result = runCmd('recipetool create -o %s %s' % (temprecipe, srcuri))
@@ -744,27 +722,14 @@ class RecipetoolCreateTests(RecipetoolBase):
     def test_recipetool_create_git_srcbranch(self):
         self._test_recipetool_create_git('git://git.yoctoproject.org/matchbox-keyboard;protocol=https', 'matchbox-keyboard-0-1')
 
-
-class RecipetoolTests(RecipetoolBase):
-
-    @classmethod
-    def setUpClass(cls):
-        import sys
-
-        super(RecipetoolTests, cls).setUpClass()
-        bb_vars = get_bb_vars(['BBPATH'])
-        cls.bbpath = bb_vars['BBPATH']
-        libpath = os.path.join(get_bb_var('COREBASE'), 'scripts', 'lib', 'recipetool')
-        sys.path.insert(0, libpath)
+    def _go_urifiy(self, url, version, modulepath = None, pathmajor = None, subdir = None):
+        modulepath = ",path='%s'" % modulepath if len(modulepath) else ''
+        pathmajor = ",pathmajor='%s'" % pathmajor if len(pathmajor) else ''
+        subdir = ",subdir='%s'" % subdir if len(subdir) else ''
+        return "${@go_src_uri('%s','%s'%s%s%s)}" % (url, version, modulepath, pathmajor, subdir)
 
     def test_recipetool_create_go(self):
         # Basic test to check go recipe generation
-        def urifiy(url, version, modulepath = None, pathmajor = None, subdir = None):
-            modulepath = ",path='%s'" % modulepath if len(modulepath) else ''
-            pathmajor = ",pathmajor='%s'" % pathmajor if len(pathmajor) else ''
-            subdir = ",subdir='%s'" % subdir if len(subdir) else ''
-            return "${@go_src_uri('%s','%s'%s%s%s)}" % (url, version, modulepath, pathmajor, subdir)
-
         temprecipe = os.path.join(self.tempdir, 'recipe')
         os.makedirs(temprecipe)
 
@@ -932,7 +897,7 @@ class RecipetoolTests(RecipetoolBase):
 
         src_uri = set()
         for d in dependencies:
-            src_uri.add(urifiy(*d))
+            src_uri.add(self._go_urifiy(*d))
 
         checkvars = {}
         checkvars['GO_DEPENDENCIES_SRC_URI'] = src_uri
@@ -940,7 +905,73 @@ class RecipetoolTests(RecipetoolBase):
         self.assertTrue(os.path.isfile(deps_require_file))
         self._test_recipe_contents(deps_require_file, checkvars, [])
 
+    def test_recipetool_create_go_replace_modules(self):
+        # Check handling of replaced modules
+        temprecipe = os.path.join(self.tempdir, 'recipe')
+        os.makedirs(temprecipe)
 
+        recipefile = os.path.join(temprecipe, 'openapi-generator_git.bb')
+        deps_require_file = os.path.join(temprecipe, 'openapi-generator', 'go-modules.inc')
+        lics_require_file = os.path.join(temprecipe, 'openapi-generator', 'go-licenses.inc')
+        modules_txt_file = os.path.join(temprecipe, 'openapi-generator', 'modules.txt')
+
+        srcuri = 'https://github.com/OpenAPITools/openapi-generator.git'
+        srcrev = "v7.2.0"
+        srcbranch = "master"
+        srcsubdir = "samples/openapi3/client/petstore/go"
+
+        result = runCmd('recipetool create -o %s %s -S %s -B %s --src-subdir %s' % (temprecipe, srcuri, srcrev, srcbranch, srcsubdir))
+
+        self.maxDiff = None
+        inherits = ['go-vendor']
+
+        checkvars = {}
+        checkvars['GO_IMPORT'] = "github.com/OpenAPITools/openapi-generator/samples/openapi3/client/petstore/go"
+        checkvars['SRC_URI'] = {'git://${GO_IMPORT};destsuffix=git/src/${GO_IMPORT};nobranch=1;name=${BPN};protocol=https',
+                                'file://modules.txt'}
+
+        self.assertNotIn('Traceback', result.output)
+        self.assertIn('No license file was detected for the main module', result.output)
+        self.assertTrue(os.path.isfile(recipefile))
+        self._test_recipe_contents(recipefile, checkvars, inherits)
+
+        # make sure that dependencies don't mention local directory ./go-petstore
+        dependencies = \
+            [   ('github.com/stretchr/testify','v1.8.4', '', '', ''),
+                ('go.googlesource.com/oauth2','v0.10.0','golang.org/x/oauth2', '', ''),
+                ('github.com/davecgh/go-spew','v1.1.1', '', '', ''),
+                ('github.com/golang/protobuf','v1.5.3', '', '', ''),
+                ('github.com/kr/pretty','v0.3.0', '', '', ''),
+                ('github.com/pmezard/go-difflib','v1.0.0', '', '', ''),
+                ('github.com/rogpeppe/go-internal','v1.9.0', '', '', ''),
+                ('go.googlesource.com/net','v0.12.0','golang.org/x/net', '', ''),
+                ('github.com/golang/appengine','v1.6.7','google.golang.org/appengine', '', ''),
+                ('go.googlesource.com/protobuf','v1.31.0','google.golang.org/protobuf', '', ''),
+                ('gopkg.in/check.v1','v1.0.0-20201130134442-10cb98267c6c', '', '', ''),
+                ('gopkg.in/yaml.v3','v3.0.1', '', '', ''),
+            ]
+
+        src_uri = set()
+        for d in dependencies:
+            src_uri.add(self._go_urifiy(*d))
+
+        checkvars = {}
+        checkvars['GO_DEPENDENCIES_SRC_URI'] = src_uri
+
+        self.assertTrue(os.path.isfile(deps_require_file))
+        self._test_recipe_contents(deps_require_file, checkvars, [])
+
+class RecipetoolTests(RecipetoolBase):
+
+    @classmethod
+    def setUpClass(cls):
+        import sys
+
+        super(RecipetoolTests, cls).setUpClass()
+        bb_vars = get_bb_vars(['BBPATH'])
+        cls.bbpath = bb_vars['BBPATH']
+        libpath = os.path.join(get_bb_var('COREBASE'), 'scripts', 'lib', 'recipetool')
+        sys.path.insert(0, libpath)
 
     def _copy_file_with_cleanup(self, srcfile, basedstdir, *paths):
         dstdir = basedstdir

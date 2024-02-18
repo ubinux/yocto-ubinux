@@ -32,19 +32,27 @@ SRC_URI = "https://download.qemu.org/${BPN}-${PV}.tar.xz \
            file://0010-hw-pvrdma-Protect-against-buggy-or-malicious-guest-d.patch \
            file://0002-linux-user-Replace-use-of-lfs64-related-functions-an.patch \
            file://fixedmeson.patch \
-           file://fixmips.patch \
-           file://0001-vfio-Include-libgen.h-for-basename-API.patch \
            file://no-pip.patch \
+           file://fix_segv.patch \
            file://qemu-guest-agent.init \
            file://qemu-guest-agent.udev \
            "
 UPSTREAM_CHECK_REGEX = "qemu-(?P<pver>\d+(\.\d+)+)\.tar"
 
+# SDK_OLDEST_KERNEL is set below 4.17, which is the minimum version required by QEMU >= 8.1
+# This is due to two MMAP flags being used at certain points
+SRC_URI:append:class-nativesdk = " \
+	file://0011-linux-user-workaround-for-missing-MAP_FIXED_NOREPLAC.patch \
+	file://0012-linux-user-workaround-for-missing-MAP_SHARED_VALIDAT.patch \
+        "
 
-SRC_URI[sha256sum] = "541526a764576eb494d2ff5ec46aeb253e62ea29035d1c23c0a8af4e6cd4f087"
+# Support building and using native version on pre 4.17 kernels
+SRC_URI:append:class-native = " \
+	file://0011-linux-user-workaround-for-missing-MAP_FIXED_NOREPLAC.patch \
+	file://0012-linux-user-workaround-for-missing-MAP_SHARED_VALIDAT.patch \
+        "
 
-SRC_URI:append:class-target = " file://cross.patch"
-SRC_URI:append:class-nativesdk = " file://cross.patch"
+SRC_URI[sha256sum] = "8562751158175f9d187c5f22b57555abe3c870f0325c8ced12c34c6d987729be"
 
 CVE_STATUS[CVE-2017-5957] = "cpe-incorrect: Applies against virglrender < 0.6.0 and not qemu itself"
 
@@ -117,8 +125,13 @@ EXTRA_OECONF = " \
     --extra-ldflags='${LDFLAGS}' \
     --disable-download \
     --disable-docs \
+    --host-cc='${BUILD_CC}' \
+    --disable-af-xdp \
     ${PACKAGECONFIG_CONFARGS} \
     "
+
+EXTRA_OECONF:append:class-target = " --cross-prefix=${HOST_PREFIX}"
+EXTRA_OECONF:append:class-nativesdk = " --cross-prefix=${HOST_PREFIX}"
 
 B = "${WORKDIR}/build"
 
@@ -133,6 +146,7 @@ do_configure:prepend:class-native() {
 }
 
 do_configure() {
+    export PKG_CONFIG=pkg-config
     ${S}/configure ${EXTRA_OECONF}
 }
 do_configure[cleandirs] += "${B}"
@@ -176,7 +190,7 @@ do_install:append() {
 
 # Disable kvm/virgl/mesa on targets that do not support it
 PACKAGECONFIG:remove:darwin = "kvm virglrenderer epoxy gtk+"
-PACKAGECONFIG:remove:mingw32 = "kvm virglrenderer epoxy gtk+"
+PACKAGECONFIG:remove:mingw32 = "kvm virglrenderer epoxy gtk+ pie"
 
 PACKAGECONFIG[sdl] = "--enable-sdl,--disable-sdl,libsdl2"
 PACKAGECONFIG[png] = "--enable-png,--disable-png,libpng"
@@ -237,6 +251,7 @@ PACKAGECONFIG[brlapi] = "--enable-brlapi,--disable-brlapi"
 PACKAGECONFIG[jack] = "--enable-jack,--disable-jack,jack,"
 PACKAGECONFIG[debuginfo] = "--enable-libdw,--disable-libdw,elfutils"
 PACKAGECONFIG[pipewire] = "--enable-pipewire,--disable-pipewire,pipewire"
+PACKAGECONFIG[sndio] = "--enable-sndio,--disable-sndio,sndio"
 
 INSANE_SKIP:${PN}-common = "arch"
 

@@ -90,6 +90,7 @@ cpp_link_args = ${@meson_array('LDFLAGS', d)}
 
 [properties]
 needs_exe_wrapper = true
+sys_root = '${STAGING_DIR_HOST}'
 
 [host_machine]
 system = '${@meson_operating_system('HOST_OS', d)}'
@@ -152,9 +153,6 @@ meson_do_configure() {
     # https://github.com/mesonbuild/meson/commit/ef9aeb188ea2bc7353e59916c18901cde90fa2b3
     unset LD
 
-    # Work around "Meson fails if /tmp is mounted with noexec #2972"
-    mkdir -p "${B}/meson-private/tmp"
-    export TMPDIR="${B}/meson-private/tmp"
     bbnote Executing meson ${EXTRA_OEMESON}...
     if ! meson setup ${MESONOPTS} "${MESON_SOURCEPATH}" "${B}" ${MESON_CROSS_FILE} ${EXTRA_OEMESON}; then
         bbfatal_log meson failed

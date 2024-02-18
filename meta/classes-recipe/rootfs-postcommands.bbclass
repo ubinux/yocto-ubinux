@@ -55,19 +55,14 @@ inherit image-artifact-names
 # deterministic. Package installs are not deterministic, causing the ordering
 # of entries to change between builds. In case that this isn't desired,
 # the command can be overridden.
+SORT_PASSWD_POSTPROCESS_COMMAND ??= "tidy_shadowutils_files"
+ROOTFS_POSTPROCESS_COMMAND += '${SORT_PASSWD_POSTPROCESS_COMMAND}'
+
 #
 # Note that useradd-staticids.bbclass has to be used to ensure that
 # the numeric IDs of dynamically created entries remain stable.
 #
-# We want this to run as late as possible, in particular after
-# systemd_sysusers_create and set_user_group. Using :append is not
-# enough for that, set_user_group is added that way and would end
-# up running after us.
-SORT_PASSWD_POSTPROCESS_COMMAND ??= "tidy_shadowutils_files"
-python () {
-    d.appendVar('ROOTFS_POSTPROCESS_COMMAND', ' ${SORT_PASSWD_POSTPROCESS_COMMAND}')
-    d.appendVar('ROOTFS_POSTPROCESS_COMMAND', ' rootfs_reproducible')
-}
+ROOTFS_POSTPROCESS_COMMAND += 'rootfs_reproducible'
 
 # Resolve the ID as described in the sysusers.d(5) manual: ID can be a numeric
 # uid, a couple uid:gid or uid:groupname or it is '-' meaning leaving it
@@ -111,12 +106,11 @@ def compare_users(user, e_user):
     # user and e_user must not have None values. Unset values must be '-'.
     (name, uid, gid, comment, homedir, ushell) = user
     (e_name, e_uid, e_gid, e_comment, e_homedir, e_ushell) = e_user
-    # Ignore 'uid', 'gid' or 'comment' if they are not set
+    # Ignore 'uid', 'gid' or 'homedir' if they are not set
     # Ignore 'shell' and 'ushell' if one is not set
     return name == e_name \
         and (uid == '-' or uid == e_uid) \
         and (gid == '-' or gid == e_gid) \
-        and (comment == '-' or e_comment == '-' or comment.lower() == e_comment.lower()) \
         and (homedir == '-' or e_homedir == '-' or homedir == e_homedir) \
         and (ushell == '-' or e_ushell == '-' or ushell == e_ushell)
 
@@ -367,12 +361,6 @@ remove_init_link () {
 		LINKFILE=${IMAGE_ROOTFS}`readlink ${IMAGE_ROOTFS}/sbin/init`
 		rm ${IMAGE_ROOTFS}/sbin/init
 		cp $LINKFILE ${IMAGE_ROOTFS}/sbin/init
-	fi
-}
-
-make_zimage_symlink_relative () {
-	if [ -L ${IMAGE_ROOTFS}/boot/zImage ]; then
-		(cd ${IMAGE_ROOTFS}/boot/ && for i in `ls zImage-* | sort`; do ln -sf $i zImage; done)
 	fi
 }
 
