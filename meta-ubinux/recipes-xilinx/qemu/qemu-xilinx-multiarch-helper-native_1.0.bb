@@ -1,7 +1,7 @@
 SUMMARY = "Helper scripts for executing a multi-arch instance of Xilinx QEMU"
 LICENSE = "MIT"
 LIC_FILES_CHKSUM = "file://${COMMON_LICENSE_DIR}/MIT;md5=0835ade698e0bcf8506ecda2f7b4f302"
-RDEPENDS_${PN} = "qemu-xilinx-native"
+RDEPENDS:${PN} = "qemu-xilinx-native"
 
 inherit native
 
