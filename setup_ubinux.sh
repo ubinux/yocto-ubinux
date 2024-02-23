@@ -13,7 +13,7 @@ fi
 
 MACHINE=$1
 BUILD=$2
-DOWNLOADS=/ubinux-dev/ubinux003/common/downloads/202402
+DOWNLOADS=/ubinux-dev/ubinux003/common/downloads/202403
 export TEMPLATECONF="meta-ubinux/conf/templates/default"
 
 #. trunk/poky-ubinux/oe-init-build-env ${BUILD}
