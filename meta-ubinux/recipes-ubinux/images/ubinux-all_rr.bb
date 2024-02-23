@@ -583,7 +583,6 @@ UBINUX_PKGS = " \
 	util-linux-uuidd \
 	xserver-xorg-extension-glx \
 	xserver-xorg-module-libwfb \
-	xserver-xorg-xvfb \
 	xev \
 	gradm \
 	libxml-simple-perl \
