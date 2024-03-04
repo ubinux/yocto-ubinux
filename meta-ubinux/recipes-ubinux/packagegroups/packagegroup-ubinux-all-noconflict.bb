@@ -171,6 +171,7 @@ UBINUX_PKGS_NOCONFLICT = " \
 	man-db \
 	man-pages \
 	makedumpfile \
+	mdadm \
 	mesa-demos \
 	minicom \
 	mingetty \

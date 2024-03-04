@@ -178,6 +178,7 @@ UBINUX_PKGS = " \
 	lynis \
 	man-db \
 	man-pages \
+	mdadm \
 	makedumpfile \
 	mesa-demos \
 	minicom \
