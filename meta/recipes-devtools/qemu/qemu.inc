@@ -33,7 +33,13 @@ SRC_URI = "https://download.qemu.org/${BPN}-${PV}.tar.xz \
            file://0002-linux-user-Replace-use-of-lfs64-related-functions-an.patch \
            file://fixedmeson.patch \
            file://no-pip.patch \
-           file://fix_segv.patch \
+           file://4a8579ad8629b57a43daa62e46cc7af6e1078116.patch \
+           file://0001-linux-user-x86_64-Handle-the-vsyscall-page-in-open_s.patch \
+           file://0002-linux-user-loongarch64-Remove-TARGET_FORCE_SHMLBA.patch \
+           file://0003-linux-user-Add-strace-for-shmat.patch \
+           file://0004-linux-user-Rewrite-target_shmat.patch \
+           file://0005-tests-tcg-Check-that-shmat-does-not-break-proc-self-.patch \
+           file://CVE-2023-6683.patch \
            file://qemu-guest-agent.init \
            file://qemu-guest-agent.udev \
            "
@@ -53,8 +59,6 @@ SRC_URI:append:class-native = " \
         "
 
 SRC_URI[sha256sum] = "8562751158175f9d187c5f22b57555abe3c870f0325c8ced12c34c6d987729be"
-
-CVE_STATUS[CVE-2017-5957] = "cpe-incorrect: Applies against virglrender < 0.6.0 and not qemu itself"
 
 CVE_STATUS[CVE-2007-0998] = "not-applicable-config: The VNC server can expose host files uder some circumstances. We don't enable it by default."
 
