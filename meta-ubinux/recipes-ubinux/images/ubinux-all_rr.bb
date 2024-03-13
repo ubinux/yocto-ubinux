@@ -44,7 +44,7 @@ UBINUX_PKGS = " \
 	babeld \
 	blktool \
 	bluez5 \
-	bmap-tools \
+	bmaptool \
 	boost \
 	byacc \
 	pbzip2 \

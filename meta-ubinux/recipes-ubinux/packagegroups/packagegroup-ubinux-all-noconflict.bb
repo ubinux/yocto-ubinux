@@ -34,7 +34,7 @@ UBINUX_PKGS_NOCONFLICT = " \
 	babeld \
 	blktool \
 	bluez5 \
-	bmap-tools \
+	bmaptool \
 	brotli \
 	boost \
 	byacc \
