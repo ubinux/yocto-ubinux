@@ -14,7 +14,7 @@ metas=meta-oe
 [meta-oe]
 GITURL=ssh://10.130.70.199/ubinux-dev/common/ubinux-layers/yocto/meta-openembedded.git
 BRANCH=master
-HEADID=33236c4c1bd18b52d21417f3f6f38ddcec67e2a9
+HEADID=5f50417498394f2ddfb5900aced6b2777daf82c8
 FILES=meta-oe/conf
  meta-oe/COPYING.MIT
  meta-oe/licenses/
@@ -222,7 +222,6 @@ FILES=meta-oe/conf
  meta-oe/recipes-graphics/xorg-app/xrdb_1.2.2.bb
  meta-oe/recipes-graphics/xorg-app/xsetroot_1.1.2.bb
  meta-oe/recipes-graphics/xorg-app/twm_1.0.12.bb
- meta-oe/recipes-graphics/xorg-app/setxkbmap_1.3.1.bb
  meta-oe/recipes-graphics/xorg-app/xgamma_1.0.7.bb
  meta-oe/recipes-graphics/xorg-app/xkbevd_1.1.5.bb
  meta-oe/recipes-graphics/xorg-app/xkbprint_1.0.6.bb
@@ -375,6 +374,7 @@ FILES=meta-oe/conf
  meta-filesystems/recipes-utils/fatresize/
  meta-filesystems/recipes-utils/f2fs-tools
  meta-filesystems/recipes-support/fuse/
+ meta-filesystems/recipes-support/python3-looseversion/
  
  meta-initramfs/conf/
  meta-initramfs/COPYING.MIT
@@ -452,7 +452,7 @@ FILES=meta-oe/conf
 [meta-freescale]
 GITURL=ssh://10.130.70.199/ubinux-dev/common/ubinux-layers/yocto/meta-freescale
 BRANCH=master
-HEADID=cce485647cb5331cab0c6efc189a37e01556f609
+HEADID=d649a5de39f6ed010383c1e969da5c53c3671f61
 FILES=conf/layer.conf
  custom-licenses/
  classes/
@@ -547,7 +547,7 @@ FILES=conf/layer.conf
 [meta-virtualization]
 GITURL=ssh://10.130.70.199/ubinux-dev/common/ubinux-layers/yocto/meta-virtualization
 BRANCH=master
-HEADID=bd67612b66412754b092f336345470dfeda83c29
+HEADID=e7f9c2dd2f9f4ac95942b69c05ed8f5d0494edbf
 FILES=conf/layer.conf
  classes/
  files/
@@ -562,7 +562,7 @@ FILES=conf/layer.conf
 [meta-selinux]
 GITURL=ssh://10.130.70.199/ubinux-dev/common/ubinux-layers/yocto/meta-selinux
 BRANCH=master
-HEADID=39a5525a22442b5766154f46852cd37ef2d23699
+HEADID=7fc76cf77b007a3f79b7369ce578d11270aef9c2
 FILES=conf/layer.conf
 
 [meta-security]
@@ -602,7 +602,7 @@ FILES=conf/layer.conf
 [meta-spdxscanner]
 GITURL=ssh://10.130.70.199/ubinux-dev/common/ubinux-layers/yocto/meta-spdxscanner
 BRANCH=master
-HEADID=2c1d4a1ec15d2bde215e0c80ebf5e35c16252fb8
+HEADID=b6af6cb1bf106ced71b966f012b6708973729283
 FILES=conf/layer.conf
  classes
  recipes-devtools/synopsys/
@@ -610,7 +610,7 @@ FILES=conf/layer.conf
 [meta-swupdate]
 GITURL=ssh://10.130.70.199/ubinux-dev/common/ubinux-layers/yocto/meta-swupdate
 BRANCH=master
-HEADID=62d5de38f66d3a5baadb207b3e0303cb9464a1f8
+HEADID=fb1243d5a0f3b322bec9098089a66b3956afa909
 FILES=conf/layer.conf
  recipes-support/swupdate/
  recipes-bsp/u-boot/
@@ -619,7 +619,7 @@ FILES=conf/layer.conf
 [meta-java]
 GITURL=ssh://10.130.70.199/ubinux-dev/common/ubinux-layers/yocto/meta-java
 BRANCH=master
-HEADID=c799db95582750b978111c86fd4a5f87e96de1b0
+HEADID=c41adcb6cbfcfa04bf4fa689a3dfcad0afe6b86a
 FILES=conf/layer.conf
  classes
  conf/
