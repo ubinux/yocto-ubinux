@@ -10,19 +10,16 @@ HOMEPAGE = "https://www.intel.com/content/www/us/en/developer/topic-technology/o
 SECTION = "console/tools"
 
 LICENSE = "Intel | BSD-3-Clause | GPL-2.0-only"
-LIC_FILES_CHKSUM = "file://source/compiler/aslcompile.c;beginline=7;endline=150;md5=79a69059b499bccc70a484459549758f"
+LIC_FILES_CHKSUM = "file://source/compiler/aslcompile.c;beginline=7;endline=150;md5=05eb845b15a27440410f456adc2ed082"
 
 COMPATIBLE_HOST = "(i.86|x86_64|arm|aarch64).*-linux"
 
 DEPENDS = "m4-native flex-native bison-native"
 
-SRC_URI = "https://downloadmirror.intel.com/783534/acpica-unix-${PV}.tar.gz"
-SRC_URI[sha256sum] = "86876a745e3d224dcfd222ed3de465b47559e85811df2db9820ef09a9dff5cce"
+SRC_URI = "git://github.com/acpica/acpica;protocol=https;branch=master"
+SRCREV = "170fc3076a86777077637f10b05c32ac21ac13aa"
 
-UPSTREAM_CHECK_URI = "https://www.intel.com/content/www/us/en/download/776303/acpi-component-architecture-downloads-unix-format-source-code-and-build-environment-with-an-intel-license.html"
-UPSTREAM_VERSION_UNKNOWN = "1"
-
-S = "${WORKDIR}/acpica-unix-${PV}"
+S = "${WORKDIR}/git"
 
 inherit update-alternatives
 
