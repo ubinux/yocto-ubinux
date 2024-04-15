@@ -587,6 +587,7 @@ FILES=conf
  dynamic-layers/meta-perl/recipes-security/bastille/
  dynamic-layers/meta-python/recipes-security/fail2ban/
  dynamic-layers/meta-python/recipes-devtools/python/python3-pyinotify_0.9.6.bb
+ dynamic-layers/meta-python/recipes-devtools/python/python3-pyinotify/
  
 
 [meta-qt5]
