@@ -14,7 +14,7 @@ metas=meta-oe
 [meta-oe]
 GITURL=http://git.openembedded.org/meta-openembedded
 BRANCH=master
-HEADID=a6bcdca5b4681906b00e12f6bc4af465c85bad9f
+HEADID=a7c8ce7f674008db4d7013557ec375a35226f43f
 FILES=meta-oe/conf
  meta-oe/COPYING.MIT
  meta-oe/licenses/
@@ -452,7 +452,7 @@ FILES=meta-oe/conf
 [meta-freescale]
 GITURL=https://git.yoctoproject.org/git/meta-freescale
 BRANCH=master
-HEADID=4968b000daa74e959da40ed6fccd25a22eb39f61
+HEADID=f52f8cf91400799ae9ac1495a8605db42c7d16da
 FILES=conf/layer.conf
  custom-licenses/
  classes/
@@ -486,7 +486,7 @@ FILES=meta-cgl-common/conf/layer.conf
 [meta-cloud-services]
 GITURL=http://git.yoctoproject.org/git/meta-cloud-services
 BRANCH=master
-HEADID=f7bc3f63a0d2ecdc9c4e165f80d15d4cc0b331ea
+HEADID=e17a391cfd9bc9caa6002f4b5283f6da5b7476cf
 FILES=conf/layer.conf
  classes/
  meta-openstack/classes/default_configs.bbclass
@@ -547,7 +547,7 @@ FILES=conf/layer.conf
 [meta-virtualization]
 GITURL=http://git.yoctoproject.org/git/meta-virtualization
 BRANCH=master
-HEADID=7a3b0b7ae1ac1a721369ee3f7a73b40b73510099
+HEADID=b7e77b69d309d8ee985720e88b19b6e9cf03fe63
 FILES=conf/layer.conf
  classes/
  files/
@@ -568,7 +568,7 @@ FILES=conf/layer.conf
 [meta-security]
 GITURL=http://git.yoctoproject.org/git/meta-security
 BRANCH=master
-HEADID=283a773f24cedacb45def943a455bc3607f8a7a1
+HEADID=d1522af21da8d799a8f397aef6359b5ed4dc07fe
 FILES=conf
  classes/sanity-meta-security.bbclass
  meta-tpm/classes/sanity-meta-tpm.bbclass
@@ -602,7 +602,7 @@ FILES=conf/layer.conf
 [meta-spdxscanner]
 GITURL=https://git.yoctoproject.org/git/meta-spdxscanner
 BRANCH=master
-HEADID=	b6e3ad795f77dfa7f3b4e5cfc1d02a98b9b37a4c 
+HEADID=2c376d72a1aed6b335aebd3bb28663f973a11fa9
 FILES=conf/layer.conf
  classes
  recipes-devtools/synopsys/
