@@ -51,11 +51,11 @@ FILES=meta-oe/conf
  meta-oe/recipes-graphics/xorg-app/xterm_388.bb
  meta-oe/recipes-graphics/xorg-app/xterm/
  meta-oe/recipes-graphics/xorg-app/xwd_1.0.9.bb
- meta-oe/recipes-graphics/xorg-app/iceauth_1.0.9.bb
+ meta-oe/recipes-graphics/xorg-app/iceauth_1.0.10.bb
  meta-oe/recipes-graphics/xorg-app/setxkbmap_1.3.4.bb
  meta-oe/recipes-graphics/xorg-data/
  meta-oe/recipes-graphics/xorg-driver/xf86-input-void_1.4.2.bb
- meta-oe/recipes-graphics/xorg-lib/libxaw_1.0.15.bb
+ meta-oe/recipes-graphics/xorg-lib/libxaw_1.0.16.bb
  meta-oe/recipes-graphics/xorg-app/sessreg_1.1.3.bb
  meta-oe/recipes-graphics/xorg-app/sessreg/
  meta-oe/recipes-graphics/libsdl/libsdl_1.2.15.bb
@@ -228,7 +228,7 @@ FILES=meta-oe/conf
  meta-oe/recipes-graphics/xorg-app/xkbutils_1.0.5.bb
  meta-oe/recipes-graphics/xorg-app/xlsatoms_1.1.4.bb
  meta-oe/recipes-graphics/xorg-app/xlsclients_1.1.5.bb
- meta-oe/recipes-graphics/xorg-app/xrefresh_1.0.7.bb
+ meta-oe/recipes-graphics/xorg-app/xrefresh_1.1.0.bb
  meta-oe/recipes-graphics/xorg-app/xsetroot_1.1.3.bb
  meta-oe/recipes-graphics/xorg-app/xstdcmap_1.0.5.bb
  meta-oe/recipes-graphics/xorg-app/xwud_1.0.6.bb
