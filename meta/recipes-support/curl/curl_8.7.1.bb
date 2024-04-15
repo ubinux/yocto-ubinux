@@ -15,7 +15,7 @@ SRC_URI = " \
     file://disable-tests \
     file://no-test-timeout.patch \
 "
-SRC_URI[sha256sum] = "3ccd55d91af9516539df80625f818c734dc6f2ecf9bada33c76765e99121db15"
+SRC_URI[sha256sum] = "6fea2aac6a4610fbd0400afb0bcddbe7258a64c63f1f68e5855ebc0c659710cd"
 
 # Curl has used many names over the years...
 CVE_PRODUCT = "haxx:curl haxx:libcurl curl:curl curl:libcurl libcurl:libcurl daniel_stenberg:curl"
@@ -79,7 +79,7 @@ EXTRA_OECONF = " \
     ${@'--without-ssl' if (bb.utils.filter('PACKAGECONFIG', 'gnutls mbedtls openssl', d) == '') else ''} \
 "
 
-do_install:append:class-target() {
+fix_absolute_paths () {
 	# cleanup buildpaths from curl-config
 	sed -i \
 	    -e 's,--sysroot=${STAGING_DIR_TARGET},,g' \
@@ -87,6 +87,14 @@ do_install:append:class-target() {
 	    -e 's|${DEBUG_PREFIX_MAP}||g' \
 	    -e 's|${@" ".join(d.getVar("DEBUG_PREFIX_MAP").split())}||g' \
 	    ${D}${bindir}/curl-config
+}
+
+do_install:append:class-target() {
+	fix_absolute_paths
+}
+
+do_install:append:class-nativesdk() {
+	fix_absolute_paths
 }
 
 do_compile_ptest() {
