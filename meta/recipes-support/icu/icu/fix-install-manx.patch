@@ -1,4 +1,4 @@
-From a6ddabc8cadb76bfe2d2e374a6702442cfe51cce Mon Sep 17 00:00:00 2001
+From 2d544cac238eccbfc32cafc9502ddf6e00994211 Mon Sep 17 00:00:00 2001
 From: Ross Burton <ross.burton@intel.com>
 Date: Fri, 9 Oct 2015 17:50:41 +0100
 Subject: [PATCH] icu: fix install race
@@ -11,15 +11,16 @@ and one process tries to chown a file that the other process has just deleted.
 Also install-manx should be a phony target, and for clarity use $^ instead of $?
 in the install command.
 
-Upstream-Status: Pending
-Signed-off-by: Ross Burton <ross.burton@intel.com>
+Upstream ticket: https://unicode-org.atlassian.net/jira/software/c/projects/ICU/issues/ICU-21172
 
+Upstream-Status: Submitted [https://github.com/unicode-org/icu/pull/2966]
+Signed-off-by: Ross Burton <ross.burton@intel.com>
 ---
- source/Makefile.in | 8 ++++----
+ Makefile.in | 8 ++++----
  1 file changed, 4 insertions(+), 4 deletions(-)
 
 diff --git a/Makefile.in b/Makefile.in
-index be9435b..ada20d7 100644
+index 8366f01..79b91c9 100644
 --- a/Makefile.in
 +++ b/Makefile.in
 @@ -77,7 +77,7 @@ EXTRA_DATA =

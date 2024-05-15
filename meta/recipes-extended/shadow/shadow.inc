@@ -25,7 +25,7 @@ SRC_URI:append:class-target = " \
 SRC_URI:append:class-native = " \
            file://commonio.c-fix-unexpected-open-failure-in-chroot-env.patch \
            "
-SRC_URI[sha256sum] = "a305edf5d19bddbdf5e836d2d609fa8bff2d35458819de4d9f06306a1cf24342"
+SRC_URI[sha256sum] = "377fe0d7c1a0aa5e3514c08fdf5ddc70c9dcbb391678c2134445ed97326bcc26"
 
 # Additional Policy files for PAM
 PAM_SRC_URI = "file://pam.d/chfn \
@@ -40,7 +40,7 @@ inherit autotools gettext github-releases pkgconfig
 
 export CONFIG_SHELL="/bin/sh"
 
-EXTRA_OECONF += "--without-libcrack \
+EXTRA_OECONF += " \
                  --with-group-name-max-length=24 \
                  --enable-subordinate-ids=yes \
                  --without-sssd \
@@ -111,7 +111,7 @@ do_install() {
 	sed -i 's/^#ENCRYPT_METHOD.*$/ENCRYPT_METHOD SHA512/' ${D}${sysconfdir}/login.defs
 
 	install -d ${D}${sysconfdir}/default
-	install -m 0644 ${WORKDIR}/useradd ${D}${sysconfdir}/default
+	install -m 0644 ${UNPACKDIR}/useradd ${D}${sysconfdir}/default
 }
 
 do_install:append() {
@@ -121,11 +121,11 @@ do_install:append() {
 	install -m 0775 -d ${D}${localstatedir}/spool/mail
 	chown root:mail ${D}${localstatedir}/spool/mail
 
-	if [ -e ${WORKDIR}/pam.d ]; then
+	if [ -e ${UNPACKDIR}/pam.d ]; then
 		install -d ${D}${sysconfdir}/pam.d/
-		install -m 0644 ${WORKDIR}/pam.d/* ${D}${sysconfdir}/pam.d/
+		install -m 0644 ${UNPACKDIR}/pam.d/* ${D}${sysconfdir}/pam.d/
 		# Remove defaults that are not used when supporting PAM.
-		sed -i -f ${WORKDIR}/login_defs_pam.sed ${D}${sysconfdir}/login.defs
+		sed -i -f ${UNPACKDIR}/login_defs_pam.sed ${D}${sysconfdir}/login.defs
 	fi
 
 	install -d ${D}${sbindir} ${D}${base_sbindir} ${D}${base_bindir}
@@ -168,6 +168,14 @@ do_install:append:class-native() {
 SYSROOT_DIRS:append:class-native = " ${STAGING_DIR_NATIVE}/lib-shadow-deps/"
 INSANE_SKIP:${PN}:class-native = "already-stripped"
 
+do_install:append:class-nativesdk() {
+	oe_runmake -C ${B}/man DESTDIR="${D}" sbindir="${base_sbindir}" usbindir="${sbindir}" install-man
+}
+
+do_install:append:class-target() {
+	oe_runmake -C ${B}/man DESTDIR="${D}" sbindir="${base_sbindir}" usbindir="${sbindir}" install-man
+}
+
 PACKAGES =+ "${PN}-base"
 FILES:${PN}-base = "\
     ${base_bindir}/login.shadow \
@@ -192,6 +200,10 @@ ALTERNATIVE_LINK_NAME[chpasswd] = "${sbindir}/chpasswd"
 ALTERNATIVE_LINK_NAME[vipw] = "${base_sbindir}/vipw"
 ALTERNATIVE_LINK_NAME[vigr] = "${base_sbindir}/vigr"
 ALTERNATIVE_LINK_NAME[nologin] = "${base_sbindir}/nologin"
+
+ALTERNATIVE:${PN}-doc = "chfn.1 chsh.1"
+ALTERNATIVE_LINK_NAME[chfn.1] = "${mandir}/man1/chfn.1"
+ALTERNATIVE_LINK_NAME[chsh.1] = "${mandir}/man1/chsh.1"
 
 ALTERNATIVE:${PN}-base = "newgrp groups login su"
 ALTERNATIVE_LINK_NAME[login] = "${base_bindir}/login"

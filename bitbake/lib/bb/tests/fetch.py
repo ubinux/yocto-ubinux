@@ -511,7 +511,8 @@ class MirrorUriTest(FetcherTest):
     mirrorvar = "http://.*/.* file:///somepath/downloads/ " \
                 "git://someserver.org/bitbake git://git.openembedded.org/bitbake " \
                 "https://.*/.* file:///someotherpath/downloads/ " \
-                "http://.*/.* file:///someotherpath/downloads/"
+                "http://.*/.* file:///someotherpath/downloads/ " \
+                "svn://svn.server1.com/ svn://svn.server2.com/"
 
     def test_urireplace(self):
         self.d.setVar("FILESPATH", ".")
@@ -534,6 +535,13 @@ class MirrorUriTest(FetcherTest):
         mirrors = bb.fetch2.mirror_from_string(self.mirrorvar)
         uris, uds = bb.fetch2.build_mirroruris(fetcher, mirrors, self.d)
         self.assertEqual(uris, ['file:///someotherpath/downloads/bitbake-1.0.tar.gz'])
+
+    def test_urilistsvn(self):
+        # Catch svn:// -> svn:// bug
+        fetcher = bb.fetch.FetchData("svn://svn.server1.com/isource/svnroot/reponame/tags/tagname;module=path_in_tagnamefolder;protocol=https;rev=2", self.d)
+        mirrors = bb.fetch2.mirror_from_string(self.mirrorvar)
+        uris, uds = bb.fetch2.build_mirroruris(fetcher, mirrors, self.d)
+        self.assertEqual(uris, ['svn://svn.server2.com/isource/svnroot/reponame/tags/tagname;module=path_in_tagnamefolder;protocol=https;rev=2'])
 
     def test_mirror_of_mirror(self):
         # Test if mirror of a mirror works
@@ -1493,6 +1501,12 @@ class FetchLatestVersionTest(FetcherTest):
             : "2.8",
     }
 
+    test_crate_uris = {
+        # basic example; version pattern "A.B.C+cargo-D.E.F"
+        ("cargo-c", "crate://crates.io/cargo-c/0.9.18+cargo-0.69")
+            : "0.9.29"
+   }
+
     @skipIfNoNetwork()
     def test_git_latest_versionstring(self):
         for k, v in self.test_git_uris.items():
@@ -1532,6 +1546,16 @@ class FetchLatestVersionTest(FetcherTest):
         finally:
             server.stop()
 
+    @skipIfNoNetwork()
+    def test_crate_latest_versionstring(self):
+        for k, v in self.test_crate_uris.items():
+            self.d.setVar("PN", k[0])
+            ud = bb.fetch2.FetchData(k[1], self.d)
+            pupver = ud.method.latest_versionstring(ud, self.d)
+            verstring = pupver[0]
+            self.assertTrue(verstring, msg="Could not find upstream version for %s" % k[0])
+            r = bb.utils.vercmp_string(v, verstring)
+            self.assertTrue(r == -1 or r == 0, msg="Package %s, version: %s <= %s" % (k[0], v, verstring))
 
 class FetchCheckStatusTest(FetcherTest):
     test_wget_uris = ["https://downloads.yoctoproject.org/releases/sato/sato-engine-0.1.tar.gz",

@@ -322,7 +322,7 @@ PACKAGES =+ "${PN}-amphion-vpu-license ${PN}-amphion-vpu \
              ${PN}-cnm-license ${PN}-cnm \
              ${PN}-atheros-license ${PN}-ar5523 ${PN}-ar9170 ${PN}-ath6k ${PN}-ath9k ${PN}-ath3k \
              ${PN}-carl9170 \
-             ${PN}-ar3k-license ${PN}-ar3k ${PN}-ath10k-license ${PN}-ath10k ${PN}-ath11k ${PN}-qca \
+             ${PN}-ar3k-license ${PN}-ar3k ${PN}-ath10k-license ${PN}-ath10k ${PN}-ath11k ${PN}-ath12k ${PN}-qca \
              \
              ${PN}-imx-sdma-license ${PN}-imx-sdma-imx6q ${PN}-imx-sdma-imx7d \
              \
@@ -343,6 +343,7 @@ PACKAGES =+ "${PN}-amphion-vpu-license ${PN}-amphion-vpu \
              ${PN}-ibt-license ${PN}-ibt \
              ${PN}-ibt-11-5 ${PN}-ibt-12-16 ${PN}-ibt-hw-37-7 ${PN}-ibt-hw-37-8 \
              ${PN}-ibt-17 \
+             ${PN}-ibt-18 \
              ${PN}-ibt-20 \
              ${PN}-ibt-misc \
              ${PN}-i915-license ${PN}-i915 \
@@ -487,6 +488,10 @@ FILES:${PN}-ath11k = " \
   ${nonarch_base_libdir}/firmware/ath11k \
 "
 
+FILES:${PN}-ath12k = " \
+  ${nonarch_base_libdir}/firmware/ath12k \
+"
+
 FILES:${PN}-qca = " \
   ${nonarch_base_libdir}/firmware/qca \
 "
@@ -494,6 +499,7 @@ FILES:${PN}-qca = " \
 RDEPENDS:${PN}-ar3k += "${PN}-ar3k-license ${PN}-atheros-license"
 RDEPENDS:${PN}-ath10k += "${PN}-ath10k-license"
 RDEPENDS:${PN}-ath11k += "${PN}-ath10k-license"
+RDEPENDS:${PN}-ath12k += "${PN}-ath10k-license"
 RDEPENDS:${PN}-qca += "${PN}-ath10k-license"
 
 # For ralink
@@ -1272,6 +1278,7 @@ LICENSE:${PN}-ibt-hw-37-8 = "Firmware-ibt_firmware"
 LICENSE:${PN}-ibt-11-5    = "Firmware-ibt_firmware"
 LICENSE:${PN}-ibt-12-16   = "Firmware-ibt_firmware"
 LICENSE:${PN}-ibt-17 = "Firmware-ibt_firmware"
+LICENSE:${PN}-ibt-18    = "Firmware-ibt_firmware"
 LICENSE:${PN}-ibt-20 = "Firmware-ibt_firmware"
 LICENSE:${PN}-ibt-misc    = "Firmware-ibt_firmware"
 
@@ -1281,6 +1288,7 @@ FILES:${PN}-ibt-hw-37-8 = "${nonarch_base_libdir}/firmware/intel/ibt-hw-37.8*.bs
 FILES:${PN}-ibt-11-5    = "${nonarch_base_libdir}/firmware/intel/ibt-11-5.sfi ${nonarch_base_libdir}/firmware/intel/ibt-11-5.ddc"
 FILES:${PN}-ibt-12-16   = "${nonarch_base_libdir}/firmware/intel/ibt-12-16.sfi ${nonarch_base_libdir}/firmware/intel/ibt-12-16.ddc"
 FILES:${PN}-ibt-17 = "${nonarch_base_libdir}/firmware/intel/ibt-17-*.sfi ${nonarch_base_libdir}/firmware/intel/ibt-17-*.ddc"
+FILES:${PN}-ibt-18      = "${nonarch_base_libdir}/firmware/intel/ibt-18-*.sfi ${nonarch_base_libdir}/firmware/intel/ibt-18-*.ddc"
 FILES:${PN}-ibt-20 = "${nonarch_base_libdir}/firmware/intel/ibt-20-*.sfi ${nonarch_base_libdir}/firmware/intel/ibt-20-*.ddc"
 FILES:${PN}-ibt-misc    = "${nonarch_base_libdir}/firmware/intel/ibt-*"
 
@@ -1289,6 +1297,7 @@ RDEPENDS:${PN}-ibt-hw-37.8 = "${PN}-ibt-license"
 RDEPENDS:${PN}-ibt-11-5    = "${PN}-ibt-license"
 RDEPENDS:${PN}-ibt-12-16   = "${PN}-ibt-license"
 RDEPENDS:${PN}-ibt-17 = "${PN}-ibt-license"
+RDEPENDS:${PN}-ibt-18      = "${PN}-ibt-license"
 RDEPENDS:${PN}-ibt-20 = "${PN}-ibt-license"
 RDEPENDS:${PN}-ibt-misc    = "${PN}-ibt-license"
 

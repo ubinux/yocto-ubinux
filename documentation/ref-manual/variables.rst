@@ -4048,7 +4048,7 @@ system and gives an overview of their function and contents.
       The default value of the variable is set as follows in the
       ``meta/conf/distro/defaultsetup.conf`` file::
 
-         INHERIT_DISTRO ?= "debian devshell sstate license"
+         INHERIT_DISTRO ?= "debian devshell sstate license remove-libtool create-spdx"
 
    :term:`INHIBIT_DEFAULT_DEPS`
       Prevents the default dependencies, namely the C compiler and standard
@@ -8813,6 +8813,10 @@ system and gives an overview of their function and contents.
       value so that executables built using the SDK also have the flags
       applied.
 
+   :term:`TARGET_DBGSRC_DIR`
+      Specifies the target path to debug source files. The default is
+      ``/usr/src/debug/${PN}/${PV}``.
+
    :term:`TARGET_FPU`
       Specifies the method for handling FPU code. For FPU-less targets,
       which include most ARM CPUs, the variable must be set to "soft". If
@@ -9766,6 +9770,12 @@ system and gives an overview of their function and contents.
       For more information, see
       ``meta-poky/conf/templates/default/local.conf.sample`` in the
       :term:`Source Directory`.
+
+   :term:`USERADD_DEPENDS`
+      Specifies a list of recipes that create users / groups (via
+      :term:`USERADD_PARAM` / :term:`GROUPADD_PARAM`) which a recipe
+      depends upon. This ensures that those users / groups are available
+      when building a recipe.
 
    :term:`USERADD_ERROR_DYNAMIC`
       If set to ``error``, forces the OpenEmbedded build system to produce

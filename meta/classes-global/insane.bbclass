@@ -298,7 +298,7 @@ def package_qa_check_libdir(d):
                         try:
                             elf.open()
                             messages.append("%s: found library in wrong location: %s" % (package, rel_path))
-                        except (oe.qa.NotELFFileError):
+                        except (oe.qa.NotELFFileError, FileNotFoundError):
                             pass
                 if exec_re.match(rel_path):
                     if libdir not in rel_path and libexecdir not in rel_path:
@@ -307,7 +307,7 @@ def package_qa_check_libdir(d):
                         try:
                             elf.open()
                             messages.append("%s: found library in wrong location: %s" % (package, rel_path))
-                        except (oe.qa.NotELFFileError):
+                        except (oe.qa.NotELFFileError, FileNotFoundError):
                             pass
 
     if messages:
@@ -1399,7 +1399,7 @@ python do_qa_patch() {
         oe.qa.handle_error("unimplemented-ptest", "%s: autotools-based tests detected" % d.getVar('PN'), d)
 
     # Last resort, detect a test directory in sources
-    elif any(filename.lower() in ["test", "tests"] for filename in os.listdir(srcdir)):
+    elif os.path.exists(srcdir) and any(filename.lower() in ["test", "tests"] for filename in os.listdir(srcdir)):
         oe.qa.handle_error("unimplemented-ptest", "%s: test subdirectory detected" % d.getVar('PN'), d)
 
     oe.qa.exit_if_errors(d)
