@@ -11,6 +11,7 @@ import re
 import sys
 
 from collections import namedtuple
+from itertools import chain
 from pathlib import Path
 
 version = 1.0
@@ -25,12 +26,19 @@ locations = list()
 
 class SystemdFile():
     """Class representing a single systemd configuration file"""
-    def __init__(self, root, path):
+
+    _clearable_keys = ['WantedBy']
+
+    def __init__(self, root, path, instance_unit_name):
         self.sections = dict()
         self._parse(root, path)
         dirname = os.path.basename(path.name) + ".d"
         for location in locations:
-            for path2 in sorted((root / location / "system" / dirname).glob("*.conf")):                
+            files = (root / location / "system" / dirname).glob("*.conf")
+            if instance_unit_name:
+                inst_dirname = instance_unit_name + ".d"
+                files = chain(files, (root / location / "system" / inst_dirname).glob("*.conf"))
+            for path2 in sorted(files):
                 self._parse(root, path2)
 
     def _parse(self, root, path):
@@ -75,6 +83,14 @@ class SystemdFile():
                 v = m.group('value')
                 if k not in section:
                     section[k] = list()
+
+                # If we come across a "key=" line for a "clearable key", then
+                # forget all preceding assignments. This works because we are
+                # processing files in correct parse order.
+                if k in self._clearable_keys and not v:
+                    del section[k]
+                    continue
+
                 section[k].extend(v.split())
 
     def get(self, section, prop):
@@ -179,24 +195,29 @@ class SystemdUnit():
 
         raise SystemdUnitNotFoundError(self.root, unit)
 
-    def _process_deps(self, config, service, location, prop, dirstem):
+    def _process_deps(self, config, service, location, prop, dirstem, instance):
         systemdir = self.root / SYSCONFDIR / "systemd" / "system"
 
         target = ROOT / location.relative_to(self.root)
         try:
             for dependent in config.get('Install', prop):
+                # expand any %i to instance (ignoring escape sequence %%)
+                dependent = re.sub("([^%](%%)*)%i", "\\g<1>{}".format(instance), dependent)
                 wants = systemdir / "{}.{}".format(dependent, dirstem) / service
                 add_link(wants, target)
 
         except KeyError:
             pass
 
-    def enable(self, caller_unit=None):
+    def enable(self, units_enabled=[]):
         # if we're enabling an instance, first extract the actual instance
         # then figure out what the template unit is
         template = re.match(r"[^@]+@(?P<instance>[^\.]*)\.", self.unit)
+        instance_unit_name = None
         if template:
             instance = template.group('instance')
+            if instance != "":
+                instance_unit_name = self.unit
             unit = re.sub(r"@[^\.]*\.", "@.", self.unit, 1)
         else:
             instance = None
@@ -208,7 +229,7 @@ class SystemdUnit():
             # ignore aliases
             return
 
-        config = SystemdFile(self.root, path)
+        config = SystemdFile(self.root, path, instance_unit_name)
         if instance == "":
             try:
                 default_instance = config.get('Install', 'DefaultInstance')[0]
@@ -221,14 +242,15 @@ class SystemdUnit():
         else:
             service = self.unit
 
-        self._process_deps(config, service, path, 'WantedBy', 'wants')
-        self._process_deps(config, service, path, 'RequiredBy', 'requires')
+        self._process_deps(config, service, path, 'WantedBy', 'wants', instance)
+        self._process_deps(config, service, path, 'RequiredBy', 'requires', instance)
 
         try:
             for also in config.get('Install', 'Also'):
                 try:
-                    if caller_unit != also:
-                        SystemdUnit(self.root, also).enable(unit)
+                     units_enabled.append(unit)
+                     if also not in units_enabled:
+                        SystemdUnit(self.root, also).enable(units_enabled)
                 except SystemdUnitNotFoundError as e:
                     sys.exit("Error: Systemctl also enable issue with  %s (%s)" % (service, e.unit))
 
