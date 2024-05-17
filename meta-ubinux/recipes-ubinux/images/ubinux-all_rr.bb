@@ -474,9 +474,6 @@ UBINUX_PKGS = " \
 	gtk-printbackend-file \
 	gtk-printbackend-lpr \
 	gdk-pixbuf \
-	gdk-pixbuf-loader-ani \
-	gdk-pixbuf-loader-bmp \
-	gdk-pixbuf-loader-ico \
 	gtk3-immodule-viqr \
 	kbd-consolefonts \
 	kbd-consoletrans \
