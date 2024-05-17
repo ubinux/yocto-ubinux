@@ -452,7 +452,7 @@ FILES=meta-oe/conf
 [meta-freescale]
 GITURL=ssh://10.130.70.199/ubinux-dev/common/ubinux-layers/yocto/meta-freescale
 BRANCH=master
-HEADID=8e0655d886aada3f0ac1a5e336d314674fa205f5
+HEADID=6a6f1d88cde3ebed3fcc4046d2ec8768c14ecdd0
 FILES=conf/layer.conf
  custom-licenses/
  classes/
@@ -547,7 +547,7 @@ FILES=conf/layer.conf
 [meta-virtualization]
 GITURL=ssh://10.130.70.199/ubinux-dev/common/ubinux-layers/yocto/meta-virtualization
 BRANCH=master
-HEADID=e9bb0a338fdf637f7929e19b21857d4c1d532ce6
+HEADID=89e2b594dcfd0643b84830dce5e7a5e2cbb046cd
 FILES=conf/layer.conf
  classes/
  files/
@@ -593,7 +593,7 @@ FILES=conf
 [meta-qt5]
 GITURL=ssh://10.130.70.199/ubinux-dev/common/ubinux-layers/yocto/meta-qt5
 BRANCH=master
-HEADID=d8eeef0bfd84672c7919cd346f25f7c9a98ddaea
+HEADID=7acb1aa500254fb516c574b25b9f95b86ed9f584
 FILES=conf/layer.conf
  recipes-qt/qt5
  recipes-qt/qtchooser
