@@ -234,8 +234,6 @@ do_kernel_metadata() {
 	for f in ${feat_dirs}; do
 		if [ -d "${UNPACKDIR}/$f/kernel-meta" ]; then
 			includes="$includes -I${UNPACKDIR}/$f/kernel-meta"
-		elif [ -d "${UNPACKDIR}/../oe-local-files/$f" ]; then
-			includes="$includes -I${UNPACKDIR}/../oe-local-files/$f"
 	        elif [ -d "${UNPACKDIR}/$f" ]; then
 			includes="$includes -I${UNPACKDIR}/$f"
 		fi
@@ -379,19 +377,19 @@ do_kernel_checkout() {
 	set +e
 
 	source_dir=`echo ${S} | sed 's%/$%%'`
-	source_workdir="${WORKDIR}/git"
-	if [ -d "${WORKDIR}/git/" ]; then
+	source_workdir="${UNPACKDIR}/git"
+	if [ -d "${UNPACKDIR}/git/" ]; then
 		# case: git repository
 		# if S is WORKDIR/git, then we shouldn't be moving or deleting the tree.
 		if [ "${source_dir}" != "${source_workdir}" ]; then
 			if [ -d "${source_workdir}/.git" ]; then
 				# regular git repository with .git
 				rm -rf ${S}
-				mv ${WORKDIR}/git ${S}
+				mv ${UNPACKDIR}/git ${S}
 			else
 				# create source for bare cloned git repository
 				git clone ${WORKDIR}/git ${S}
-				rm -rf ${WORKDIR}/git
+				rm -rf ${UNPACKDIR}/git
 			fi
 		fi
 		cd ${S}
@@ -434,13 +432,18 @@ do_kernel_checkout() {
 
 	set -e
 }
-do_kernel_checkout[dirs] = "${S} ${WORKDIR}"
+do_kernel_checkout[dirs] = "${S} ${UNPACKDIR}"
 
 addtask kernel_checkout before do_kernel_metadata after do_symlink_kernsrc
 addtask kernel_metadata after do_validate_branches do_unpack before do_patch
 do_kernel_metadata[depends] = "kern-tools-native:do_populate_sysroot"
 do_kernel_metadata[file-checksums] = " ${@get_dirs_with_fragments(d)}"
 do_validate_branches[depends] = "kern-tools-native:do_populate_sysroot"
+
+# ${S} doesn't exist for us at unpack
+do_qa_unpack() {
+    return
+}
 
 do_kernel_configme[depends] += "virtual/${TARGET_PREFIX}binutils:do_populate_sysroot"
 do_kernel_configme[depends] += "virtual/${TARGET_PREFIX}gcc:do_populate_sysroot"

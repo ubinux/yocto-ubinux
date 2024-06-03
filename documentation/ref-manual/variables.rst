@@ -5585,6 +5585,21 @@ system and gives an overview of their function and contents.
 
          NON_MULTILIB_RECIPES = "grub grub-efi make-mod-scripts ovmf u-boot"
 
+   :term:`NVDCVE_API_KEY`
+      The NVD API key used to retrieve data from the CVE database when
+      using :ref:`ref-classes-cve-check`.
+
+      By default, no API key is used, which results in larger delays between API
+      requests and limits the number of queries to the public rate limits posted
+      at the `NVD developer's page <https://nvd.nist.gov/developers/start-here>`__.
+      
+      NVD API keys can be requested through the
+      `Request an API Key <https://nvd.nist.gov/developers/request-an-api-key>`__
+      page. You can set this variable to the NVD API key in your ``local.conf`` file.
+      Example::
+
+          NVDCVE_API_KEY = "fe753&7a2-1427-347d-23ff-b2e2b7ca5f3"
+
    :term:`OBJCOPY`
       The minimal command and arguments to run ``objcopy``.
 
@@ -6828,6 +6843,19 @@ system and gives an overview of their function and contents.
       prefix off if present), however for some packages it will need to be set
       explicitly if that will not match the package name (e.g. where the
       package name has a prefix, underscores, uppercase letters etc.)
+
+   :term:`PYPI_PACKAGE_EXT`
+      When inheriting the :ref:`ref-classes-pypi` class, specifies the
+      file extension to use when fetching a package from `PyPI
+      <https://pypi.org/>`__. Default is ``tar.gz``.
+
+   :term:`PYPI_SRC_URI`
+      When inheriting the :ref:`ref-classes-pypi` class, specifies the
+      full `pythonhosted <https://files.pythonhosted.org/>`__ URI for
+      fetching the package to be built. The default value is constructed
+      based upon :term:`PYPI_PACKAGE`, :term:`PYPI_PACKAGE_EXT`, and
+      :term:`PV`. Most recipes will not need to set this variable unless
+      they are building an unstable (i.e. development) version.
 
    :term:`PYTHON_ABI`
       When used by recipes that inherit the :ref:`ref-classes-setuptools3`
@@ -9669,6 +9697,11 @@ system and gives an overview of their function and contents.
       :term:`UNKNOWN_CONFIGURE_OPT_IGNORE` is part of the
       :ref:`ref-classes-insane` class and is only enabled if the
       recipe inherits the :ref:`ref-classes-autotools` class.
+
+   :term:`UNPACKDIR`
+      This variable, used by the :ref:`ref-classes-base` class,
+      specifies where fetches sources should be unpacked by the
+      :ref:`ref-tasks-unpack` task.
 
    :term:`UPDATERCPN`
       For recipes inheriting the

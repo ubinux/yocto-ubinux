@@ -1602,6 +1602,18 @@ python () {
     if prog.search(pn):
         oe.qa.handle_error("uppercase-pn", 'PN: %s is upper case, this can result in unexpected behavior.' % pn, d)
 
+    sourcedir = d.getVar("S")
+    builddir = d.getVar("B")
+    workdir = d.getVar("WORKDIR")
+    if sourcedir == workdir:
+        bb.fatal("Using S = ${WORKDIR} is no longer supported")
+    if builddir == workdir:
+        bb.fatal("Using B = ${WORKDIR} is no longer supported")
+    if sourcedir[-1] == '/':
+        bb.warn("Recipe %s sets S variable with trailing slash '%s', remove it" % (d.getVar("PN"), d.getVar("S")))
+    if builddir[-1] == '/':
+        bb.warn("Recipe %s sets B variable with trailing slash '%s', remove it" % (d.getVar("PN"), d.getVar("B")))
+
     # Some people mistakenly use DEPENDS:${PN} instead of DEPENDS and wonder
     # why it doesn't work.
     if (d.getVar(d.expand('DEPENDS:${PN}'))):
