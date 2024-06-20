@@ -70,7 +70,7 @@ do_merge_delta_config[dirs] = "${B}"
 
 do_merge_delta_config() {
     # create config with make config
-    cp ${WORKDIR}/${DELTA_KERNEL_DEFCONFIG} ${S}/arch/${ARCH}/configs/
+    cp ${UNPACKDIR}/${DELTA_KERNEL_DEFCONFIG} ${S}/arch/${ARCH}/configs/
     oe_runmake  -C ${S} O=${B} ${KERNEL_DEFCONFIG}
 
     # check if bigendian is enabled

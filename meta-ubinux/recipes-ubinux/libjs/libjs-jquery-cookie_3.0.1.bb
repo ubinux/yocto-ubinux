@@ -12,7 +12,7 @@ SRC_URI = " \
            https://github.com/js-cookie/js-cookie/releases/download/v3.0.1/js.cookie.min.mjs;md5sum=24632392dabf5bf2caf9f80dedac13ed \
            https://github.com/js-cookie/js-cookie/releases/download/v3.0.1/js.cookie.mjs;md5sum=397b8e10308ea44fce62c657c024a41d \
            "
-S = "${WORKDIR}"
+S = "${UNPACKDIR}"
 do_install() {
 	install -d ${D}${datadir}/javascript/jquery-cookie
 	install -m 0644 ${WORKDIR}/js.cookie.js ${D}${datadir}/javascript/jquery-cookie/

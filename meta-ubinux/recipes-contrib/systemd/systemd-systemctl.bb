@@ -7,11 +7,11 @@ PR = "r6"
 
 SRC_URI = "file://systemctl"
 
-S = "${WORKDIR}"
+S = "${UNPACKDIR}"
 
 do_install() {
 	install -d ${D}${bindir}
-	install -m 0755 ${WORKDIR}/systemctl ${D}${bindir}
+	install -m 0755 ${UNPACKDIR}/systemctl ${D}${bindir}
 }
 
 

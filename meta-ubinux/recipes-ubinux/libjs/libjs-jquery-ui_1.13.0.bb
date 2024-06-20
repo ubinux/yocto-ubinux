@@ -18,7 +18,7 @@ PACKAGES = "${PN} ${PN}-doc"
 FILES:${PN} = "${datadir}/javascript/jquery-ui"
 FILES:${PN}-doc += "${datadir}/doc/${PN}"
 
-S = "${WORKDIR}"
+S = "${UNPACKDIR}"
 
 addtask populate_lic before do_install
 
