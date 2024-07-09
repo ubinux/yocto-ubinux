@@ -1,0 +1,34 @@
+From fb9c5b955da462695e0a662aebfa13493eaf3978 Mon Sep 17 00:00:00 2001
+From: Yi Zhao <yi.zhao@windriver.com>
+Date: Fri, 13 Oct 2023 22:28:25 +0800
+Subject: [PATCH] utils/Makefile.am: fix shebang for chsh.py and getent.py
+
+Update shebang to python3 for chsh.py and getent.py to fix QA issue:
+
+WARNING: nss-pam-ldapd-0.9.12-r0 do_package_qa: QA Issue: File
+/usr/share/nslcd-utils/chsh.py in package nss-pam-ldapd contains
+reference to TMPDIR
+File /usr/share/nslcd-utils/getent.py in package nss-pam-ldapd contains
+reference to TMPDIR [buildpaths]
+
+Upstream-Status: Inappropriate [embedded specific]
+
+Signed-off-by: Yi Zhao <yi.zhao@windriver.com>
+---
+ utils/Makefile.am | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/utils/Makefile.am b/utils/Makefile.am
+index a6bccd3..22a50d8 100644
+--- a/utils/Makefile.am
++++ b/utils/Makefile.am
+@@ -39,5 +39,5 @@ install-data-hook:
+ 	set -ex; for cmd in getent chsh ; do \
+ 	  [ -L $(DESTDIR)$(bindir)/$$cmd.$(MODULE_NAME) ] || $(LN_S) $(utilsdir)/$$cmd.py $(DESTDIR)$(bindir)/$$cmd.$(MODULE_NAME) ; \
+ 	  chmod a+rx $(DESTDIR)$(utilsdir)/$$cmd.py ; \
+-	  sed -i -e '1 s|^#!.*|#! $(PYTHON)|;1 s|^#! \([^/].*\)|#! /usr/bin/env \1|' $(DESTDIR)$(utilsdir)/$$cmd.py ; \
++	  sed -i -e '1 s|/usr/bin/env python|/usr/bin/env python3|' $(DESTDIR)$(utilsdir)/$$cmd.py ; \
+ 	done
+-- 
+2.25.1
+
