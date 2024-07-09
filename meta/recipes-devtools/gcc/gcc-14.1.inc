@@ -68,6 +68,7 @@ SRC_URI = "${BASEURI} \
            file://0023-Fix-install-path-of-linux64.h.patch \
            file://0024-Avoid-hardcoded-build-paths-into-ppc-libgcc.patch \
            file://0025-gcc-testsuite-tweaks-for-mips-OE.patch \
+           file://0026-libstdc-Fix-typo-in-_Grapheme_cluster_view-_Iterator.patch \
 "
 
 S = "${TMPDIR}/work-shared/gcc-${PV}-${PR}/${SOURCEDIR}"
@@ -106,12 +107,6 @@ EXTRA_OECONF_INITIAL = "\
     --enable-decimal-float=no \
     --without-isl \
     --disable-libssp \
-"
-
-EXTRA_OECONF_PATHS = "\
-    --with-gxx-include-dir=/not/exist{target_includedir}/c++/${BINV} \
-    --with-sysroot=/not/exist \
-    --with-build-sysroot=${STAGING_DIR_TARGET} \
 "
 
 CVE_STATUS[CVE-2021-37322] = "cpe-incorrect: Is a binutils 2.26 issue, not gcc"

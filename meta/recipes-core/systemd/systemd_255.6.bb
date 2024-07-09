@@ -28,6 +28,7 @@ SRC_URI += " \
            file://systemd-pager.sh \
            file://0002-binfmt-Don-t-install-dependency-links-at-install-tim.patch \
            file://0008-implment-systemd-sysv-install-for-OE.patch \
+           file://0023-meson-bpf-propagate-sysroot-for-cross-compilation.patch \
            "
 
 # patches needed by musl
@@ -132,6 +133,7 @@ PACKAGECONFIG[acl] = "-Dacl=true,-Dacl=false,acl"
 PACKAGECONFIG[audit] = "-Daudit=true,-Daudit=false,audit"
 PACKAGECONFIG[backlight] = "-Dbacklight=true,-Dbacklight=false"
 PACKAGECONFIG[binfmt] = "-Dbinfmt=true,-Dbinfmt=false"
+PACKAGECONFIG[bpf-framework] = "-Dbpf-framework=true,-Dbpf-framework=false,clang-native bpftool-native libbpf,libbpf"
 PACKAGECONFIG[bzip2] = "-Dbzip2=true,-Dbzip2=false,bzip2"
 PACKAGECONFIG[cgroupv2] = "-Ddefault-hierarchy=unified,-Ddefault-hierarchy=hybrid"
 PACKAGECONFIG[coredump] = "-Dcoredump=true,-Dcoredump=false"
@@ -232,6 +234,10 @@ PACKAGECONFIG[zstd] = "-Dzstd=true,-Dzstd=false,zstd"
 
 RESOLV_CONF ??= ""
 
+# bpf-framework: pass the recipe-sysroot to the compiler used to build
+# the eBPFs, so that it can find needed system includes in there.
+CFLAGS:append = " --sysroot=${STAGING_DIR_TARGET}"
+
 # Helper variables to clarify locations.  This mirrors the logic in systemd's
 # build system.
 rootprefix ?= "${root_prefix}"
@@ -320,8 +326,8 @@ do_install() {
 	# if the user requests /tmp be on persistent storage (i.e. not volatile)
 	# then don't use a tmpfs for /tmp
 	if [ "${VOLATILE_TMP_DIR}" != "yes" ]; then
-		rm -f ${D}${rootlibdir}/systemd/system/tmp.mount
-		rm -f ${D}${rootlibdir}/systemd/system/local-fs.target.wants/tmp.mount
+		rm -f ${D}${rootlibexecdir}/systemd/system/tmp.mount
+		rm -f ${D}${rootlibexecdir}/systemd/system/local-fs.target.wants/tmp.mount
 	fi
 
 	install -d ${D}${systemd_system_unitdir}/graphical.target.wants
