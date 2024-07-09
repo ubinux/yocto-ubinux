@@ -15,10 +15,10 @@ SRC_URI = " \
 S = "${UNPACKDIR}"
 do_install() {
 	install -d ${D}${datadir}/javascript/jquery-cookie
-	install -m 0644 ${WORKDIR}/js.cookie.js ${D}${datadir}/javascript/jquery-cookie/
-	install -m 0644 ${WORKDIR}/js.cookie.min.js ${D}${datadir}/javascript/jquery-cookie/
-	install -m 0644 ${WORKDIR}/js.cookie.min.mjs ${D}${datadir}/javascript/jquery-cookie/
-	install -m 0644 ${WORKDIR}/js.cookie.mjs ${D}${datadir}/javascript/jquery-cookie/
+	install -m 0644 ${UNPACKDIR}/js.cookie.js ${D}${datadir}/javascript/jquery-cookie/
+	install -m 0644 ${UNPACKDIR}/js.cookie.min.js ${D}${datadir}/javascript/jquery-cookie/
+	install -m 0644 ${UNPACKDIR}/js.cookie.min.mjs ${D}${datadir}/javascript/jquery-cookie/
+	install -m 0644 ${UNPACKDIR}/js.cookie.mjs ${D}${datadir}/javascript/jquery-cookie/
 }
 
 FILES:${PN} += "${datadir}/javascript/jquery-cookie"
