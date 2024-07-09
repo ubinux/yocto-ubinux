@@ -10,6 +10,7 @@ metas=meta-oe
  meta-swupdate
  meta-spdxscanner
  meta-java
+ meta-python2
 
 [meta-oe]
 GITURL=ssh://10.130.70.199/ubinux-dev/common/ubinux-layers/yocto/meta-openembedded.git
@@ -196,6 +197,7 @@ FILES=meta-oe/conf
  meta-oe/recipes-devtools/yajl/
  meta-oe/recipes-devtools/lemon/
  meta-oe/recipes-devtools/perl/ipc-run_20231003.0.bb
+ meta-oe/recipes-devtools/perl/dbd-mariadb_1.23.bb
  meta-oe/recipes-devtools/php/
  meta-oe/recipes-devtools/uw-imap/
  meta-oe/recipes-devtools/iptraf/
@@ -623,5 +625,39 @@ HEADID=ac65b6e5bbd2c9b55a64a13ab4c55d212a8b585f
 FILES=conf/layer.conf
  classes
  conf/
- recipes-core/
+ recipes-core/bcel
+ recipes-core/classpath
+ recipes-core/ant-contrib
+ recipes-core/ca-certificates-java
+ recipes-core/cacao
+ recipes-core/classpathx
+ recipes-core/fastjar
+ recipes-core/jacl
+ recipes-core/jakarta-commons
+ recipes-core/jamvm
+ recipes-core/javasqlite
+ recipes-core/jcraft
+ recipes-core/jdepend
+ recipes-core/libmatthew
+ recipes-core/servlet-api
+ recipes-core/xerces-j
+ recipes-core/xml-commons
+
+[meta-python2]
+GITURL=ssh://10.130.70.199/ubinux-dev/common/ubinux-layers/yocto/meta-python2
+BRANCH=master
+HEADID=f02882e2aa9279ca7becca8d0cedbffe88b5a253
+FILES=conf/layer.conf
+ classes
+ conf/
+ lib/
+ kas/
+ recipes-devtools/python/python-native_2.7.18.bb
+ recipes-devtools/python/python.inc
+ recipes-devtools/python/python/python2-manifest.json
+ recipes-devtools/python/python/
+ recipes-devtools/python/python-native/
+ recipes-devtools/python/files/
+ recipes-devtools/python/python-2.7.18/ 
+ 
 
