@@ -66,7 +66,6 @@ include ${@bb.utils.contains('PACKAGECONFIG', 'perl', 'perf-perl.inc', '', d)}
 inherit kernelsrc
 
 S = "${WORKDIR}/${BP}"
-SPDX_S = "${S}/tools/perf"
 
 # The LDFLAGS is required or some old kernels fails due missing
 # symbols and this is preferred than requiring patches to every old
@@ -76,11 +75,10 @@ LDFLAGS="-ldl -lutil"
 # Perf's build system adds its own optimization flags for most TUs,
 # overriding the flags included here. But for some, perf does not add
 # any -O option, so ensure the distro's chosen optimization gets used
-# for those. Since ${SELECTED_OPTIMIZATION} always includes
-# ${DEBUG_FLAGS} which in turn includes ${DEBUG_PREFIX_MAP}, this also
-# ensures perf is built with appropriate -f*-prefix-map options,
+# for those. Also include ${DEBUG_PREFIX_MAP} which nsures perf is
+# built with appropriate -f*-prefix-map options,
 # avoiding the 'buildpaths' QA warning.
-TARGET_CC_ARCH += "${SELECTED_OPTIMIZATION}"
+TARGET_CC_ARCH += "${SELECTED_OPTIMIZATION} ${DEBUG_PREFIX_MAP}"
 
 EXTRA_OEMAKE = '\
     V=1 \
