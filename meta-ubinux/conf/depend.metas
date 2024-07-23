@@ -10,12 +10,11 @@ metas=meta-oe
  meta-swupdate
  meta-spdxscanner
  meta-java
- meta-python2
 
 [meta-oe]
 GITURL=ssh://10.130.70.199/ubinux-dev/common/ubinux-layers/yocto/meta-openembedded.git
 BRANCH=master
-HEADID=feb01d3ed8f9b1f4bc785d14a4b5db01c6e158e4
+HEADID=f8342855a440fa5c4194fc57285e8db9e034fcaa
 FILES=meta-oe/conf
  meta-oe/COPYING.MIT
  meta-oe/licenses/
@@ -185,6 +184,7 @@ FILES=meta-oe/conf
  meta-oe/recipes-extended/brotli/
  meta-oe/recipes-extended/zstd/
  meta-oe/recipes-extended/s-nail/
+ meta-oe/recipes-extended/newt /
 
  meta-oe/recipes-devtools/abseil-cpp/
  meta-oe/recipes-devtools/libedit/
@@ -453,7 +453,7 @@ FILES=meta-oe/conf
 [meta-freescale]
 GITURL=ssh://10.130.70.199/ubinux-dev/common/ubinux-layers/yocto/meta-freescale
 BRANCH=master
-HEADID=7bc77fd26ec73e50154b920b808302f8cc4ad6ac
+HEADID=b065b45f24216915a45485f1a3b7b0322bfbbd07
 FILES=conf/layer.conf
  custom-licenses/
  classes/
@@ -471,7 +471,7 @@ FILES=conf/layer.conf
 [meta-cgl]
 GITURL=ssh://10.130.70.199/ubinux-dev/common/ubinux-layers/yocto/meta-cgl.git
 BRANCH=master
-HEADID=c06e03abb7891f1bf0fc656df99c4f5bbba3f923
+HEADID=688238ab57cc35e71819ef6f9a2b1278368d3145
 FILES=meta-cgl-common/conf/layer.conf
  meta-cgl-common/conf/distro/include/cgl_common_security_flags.inc
  meta-cgl-common/recipes-cgl/cluster-glue/
@@ -487,7 +487,7 @@ FILES=meta-cgl-common/conf/layer.conf
 [meta-cloud-services]
 GITURL=ssh://10.130.70.199/ubinux-dev/common/ubinux-layers/yocto/meta-cloud-services
 BRANCH=master
-HEADID=cf69792503dbba2aa12aabe2b0bb12a89adc9ccf
+HEADID=489a51037f61b829c16bf64cc219978781151994
 FILES=conf/layer.conf
  classes/
  meta-openstack/classes/default_configs.bbclass
@@ -548,7 +548,7 @@ FILES=conf/layer.conf
 [meta-virtualization]
 GITURL=ssh://10.130.70.199/ubinux-dev/common/ubinux-layers/yocto/meta-virtualization
 BRANCH=master
-HEADID=e96da98e4038f5388596b4294ac3d8425b2dacb2
+HEADID=c138943fed29e768df990061c30d6f071b98ffc3
 FILES=conf/layer.conf
  classes/
  files/
@@ -563,13 +563,13 @@ FILES=conf/layer.conf
 [meta-selinux]
 GITURL=ssh://10.130.70.199/ubinux-dev/common/ubinux-layers/yocto/meta-selinux
 BRANCH=master
-HEADID=769274a8ca624b8da314ffad249262559d9315b1
+HEADID=e77a4e1c93f1cc5a5e37cdff1e292de9978a6ac1
 FILES=conf/layer.conf
 
 [meta-security]
 GITURL=ssh://10.130.70.199/ubinux-dev/common/ubinux-layers/yocto/meta-security.git
 BRANCH=master
-HEADID=b4a8bc606f840ee777f470dcd3ca7f69e2de2f69
+HEADID=61f2428158c9900d611237fc1f3741f26e9665f8
 FILES=conf
  classes/sanity-meta-security.bbclass
  meta-tpm/classes/sanity-meta-tpm.bbclass
@@ -604,7 +604,7 @@ FILES=conf/layer.conf
 [meta-spdxscanner]
 GITURL=ssh://10.130.70.199/ubinux-dev/common/ubinux-layers/yocto/meta-spdxscanner
 BRANCH=master
-HEADID=2c376d72a1aed6b335aebd3bb28663f973a11fa9
+HEADID=ae6fea24158523124a07e766c8c478ce8e65ff92
 FILES=conf/layer.conf
  classes
  recipes-devtools/synopsys/
@@ -643,21 +643,4 @@ FILES=conf/layer.conf
  recipes-core/xerces-j
  recipes-core/xml-commons
 
-[meta-python2]
-GITURL=ssh://10.130.70.199/ubinux-dev/common/ubinux-layers/yocto/meta-python2
-BRANCH=master
-HEADID=f02882e2aa9279ca7becca8d0cedbffe88b5a253
-FILES=conf/layer.conf
- classes
- conf/
- lib/
- kas/
- recipes-devtools/python/python-native_2.7.18.bb
- recipes-devtools/python/python.inc
- recipes-devtools/python/python/python2-manifest.json
- recipes-devtools/python/python/
- recipes-devtools/python/python-native/
- recipes-devtools/python/files/
- recipes-devtools/python/python-2.7.18/ 
- 
 
