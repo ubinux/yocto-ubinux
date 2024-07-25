@@ -5,7 +5,7 @@ Fujitsu Limited
 
 ## 1. Basic Information
 ### 1.1 Version Information
-- Yocto: 4.3
+- Yocto: 5.0
 - Kernel: 6.1.79
 - Toolchain
   - GCC: 13.2.0
