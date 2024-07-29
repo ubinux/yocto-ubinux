@@ -2,7 +2,7 @@ DESCRIPTION = "the compiling PHP template engine"
 SECTION = "console/network"
 HOMEPAGE = "https://www.smarty.net/"
 
-LICENSE = "GPLv3"
+LICENSE = "LGPL-3.0-or-later"
 LIC_FILES_CHKSUM = "file://LICENSE;md5=2c0f216b2120ffc367e20f2b56df51b3"
 
 DEPENDS = "php"
