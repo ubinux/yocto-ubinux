@@ -29,6 +29,7 @@ SRC_URI += " \
            file://0001-binfmt-Don-t-install-dependency-links-at-install-tim.patch \
            file://0002-implment-systemd-sysv-install-for-OE.patch \
            file://0003-meson-bpf-propagate-sysroot-for-cross-compilation.patch \
+           file://0001-src-boot-efi-meson.build-ensure-VERSION_TAG-exists-i.patch \
            "
 
 # patches needed by musl
@@ -278,16 +279,17 @@ WATCHDOG_TIMEOUT ??= "60"
 
 do_install() {
 	meson_do_install
+
 	if ${@bb.utils.contains('PACKAGECONFIG', 'sysusers', 'true', 'false', d)}; then
-            # Change the root user's home directory in /lib/sysusers.d/basic.conf.
-            # This is done merely for backward compatibility with previous systemd recipes.
-            # systemd hardcodes root user's HOME to be "/root". Changing to use other values
-            # may have unexpected runtime behaviors.
-            if [ "${ROOT_HOME}" != "/root" ]; then
-                    bbwarn "Using ${ROOT_HOME} as root user's home directory is not fully supported by systemd"
-                    sed -i -e 's#/root#${ROOT_HOME}#g' ${D}${exec_prefix}/lib/sysusers.d/basic.conf
-            fi
-        fi
+		# Change the root user's home directory in /lib/sysusers.d/basic.conf.
+		# This is done merely for backward compatibility with previous systemd recipes.
+		# systemd hardcodes root user's HOME to be "/root". Changing to use other values
+		# may have unexpected runtime behaviors.
+		if [ "${ROOT_HOME}" != "/root" ]; then
+			bbwarn "Using ${ROOT_HOME} as root user's home directory is not fully supported by systemd"
+			sed -i -e 's#/root#${ROOT_HOME}#g' ${D}${exec_prefix}/lib/sysusers.d/basic.conf
+		fi
+	fi
 	install -d ${D}/${base_sbindir}
 	if ${@bb.utils.contains('PACKAGECONFIG', 'serial-getty-generator', 'false', 'true', d)}; then
 		# Provided by a separate recipe
@@ -314,9 +316,10 @@ do_install() {
 	fi
 
 	if "${@'true' if oe.types.boolean(d.getVar('VOLATILE_LOG_DIR')) else 'false'}"; then
-		# /var/log is typically a symbolic link to inside /var/volatile,
-		# which is expected to be empty.
+		# base-files recipe provides /var/log which is a symlink to /var/volatile/log
 		rm -rf ${D}${localstatedir}/log
+		printf 'L\t\t%s/log\t\t-\t-\t-\t-\t%s/volatile/log\n' "${localstatedir}" \
+			"${localstatedir}" >>${D}${nonarch_libdir}/tmpfiles.d/00-create-volatile.conf
 	elif [ -e ${D}${localstatedir}/log/journal ]; then
 		chown root:systemd-journal ${D}${localstatedir}/log/journal
 
@@ -394,10 +397,10 @@ do_install() {
 	# add a profile fragment to disable systemd pager with busybox less
 	install -Dm 0644 ${UNPACKDIR}/systemd-pager.sh ${D}${sysconfdir}/profile.d/systemd-pager.sh
 
-    if [ -n "${WATCHDOG_TIMEOUT}" ]; then
-        sed -i -e 's/#RebootWatchdogSec=10min/RebootWatchdogSec=${WATCHDOG_TIMEOUT}/' \
-            ${D}/${sysconfdir}/systemd/system.conf
-    fi
+	if [ -n "${WATCHDOG_TIMEOUT}" ]; then
+		sed -i -e 's/#RebootWatchdogSec=10min/RebootWatchdogSec=${WATCHDOG_TIMEOUT}/' \
+			${D}/${sysconfdir}/systemd/system.conf
+	fi
 
 	if ${@bb.utils.contains('PACKAGECONFIG', 'pni-names', 'true', 'false', d)}; then
 		if ! grep -q '^NamePolicy=.*mac' ${D}${rootlibexecdir}/systemd/network/99-default.link; then
@@ -427,6 +430,7 @@ PACKAGE_BEFORE_PN = "\
     ${PN}-journal-upload \
     ${PN}-journal-remote \
     ${PN}-kernel-install \
+    ${PN}-mime \
     ${PN}-rpm-macros \
     ${PN}-udev-rules \
     ${PN}-vconsole-setup \
@@ -632,6 +636,9 @@ FILES:${PN}-extra-utils = "\
                         ${rootlibexecdir}/systemd/systemd-cgroups-agent \
 "
 
+FILES:${PN}-mime = "${MIMEDIR}"
+RRECOMMENDS:${PN} += "${PN}-mime"
+
 FILES:${PN}-udev-rules = "\
                         ${rootlibexecdir}/udev/rules.d/70-uaccess.rules \
                         ${rootlibexecdir}/udev/rules.d/71-seat.rules \
@@ -729,7 +736,7 @@ RDEPENDS:${PN} += "kmod dbus util-linux-mount util-linux-umount udev (= ${EXTEND
 RDEPENDS:${PN} += "${@bb.utils.contains('PACKAGECONFIG', 'serial-getty-generator', '', 'systemd-serialgetty', d)}"
 RDEPENDS:${PN} += "volatile-binds"
 
-RRECOMMENDS:${PN} += "systemd-extra-utils \
+RRECOMMENDS:${PN} += "${PN}-extra-utils \
                       udev-hwdb \
                       e2fsprogs-e2fsck \
                       kernel-module-autofs4 kernel-module-unix kernel-module-ipv6 kernel-module-sch-fq-codel \
@@ -902,7 +909,7 @@ pkg_postinst:udev-hwdb () {
 	if test -n "$D"; then
 		$INTERCEPT_DIR/postinst_intercept update_udev_hwdb ${PKG} mlprefix=${MLPREFIX} binprefix=${MLPREFIX} rootlibexecdir="${rootlibexecdir}" PREFERRED_PROVIDER_udev="${PREFERRED_PROVIDER_udev}" base_bindir="${base_bindir}"
 	else
-		udevadm hwdb --update
+		systemd-hwdb update
 	fi
 }
 

@@ -26,7 +26,7 @@
 
 # Elect whether a given type of error is a warning or error, they may
 # have been set by other files.
-WARN_QA ?= "32bit-time native-last"
+WARN_QA ?= "32bit-time native-last pep517-backend"
 ERROR_QA ?= "dev-so debug-deps dev-deps debug-files arch pkgconfig la \
             textrel incompatible-license files-invalid \
             infodir build-deps src-uri-bad symlink-to-sysroot multilib \
@@ -36,13 +36,13 @@ ERROR_QA ?= "dev-so debug-deps dev-deps debug-files arch pkgconfig la \
             license-exists license-no-generic license-syntax license-format \
             license-incompatible license-file-missing obsolete-license \
             libdir xorg-driver-abi buildpaths \
-            perms dep-cmp pkgvarcheck perm-config perm-line perm-link \
-            split-strip packages-list pkgv-undefined var-undefined \
+            dep-cmp pkgvarcheck perm-config perm-line perm-link \
+            packages-list pkgv-undefined var-undefined \
             version-going-backwards expanded-d invalid-chars \
             license-checksum dev-elf file-rdeps configure-unsafe \
             configure-gettext perllocalpod shebang-size \
-            already-stripped installed-vs-shipped ldflags compile-host-path \
-            install-host-path pn-overrides unknown-configure-option \
+            already-stripped installed-vs-shipped ldflags \
+            pn-overrides unknown-configure-option \
             useless-rpaths rpaths staticdev empty-dirs \
             patch-fuzz patch-status virtual-slash \
             "
@@ -1360,12 +1360,10 @@ python do_qa_patch() {
         return False
 
     srcdir = d.getVar('S')
-    if not bb.utils.contains('DISTRO_FEATURES', 'ptest', True, False, d):
+    if not bb.utils.contains('DISTRO_FEATURES', 'ptest', True, False, d) or not bb.utils.contains('ALL_QA', 'unimplemented-ptest', True, False, d):
         pass
     elif bb.data.inherits_class('ptest', d):
         bb.note("Package %s QA: skipping unimplemented-ptest: ptest implementation detected" % d.getVar('PN'))
-    elif srcdir == d.getVar('WORKDIR'):
-        bb.note("Package %s QA: skipping unimplemented-ptest: This check is not supported for recipe with \"S = \"${WORKDIR}\"" % d.getVar('PN'))
 
     # Detect perl Test:: based tests
     elif os.path.exists(os.path.join(srcdir, "t")) and any(filename.endswith('.t') for filename in os.listdir(os.path.join(srcdir, 't'))):
