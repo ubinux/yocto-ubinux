@@ -24,3 +24,4 @@ do_install() {
 	install -d ${D}${datadir}/doc/${PN}/
 	install -p -m 0644 ${S}/LICENSE ${D}${datadir}/doc/${PN}/
 }
+ERROR_QA:remove = "src-uri-bad"
