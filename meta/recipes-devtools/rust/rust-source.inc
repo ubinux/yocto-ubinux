@@ -3,19 +3,15 @@ RUST_VERSION ?= "${@d.getVar('PV').split('-')[0]}"
 SRC_URI += "https://static.rust-lang.org/dist/rustc-${RUST_VERSION}-src.tar.xz;name=rust \
             file://hardcodepaths.patch;patchdir=${RUSTSRC} \
             file://zlib-off64_t.patch;patchdir=${RUSTSRC} \
-            file://0001-Revert-Map-source-absolute-paths-to-OUT_DIR-as-relat.patch;patchdir=${RUSTSRC} \
-            file://rv32-missing-syscalls.patch;patchdir=${RUSTSRC} \
             file://rv32-rustix-libc-backend.patch;patchdir=${RUSTSRC} \
-            file://rv32-cargo-rustix-0.38.19-fix.patch;patchdir=${RUSTSRC} \
-            file://custom-target-cfg.patch;patchdir=${RUSTSRC} \
-            file://rustc-bootstrap.patch;patchdir=${RUSTSRC} \
-            file://target-build-value.patch;patchdir=${RUSTSRC} \
-            file://0001-Handle-vendored-sources-when-remapping-paths.patch;patchdir=${RUSTSRC} \
-            file://repro-issue-fix-with-v175.patch;patchdir=${RUSTSRC} \
+            file://rv32-cargo-rustix-0.38.28-fix.patch;patchdir=${RUSTSRC} \
             file://0001-cargo-do-not-write-host-information-into-compilation.patch;patchdir=${RUSTSRC} \
             file://rustdoc-repro-issue-fix-cargo-config-for-codegenunits.patch;patchdir=${RUSTSRC} \
+            file://cross-targets-backport.patch;patchdir=${RUSTSRC} \
+            file://rust-oe-selftest.patch;patchdir=${RUSTSRC} \
+            file://repro-issue-fix-with-cc-crate-hashmap.patch;patchdir=${RUSTSRC} \
 "
-SRC_URI[rust.sha256sum] = "4526f786d673e4859ff2afa0bab2ba13c918b796519a25c1acce06dba9542340"
+SRC_URI[rust.sha256sum] = "8065824f0255faa3901db8206e6f9423f6f8c07cec28bc6f2797c6c948310ece"
 
 RUSTSRC = "${WORKDIR}/rustc-${RUST_VERSION}-src"
 
