@@ -1295,6 +1295,10 @@ to your build configuration.
                     elif drive_type.startswith("/dev/hd"):
                         logger.info('Using ide drive')
                         vm_drive = "-drive file=%s,format=%s" % (self.rootfs, rootfs_format)
+                    elif drive_type.startswith("/dev/mmcblk"):
+                        logger.info('Using sdcard drive')
+                        vm_drive = '-drive id=sdcard0,if=none,file=%s,format=%s -device sdhci-pci -device sd-card,drive=sdcard0' \
+                                    % (self.rootfs, rootfs_format)
                     elif drive_type.startswith("/dev/vdb"):
                         logger.info('Using block virtio drive');
                         vm_drive = '-drive id=disk0,file=%s,if=none,format=%s -device virtio-blk-device,drive=disk0%s' \
@@ -1483,7 +1487,7 @@ to your build configuration.
         # If no serial or serialtcp options were specified, only ttyS0 is created
         # and sysvinit shows an error trying to enable ttyS1:
         #     INIT: Id "S1" respawning too fast: disabled for 5 minutes
-        serial_num = len(re.findall("-serial", self.qemu_opt))
+        serial_num = len(re.findall("(^| )-serial ", self.qemu_opt))
 
         # Assume if the user passed serial options, they know what they want
         # and pad to two devices
@@ -1503,7 +1507,7 @@ to your build configuration.
 
                 self.qemu_opt += " %s" % self.get("QB_SERIAL_OPT")
 
-        serial_num = len(re.findall("-serial", self.qemu_opt))
+        serial_num = len(re.findall("(^| )-serial ", self.qemu_opt))
         if serial_num < 2:
             self.qemu_opt += " -serial null"
 
