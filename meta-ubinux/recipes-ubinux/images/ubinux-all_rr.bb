@@ -620,7 +620,6 @@ UBINUX_PKGS = " \
 	cim-schema-exper \
 	libgpiod \
 	wtmpdb \
-	lastlog2 \
 	xinput \
 	wget \
 "

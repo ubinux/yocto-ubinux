@@ -14,7 +14,7 @@ metas=meta-oe
 [meta-oe]
 GITURL=ssh://10.130.70.199/ubinux-dev/common/ubinux-layers/yocto/meta-openembedded.git
 BRANCH=master
-HEADID=f7fe2415e1317c5bcb791c6c1ca9c36e476b0af8
+HEADID=65bac5505f306c693244186c769cef18aa436f60
 FILES=meta-oe/conf
  meta-oe/COPYING.MIT
  meta-oe/licenses/
@@ -150,7 +150,6 @@ FILES=meta-oe/conf
  meta-oe/recipes-extended/smartmontools/
  meta-oe/recipes-extended/snappy/
  meta-oe/recipes-extended/wtmpdb/
- meta-oe/recipes-extended/lastlog2/
  meta-oe/recipes-shells/tcsh/
  meta-oe/recipes-extended/indent/
  meta-oe/recipes-shells/dash/

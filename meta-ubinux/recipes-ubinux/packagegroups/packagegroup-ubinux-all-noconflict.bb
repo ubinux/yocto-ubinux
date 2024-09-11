@@ -554,7 +554,6 @@ UBINUX_PKGS_NOCONFLICT = " \
 	fontconfig \
 	freetype \
 	wtmpdb \
-	lastlog2 \
 	xinput \
 	wget \
 "	
