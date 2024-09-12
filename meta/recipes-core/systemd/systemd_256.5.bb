@@ -28,6 +28,7 @@ SRC_URI += " \
            file://systemd-pager.sh \
            file://0001-binfmt-Don-t-install-dependency-links-at-install-tim.patch \
            file://0002-implment-systemd-sysv-install-for-OE.patch \
+           file://0003-coredump-set-ProtectHome-to-read-only.patch \
            "
 
 # patches needed by musl
@@ -717,7 +718,6 @@ FILES:${PN} = " ${base_bindir}/* \
                 ${datadir}/dbus-1/system.d/org.freedesktop.portable1.conf \
                 ${datadir}/dbus-1/system.d/org.freedesktop.oom1.conf \
                 ${datadir}/dbus-1/system.d/org.freedesktop.home1.conf \
-                ${datadir}/mime/packages/io.systemd.xml \
                "
 
 FILES:${PN}-dev += "${base_libdir}/security/*.la ${datadir}/dbus-1/interfaces/ ${sysconfdir}/rpm/macros.systemd"
