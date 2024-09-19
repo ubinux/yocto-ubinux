@@ -14,7 +14,7 @@ metas=meta-oe
 [meta-oe]
 GITURL=http://git.openembedded.org/meta-openembedded
 BRANCH=master
-HEADID=65bac5505f306c693244186c769cef18aa436f60
+HEADID=8c4bbc148be8e181ebc5ee574c1c64a152ed5d30
 FILES=meta-oe/conf
  meta-oe/COPYING.MIT
  meta-oe/licenses/
@@ -48,7 +48,7 @@ FILES=meta-oe/conf
  meta-oe/recipes-graphics/tslib/
  meta-oe/recipes-graphics/xorg-app/xlsfonts_1.0.8.bb
  meta-oe/recipes-graphics/xorg-app/xrdb_1.2.0.bb
- meta-oe/recipes-graphics/xorg-app/xterm_393.bb
+ meta-oe/recipes-graphics/xorg-app/xterm_394.bb
  meta-oe/recipes-graphics/xorg-app/xterm/
  meta-oe/recipes-graphics/xorg-app/xwd_1.0.9.bb
  meta-oe/recipes-graphics/xorg-app/iceauth_1.0.10.bb
@@ -210,6 +210,7 @@ FILES=meta-oe/conf
  meta-oe/recipes-devtools/valijson/
  
  meta-oe/recipes-connectivity/libnet/
+ meta-oe/recipes-connectivity/linuxptp/
  meta-oe/recipes-connectivity/krb5/
  meta-networking/recipes-connectivity/samba/
  meta-networking/recipes-connectivity/daq/
@@ -428,7 +429,7 @@ FILES=meta-oe/conf
  meta-perl/conf/
  meta-perl/README
  meta-perl/COPYING.MIT
- meta-oe/recipes-devtools/perl/libdbi-perl_1.643.bb
+ meta-oe/recipes-devtools/perl/libdbi-perl_1.644.bb
  meta-oe/recipes-devtools/perl/libdbi-perl/
  meta-oe/recipes-devtools/perl/libdbd-mysql-perl_5.006.bb
  meta-oe/recipes-devtools/perl/libdev-checklib-perl_1.16.bb
@@ -452,7 +453,7 @@ FILES=meta-oe/conf
 [meta-freescale]
 GITURL=https://git.yoctoproject.org/git/meta-freescale
 BRANCH=master
-HEADID=52c1409dc2278b7ace5ebca3077b9d8242eac37f
+HEADID=71bf377029d99dc64a54f6cff8941fcdfb8fb58d
 FILES=conf/layer.conf
  custom-licenses/
  classes/
@@ -486,7 +487,7 @@ FILES=meta-cgl-common/conf/layer.conf
 [meta-cloud-services]
 GITURL=http://git.yoctoproject.org/git/meta-cloud-services
 BRANCH=master
-HEADID=489a51037f61b829c16bf64cc219978781151994
+HEADID=679cb10dcaa083b3ffd8000ac0ce7b6e4f92f1e3
 FILES=conf/layer.conf
  classes/
  meta-openstack/classes/default_configs.bbclass
@@ -547,7 +548,7 @@ FILES=conf/layer.conf
 [meta-virtualization]
 GITURL=http://git.yoctoproject.org/git/meta-virtualization
 BRANCH=master
-HEADID=a940a0e873f9163d4585555b3f3d38e99400d237
+HEADID=8138d9cc7e0c31171230110db0cfa881c46a821b
 FILES=conf/layer.conf
  classes/
  files/
@@ -562,7 +563,7 @@ FILES=conf/layer.conf
 [meta-selinux]
 GITURL=http://git.yoctoproject.org/git/meta-selinux
 BRANCH=master
-HEADID=9b392cb0fd8f621257dd61da72f888753e5e93b3
+HEADID=3482e0e650fc2d76ff2076f9aa28382a8c5116c4
 FILES=conf/layer.conf
 
 [meta-security]
@@ -603,7 +604,7 @@ FILES=conf/layer.conf
 [meta-spdxscanner]
 GITURL=https://git.yoctoproject.org/git/meta-spdxscanner
 BRANCH=master
-HEADID=f6909b6fba586b24253eb6e840e17c6597163df5
+HEADID=e7de6b5c58cbdd592b0afeff99b803bf905eb4a1
 FILES=conf/layer.conf
  classes
  recipes-devtools/synopsys/
@@ -611,7 +612,7 @@ FILES=conf/layer.conf
 [meta-swupdate]
 GITURL=https://github.com/sbabic/meta-swupdate.git
 BRANCH=master
-HEADID=55a3b9aaa551d3c0a41303b49fb88e3166fa778b
+HEADID=3aed0f6ec3a87d04309fb1534962bbb3d7e3edd4
 FILES=conf/layer.conf
  recipes-support/swupdate/
  recipes-bsp/u-boot/
