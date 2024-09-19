@@ -556,6 +556,7 @@ UBINUX_PKGS_NOCONFLICT = " \
 	wtmpdb \
 	xinput \
 	wget \
+	linuxptp \
 "	
 
 RDEPENDS:packagegroup-ubinux-all-noconflict = " \

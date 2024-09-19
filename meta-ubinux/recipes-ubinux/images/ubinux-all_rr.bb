@@ -622,6 +622,7 @@ UBINUX_PKGS = " \
 	wtmpdb \
 	xinput \
 	wget \
+	linuxptp \
 "
 
 
