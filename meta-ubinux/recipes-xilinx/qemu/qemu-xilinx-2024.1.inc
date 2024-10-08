@@ -1,0 +1,5 @@
+XILINX_QEMU_VERSION = "v7.1.0"
+BRANCH = "xlnx_rel_v2024.1"
+SRCREV = "2319c870e754148ec3b9d40be0d3dbee959c3251"
+
+PACKAGECONFIG[debuginfo] = ""
