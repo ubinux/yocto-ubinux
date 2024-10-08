@@ -471,7 +471,7 @@ FILES=conf/layer.conf
 [meta-cgl]
 GITURL=https://git.yoctoproject.org/git/meta-cgl
 BRANCH=master
-HEADID=587be366cb902cf3ba8bbc87641cae290c7a21aa
+HEADID=c9c269231e34d961a3b5101da98f04dfb4591969
 FILES=meta-cgl-common/conf/layer.conf
  meta-cgl-common/conf/distro/include/cgl_common_security_flags.inc
  meta-cgl-common/recipes-cgl/cluster-glue/
@@ -563,7 +563,7 @@ FILES=conf/layer.conf
 [meta-selinux]
 GITURL=http://git.yoctoproject.org/git/meta-selinux
 BRANCH=master
-HEADID=3482e0e650fc2d76ff2076f9aa28382a8c5116c4
+HEADID=7886cda8a505886fd9532d9585f7e9eae78cb52e
 FILES=conf/layer.conf
 
 [meta-security]
