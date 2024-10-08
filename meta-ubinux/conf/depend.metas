@@ -569,7 +569,7 @@ FILES=conf/layer.conf
 [meta-security]
 GITURL=http://git.yoctoproject.org/git/meta-security
 BRANCH=master
-HEADID=f9946faf520ac304fa5c6f2acdfbe459e122c0eb
+HEADID=84d9cd56991a646453c8817eeeb2f8556e36854e
 FILES=conf
  classes/sanity-meta-security.bbclass
  meta-tpm/classes/sanity-meta-tpm.bbclass
