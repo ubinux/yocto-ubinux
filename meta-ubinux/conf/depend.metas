@@ -487,7 +487,7 @@ FILES=meta-cgl-common/conf/layer.conf
 [meta-cloud-services]
 GITURL=http://git.yoctoproject.org/git/meta-cloud-services
 BRANCH=master
-HEADID=679cb10dcaa083b3ffd8000ac0ce7b6e4f92f1e3
+HEADID=5ebf85a616357eef1f367ff25d412472977a470d
 FILES=conf/layer.conf
  classes/
  meta-openstack/classes/default_configs.bbclass
