@@ -30,6 +30,8 @@ control_range = list(range(0,32))+list(range(127,160))
 control_chars = [chr(x) for x in control_range
                 if chr(x) not in string.printable]
 re_control_char = re.compile('[%s]' % re.escape("".join(control_chars)))
+# Regex to remove the ANSI (color) control codes from console strings in order to match the text only
+re_vt100 = re.compile(r'(\x1b\[|\x9b)[^@-_a-z]*[@-_a-z]|\x1b[@-_a-z]')
 
 def getOutput(o):
     import fcntl
@@ -101,7 +103,7 @@ class QemuRunner:
 
         # Only override patterns that were set e.g. login user TESTIMAGE_BOOT_PATTERNS[send_login_user] = "webserver\n"
         for pattern in accepted_patterns:
-            if not self.boot_patterns[pattern]:
+            if pattern not in self.boot_patterns or not self.boot_patterns[pattern]:
                 self.boot_patterns[pattern] = default_boot_patterns[pattern]
 
     def create_socket(self):
@@ -681,7 +683,7 @@ class QemuRunner:
                     time.sleep(0.1)
                     answer = self.server_socket.recv(1024)
                     if answer:
-                        data += answer.decode('utf-8')
+                        data += re_vt100.sub("", answer.decode('utf-8'))
                         # Search the prompt to stop
                         if re.search(self.boot_patterns['search_cmd_finished'], data):
                             break

@@ -82,8 +82,9 @@ def package_qa_clean_path(path, d, pkg=None):
 
 QAPATHTEST[shebang-size] = "package_qa_check_shebang_size"
 def package_qa_check_shebang_size(path, name, d, elf):
-    import stat
-    if os.path.islink(path) or stat.S_ISFIFO(os.stat(path).st_mode) or elf:
+    global cpath
+
+    if elf or cpath.islink(path) or not cpath.isfile(path):
         return
 
     try:
@@ -115,14 +116,11 @@ def package_qa_check_libexec(path,name, d, elf):
         oe.qa.handle_error("libexec", "%s: %s is using libexec please relocate to %s" % (name, package_qa_clean_path(path, d, name), libexec), d)
 
 QAPATHTEST[rpaths] = "package_qa_check_rpath"
-def package_qa_check_rpath(file,name, d, elf):
+def package_qa_check_rpath(file, name, d, elf):
     """
     Check for dangerous RPATHs
     """
     if not elf:
-        return
-
-    if os.path.islink(file):
         return
 
     bad_dirs = [d.getVar('BASE_WORKDIR'), d.getVar('STAGING_DIR_TARGET')]
@@ -130,14 +128,14 @@ def package_qa_check_rpath(file,name, d, elf):
     phdrs = elf.run_objdump("-p", d)
 
     import re
-    rpath_re = re.compile(r"\s+RPATH\s+(.*)")
+    rpath_re = re.compile(r"\s+(?:RPATH|RUNPATH)\s+(.*)")
     for line in phdrs.split("\n"):
         m = rpath_re.match(line)
         if m:
             rpath = m.group(1)
             for dir in bad_dirs:
                 if dir in rpath:
-                    oe.qa.handle_error("rpaths", "package %s contains bad RPATH %s in file %s" % (name, rpath, file), d)
+                    oe.qa.handle_error("rpaths", "%s: %s contains bad RPATH %s" % (name, package_qa_clean_path(file, d, name), rpath), d)
 
 QAPATHTEST[useless-rpaths] = "package_qa_check_useless_rpaths"
 def package_qa_check_useless_rpaths(file, name, d, elf):
@@ -150,16 +148,13 @@ def package_qa_check_useless_rpaths(file, name, d, elf):
     if not elf:
         return
 
-    if os.path.islink(file):
-        return
-
     libdir = d.getVar("libdir")
     base_libdir = d.getVar("base_libdir")
 
     phdrs = elf.run_objdump("-p", d)
 
     import re
-    rpath_re = re.compile(r"\s+RPATH\s+(.*)")
+    rpath_re = re.compile(r"\s+(?:RPATH|RUNPATH)\s+(.*)")
     for line in phdrs.split("\n"):
         m = rpath_re.match(line)
         if m:
@@ -174,8 +169,8 @@ def package_qa_check_dev(path, name, d, elf):
     """
     Check for ".so" library symlinks in non-dev packages
     """
-
-    if not name.endswith("-dev") and not name.endswith("-dbg") and not name.endswith("-ptest") and not name.startswith("nativesdk-") and path.endswith(".so") and os.path.islink(path):
+    global cpath
+    if not name.endswith("-dev") and not name.endswith("-dbg") and not name.endswith("-ptest") and not name.startswith("nativesdk-") and path.endswith(".so") and cpath.islink(path):
         oe.qa.handle_error("dev-so", "non -dev/-dbg/nativesdk- package %s contains symlink .so '%s'" % \
                  (name, package_qa_clean_path(path, d, name)), d)
 
@@ -186,7 +181,8 @@ def package_qa_check_dev_elf(path, name, d, elf):
     check that the file is not a link and is an ELF object as some recipes
     install link-time .so files that are linker scripts.
     """
-    if name.endswith("-dev") and path.endswith(".so") and not os.path.islink(path) and elf:
+    global cpath
+    if name.endswith("-dev") and path.endswith(".so") and not cpath.islink(path) and elf:
         oe.qa.handle_error("dev-elf", "-dev package %s contains non-symlink .so '%s'" % \
                  (name, package_qa_clean_path(path, d, name)), d)
 
@@ -329,37 +325,41 @@ def package_qa_check_arch(path,name,d, elf):
 
     host_os   = d.getVar('HOST_OS')
     host_arch = d.getVar('HOST_ARCH')
-    provides = d.getVar('PROVIDES')
-    bpn = d.getVar('BPN')
+    provides  = d.getVar('PROVIDES')
 
     if host_arch == "allarch":
-        pn = d.getVar('PN')
-        oe.qa.handle_error("arch", pn + ": Recipe inherits the allarch class, but has packaged architecture-specific binaries", d)
+        oe.qa.handle_error("arch", "%s: inherits the allarch class, but has architecture-specific binaries %s" % \
+            (name, package_qa_clean_path(path, d, name)), d)
         return
 
-    # avoid following links to /usr/bin (e.g. on udev builds)
-    # we will check the files pointed to anyway...
-    if os.path.islink(path):
-        return
-
-    #if this will throw an exception, then fix the dict above
-    (machine, osabi, abiversion, littleendian, bits) \
+    # If this throws an exception, the machine_dict needs expanding
+    (expected_machine, expected_osabi, expected_abiversion, expected_littleendian, expected_bits) \
         = oe.elf.machine_dict(d)[host_os][host_arch]
 
+    actual_machine = elf.machine()
+    actual_bits = elf.abiSize()
+    actual_littleendian = elf.isLittleEndian()
+
+    # BPF don't match the target
+    if oe.qa.elf_machine_to_string(actual_machine) == "BPF":
+        return
+
+    # These targets have 32-bit userspace but 64-bit kernel, so fudge the expected values
+    if (("virtual/kernel" in provides) or bb.data.inherits_class("module", d)) and (host_os in ("linux-gnux32", "linux-muslx32", "linux-gnu_ilp32") or re.match(r'mips64.*32', d.getVar('DEFAULTTUNE'))):
+        expected_bits = 64
+
     # Check the architecture and endiannes of the binary
-    is_32 = (("virtual/kernel" in provides) or bb.data.inherits_class("module", d)) and \
-            (host_os == "linux-gnux32" or host_os == "linux-muslx32" or \
-            host_os == "linux-gnu_ilp32" or re.match(r'mips64.*32', d.getVar('DEFAULTTUNE')))
-    is_bpf = (oe.qa.elf_machine_to_string(elf.machine()) == "BPF")
-    if not ((machine == elf.machine()) or is_32 or is_bpf):
+    if expected_machine != actual_machine:
         oe.qa.handle_error("arch", "Architecture did not match (%s, expected %s) in %s" % \
-                 (oe.qa.elf_machine_to_string(elf.machine()), oe.qa.elf_machine_to_string(machine), package_qa_clean_path(path, d, name)), d)
-    elif not ((bits == elf.abiSize()) or is_32 or is_bpf):
+                 (oe.qa.elf_machine_to_string(actual_machine), oe.qa.elf_machine_to_string(expected_machine), package_qa_clean_path(path, d, name)), d)
+
+    if expected_bits != actual_bits:
         oe.qa.handle_error("arch", "Bit size did not match (%d, expected %d) in %s" % \
-                 (elf.abiSize(), bits, package_qa_clean_path(path, d, name)), d)
-    elif not ((littleendian == elf.isLittleEndian()) or is_bpf):
+                 (actual_bits, expected_bits, package_qa_clean_path(path, d, name)), d)
+
+    if expected_littleendian != actual_littleendian:
         oe.qa.handle_error("arch", "Endiannes did not match (%d, expected %d) in %s" % \
-                 (elf.isLittleEndian(), littleendian, package_qa_clean_path(path, d, name)), d)
+                 (actual_littleendian, expected_littleendian, package_qa_clean_path(path, d, name)), d)
 package_qa_check_arch[vardepsexclude] = "DEFAULTTUNE"
 
 QAPATHTEST[desktop] = "package_qa_check_desktop"
@@ -383,9 +383,6 @@ def package_qa_textrel(path, name, d, elf):
     if not elf:
         return
 
-    if os.path.islink(path):
-        return
-
     phdrs = elf.run_objdump("-p", d)
 
     import re
@@ -403,9 +400,6 @@ def package_qa_hash_style(path, name, d, elf):
     """
 
     if not elf:
-        return
-
-    if os.path.islink(path):
         return
 
     gnu_hash = "--hash-style=gnu" in d.getVar('LDFLAGS')
@@ -440,9 +434,9 @@ def package_qa_check_buildpaths(path, name, d, elf):
     explicitly ignored.
     """
     import stat
-
+    global cpath
     # Ignore symlinks/devs/fifos
-    mode = os.lstat(path).st_mode
+    mode = cpath.lstat(path).st_mode
     if stat.S_ISLNK(mode) or stat.S_ISBLK(mode) or stat.S_ISFIFO(mode) or stat.S_ISCHR(mode) or stat.S_ISSOCK(mode):
         return
 
@@ -487,7 +481,8 @@ def package_qa_check_symlink_to_sysroot(path, name, d, elf):
     """
     Check that the package doesn't contain any absolute symlinks to the sysroot.
     """
-    if os.path.islink(path):
+    global cpath
+    if cpath.islink(path):
         target = os.readlink(path)
         if os.path.isabs(target):
             tmpdir = d.getVar('TMPDIR')
@@ -601,7 +596,7 @@ def check_32bit_symbols(path, packagename, d, elf):
     )
 
     # elf is a oe.qa.ELFFile object
-    if elf is not None:
+    if elf:
         phdrs = elf.run_objdump("-tw", d)
         syms = re.finditer(ptrn, phdrs)
         usedapis = {sym.group('notag') for sym in syms}
@@ -778,18 +773,19 @@ def qa_check_staged(path,d):
                         oe.qa.handle_error("pkgconfig", error_msg, d)
 
             if not skip_shebang_size:
+                global cpath
+                cpath = oe.cachedpath.CachedPath()
                 package_qa_check_shebang_size(path, "", d, None)
-
-def prepopulate_objdump_p(elf, d):
-    output = elf.run_objdump("-p", d)
-    return (elf.name, output)
+                cpath = None
 
 # Walk over all files in a directory and call func
 def package_qa_walk(checkfuncs, package, d):
+    global cpath
+
     elves = {}
     for path in pkgfiles[package]:
             elf = None
-            if os.path.isfile(path):
+            if cpath.isfile(path) and not cpath.islink(path):
                 elf = oe.qa.ELFFile(path)
                 try:
                     elf.open()
@@ -799,17 +795,22 @@ def package_qa_walk(checkfuncs, package, d):
             if elf:
                 elves[path] = elf
 
+    def prepopulate_objdump_p(elf, d):
+        output = elf.run_objdump("-p", d)
+        return (elf.name, output)
+
     results = oe.utils.multiprocess_launch(prepopulate_objdump_p, elves.values(), d, extraargs=(d,))
     for item in results:
         elves[item[0]].set_objdump("-p", item[1])
 
     for path in pkgfiles[package]:
-            if path in elves:
-                elves[path].open()
-            for func in checkfuncs:
-                func(path, package, d, elves.get(path))
-            if path in elves:
-                elves[path].close()
+        elf = elves.get(path)
+        if elf:
+            elf.open()
+        for func in checkfuncs:
+            func(path, package, d, elf)
+        if elf:
+            elf.close()
 
 def package_qa_check_rdepends(pkg, pkgdest, skip, taskdeps, packages, d):
     # Don't do this check for kernel/module recipes, there aren't too many debug/development
@@ -932,11 +933,12 @@ def package_qa_check_deps(pkg, pkgdest, d):
 
 QAPKGTEST[usrmerge] = "package_qa_check_usrmerge"
 def package_qa_check_usrmerge(pkg, d):
+    global cpath
     pkgdest = d.getVar('PKGDEST')
     pkg_dir = pkgdest + os.sep + pkg + os.sep
     merged_dirs = ['bin', 'sbin', 'lib'] + d.getVar('MULTILIB_VARIANTS').split()
     for f in merged_dirs:
-        if os.path.exists(pkg_dir + f) and not os.path.islink(pkg_dir + f):
+        if cpath.exists(pkg_dir + f) and not cpath.islink(pkg_dir + f):
             msg = "%s package is not obeying usrmerge distro feature. /%s should be relocated to /usr." % (pkg, f)
             oe.qa.handle_error("usrmerge", msg, d)
             return
@@ -1002,10 +1004,11 @@ def package_qa_check_empty_dirs(pkg, d):
     empty.
     """
 
+    global cpath
     pkgd = oe.path.join(d.getVar('PKGDEST'), pkg)
     for dir in (d.getVar('QA_EMPTY_DIRS') or "").split():
         empty_dir = oe.path.join(pkgd, dir)
-        if os.path.exists(empty_dir) and os.listdir(empty_dir):
+        if cpath.exists(empty_dir) and os.listdir(empty_dir):
             recommendation = (d.getVar('QA_EMPTY_DIRS_RECOMMENDATION:' + dir) or
                               "but it is expected to be empty")
             msg = "%s installs files in %s, %s" % (pkg, dir, recommendation)
@@ -1035,8 +1038,9 @@ HOST_USER_GID := "${@os.getgid()}"
 QAPATHTEST[host-user-contaminated] = "package_qa_check_host_user"
 def package_qa_check_host_user(path, name, d, elf):
     """Check for paths outside of /home which are owned by the user running bitbake."""
+    global cpath
 
-    if not os.path.lexists(path):
+    if not cpath.lexists(path):
         return
 
     dest = d.getVar('PKGDEST')
@@ -1046,7 +1050,7 @@ def package_qa_check_host_user(path, name, d, elf):
         return
 
     try:
-        stat = os.lstat(path)
+        stat = cpath.lstat(path)
     except OSError as exc:
         import errno
         if exc.errno != errno.ENOENT:
@@ -1100,12 +1104,7 @@ parse_test_matrix[vardepsexclude] = "ERROR_QA WARN_QA"
 
 # The PACKAGE FUNC to scan each package
 python do_package_qa () {
-    import subprocess
     import oe.packagedata
-
-    bb.note("DO PACKAGE QA")
-
-    main_lic = d.getVar('LICENSE')
 
     # Check for obsolete license references in main LICENSE (packages are checked below for any changes)
     main_licenses = oe.license.list_licenses(d.getVar('LICENSE'))
@@ -1122,27 +1121,28 @@ python do_package_qa () {
     pn = d.getVar('PN')
 
     # Scan the packages...
-    pkgdest = d.getVar('PKGDEST')
     packages = set((d.getVar('PACKAGES') or '').split())
-
-    global pkgfiles
-    pkgfiles = {}
-    for pkg in packages:
-        pkgfiles[pkg] = []
-        pkgdir = os.path.join(pkgdest, pkg)
-        for walkroot, dirs, files in os.walk(pkgdir):
-            # Don't walk into top-level CONTROL or DEBIAN directories as these
-            # are temporary directories created by do_package.
-            if walkroot == pkgdir:
-                for control in ("CONTROL", "DEBIAN"):
-                    if control in dirs:
-                        dirs.remove(control)
-            for file in files:
-                pkgfiles[pkg].append(os.path.join(walkroot, file))
-
     # no packages should be scanned
     if not packages:
         return
+
+    global pkgfiles, cpath
+    pkgfiles = {}
+    cpath = oe.cachedpath.CachedPath()
+    pkgdest = d.getVar('PKGDEST')
+    for pkg in packages:
+        pkgdir = os.path.join(pkgdest, pkg)
+        pkgfiles[pkg] = []
+        for walkroot, dirs, files in cpath.walk(pkgdir):
+            # Don't walk into top-level CONTROL or DEBIAN directories as these
+            # are temporary directories created by do_package.
+            if walkroot == pkgdir:
+                for removedir in ("CONTROL", "DEBIAN"):
+                    try:
+                        dirs.remove(removedir)
+                    except ValueError:
+                        pass
+            pkgfiles[pkg].extend((os.path.join(walkroot, f) for f in files))
 
     import re
     # The package name matches the [a-z0-9.+-]+ regular expression
@@ -1181,6 +1181,7 @@ python do_package_qa () {
 
     package_qa_check_libdir(d)
 
+    cpath = None
     oe.qa.exit_if_errors(d)
 }
 

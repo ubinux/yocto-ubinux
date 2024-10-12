@@ -119,7 +119,9 @@ def add_license_expression(d, objset, license_expression, license_data):
     )
     spdx_license_expression = " ".join(convert(l) for l in lic_split)
 
-    return objset.new_license_expression(spdx_license_expression, license_data, license_text_map)
+    return objset.new_license_expression(
+        spdx_license_expression, license_data, license_text_map
+    )
 
 
 def add_package_files(
@@ -202,6 +204,7 @@ def get_package_sources_from_debug(
         return False
 
     debug_search_paths = [
+        Path(d.getVar("SPDXWORK")),
         Path(d.getVar("PKGD")),
         Path(d.getVar("STAGING_DIR_TARGET")),
         Path(d.getVar("STAGING_DIR_NATIVE")),
@@ -286,8 +289,24 @@ def collect_dep_objsets(d, build):
     return dep_objsets, dep_builds
 
 
-def collect_dep_sources(dep_objsets):
-    sources = {}
+def index_sources_by_hash(sources, dest):
+    for s in sources:
+        if not isinstance(s, oe.spdx30.software_File):
+            continue
+
+        if s.software_primaryPurpose != oe.spdx30.software_SoftwarePurpose.source:
+            continue
+
+        for v in s.verifiedUsing:
+            if v.algorithm == oe.spdx30.HashAlgorithm.sha256:
+                if not v.hashValue in dest:
+                    dest[v.hashValue] = s
+                break
+        else:
+            bb.fatal(f"No SHA256 found for {s.name}")
+
+
+def collect_dep_sources(dep_objsets, dest):
     for objset in dep_objsets:
         # Don't collect sources from native recipes as they
         # match non-native sources also.
@@ -304,29 +323,10 @@ def collect_dep_sources(dep_objsets):
             if dep_build is not e.from_:
                 continue
 
-            if e.relationshipType != oe.spdx30.RelationshipType.hasInputs:
+            if e.relationshipType != oe.spdx30.RelationshipType.hasInput:
                 continue
 
-            for to in e.to:
-                if not isinstance(to, oe.spdx30.software_File):
-                    continue
-
-                if (
-                    to.software_primaryPurpose
-                    != oe.spdx30.software_SoftwarePurpose.source
-                ):
-                    continue
-
-                for v in to.verifiedUsing:
-                    if v.algorithm == oe.spdx30.HashAlgorithm.sha256:
-                        sources[v.hashValue] = to
-                        break
-                else:
-                    bb.fatal(
-                        "No SHA256 found for %s in %s" % (to.name, objset.doc.name)
-                    )
-
-    return sources
+            index_sources_by_hash(e.to, dest)
 
 
 def add_download_files(d, objset):
@@ -379,22 +379,15 @@ def add_download_files(d, objset):
                     inputs.add(file)
 
             else:
-                uri = fd.type
-                proto = getattr(fd, "proto", None)
-                if proto is not None:
-                    uri = uri + "+" + proto
-                uri = uri + "://" + fd.host + fd.path
-
-                if fd.method.supports_srcrev():
-                    uri = uri + "@" + fd.revisions[name]
-
                 dl = objset.add(
                     oe.spdx30.software_Package(
                         _id=objset.new_spdxid("source", str(download_idx + 1)),
                         creationInfo=objset.doc.creationInfo,
                         name=file_name,
                         software_primaryPurpose=primary_purpose,
-                        software_downloadLocation=uri,
+                        software_downloadLocation=oe.spdx_common.fetch_data_to_uri(
+                            fd, name
+                        ),
                     )
                 )
 
@@ -492,18 +485,22 @@ def create_spdx(d):
 
             # If this CVE is fixed upstream, skip it unless all CVEs are
             # specified.
-            if include_vex != "all" and 'detail' in decoded_status and \
-                decoded_status['detail'] in (
-                "fixed-version",
-                "cpe-stable-backport",
+            if (
+                include_vex != "all"
+                and "detail" in decoded_status
+                and decoded_status["detail"]
+                in (
+                    "fixed-version",
+                    "cpe-stable-backport",
+                )
             ):
                 bb.debug(1, "Skipping %s since it is already fixed upstream" % cve)
                 continue
 
-            cve_by_status.setdefault(decoded_status['mapping'], {})[cve] = (
+            cve_by_status.setdefault(decoded_status["mapping"], {})[cve] = (
                 build_objset.new_cve_vuln(cve),
-                decoded_status['detail'],
-                decoded_status['description'],
+                decoded_status["detail"],
+                decoded_status["description"],
             )
 
     cpe_ids = oe.cve_check.get_cpe_ids(d.getVar("CVE_PRODUCT"), d.getVar("CVE_VERSION"))
@@ -511,18 +508,21 @@ def create_spdx(d):
     source_files = add_download_files(d, build_objset)
     build_inputs |= source_files
 
-    recipe_spdx_license = add_license_expression(d, build_objset, d.getVar("LICENSE"), license_data)
+    recipe_spdx_license = add_license_expression(
+        d, build_objset, d.getVar("LICENSE"), license_data
+    )
     build_objset.new_relationship(
         source_files,
         oe.spdx30.RelationshipType.hasConcludedLicense,
         [recipe_spdx_license],
     )
 
+    dep_sources = {}
     if oe.spdx_common.process_sources(d) and include_sources:
         bb.debug(1, "Adding source files to SPDX")
         oe.spdx_common.get_patched_src(d)
 
-        build_inputs |= add_package_files(
+        files = add_package_files(
             d,
             build_objset,
             spdx_workdir,
@@ -535,6 +535,8 @@ def create_spdx(d):
             ignore_top_level_dirs=["temp"],
             archive=None,
         )
+        build_inputs |= files
+        index_sources_by_hash(files, dep_sources)
 
     dep_objsets, dep_builds = collect_dep_objsets(d, build)
     if dep_builds:
@@ -555,7 +557,7 @@ def create_spdx(d):
     # TODO: Handle native recipe output
     if not is_native:
         bb.debug(1, "Collecting Dependency sources files")
-        sources = collect_dep_sources(dep_objsets)
+        collect_dep_sources(dep_objsets, dep_sources)
 
         bb.build.exec_func("read_subpackage_metadata", d)
 
@@ -602,7 +604,7 @@ def create_spdx(d):
 
             pkg_objset.new_scoped_relationship(
                 [build._id],
-                oe.spdx30.RelationshipType.hasOutputs,
+                oe.spdx30.RelationshipType.hasOutput,
                 oe.spdx30.LifecycleScopeType.build,
                 [spdx_package],
             )
@@ -726,7 +728,7 @@ def create_spdx(d):
 
             if include_sources:
                 debug_sources = get_package_sources_from_debug(
-                    d, package, package_files, sources, source_hash_cache
+                    d, package, package_files, dep_sources, source_hash_cache
                 )
                 debug_source_ids |= set(
                     oe.sbom30.get_element_link_id(d) for d in debug_sources
@@ -751,7 +753,7 @@ def create_spdx(d):
         if sysroot_files:
             build_objset.new_scoped_relationship(
                 [build],
-                oe.spdx30.RelationshipType.hasOutputs,
+                oe.spdx30.RelationshipType.hasOutput,
                 oe.spdx30.LifecycleScopeType.build,
                 sorted(list(sysroot_files)),
             )
@@ -759,7 +761,7 @@ def create_spdx(d):
     if build_inputs or debug_source_ids:
         build_objset.new_scoped_relationship(
             [build],
-            oe.spdx30.RelationshipType.hasInputs,
+            oe.spdx30.RelationshipType.hasInput,
             oe.spdx30.LifecycleScopeType.build,
             sorted(list(build_inputs)) + sorted(list(debug_source_ids)),
         )
@@ -980,7 +982,7 @@ def collect_build_package_inputs(d, objset, build, packages):
     if build_deps:
         objset.new_scoped_relationship(
             [build],
-            oe.spdx30.RelationshipType.hasInputs,
+            oe.spdx30.RelationshipType.hasInput,
             oe.spdx30.LifecycleScopeType.build,
             sorted(list(build_deps)),
         )
@@ -1013,7 +1015,7 @@ def create_rootfs_spdx(d):
 
     objset.new_scoped_relationship(
         [rootfs_build],
-        oe.spdx30.RelationshipType.hasOutputs,
+        oe.spdx30.RelationshipType.hasOutput,
         oe.spdx30.LifecycleScopeType.build,
         [rootfs],
     )
@@ -1075,7 +1077,7 @@ def create_image_spdx(d):
         if artifacts:
             objset.new_scoped_relationship(
                 [image_build],
-                oe.spdx30.RelationshipType.hasOutputs,
+                oe.spdx30.RelationshipType.hasOutput,
                 oe.spdx30.LifecycleScopeType.build,
                 artifacts,
             )
@@ -1090,7 +1092,7 @@ def create_image_spdx(d):
         )
         objset.new_scoped_relationship(
             builds,
-            oe.spdx30.RelationshipType.hasInputs,
+            oe.spdx30.RelationshipType.hasInput,
             oe.spdx30.LifecycleScopeType.build,
             [rootfs_image._id],
         )
@@ -1161,7 +1163,7 @@ def sdk_create_spdx(d, sdk_type, spdx_work_dir, toolchain_outputname):
 
     objset.new_scoped_relationship(
         [sdk_build],
-        oe.spdx30.RelationshipType.hasOutputs,
+        oe.spdx30.RelationshipType.hasOutput,
         oe.spdx30.LifecycleScopeType.build,
         [sdk_rootfs],
     )
@@ -1188,7 +1190,7 @@ def create_sdk_sbom(d, sdk_deploydir, spdx_work_dir, toolchain_outputname):
 
     rootfs_objset.new_scoped_relationship(
         [sdk_build],
-        oe.spdx30.RelationshipType.hasInputs,
+        oe.spdx30.RelationshipType.hasInput,
         oe.spdx30.LifecycleScopeType.build,
         [rootfs],
     )
@@ -1227,7 +1229,7 @@ def create_sdk_sbom(d, sdk_deploydir, spdx_work_dir, toolchain_outputname):
     if files:
         rootfs_objset.new_scoped_relationship(
             [sdk_build],
-            oe.spdx30.RelationshipType.hasOutputs,
+            oe.spdx30.RelationshipType.hasOutput,
             oe.spdx30.LifecycleScopeType.build,
             files,
         )

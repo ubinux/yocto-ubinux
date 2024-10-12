@@ -110,7 +110,7 @@ class TestCreateNewProject(SeleniumFunctionalTestCase):
           - Release: Yocto Project 4.0 "Kirkstone" (option value: 4)
           - Merge Toaster settings: True
         """
-        release = '4'
+        release = '5'
         release_title = 'Yocto Project 4.0 "Kirkstone"'
         project_name = 'projectkirkstone'
         self._create_test_new_project(
@@ -172,8 +172,10 @@ class TestCreateNewProject(SeleniumFunctionalTestCase):
                                  "import-project-dir").send_keys(wrong_path)
         self.driver.find_element(By.ID, "create-project-button").click()
 
+        self.wait_until_visible('.alert-danger')
+
         # check error message
         self.assertTrue(self.element_exists('.alert-danger'),
-                        'Allert message not shown')
+                        'Alert message not shown')
         self.assertTrue(wrong_path in self.find('.alert-danger').text,
                         "Wrong path not in alert message")

@@ -38,14 +38,8 @@ def _get_frame_args(frame):
     """Get the formatted arguments and class (if available) for a frame"""
     arginfo = inspect.getargvalues(frame)
 
-    try:
-        if not arginfo.args:
+    if not arginfo.args:
             return '', None
-    # There have been reports from the field of python 2.6 which doesn't 
-    # return a namedtuple here but simply a tuple so fallback gracefully if
-    # args isn't present.
-    except AttributeError:
-        return '', None
 
     firstarg = arginfo.args[0]
     if firstarg == 'self':
@@ -53,7 +47,11 @@ def _get_frame_args(frame):
         cls = self.__class__.__name__
 
         arginfo.args.pop(0)
-        del arginfo.locals['self']
+        try:
+            del arginfo.locals['self']
+        except TypeError:
+            # FIXME - python 3.13 FrameLocalsProxy can't be modified
+            pass
     else:
         cls = None
 

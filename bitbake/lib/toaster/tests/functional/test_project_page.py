@@ -699,7 +699,7 @@ class TestProjectPage(SeleniumFunctionalTestCase):
         )
 
     def test_single_layer_page(self):
-        """ Test layer page
+        """ Test layer details page using meta-poky as an example (assumes is added to start with)
             - Check if title is displayed
             - Check add/remove layer button works
             - Check tabs(layers, recipes, machines) are displayed
@@ -708,27 +708,28 @@ class TestProjectPage(SeleniumFunctionalTestCase):
                 - Check layer summary
                 - Check layer description
         """
-        url = reverse("layerdetails", args=(TestProjectPage.project_id, 7))
-        self.get(url)
+        self._navigate_to_config_nav('layerstable', 6)
+        layer_link = self.driver.find_element(By.XPATH, '//tr/td[@class="layer__name"]/a[contains(text(),"meta-poky")]')
+        layer_link.click()
         self.wait_until_visible('.page-header')
         # check title is displayed
         self.assertTrue(self.find('.page-header h1').is_displayed())
 
-        # check add layer button works
+        # check remove layer button works
         remove_layer_btn = self.find('#add-remove-layer-btn')
         remove_layer_btn.click()
         self.wait_until_visible('#change-notification', poll=2)
         change_notification = self.find('#change-notification')
-        self.assertTrue(
-            f'You have removed 1 layer from your project' in str(change_notification.text)
+        self.assertIn(
+            f'You have removed 1 layer from your project', str(change_notification.text)
         )
-        # check add layer button works, 18 is the random layer id
+        # check add layer button works
         add_layer_btn = self.find('#add-remove-layer-btn')
         add_layer_btn.click()
         self.wait_until_visible('#change-notification')
         change_notification = self.find('#change-notification')
-        self.assertTrue(
-            f'You have added 1 layer to your project' in str(change_notification.text)
+        self.assertIn(
+            f'You have added 1 layer to your project', str(change_notification.text)
         )
         # check tabs(layers, recipes, machines) are displayed
         tabs = self.find_all('.nav-tabs li')
@@ -738,12 +739,18 @@ class TestProjectPage(SeleniumFunctionalTestCase):
         self.assertTrue(
             'active' in str(self.find('#information').get_attribute('class'))
         )
-        # Check second tab
+        # Check second tab (recipes)
+        # Ensure page is scrolled to the top
+        self.driver.find_element(By.XPATH, '//body').send_keys(Keys.CONTROL + Keys.HOME)
+        self.wait_until_visible('.nav-tabs')
         tabs[1].click()
         self.assertTrue(
             'active' in str(self.find('#recipes').get_attribute('class'))
         )
-        # Check third tab
+        # Check third tab (machines)
+        # Ensure page is scrolled to the top
+        self.driver.find_element(By.XPATH, '//body').send_keys(Keys.CONTROL + Keys.HOME)
+        self.wait_until_visible('.nav-tabs')
         tabs[2].click()
         self.assertTrue(
             'active' in str(self.find('#machines').get_attribute('class'))
@@ -767,7 +774,12 @@ class TestProjectPage(SeleniumFunctionalTestCase):
                 - Check recipe: name, summary, description, Version, Section,
                 License, Approx. packages included, Approx. size, Recipe file
         """
-        url = reverse("recipedetails", args=(TestProjectPage.project_id, 53428))
+        # Use a recipe which is likely to exist in the layer index but not enabled
+        # in poky out the box - xen-image-minimal from meta-virtualization
+        self._navigate_to_project_page()
+        prj = Project.objects.get(pk=TestProjectPage.project_id)
+        recipe_id = prj.get_all_compatible_recipes().get(name="xen-image-minimal").pk
+        url = reverse("recipedetails", args=(TestProjectPage.project_id, recipe_id))
         self.get(url)
         self.wait_until_visible('.page-header')
         # check title is displayed

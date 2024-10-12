@@ -23,13 +23,14 @@ import collections
 import subprocess
 import pickle
 import errno
-import bb.persist_data, bb.utils
+import bb.utils
 import bb.checksum
 import bb.process
 import bb.event
 
 __version__ = "2"
 _checksum_cache = bb.checksum.FileChecksumCache()
+_revisions_cache = bb.checksum.RevisionsCache()
 
 logger = logging.getLogger("BitBake.Fetcher")
 
@@ -237,7 +238,7 @@ class URI(object):
         # to RFC compliant URL format. E.g.:
         #   file://foo.diff -> file:foo.diff
         if urlp.scheme in self._netloc_forbidden:
-            uri = re.sub("(?<=:)//(?!/)", "", uri, 1)
+            uri = re.sub(r"(?<=:)//(?!/)", "", uri, count=1)
             reparse = 1
 
         if reparse:
@@ -493,18 +494,23 @@ methods = []
 urldata_cache = {}
 saved_headrevs = {}
 
-def fetcher_init(d):
+def fetcher_init(d, servercontext=True):
     """
     Called to initialize the fetchers once the configuration data is known.
     Calls before this must not hit the cache.
     """
 
-    revs = bb.persist_data.persist('BB_URI_HEADREVS', d)
+    _checksum_cache.init_cache(d.getVar("BB_CACHEDIR"))
+    _revisions_cache.init_cache(d.getVar("BB_CACHEDIR"))
+
+    if not servercontext:
+        return
+
     try:
         # fetcher_init is called multiple times, so make sure we only save the
         # revs the first time it is called.
         if not bb.fetch2.saved_headrevs:
-            bb.fetch2.saved_headrevs = dict(revs)
+            bb.fetch2.saved_headrevs = _revisions_cache.get_revs()
     except:
         pass
 
@@ -514,11 +520,10 @@ def fetcher_init(d):
         logger.debug("Keeping SRCREV cache due to cache policy of: %s", srcrev_policy)
     elif srcrev_policy == "clear":
         logger.debug("Clearing SRCREV cache due to cache policy of: %s", srcrev_policy)
-        revs.clear()
+        _revisions_cache.clear_cache()
     else:
         raise FetchError("Invalid SRCREV cache policy of: %s" % srcrev_policy)
 
-    _checksum_cache.init_cache(d.getVar("BB_CACHEDIR"))
 
     for m in methods:
         if hasattr(m, "init"):
@@ -526,9 +531,11 @@ def fetcher_init(d):
 
 def fetcher_parse_save():
     _checksum_cache.save_extras()
+    _revisions_cache.save_extras()
 
 def fetcher_parse_done():
     _checksum_cache.save_merge()
+    _revisions_cache.save_merge()
 
 def fetcher_compare_revisions(d):
     """
@@ -536,7 +543,7 @@ def fetcher_compare_revisions(d):
     when bitbake was started and return true if they have changed.
     """
 
-    headrevs = dict(bb.persist_data.persist('BB_URI_HEADREVS', d))
+    headrevs = _revisions_cache.get_revs()
     return headrevs != bb.fetch2.saved_headrevs
 
 def mirror_from_string(data):
@@ -1606,7 +1613,7 @@ class FetchMethod(object):
                     if urlpath.find("/") != -1:
                         destdir = urlpath.rsplit("/", 1)[0] + '/'
                         bb.utils.mkdirhier("%s/%s" % (unpackdir, destdir))
-                cmd = 'cp -fpPRH "%s" "%s"' % (file, destdir)
+                cmd = 'cp --force --preserve=timestamps --no-dereference --recursive -H "%s" "%s"' % (file, destdir)
         else:
             urldata.unpack_tracer.unpack("archive-extract", unpackdir)
 
@@ -1662,13 +1669,13 @@ class FetchMethod(object):
         if not hasattr(self, "_latest_revision"):
             raise ParameterError("The fetcher for this URL does not support _latest_revision", ud.url)
 
-        revs = bb.persist_data.persist('BB_URI_HEADREVS', d)
         key = self.generate_revision_key(ud, d, name)
-        try:
-            return revs[key]
-        except KeyError:
-            revs[key] = rev = self._latest_revision(ud, d, name)
-            return rev
+
+        rev = _revisions_cache.get_rev(key)
+        if rev is None:
+            rev = self._latest_revision(ud, d, name)
+            _revisions_cache.set_rev(key, rev)
+        return rev
 
     def sortable_revision(self, ud, d, name):
         latest_rev = self._build_revision(ud, d, name)
