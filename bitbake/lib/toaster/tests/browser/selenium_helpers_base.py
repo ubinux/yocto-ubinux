@@ -27,7 +27,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.common.exceptions import NoSuchElementException, \
         StaleElementReferenceException, TimeoutException, \
-        SessionNotCreatedException
+        SessionNotCreatedException, WebDriverException
 
 def create_selenium_driver(cls,browser='chrome'):
     # set default browser string based on env (if available)
@@ -113,6 +113,9 @@ class Wait(WebDriverWait):
             except NoSuchElementException:
                 pass
             except StaleElementReferenceException:
+                pass
+            except WebDriverException:
+                # selenium.common.exceptions.WebDriverException: Message: unknown error: unhandled inspector error: {"code":-32000,"message":"Node with given id does not belong to the document"}
                 pass
 
             time.sleep(self._poll)
@@ -227,12 +230,15 @@ class SeleniumTestCaseBase(unittest.TestCase):
 
     def wait_until_clickable(self, selector, poll=1):
         """ Wait until element matching CSS selector is visible on the page """
+        sel = selector
+        if sel.startswith('#'):
+            sel = selector[1:]
         WebDriverWait(
             self.driver,
             Wait._TIMEOUT,
             poll_frequency=poll
         ).until(
-            EC.element_to_be_clickable((By.ID, selector.removeprefix('#')
+            EC.element_to_be_clickable((By.ID, sel
                                         )
                                        )
         )

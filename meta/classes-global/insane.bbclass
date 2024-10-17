@@ -434,9 +434,8 @@ def package_qa_check_buildpaths(path, name, d, elf):
     explicitly ignored.
     """
     import stat
-    global cpath
     # Ignore symlinks/devs/fifos
-    mode = cpath.lstat(path).st_mode
+    mode = os.lstat(path).st_mode
     if stat.S_ISLNK(mode) or stat.S_ISBLK(mode) or stat.S_ISFIFO(mode) or stat.S_ISCHR(mode) or stat.S_ISSOCK(mode):
         return
 
@@ -1050,7 +1049,7 @@ def package_qa_check_host_user(path, name, d, elf):
         return
 
     try:
-        stat = cpath.lstat(path)
+        stat = os.lstat(path)
     except OSError as exc:
         import errno
         if exc.errno != errno.ENOENT:
@@ -1133,7 +1132,7 @@ python do_package_qa () {
     for pkg in packages:
         pkgdir = os.path.join(pkgdest, pkg)
         pkgfiles[pkg] = []
-        for walkroot, dirs, files in cpath.walk(pkgdir):
+        for walkroot, dirs, files in os.walk(pkgdir):
             # Don't walk into top-level CONTROL or DEBIAN directories as these
             # are temporary directories created by do_package.
             if walkroot == pkgdir:
