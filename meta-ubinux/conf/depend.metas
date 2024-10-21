@@ -10,11 +10,12 @@ metas=meta-oe
  meta-swupdate
  meta-spdxscanner
  meta-java
+ meta-xilinx
 
 [meta-oe]
 GITURL=http://git.openembedded.org/meta-openembedded
 BRANCH=master
-HEADID=8c4bbc148be8e181ebc5ee574c1c64a152ed5d30
+HEADID=456a5e1cc82d039c45a7b60fe96ddf6101b470ed
 FILES=meta-oe/conf
  meta-oe/COPYING.MIT
  meta-oe/licenses/
@@ -225,14 +226,14 @@ FILES=meta-oe/conf
  meta-oe/recipes-graphics/xorg-app/twm_1.0.12.bb
  meta-oe/recipes-graphics/xorg-app/xgamma_1.0.7.bb
  meta-oe/recipes-graphics/xorg-app/xkbevd_1.1.5.bb
- meta-oe/recipes-graphics/xorg-app/xkbprint_1.0.6.bb
+ meta-oe/recipes-graphics/xorg-app/xkbprint_1.0.7.bb
  meta-oe/recipes-graphics/xorg-app/xkbutils_1.0.6.bb
  meta-oe/recipes-graphics/xorg-app/xlsatoms_1.1.4.bb
  meta-oe/recipes-graphics/xorg-app/xlsclients_1.1.5.bb
  meta-oe/recipes-graphics/xorg-app/xrefresh_1.1.0.bb
  meta-oe/recipes-graphics/xorg-app/xsetroot_1.1.3.bb
  meta-oe/recipes-graphics/xorg-app/xstdcmap_1.0.5.bb
- meta-oe/recipes-graphics/xorg-app/xwud_1.0.6.bb
+ meta-oe/recipes-graphics/xorg-app/xwud_1.0.7.bb
  meta-oe/recipes-graphics/takao-fonts/
  meta-oe/recipes-graphics/openjpeg/
 
@@ -453,7 +454,7 @@ FILES=meta-oe/conf
 [meta-freescale]
 GITURL=https://git.yoctoproject.org/git/meta-freescale
 BRANCH=master
-HEADID=71bf377029d99dc64a54f6cff8941fcdfb8fb58d
+HEADID=54d87ffa1e9caad766aee746def81f2c7b80b8a2
 FILES=conf/layer.conf
  custom-licenses/
  classes/
@@ -471,7 +472,7 @@ FILES=conf/layer.conf
 [meta-cgl]
 GITURL=https://git.yoctoproject.org/git/meta-cgl
 BRANCH=master
-HEADID=c9c269231e34d961a3b5101da98f04dfb4591969
+HEADID=c9c269231e34d961a3b5101da98f04dfb4591969 
 FILES=meta-cgl-common/conf/layer.conf
  meta-cgl-common/conf/distro/include/cgl_common_security_flags.inc
  meta-cgl-common/recipes-cgl/cluster-glue/
@@ -487,7 +488,7 @@ FILES=meta-cgl-common/conf/layer.conf
 [meta-cloud-services]
 GITURL=http://git.yoctoproject.org/git/meta-cloud-services
 BRANCH=master
-HEADID=5ebf85a616357eef1f367ff25d412472977a470d
+HEADID=00b2913ab519ade394bceecd11edeebe86ad004d
 FILES=conf/layer.conf
  classes/
  meta-openstack/classes/default_configs.bbclass
@@ -548,7 +549,7 @@ FILES=conf/layer.conf
 [meta-virtualization]
 GITURL=http://git.yoctoproject.org/git/meta-virtualization
 BRANCH=master
-HEADID=8138d9cc7e0c31171230110db0cfa881c46a821b
+HEADID=1665d1e2ad2244171dcdb580df4f54739d6444bd
 FILES=conf/layer.conf
  classes/
  files/
@@ -563,13 +564,13 @@ FILES=conf/layer.conf
 [meta-selinux]
 GITURL=http://git.yoctoproject.org/git/meta-selinux
 BRANCH=master
-HEADID=7886cda8a505886fd9532d9585f7e9eae78cb52e
+HEADID=06289974f8c856a0d1bf981779545d440655ac68
 FILES=conf/layer.conf
 
 [meta-security]
 GITURL=http://git.yoctoproject.org/git/meta-security
 BRANCH=master
-HEADID=84d9cd56991a646453c8817eeeb2f8556e36854e
+HEADID=84d9cd56991a646453c8817eeeb2f8556e36854e 
 FILES=conf
  classes/sanity-meta-security.bbclass
  meta-tpm/classes/sanity-meta-tpm.bbclass
@@ -604,7 +605,7 @@ FILES=conf/layer.conf
 [meta-spdxscanner]
 GITURL=https://git.yoctoproject.org/git/meta-spdxscanner
 BRANCH=master
-HEADID=fdb04b39939c1899f57f82b2a75ddb11a0
+HEADID=928e5109d8465fccfac9ec327aeb8ade3da2f844 
 FILES=conf/layer.conf
  classes
  recipes-devtools/synopsys/
@@ -612,7 +613,7 @@ FILES=conf/layer.conf
 [meta-swupdate]
 GITURL=https://github.com/sbabic/meta-swupdate.git
 BRANCH=master
-HEADID=3aed0f6ec3a87d04309fb1534962bbb3d7e3edd4
+HEADID=7bdbcbec86de74160ff1fa450eb870563909d69a 
 FILES=conf/layer.conf
  recipes-support/swupdate/
  recipes-bsp/u-boot/
@@ -643,4 +644,13 @@ FILES=conf/layer.conf
  recipes-core/xerces-j
  recipes-core/xml-commons
 
-
+[meta-xilinx]
+GITURL=http://git.yoctoproject.org/git/meta-xilinx
+BRANCH=master
+HEADID=3f3d692d66be7d9f147364828572e57dd87702eb
+FILES=meta-xilinx-core/conf
+ meta-xilinx-core/COPYING.MIT
+ meta-xilinx-core/classes/
+ meta-xilinx-core/classes-global/
+ meta-xilinx-core/classes-recipe/
+ meta-xilinx-core/recipes-devtools/qemu/
