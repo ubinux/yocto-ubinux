@@ -605,7 +605,7 @@ FILES=conf/layer.conf
 [meta-spdxscanner]
 GITURL=https://git.yoctoproject.org/git/meta-spdxscanner
 BRANCH=master
-HEADID=928e5109d8465fccfac9ec327aeb8ade3da2f844 
+HEADID=aefca06343e9d45a273ab2fad681c0cfe470ffa6
 FILES=conf/layer.conf
  classes
  recipes-devtools/synopsys/
@@ -613,7 +613,7 @@ FILES=conf/layer.conf
 [meta-swupdate]
 GITURL=https://github.com/sbabic/meta-swupdate.git
 BRANCH=master
-HEADID=7bdbcbec86de74160ff1fa450eb870563909d69a 
+HEADID=7bdbcbec86de74160ff1fa450eb870563909d69a
 FILES=conf/layer.conf
  recipes-support/swupdate/
  recipes-bsp/u-boot/
