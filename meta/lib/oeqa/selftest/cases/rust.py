@@ -1,11 +1,11 @@
 # SPDX-License-Identifier: MIT
-import os
 import subprocess
 import time
 from oeqa.core.decorator import OETestTag
+from oeqa.core.decorator.data import skipIfArch
 from oeqa.core.case import OEPTestResultTestCase
 from oeqa.selftest.case import OESelftestTestCase
-from oeqa.utils.commands import runCmd, bitbake, get_bb_var, get_bb_vars, runqemu, Command
+from oeqa.utils.commands import runCmd, bitbake, get_bb_var, runqemu
 from oeqa.utils.sshcontrol import SSHControl
 
 def parse_results(filename):
@@ -38,15 +38,9 @@ def parse_results(filename):
 @OETestTag("toolchain-user")
 @OETestTag("runqemu")
 class RustSelfTestSystemEmulated(OESelftestTestCase, OEPTestResultTestCase):
+
+    @skipIfArch(['mips', 'mips64'])
     def test_rust(self, *args, **kwargs):
-        # Disable Rust Oe-selftest
-        #self.skipTest("The Rust Oe-selftest is disabled.")
-
-        # Skip mips32 target since it is unstable with rust tests
-        machine = get_bb_var('MACHINE')
-        if machine == "qemumips":
-            self.skipTest("The mips32 target is skipped for Rust Oe-selftest.")
-
         # build remote-test-server before image build
         recipe = "rust"
         start_time = time.time()
@@ -80,10 +74,7 @@ class RustSelfTestSystemEmulated(OESelftestTestCase, OEPTestResultTestCase):
                             'src/tools/rustdoc-themes',
                             'src/tools/rust-installer',
                             'src/tools/suggest-tests',
-                            'src/tools/tidy/src/',
                             'tests/assembly/asm/aarch64-outline-atomics.rs',
-                            'tests/codegen/abi-main-signature-32bit-c-int.rs',
-                            'tests/codegen/i128-x86-align.rs',
                             'tests/codegen/issues/issue-122805.rs',
                             'tests/codegen/thread-local.rs',
                             'tests/mir-opt/',
@@ -98,7 +89,6 @@ class RustSelfTestSystemEmulated(OESelftestTestCase, OEPTestResultTestCase):
                             'tests/ui/debuginfo/debuginfo-emit-llvm-ir-and-split-debuginfo.rs',
                             'tests/ui-fulldeps/',
                             'tests/ui/process/nofile-limit.rs',
-                            'tests/ui/structs-enums/multiple-reprs.rs',
                             'tidyselftest'
                         ]
 

@@ -254,7 +254,7 @@ New Features / Enhancements in 5.1
       ``meta/conf/cve-check-map.conf`` by including it before distro include
       files in ``meta/conf/bitbake.conf``.
 
-SPDX-related changes:
+-  SPDX-related changes:
 
    -  Update the SPDX license set too version 3.24.0, and produce SPDX output in
       version 3.0 by default, instead of 2.2.
@@ -402,6 +402,13 @@ SPDX-related changes:
       scripts, fixing some issues seen when :term:`PACKAGECONFIG` would
       conditionally modify it.
 
+Known Issues in 5.1
+~~~~~~~~~~~~~~~~~~~
+
+-  ``oeqa/runtime``: the ``beaglebone-yocto`` target fails the ``parselogs``
+   runtime test due to unexpected kernel error messages in the log (see
+   :yocto_bugs:`bug 15624 </show_bug.cgi?id=15624>` on Bugzilla).
+
 Recipe License changes in 5.1
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -439,32 +446,32 @@ The following corrections have been made to the :term:`LICENSE` values set by re
 Security Fixes in 5.1
 ~~~~~~~~~~~~~~~~~~~~~
 
--  ``apr``: :cve:`2023-49582`
--  ``busybox``: :cve:`2021-42380`, :cve:`2023-42363`, :cve:`2023-42364`, :cve:`2023-42365`, :cve:`2023-42366`
--  ``cups``: :cve:`2024-35235`
--  ``curl``: :cve:`2024-6197`, :cve:`2024-6874`, :cve:`2024-7264`
--  ``expat``: :cve:`2024-45490`, :cve:`2024-45491`, :cve:`2024-45492`.
--  ``gcc``: :cve:`2023-4039`
--  ``gdk-pixbuf``: :cve:`2022-48622`
--  ``ghostscript``: :cve:`2024-33869`, :cve:`2023-52722`, :cve:`2024-33870`, :cve:`2024-33871`, :cve:`2024-29510`
--  ``git``: :cve:`2024-32002`, :cve:`2024-32004`, :cve:`2024-32020`, :cve:`2024-32021`, :cve:`2024-32465`
--  ``glibc``: :cve:`2024-2961`, :cve:`2024-33599`, :cve:`2024-33600`, :cve:`2024-33601`, :cve:`2024-33602`
--  ``go``: :cve:`2024-24790`
--  ``gtk+3``: :cve:`2024-6655`
--  ``linux-yocto/6.10``: :cve:`2020-16119`
--  ``linux-yocto/6.6``: :cve:`2020-16119`
--  ``llvm``: :cve:`2024-0151`
--  ``ncurses``: :cve:`2023-50495`, :cve:`2023-45918`
--  ``openssh``: :cve:`2024-6387`
--  ``openssl``: :cve:`2024-4603`, :cve:`2024-4741`
--  ``ovmf``: :cve:`2023-45236`, :cve:`2023-45237`, :cve:`2024-25742`
--  ``python3``: :cve:`2024-7592`, :cve:`2024-8088`, :cve:`2024-6232`
--  ``ruby``: :cve:`2024-27282`, :cve:`2024-27281`, :cve:`2024-27280`
--  ``tiff``: :cve:`2024-7006`
--  ``vim``: :cve:`2024-41957`, :cve:`2024-41965`, :cve:`2024-43374`, :cve:`2024-43790`, :cve:`2024-43802`
--  ``wget``: :cve:`2024-38428`
--  ``wpa-supplicant``: :cve:`2024-5290`, :cve:`2023-52160`
--  ``xserver-xorg``: :cve:`2024-31080`, :cve:`2024-31081`, :cve:`2024-31082`, :cve:`2024-31083`
+-  ``apr``: :cve_nist:`2023-49582`
+-  ``busybox``: :cve_nist:`2021-42380`, :cve_nist:`2023-42363`, :cve_nist:`2023-42364`, :cve_nist:`2023-42365`, :cve_nist:`2023-42366`
+-  ``cups``: :cve_nist:`2024-35235`
+-  ``curl``: :cve_nist:`2024-6197`, :cve_nist:`2024-6874`, :cve_nist:`2024-7264`
+-  ``expat``: :cve_nist:`2024-45490`, :cve_nist:`2024-45491`, :cve_nist:`2024-45492`.
+-  ``gcc``: :cve_nist:`2023-4039`
+-  ``gdk-pixbuf``: :cve_nist:`2022-48622`
+-  ``ghostscript``: :cve_nist:`2024-33869`, :cve_nist:`2023-52722`, :cve_nist:`2024-33870`, :cve_nist:`2024-33871`, :cve_nist:`2024-29510`
+-  ``git``: :cve_nist:`2024-32002`, :cve_nist:`2024-32004`, :cve_nist:`2024-32020`, :cve_nist:`2024-32021`, :cve_nist:`2024-32465`
+-  ``glibc``: :cve_nist:`2024-2961`, :cve_nist:`2024-33599`, :cve_nist:`2024-33600`, :cve_nist:`2024-33601`, :cve_nist:`2024-33602`
+-  ``go``: :cve_nist:`2024-24790`
+-  ``gtk+3``: :cve_nist:`2024-6655`
+-  ``linux-yocto/6.10``: :cve_nist:`2020-16119`
+-  ``linux-yocto/6.6``: :cve_nist:`2020-16119`
+-  ``llvm``: :cve_nist:`2024-0151`
+-  ``ncurses``: :cve_nist:`2023-50495`, :cve_nist:`2023-45918`
+-  ``openssh``: :cve_nist:`2024-6387`
+-  ``openssl``: :cve_nist:`2024-4603`, :cve_nist:`2024-4741`
+-  ``ovmf``: :cve_nist:`2023-45236`, :cve_nist:`2023-45237`, :cve_nist:`2024-25742`
+-  ``python3``: :cve_nist:`2024-7592`, :cve_nist:`2024-8088`, :cve_nist:`2024-6232`
+-  ``ruby``: :cve_nist:`2024-27282`, :cve_nist:`2024-27281`, :cve_nist:`2024-27280`
+-  ``tiff``: :cve_nist:`2024-7006`
+-  ``vim``: :cve_nist:`2024-41957`, :cve_nist:`2024-41965`, :cve_nist:`2024-43374`, :cve_nist:`2024-43790`, :cve_nist:`2024-43802`
+-  ``wget``: :cve_nist:`2024-38428`
+-  ``wpa-supplicant``: :cve_nist:`2024-5290`, :cve_nist:`2023-52160`
+-  ``xserver-xorg``: :cve_nist:`2024-31080`, :cve_nist:`2024-31081`, :cve_nist:`2024-31082`, :cve_nist:`2024-31083`
 
 Recipe Upgrades in 5.1
 ~~~~~~~~~~~~~~~~~~~~~~
@@ -1011,3 +1018,59 @@ Thanks to the following people who contributed to this release:
 
 Repositories / Downloads for Yocto-5.1
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+poky
+
+-  Repository Location: :yocto_git:`/poky`
+-  Branch: :yocto_git:`styhead </poky/log/?h=styhead>`
+-  Tag:  :yocto_git:`yocto-5.1 </poky/log/?h=yocto-5.1>`
+-  Git Revision: :yocto_git:`8f01ae5c7cba251ed25c80f0141a950ebc8a5f73 </poky/commit/?id=8f01ae5c7cba251ed25c80f0141a950ebc8a5f73>`
+-  Release Artefact: poky-8f01ae5c7cba251ed25c80f0141a950ebc8a5f73
+-  sha: 91f5b2bc8a2be153ac2c358aa8ad71737b4f91e83d2c3ed1aac4f5f087991769
+-  Download Locations:
+   http://downloads.yoctoproject.org/releases/yocto/yocto-5.1/poky-8f01ae5c7cba251ed25c80f0141a950ebc8a5f73.tar.bz2
+   http://mirrors.kernel.org/yocto/yocto/yocto-5.1/poky-8f01ae5c7cba251ed25c80f0141a950ebc8a5f73.tar.bz2
+
+openembedded-core
+
+-  Repository Location: :oe_git:`/openembedded-core`
+-  Branch: :oe_git:`styhead </openembedded-core/log/?h=styhead>`
+-  Tag:  :oe_git:`yocto-5.1 </openembedded-core/log/?h=yocto-5.1>`
+-  Git Revision: :oe_git:`161c5b311f1aeb8f254dca96331b31d5b67fc92d </openembedded-core/commit/?id=161c5b311f1aeb8f254dca96331b31d5b67fc92d>`
+-  Release Artefact: oecore-161c5b311f1aeb8f254dca96331b31d5b67fc92d
+-  sha: 7b8ea61a3b811556f40b0912ee22b3ef37bccead1d65fb7e1c35a47aff4ca718
+-  Download Locations:
+   http://downloads.yoctoproject.org/releases/yocto/yocto-5.1/oecore-161c5b311f1aeb8f254dca96331b31d5b67fc92d.tar.bz2
+   http://mirrors.kernel.org/yocto/yocto/yocto-5.1/oecore-161c5b311f1aeb8f254dca96331b31d5b67fc92d.tar.bz2
+
+meta-mingw
+
+-  Repository Location: :yocto_git:`/meta-mingw`
+-  Branch: :yocto_git:`styhead </meta-mingw/log/?h=styhead>`
+-  Tag:  :yocto_git:`yocto-5.1 </meta-mingw/log/?h=yocto-5.1>`
+-  Git Revision: :yocto_git:`4ac6cbfdce1f85294bd54bcd8b074f7ef32c378f </meta-mingw/commit/?id=4ac6cbfdce1f85294bd54bcd8b074f7ef32c378f>`
+-  Release Artefact: meta-mingw-4ac6cbfdce1f85294bd54bcd8b074f7ef32c378f
+-  sha: 7759361e141654cc84aad486ad36a9ddaf7ee47feebe2cc6dca3175f1922b7c4
+-  Download Locations:
+   http://downloads.yoctoproject.org/releases/yocto/yocto-5.1/meta-mingw-4ac6cbfdce1f85294bd54bcd8b074f7ef32c378f.tar.bz2
+   http://mirrors.kernel.org/yocto/yocto/yocto-5.1/meta-mingw-4ac6cbfdce1f85294bd54bcd8b074f7ef32c378f.tar.bz2
+
+bitbake
+
+-  Repository Location: :oe_git:`/bitbake`
+-  Branch: :oe_git:`2.10 </bitbake/log/?h=2.10>`
+-  Tag:  :oe_git:`yocto-5.1 </bitbake/log/?h=yocto-5.1>`
+-  Git Revision: :oe_git:`d3c84198771b7f79aa84dc73061d8ca071fe18f3 </bitbake/commit/?id=d3c84198771b7f79aa84dc73061d8ca071fe18f3>`
+-  Release Artefact: bitbake-d3c84198771b7f79aa84dc73061d8ca071fe18f3
+-  sha: 4b64120f26878a661d1aaf0b0bb5009a21614e2db0649c728cc9d4c16b1050b6
+-  Download Locations:
+   http://downloads.yoctoproject.org/releases/yocto/yocto-5.1/bitbake-d3c84198771b7f79aa84dc73061d8ca071fe18f3.tar.bz2
+   http://mirrors.kernel.org/yocto/yocto/yocto-5.1/bitbake-d3c84198771b7f79aa84dc73061d8ca071fe18f3.tar.bz2
+
+yocto-docs
+
+-  Repository Location: :yocto_git:`/yocto-docs`
+-  Branch: :yocto_git:`styhead </yocto-docs/log/?h=styhead>`
+-  Tag: :yocto_git:`yocto-5.1 </yocto-docs/log/?h=yocto-5.1>`
+-  Git Revision: :yocto_git:`c32b55b3403dcfd76a4694ff407d4b513e14c8f4 </yocto-docs/commit/?id=c32b55b3403dcfd76a4694ff407d4b513e14c8f4>`
+

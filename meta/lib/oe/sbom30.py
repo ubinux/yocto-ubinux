@@ -577,9 +577,9 @@ class ObjectSet(oe.spdx30.SHACLObjectSet):
             re.sub(r"[^a-zA-Z0-9_-]", "_", license_expression),
         ]
 
-        license_text = (
+        license_text = [
             (k, license_text_map[k]) for k in sorted(license_text_map.keys())
-        )
+        ]
 
         if not license_text:
             lic = self.find_filter(
@@ -631,7 +631,7 @@ class ObjectSet(oe.spdx30.SHACLObjectSet):
         sha256_hash = bb.utils.sha256_file(path)
 
         for f in self.by_sha256_hash.get(sha256_hash, []):
-            if not isinstance(oe.spdx30.software_File):
+            if not isinstance(f, oe.spdx30.software_File):
                 continue
 
             if purposes:

@@ -142,6 +142,18 @@ The following variables have been removed:
 -  ``TCLIBCAPPEND`` is now removed as sharing :term:`TMPDIR` for multiple libc
    providers has been supported for years.
 
+-  ``VOLATILE_LOG_DIR``: :term:`FILESYSTEM_PERMS_TABLES` is now used instead.
+   By default, :term:`FILESYSTEM_PERMS_TABLES` now contains the value
+   ``files/fs-perms-volatile-log.txt``, which means that volatile log is
+   enabled. Users can disable the volatile log by removing the value
+   ``files/fs-perms-volatile-log.txt`` from :term:`FILESYSTEM_PERMS_TABLES`.
+
+-  ``VOLATILE_TMP_DIR``: :term:`FILESYSTEM_PERMS_TABLES` is now used instead.
+   By default, :term:`FILESYSTEM_PERMS_TABLES` now contains the value
+   ``files/fs-perms-volatile-tmp.txt``, which means that volatile tmp is
+   enabled. Users can disable the volatile tmp by removing the value
+   ``files/fs-perms-volatile-tmp.txt`` from :term:`FILESYSTEM_PERMS_TABLES`.
+
 .. _migration-5.1-removed-recipes:
 
 Removed recipes

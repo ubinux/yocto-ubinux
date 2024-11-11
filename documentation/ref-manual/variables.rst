@@ -8,13 +8,13 @@ This chapter lists common variables used in the OpenEmbedded build
 system and gives an overview of their function and contents.
 
 :term:`A <ABIEXTENSION>` :term:`B` :term:`C <CACHE>`
-:term:`D` :term:`E <EFI_PROVIDER>` :term:`F <FEATURE_PACKAGES>`
-:term:`G <GCCPIE>` :term:`H <HOMEPAGE>` :term:`I <ICECC_DISABLED>`
+:term:`D` :term:`E <EFI_PROVIDER>` :term:`F <FAKEROOT>`
+:term:`G <GCCPIE>` :term:`H <HGDIR>` :term:`I <ICECC_CLASS_DISABLE>`
 :term:`K <KARCH>` :term:`L <LABELS>` :term:`M <MACHINE>`
 :term:`N <NATIVELSBSTRING>` :term:`O <OBJCOPY>` :term:`P`
-:term:`R <RANLIB>` :term:`S` :term:`T`
-:term:`U <UBOOT_CONFIG>` :term:`V <VOLATILE_LOG_DIR>`
-:term:`W <WARN_QA>` :term:`X <XSERVER>`
+:term:`Q <QA_EMPTY_DIRS>` :term:`R <RANLIB>` :term:`S` :term:`T`
+:term:`U <UBOOT_BINARY>` :term:`V <VIRTUAL-RUNTIME>`
+:term:`W <WARN_QA>` :term:`X <XSERVER>` :term:`Z <ZSTD_THREADS>`
 
 .. glossary::
    :sorted:
@@ -3007,26 +3007,32 @@ system and gives an overview of their function and contents.
       :ref:`ref-tasks-patch` task as well.
 
    :term:`FILESYSTEM_PERMS_TABLES`
-      Allows you to define your own file permissions settings table as part
+      Allows you to define your own file permissions settings tables as part
       of your configuration for the packaging process. For example, suppose
       you need a consistent set of custom permissions for a set of groups
       and users across an entire work project. It is best to do this in the
       packages themselves but this is not always possible.
 
       By default, the OpenEmbedded build system uses the ``fs-perms.txt``,
-      which is located in the ``meta/files`` folder in the :term:`Source Directory`.
-      If you create your own file
-      permissions setting table, you should place it in your layer or the
-      distro's layer.
+      ``fs-perms-volatile-log.txt`` and ``fs-perms-volatile-tmp.txt`` which are
+      located in the ``meta/files`` folder in the :term:`Source Directory`. If
+      you create your own permission setting table files, you should place
+      those in your layer.
 
-      You define the :term:`FILESYSTEM_PERMS_TABLES` variable in the
-      ``conf/local.conf`` file, which is found in the :term:`Build Directory`,
-      to point to your custom ``fs-perms.txt``. You can specify more than a
-      single file permissions setting table. The paths you specify to these
-      files must be defined within the :term:`BBPATH` variable.
+      You can override the value of :term:`FILESYSTEM_PERMS_TABLES` variable
+      in your distribution configuration file to point to your custom
+      permission table files. You can specify one or more file permissions
+      setting tables. The paths that you specify to these files must be defined
+      within the :term:`BBPATH` variable.
 
-      For guidance on how to create your own file permissions settings
-      table file, examine the existing ``fs-perms.txt``.
+      In order to disable the volatile log, which is enabled by default, one
+      can remove the ``files/fs-perms-volatile-log.txt`` value from
+      ``FILESYSTEM_PERMS_TABLES``. Similarly, in order to disable the volatile
+      tmp, one can remove the ``files/fs-perms-volatile-tmp.txt`` value.
+
+      For guidance on how to define your own file permissions settings
+      tables, examine the existing ``fs-perms.txt``,
+      ``fs-perms-volatile-log.txt`` and ``fs-perms-volatile-tmp.txt`` files.
 
    :term:`FIT_ADDRESS_CELLS`
       Specifies the value of the ``#address-cells`` value for the
@@ -7874,6 +7880,53 @@ system and gives an overview of their function and contents.
          might break at runtime if the interface of the recipe was changed
          after the other had been built.
 
+   :term:`SIGGEN_LOCKEDSIGS`
+     The list of locked tasks, with the form::
+
+       SIGGEN_LOCKEDSIGS += "<package>:<task>:<signature>"
+
+     If ``<signature>`` exists for the specified ``<task>`` and ``<package>``
+     in the sstate cache, BitBake will use the cached output instead of
+     rebuilding the ``<task>``. If it does not exist, BitBake will build the
+     ``<task>`` and the sstate cache will be used next time.
+
+     Example::
+
+       SIGGEN_LOCKEDSIGS += "bc:do_compile:09772aa4532512baf96d433484f27234d4b7c11dd9cda0d6f56fa1b7ce6f25f0"
+
+     You can obtain the signature of all the tasks for the recipe ``bc`` using::
+
+       bitbake -S none bc
+
+     Then you can look at files in ``build/tmp/stamps/<arch>/bc`` and look for
+     files like: ``<PV>.do_compile.sigdata.09772aa4532512baf96d433484f27234d4b7c11dd9cda0d6f56fa1b7ce6f25f0``.
+
+     Alternatively, you can also use :doc:`bblock </dev-manual/bblock>` to
+     generate this line for you.
+
+   :term:`SIGGEN_LOCKEDSIGS_TASKSIG_CHECK`
+     Specifies the debug level of task signature check. 3 levels are supported:
+
+     * ``info``: displays a "Note" message to remind the user that a task is locked
+       and the current signature matches the locked one.
+     * ``warn``: displays a "Warning" message if a task is locked and the current
+       signature does not match the locked one.
+     * ``error``: same as warn but displays an "Error" message and aborts.
+
+   :term:`SIGGEN_LOCKEDSIGS_TYPES`
+     Allowed overrides for :term:`SIGGEN_LOCKEDSIGS`. This is mainly used
+     for architecture specific locks. A common value for
+     :term:`SIGGEN_LOCKEDSIGS_TYPES` is ``${PACKAGE_ARCHS}``::
+
+       SIGGEN_LOCKEDSIGS_TYPES += "${PACKAGE_ARCHS}"
+
+       SIGGEN_LOCKEDSIGS_core2-64 += "bc:do_compile:09772aa4532512baf96d433484f27234d4b7c11dd9cda0d6f56fa1b7ce6f25f0"
+       SIGGEN_LOCKEDSIGS_cortexa57 += "bc:do_compile:12178eb6d55ef602a8fe638e49862fd247e07b228f0f08967697b655bfe4bb61"
+
+     Here, the ``do_compile`` task from ``bc`` will be locked only for
+     ``core2-64`` and ``cortexa57`` but not for other architectures such as
+     ``mips32r2``.
+
    :term:`SITEINFO_BITS`
       Specifies the number of bits for the target system CPU. The value
       should be either "32" or "64".
@@ -10074,26 +10127,6 @@ system and gives an overview of their function and contents.
       image definition::
 
          PACKAGE_INSTALL = "${INITRAMFS_SCRIPTS} ${VIRTUAL-RUNTIME_base-utils} base-passwd"
-
-   :term:`VOLATILE_LOG_DIR`
-      Specifies the persistence of the target's ``/var/log`` directory,
-      which is used to house postinstall target log files.
-
-      By default, :term:`VOLATILE_LOG_DIR` is set to "yes", which means the
-      file is not persistent. You can override this setting by setting the
-      variable to "no" to make the log directory persistent.
-
-   :term:`VOLATILE_TMP_DIR`
-      Specifies the persistence of the target's ``/tmp`` directory.
-
-      By default, :term:`VOLATILE_TMP_DIR` is set to "yes", in which case
-      ``/tmp`` links to a directory which resides in RAM in a ``tmpfs``
-      filesystem.
-
-      If instead, you want the ``/tmp`` directory to be persistent, set the
-      variable to "no" to make it a regular directory in the root filesystem.
-
-      This supports both sysvinit and systemd based systems.
 
    :term:`WARN_QA`
       Specifies the quality assurance checks whose failures are reported as

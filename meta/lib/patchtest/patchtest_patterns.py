@@ -58,6 +58,8 @@ mbox_bugzilla = pyparsing.Regex('\[\s?YOCTO.*\]')
 mbox_bugzilla_validation = pyparsing.Regex('\[(\s?YOCTO\s?#\s?(\d+)\s?,?)+\]')
 mbox_revert_shortlog_regex = pyparsing.Regex('Revert\s+".*"')
 mbox_shortlog_maxlength = 90
+# based on https://stackoverflow.com/questions/30281026/regex-parsing-github-usernames-javascript
+mbox_github_username = pyparsing.Regex('\B@([a-z0-9](?:-(?=[a-z0-9])|[a-z0-9]){0,38}(?<=[a-z0-9]))')
 
 # patch
 
@@ -83,8 +85,8 @@ patch_signed_off_by = pyparsing.AtLineStart("+" + signed_off_by_prefix + signed_
 
 # upstream-status
 
-upstream_status_literal_valid_status = ["Pending", "Backport", "Denied", "Inappropriate", "Submitted"]
-upstream_status_nonliteral_valid_status = ["Pending", "Backport", "Denied", "Inappropriate [reason]", "Submitted [where]"]
+upstream_status_literal_valid_status = ["Pending", "Backport", "Denied", "Inappropriate", "Submitted", "Inactive-Upstream"]
+upstream_status_nonliteral_valid_status = ["Pending", "Backport", "Denied", "Inappropriate [reason]", "Submitted [where]", "Inactive-Upstream [lastcommit: when (and/or) lastrelease: when]"]
 
 upstream_status_valid_status = pyparsing.Or(
     [pyparsing.Literal(status) for status in upstream_status_literal_valid_status]

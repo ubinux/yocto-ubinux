@@ -727,8 +727,13 @@ class Git(FetchMethod):
             clonedir = os.path.realpath(ud.localpath)
             to_remove.append(clonedir)
 
+        # Remove shallow mirror tarball
+        if ud.shallow:
+            to_remove.append(ud.fullshallow)
+            to_remove.append(ud.fullshallow + ".done")
+
         for r in to_remove:
-            if os.path.exists(r):
+            if os.path.exists(r) or os.path.islink(r):
                 bb.note('Removing %s' % r)
                 bb.utils.remove(r, True)
 

@@ -7,8 +7,8 @@
 #
 
 import os
-import random
 import string
+import time
 from unittest import skip
 import pytest
 from django.urls import reverse
@@ -22,58 +22,17 @@ from selenium.webdriver.common.by import By
 
 from .utils import get_projectId_from_url, wait_until_build, wait_until_build_cancelled
 
-
-@pytest.mark.django_db
-@pytest.mark.order("last")
-class TestProjectPage(SeleniumFunctionalTestCase):
+class TestProjectPageBase(SeleniumFunctionalTestCase):
     project_id = None
     PROJECT_NAME = 'TestProjectPage'
 
-    def _create_project(self, project_name):
-        """ Create/Test new project using:
-          - Project Name: Any string
-          - Release: Any string
-          - Merge Toaster settings: True or False
-        """
-        self.get(reverse('newproject'))
-        self.wait_until_visible('#new-project-name')
-        self.find("#new-project-name").send_keys(project_name)
-        select = Select(self.find("#projectversion"))
-        select.select_by_value('3')
-
-        # check merge toaster settings
-        checkbox = self.find('.checkbox-mergeattr')
-        if not checkbox.is_selected():
-            checkbox.click()
-
-        if self.PROJECT_NAME != 'TestProjectPage':
-            # Reset project name if it's not the default one
-            self.PROJECT_NAME = 'TestProjectPage'
-
-        self.find("#create-project-button").click()
-
-        try:
-            self.wait_until_visible('#hint-error-project-name')
-            url = reverse('project', args=(TestProjectPage.project_id, ))
-            self.get(url)
-            self.wait_until_visible('#config-nav', poll=3)
-        except TimeoutException:
-            self.wait_until_visible('#config-nav', poll=3)
-
-    def _random_string(self, length):
-        return ''.join(
-            random.choice(string.ascii_letters) for _ in range(length)
-        )
-
     def _navigate_to_project_page(self):
         # Navigate to project page
-        if TestProjectPage.project_id is None:
-            self._create_project(project_name=self._random_string(10))
-            current_url = self.driver.current_url
-            TestProjectPage.project_id = get_projectId_from_url(current_url)
-        else:
-            url = reverse('project', args=(TestProjectPage.project_id,))
-            self.get(url)
+        if TestProjectPageBase.project_id is None:
+            TestProjectPageBase.project_id = self.create_new_project(self.PROJECT_NAME, '3', None, True)
+
+        url = reverse('project', args=(TestProjectPageBase.project_id,))
+        self.get(url)
         self.wait_until_visible('#config-nav')
 
     def _get_create_builds(self, **kwargs):
@@ -81,14 +40,14 @@ class TestProjectPage(SeleniumFunctionalTestCase):
         # parameters for builds to associate with the projects
         now = timezone.now()
         self.project1_build_success = {
-            'project': Project.objects.get(id=TestProjectPage.project_id),
+            'project': Project.objects.get(id=TestProjectPageBase.project_id),
             'started_on': now,
             'completed_on': now,
             'outcome': Build.SUCCEEDED
         }
 
         self.project1_build_failure = {
-            'project': Project.objects.get(id=TestProjectPage.project_id),
+            'project': Project.objects.get(id=TestProjectPageBase.project_id),
             'started_on': now,
             'completed_on': now,
             'outcome': Build.FAILED
@@ -133,7 +92,8 @@ class TestProjectPage(SeleniumFunctionalTestCase):
             list_check_box_id: list
     ):
         # Check edit column
-        edit_column = self.find(f'#{edit_btn_id}')
+        finder = lambda driver: self.find(f'#{edit_btn_id}')
+        edit_column = self.wait_until_element_clickable(finder)
         self.assertTrue(edit_column.is_displayed())
         edit_column.click()
         # Check dropdown is visible
@@ -192,7 +152,7 @@ class TestProjectPage(SeleniumFunctionalTestCase):
         def test_show_rows(row_to_show, show_row_link):
             # Check that we can show rows == row_to_show
             show_row_link.select_by_value(str(row_to_show))
-            self.wait_until_visible(f'#{table_selector} tbody tr', poll=3)
+            self.wait_until_visible(f'#{table_selector} tbody tr')
             # check at least some rows are visible
             self.assertTrue(
                 len(self.find_all(f'#{table_selector} tbody tr')) > 0
@@ -222,34 +182,7 @@ class TestProjectPage(SeleniumFunctionalTestCase):
         rows = self.find_all(f'#{table_selector} tbody tr')
         self.assertTrue(len(rows) > 0)
 
-    def test_create_project(self):
-        """ Create/Test new project using:
-          - Project Name: Any string
-          - Release: Any string
-          - Merge Toaster settings: True or False
-        """
-        self._create_project(project_name=self.PROJECT_NAME)
-
-    def test_image_recipe_editColumn(self):
-        """ Test the edit column feature in image recipe table on project page """
-        self._get_create_builds(success=10, failure=10)
-
-        url = reverse('projectimagerecipes', args=(TestProjectPage.project_id,))
-        self.get(url)
-        self.wait_until_present('#imagerecipestable tbody tr')
-
-        column_list = [
-            'get_description_or_summary', 'layer_version__get_vcs_reference',
-            'layer_version__layer__name', 'license', 'recipe-file', 'section',
-            'version'
-        ]
-
-        # Check that we can hide the edit column
-        self._mixin_test_table_edit_column(
-            'imagerecipestable',
-            'edit-columns-button',
-            [f'checkbox-{column}' for column in column_list]
-        )
+class TestProjectPage(TestProjectPageBase):
 
     def test_page_header_on_project_page(self):
         """ Check page header in project page:
@@ -348,7 +281,8 @@ class TestProjectPage(SeleniumFunctionalTestCase):
 
         # click on "Edit" icon button
         self.wait_until_visible('#project-name-container')
-        edit_button = self.find('#project-change-form-toggle')
+        finder = lambda driver: self.find('#project-change-form-toggle')
+        edit_button = self.wait_until_element_clickable(finder)
         edit_button.click()
         project_name_input = self.find('#project-name-change-input')
         self.assertTrue(project_name_input.is_displayed())
@@ -379,7 +313,7 @@ class TestProjectPage(SeleniumFunctionalTestCase):
         self.assertEqual(config_tab.get_attribute('class'), 'active')
         self.assertIn('Configuration', str(config_tab.text))
         self.assertIn(
-            f"/toastergui/project/{TestProjectPage.project_id}", str(self.driver.current_url)
+            f"/toastergui/project/{TestProjectPageBase.project_id}", str(self.driver.current_url)
         )
 
         def get_tabs():
@@ -402,7 +336,7 @@ class TestProjectPage(SeleniumFunctionalTestCase):
         check_tab_link(
             1,
             'Builds',
-            f"/toastergui/project/{TestProjectPage.project_id}/builds"
+            f"/toastergui/project/{TestProjectPageBase.project_id}/builds"
         )
 
         # check "Import layers" tab
@@ -411,7 +345,7 @@ class TestProjectPage(SeleniumFunctionalTestCase):
         check_tab_link(
             2,
             'Import layer',
-            f"/toastergui/project/{TestProjectPage.project_id}/importlayer"
+            f"/toastergui/project/{TestProjectPageBase.project_id}/importlayer"
         )
 
         # check "New custom image" tab
@@ -420,7 +354,7 @@ class TestProjectPage(SeleniumFunctionalTestCase):
         check_tab_link(
             3,
             'New custom image',
-            f"/toastergui/project/{TestProjectPage.project_id}/newcustomimage"
+            f"/toastergui/project/{TestProjectPageBase.project_id}/newcustomimage"
         )
 
         # check search box can be use to build recipes
@@ -428,11 +362,15 @@ class TestProjectPage(SeleniumFunctionalTestCase):
         search_box.send_keys('core-image-minimal')
         self.find('#build-button').click()
         self.wait_until_visible('#latest-builds')
-        lastest_builds = self.driver.find_elements(
-            By.XPATH,
-            '//div[@id="latest-builds"]',
-        )
-        last_build = lastest_builds[0]
+        buildtext = "Loading"
+        while "Loading" in buildtext:
+            time.sleep(1)
+            lastest_builds = self.driver.find_elements(
+                By.XPATH,
+                '//div[@id="latest-builds"]',
+            )
+            last_build = lastest_builds[0]
+            buildtext = last_build.text
         self.assertIn(
             'core-image-minimal', str(last_build.text)
         )
@@ -455,12 +393,8 @@ class TestProjectPage(SeleniumFunctionalTestCase):
             table_selector='softwarerecipestable'
         )
         # check "build recipe" button works
-        rows = self.find_all('#softwarerecipestable tbody tr')
-        image_to_build = rows[0]
-        build_btn = image_to_build.find_element(
-            By.XPATH,
-            '//td[@class="add-del-layers"]//a[1]'
-        )
+        finder = lambda driver: self.find_all('#softwarerecipestable tbody tr')[0].find_element(By.XPATH, '//td[@class="add-del-layers"]/a')
+        build_btn = self.wait_until_element_clickable(finder)
         build_btn.click()
         build_state = wait_until_build(self, 'queued cloning starting parsing failed')
         lastest_builds = self.driver.find_elements(
@@ -468,11 +402,10 @@ class TestProjectPage(SeleniumFunctionalTestCase):
             '//div[@id="latest-builds"]/div'
         )
         self.assertTrue(len(lastest_builds) > 0)
-        last_build = lastest_builds[0]
-        cancel_button = last_build.find_element(
-            By.XPATH,
-            '//span[@class="cancel-build-btn pull-right alert-link"]',
-        )
+        # Find the latest builds, the last build and then the cancel button
+ 
+        finder = lambda driver: driver.find_elements(By.XPATH, '//div[@id="latest-builds"]/div')[0].find_element(By.XPATH, '//span[@class="cancel-build-btn pull-right alert-link"]')
+        cancel_button = self.wait_until_element_clickable(finder)
         cancel_button.click()
         if 'starting' not in build_state:  # change build state when cancelled in starting state
             wait_until_build_cancelled(self)
@@ -519,14 +452,10 @@ class TestProjectPage(SeleniumFunctionalTestCase):
             table_selector='machinestable'
         )
         # check "Select machine" button works
-        rows = self.find_all('#machinestable tbody tr')
-        machine_to_select = rows[0]
-        select_btn = machine_to_select.find_element(
-            By.XPATH,
-            '//td[@class="add-del-layers"]//a[1]'
-        )
-        select_btn.send_keys(Keys.RETURN)
-        self.wait_until_visible('#config-nav')
+        finder = lambda driver: self.find_all('#machinestable tbody tr')[0].find_element(By.XPATH, '//td[@class="add-del-layers"]')
+        select_btn = self.wait_until_element_clickable(finder)
+        select_btn.click()
+        self.wait_until_visible('#project-machine-name')
         project_machine_name = self.find('#project-machine-name')
         self.assertIn(
             'qemux86-64', project_machine_name.text
@@ -540,16 +469,23 @@ class TestProjectPage(SeleniumFunctionalTestCase):
             searchBtn_selector='search-submit-machinestable',
             table_selector='machinestable'
         )
-        self.wait_until_visible('#machinestable tbody tr', poll=3)
-        rows = self.find_all('#machinestable tbody tr')
-        machine_to_add = rows[0]
-        add_btn = machine_to_add.find_element(By.XPATH, '//td[@class="add-del-layers"]')
+
+        self.wait_until_visible('#machinestable tbody tr')
+        # Locate a machine to add button
+        finder = lambda driver: self.find_all('#machinestable tbody tr')[0].find_element(By.XPATH, '//td[@class="add-del-layers"]')
+        add_btn = self.wait_until_element_clickable(finder)
         add_btn.click()
         self.wait_until_visible('#change-notification')
         change_notification = self.find('#change-notification')
         self.assertIn(
             f'You have added 1 layer to your project', str(change_notification.text)
         )
+
+        finder = lambda driver: self.find('#hide-alert')
+        hide_button = self.wait_until_element_clickable(finder)
+        hide_button.click()
+        self.wait_until_not_visible('#change-notification')
+
         # check Machine table feature(show/hide column, pagination)
         self._navigate_to_config_nav('machinestable', 5)
         column_list = [
@@ -590,42 +526,44 @@ class TestProjectPage(SeleniumFunctionalTestCase):
             table_selector='layerstable'
         )
         # check "Add layer" button works
-        self.wait_until_visible('#layerstable tbody tr', poll=3)
-        rows = self.find_all('#layerstable tbody tr')
-        layer_to_add = rows[0]
-        add_btn = layer_to_add.find_element(
-            By.XPATH,
-            '//td[@class="add-del-layers"]'
-        )
+        self.wait_until_visible('#layerstable tbody tr')
+        finder = lambda driver: self.find_all('#layerstable tbody tr')[0].find_element(By.XPATH, '//td[@class="add-del-layers"]/a[@data-directive="add"]')
+        add_btn = self.wait_until_element_clickable(finder)
         add_btn.click()
         # check modal is displayed
-        self.wait_until_visible('#dependencies-modal', poll=3)
+        self.wait_until_visible('#dependencies-modal')
         list_dependencies = self.find_all('#dependencies-list li')
         # click on add-layers button
-        add_layers_btn = self.driver.find_element(
-            By.XPATH,
-            '//form[@id="dependencies-modal-form"]//button[@class="btn btn-primary"]'
-        )
+        finder = lambda driver: self.driver.find_element(By.XPATH, '//form[@id="dependencies-modal-form"]//button[@class="btn btn-primary"]')
+        add_layers_btn = self.wait_until_element_clickable(finder)
         add_layers_btn.click()
         self.wait_until_visible('#change-notification')
         change_notification = self.find('#change-notification')
         self.assertIn(
             f'You have added {len(list_dependencies)+1} layers to your project: {input_text} and its dependencies', str(change_notification.text)
         )
+
+        finder = lambda driver: self.find('#hide-alert')
+        hide_button = self.wait_until_element_clickable(finder)
+        hide_button.click()
+        self.wait_until_not_visible('#change-notification')
+
         # check "Remove layer" button works
-        self.wait_until_visible('#layerstable tbody tr', poll=3)
-        rows = self.find_all('#layerstable tbody tr')
-        layer_to_remove = rows[0]
-        remove_btn = layer_to_remove.find_element(
-            By.XPATH,
-            '//td[@class="add-del-layers"]'
-        )
+        self.wait_until_visible('#layerstable tbody tr')
+        finder = lambda driver: self.find_all('#layerstable tbody tr')[0].find_element(By.XPATH, '//td[@class="add-del-layers"]/a[@data-directive="remove"]')
+        remove_btn = self.wait_until_element_clickable(finder)
         remove_btn.click()
-        self.wait_until_visible('#change-notification', poll=2)
+        self.wait_until_visible('#change-notification')
         change_notification = self.find('#change-notification')
         self.assertIn(
             f'You have removed 1 layer from your project: {input_text}', str(change_notification.text)
         )
+
+        finder = lambda driver: self.find('#hide-alert')
+        hide_button = self.wait_until_element_clickable(finder)
+        hide_button.click()
+        self.wait_until_not_visible('#change-notification')
+
         # check layers table feature(show/hide column, pagination)
         self._navigate_to_config_nav('layerstable', 6)
         column_list = [
@@ -666,14 +604,11 @@ class TestProjectPage(SeleniumFunctionalTestCase):
             table_selector='distrostable'
         )
         # check "Add distro" button works
-        rows = self.find_all('#distrostable tbody tr')
-        distro_to_add = rows[0]
-        add_btn = distro_to_add.find_element(
-            By.XPATH,
-            '//td[@class="add-del-layers"]//a[1]'
-        )
+        self.wait_until_visible(".add-del-layers")
+        finder = lambda driver: self.find_all('#distrostable tbody tr')[0].find_element(By.XPATH, '//td[@class="add-del-layers"]')
+        add_btn = self.wait_until_element_clickable(finder)
         add_btn.click()
-        self.wait_until_visible('#change-notification', poll=2)
+        self.wait_until_visible('#change-notification')
         change_notification = self.find('#change-notification')
         self.assertIn(
             f'You have changed the distro to: {input_text}', str(change_notification.text)
@@ -716,21 +651,31 @@ class TestProjectPage(SeleniumFunctionalTestCase):
         self.assertTrue(self.find('.page-header h1').is_displayed())
 
         # check remove layer button works
-        remove_layer_btn = self.find('#add-remove-layer-btn')
+        finder = lambda driver: self.find('#add-remove-layer-btn')
+        remove_layer_btn = self.wait_until_element_clickable(finder)
         remove_layer_btn.click()
-        self.wait_until_visible('#change-notification', poll=2)
+        self.wait_until_visible('#change-notification')
         change_notification = self.find('#change-notification')
         self.assertIn(
             f'You have removed 1 layer from your project', str(change_notification.text)
         )
+        finder = lambda driver: self.find('#hide-alert')
+        hide_button = self.wait_until_element_clickable(finder)
+        hide_button.click()
         # check add layer button works
-        add_layer_btn = self.find('#add-remove-layer-btn')
+        self.wait_until_not_visible('#change-notification')
+        finder = lambda driver: self.find('#add-remove-layer-btn')
+        add_layer_btn = self.wait_until_element_clickable(finder)
         add_layer_btn.click()
         self.wait_until_visible('#change-notification')
         change_notification = self.find('#change-notification')
         self.assertIn(
             f'You have added 1 layer to your project', str(change_notification.text)
         )
+        finder = lambda driver: self.find('#hide-alert')
+        hide_button = self.wait_until_element_clickable(finder)
+        hide_button.click()
+        self.wait_until_not_visible('#change-notification')
         # check tabs(layers, recipes, machines) are displayed
         tabs = self.find_all('.nav-tabs li')
         self.assertEqual(len(tabs), 3)
@@ -766,6 +711,10 @@ class TestProjectPage(SeleniumFunctionalTestCase):
         # Check layer description
         self.assertIn("Description", section.text)
 
+@pytest.mark.django_db
+@pytest.mark.order("last")
+class TestProjectPageRecipes(TestProjectPageBase):
+
     def test_single_recipe_page(self):
         """ Test recipe page
             - Check if title is displayed
@@ -777,9 +726,9 @@ class TestProjectPage(SeleniumFunctionalTestCase):
         # Use a recipe which is likely to exist in the layer index but not enabled
         # in poky out the box - xen-image-minimal from meta-virtualization
         self._navigate_to_project_page()
-        prj = Project.objects.get(pk=TestProjectPage.project_id)
+        prj = Project.objects.get(pk=TestProjectPageBase.project_id)
         recipe_id = prj.get_all_compatible_recipes().get(name="xen-image-minimal").pk
-        url = reverse("recipedetails", args=(TestProjectPage.project_id, recipe_id))
+        url = reverse("recipedetails", args=(TestProjectPageBase.project_id, recipe_id))
         self.get(url)
         self.wait_until_visible('.page-header')
         # check title is displayed
@@ -802,3 +751,25 @@ class TestProjectPage(SeleniumFunctionalTestCase):
         self.assertIn("Approx. packages included", section.text)
         self.assertIn("Approx. package size", section.text)
         self.assertIn("Recipe file", section.text)
+
+    def test_image_recipe_editColumn(self):
+        """ Test the edit column feature in image recipe table on project page """
+        self._get_create_builds(success=10, failure=10)
+
+        url = reverse('projectimagerecipes', args=(TestProjectPageBase.project_id,))
+        self.get(url)
+        self.wait_until_present('#imagerecipestable tbody tr')
+
+        column_list = [
+            'get_description_or_summary', 'layer_version__get_vcs_reference',
+            'layer_version__layer__name', 'license', 'recipe-file', 'section',
+            'version'
+        ]
+
+        # Check that we can hide the edit column
+        self._mixin_test_table_edit_column(
+            'imagerecipestable',
+            'edit-columns-button',
+            [f'checkbox-{column}' for column in column_list]
+        )
+
