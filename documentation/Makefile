@@ -13,8 +13,8 @@ SPHINXLINTDOCS ?= $(SOURCEDIR)
 IMAGEDIRS      = */svg
 BUILDDIR       = _build
 DESTDIR        = final
-SVG2PNG        = inkscape
-SVG2PDF        = inkscape
+SVG2PNG        = rsvg-convert
+SVG2PDF        = rsvg-convert
 
 ifeq ($(shell if which $(SPHINXBUILD) >/dev/null 2>&1; then echo 1; else echo 0; fi),0)
 $(error "The '$(SPHINXBUILD)' command was not found. Make sure you have Sphinx installed")
@@ -26,10 +26,12 @@ help:
 
 .PHONY: all help Makefile clean stylecheck publish epub latexpdf
 
-publish: Makefile html singlehtml
+publish: Makefile epub latexpdf html singlehtml
 	rm -rf $(BUILDDIR)/$(DESTDIR)/
 	mkdir -p $(BUILDDIR)/$(DESTDIR)/
 	cp -r $(BUILDDIR)/html/* $(BUILDDIR)/$(DESTDIR)/
+	mkdir -p $(BUILDDIR)/$(DESTDIR)/_static
+	cp $(BUILDDIR)/epub/TheYoctoProject.epub $(BUILDDIR)/latex/theyoctoproject.pdf $(BUILDDIR)/$(DESTDIR)/_static/
 	cp $(BUILDDIR)/singlehtml/index.html $(BUILDDIR)/$(DESTDIR)/singleindex.html
 	sed -i -e 's@index.html#@singleindex.html#@g' $(BUILDDIR)/$(DESTDIR)/singleindex.html
 
@@ -41,11 +43,11 @@ PNGs := $(foreach dir, $(IMAGEDIRS), $(patsubst %.svg,%.png,$(wildcard $(SOURCED
 
 # Pattern rule for converting SVG to PDF
 %.pdf : %.svg
-	$(SVG2PDF) --export-filename=$@ $<
+	$(SVG2PDF) --format=Pdf --output=$@ $<
 
 # Pattern rule for converting SVG to PNG
 %.png : %.svg
-	$(SVG2PNG) --export-filename=$@ $<
+	$(SVG2PNG) --format=Png --output=$@ $<
 
 clean:
 	@rm -rf $(BUILDDIR) $(PNGs) $(PDFs) poky.yaml sphinx-static/switchers.js releases.rst
@@ -61,9 +63,12 @@ epub: $(PNGs)
 	$(SOURCEDIR)/set_versions.py
 	@$(SPHINXBUILD) -M $@ "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
 
+# Note: we need to pass buf_size here (which is also configurable from
+# texmf.cnf), to avoid following error:
+#   Unable to read an entire line---bufsize=200000. Please increase buf_size in texmf.cnf.
 latexpdf: $(PDFs)
 	$(SOURCEDIR)/set_versions.py
-	@$(SPHINXBUILD) -M $@ "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
+	buf_size=10000000 $(SPHINXBUILD) -M $@ "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
 
 all: html epub latexpdf
 

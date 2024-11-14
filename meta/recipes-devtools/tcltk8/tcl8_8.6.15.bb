@@ -13,7 +13,7 @@ LIC_FILES_CHKSUM = "file://license.terms;md5=058f6229798281bbcac4239c788cfa38 \
     file://win/license.terms;md5=058f6229798281bbcac4239c788cfa38 \
 "
 
-DEPENDS = "tcl-native zlib"
+DEPENDS = "tcl8-native zlib"
 
 BASE_SRC_URI = "${SOURCEFORGE_MIRROR}/tcl/tcl-core${PV}-src.tar.gz \
                 file://tcl-add-soname.patch"
@@ -29,9 +29,9 @@ SRC_URI[sha256sum] = "844775491e435e34d83d6ccfbadd1342f1855f1705253233a86152df07
 SRC_URI:class-native = "${BASE_SRC_URI}"
 
 UPSTREAM_CHECK_URI = "https://www.tcl.tk/software/tcltk/download.html"
-UPSTREAM_CHECK_REGEX = "tcl(?P<pver>\d+(\.\d+)+)-src"
+UPSTREAM_CHECK_REGEX = "tcl(?P<pver>8(\.\d+)+)-src"
 
-S = "${WORKDIR}/${BPN}${PV}"
+S = "${WORKDIR}/tcl${PV}"
 
 VER = "${PV}"
 
@@ -49,7 +49,7 @@ EXTRA_OECONF += "--with-tzdata=no"
 do_install() {
 	autotools_do_install
 	oe_runmake 'DESTDIR=${D}' install-private-headers
-	ln -sf ./tclsh${VER} ${D}${bindir}/tclsh
+	ln -sf ./tclsh${VER} ${D}${bindir}/tclsh8
 	ln -sf tclsh8.6 ${D}${bindir}/tclsh${VER}
 	sed -i "s;-L${B};-L${STAGING_LIBDIR};g" tclConfig.sh
 	sed -i "s;'${WORKDIR};'${STAGING_INCDIR};g" tclConfig.sh
@@ -64,13 +64,13 @@ do_install() {
 
 SYSROOT_DIRS += "${bindir_crossscripts}"
 
-PACKAGES =+ "tcl-lib"
-FILES:tcl-lib = "${libdir}/libtcl8.6.so.*"
+PACKAGES =+ "tcl8-lib"
+FILES:tcl8-lib = "${libdir}/libtcl8.6.so.*"
 FILES:${PN} += "${libdir}/tcl${VER} ${libdir}/tcl8.6 ${libdir}/tcl8"
-FILES:${PN}-dev += "${libdir}/tclConfig.sh ${libdir}/tclooConfig.sh"
+FILES:${PN}-dev += "${libdir}/tcl8Config.sh ${libdir}/tcl8ooConfig.sh"
 
 # isn't getting picked up by shlibs code
-RDEPENDS:${PN} += "tcl-lib"
+RDEPENDS:${PN} += "tcl8-lib"
 RDEPENDS:${PN}-ptest += "libgcc"
 
 BBCLASSEXTEND = "native nativesdk"
@@ -98,6 +98,9 @@ SSTATE_SCAN_FILES += "*Config.sh"
 
 # Cleanup host path from ${libdir}/tclConfig.sh and remove the
 # ${bindir_crossscripts}/tclConfig.sh from target
+#
+# Also rename development files which conflict with tcl 9.x to
+# have tcl8-specific filenames.
 PACKAGE_PREPROCESS_FUNCS += "tcl_package_preprocess"
 tcl_package_preprocess() {
 	sed -i -e "s;${DEBUG_PREFIX_MAP};;g" \
@@ -107,4 +110,9 @@ tcl_package_preprocess() {
 	       ${PKGD}${libdir}/tclConfig.sh
 
 	rm -f ${PKGD}${bindir_crossscripts}/tclConfig.sh
+
+        # development files
+        mv ${PKGD}${libdir}/pkgconfig/tcl.pc ${PKGD}${libdir}/pkgconfig/tcl8.pc
+        mv ${PKGD}${libdir}/tclConfig.sh ${PKGD}${libdir}/tcl8Config.sh
+        mv ${PKGD}${libdir}/tclooConfig.sh ${PKGD}${libdir}/tcl8ooConfig.sh
 }

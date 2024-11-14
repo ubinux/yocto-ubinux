@@ -4,6 +4,7 @@ Date: Wed, 9 Dec 2009 23:59:44 +0000
 Subject: [PATCH] tcl: Add tcltk from OE.dev but with legacy staging function
 
 Upstream-Status: Pending
+Signed-off-by: Alexander Kanavin <alex@linutronix.de>
 ---
  unix/Makefile.in | 5 ++++-
  unix/tcl.m4      | 3 +++
