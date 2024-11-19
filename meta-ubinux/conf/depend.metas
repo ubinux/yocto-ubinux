@@ -15,7 +15,7 @@ metas=meta-oe
 [meta-oe]
 GITURL=http://git.openembedded.org/meta-openembedded
 BRANCH=master
-HEADID=456a5e1cc82d039c45a7b60fe96ddf6101b470ed
+HEADID=01dd622533957d20fa860e34ff098161a103bfbf
 FILES=meta-oe/conf
  meta-oe/COPYING.MIT
  meta-oe/licenses/
@@ -454,7 +454,7 @@ FILES=meta-oe/conf
 [meta-freescale]
 GITURL=https://git.yoctoproject.org/git/meta-freescale
 BRANCH=master
-HEADID=54d87ffa1e9caad766aee746def81f2c7b80b8a2
+HEADID=26bb9bdc8d948cac3403701c1fb49a67c7c45195
 FILES=conf/layer.conf
  custom-licenses/
  classes/
@@ -549,7 +549,7 @@ FILES=conf/layer.conf
 [meta-virtualization]
 GITURL=http://git.yoctoproject.org/git/meta-virtualization
 BRANCH=master
-HEADID=1665d1e2ad2244171dcdb580df4f54739d6444bd
+HEADID=2747f11e79c29ed4bced84e3b536ae9549aacc79
 FILES=conf/layer.conf
  classes/
  files/
@@ -595,7 +595,7 @@ FILES=conf
 [meta-qt5]
 GITURL=https://github.com/meta-qt5/meta-qt5.git
 BRANCH=master
-HEADID=7bb36db51bf8c41dd59fcbc207583ca43ac7e855
+HEADID=9976e6b152a1b90018a3f0e97fc8f7474b534422
 FILES=conf/layer.conf
  recipes-qt/qt5
  recipes-qt/qtchooser
@@ -605,7 +605,7 @@ FILES=conf/layer.conf
 [meta-spdxscanner]
 GITURL=https://git.yoctoproject.org/git/meta-spdxscanner
 BRANCH=master
-HEADID=aefca06343e9d45a273ab2fad681c0cfe470ffa6
+HEADID=4207228ab2bad63925be14c57dd6bb5ed22a33a1
 FILES=conf/layer.conf
  classes
  recipes-devtools/synopsys/
@@ -613,7 +613,7 @@ FILES=conf/layer.conf
 [meta-swupdate]
 GITURL=https://github.com/sbabic/meta-swupdate.git
 BRANCH=master
-HEADID=7bdbcbec86de74160ff1fa450eb870563909d69a
+HEADID=ecdcadf636aef5584bc7038af80267eeb52748f8 
 FILES=conf/layer.conf
  recipes-support/swupdate/
  recipes-bsp/u-boot/
