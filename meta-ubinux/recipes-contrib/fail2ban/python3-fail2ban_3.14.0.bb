@@ -11,7 +11,7 @@ LIC_FILES_CHKSUM = "file://COPYING;md5=ecabc31e90311da843753ba772885d9f"
 
 DEPENDS = "python3-native"
 
-SRCREV = "e1d3006b0330e9777705a7baafe3989d442ed120"
+SRCREV = "12ff98027f82d4d6d02a9cc8fb0b23f1a817a34f"
 SRC_URI = "git://github.com/fail2ban/fail2ban.git;branch=master;protocol=https \
            file://initd \
            file://run-ptest \
@@ -25,16 +25,6 @@ inherit systemd
 SYSTEMD_SERVICE:${PN} = "fail2ban.service"
 
 S = "${WORKDIR}/git"
-
-do_compile () {
-    cd ${S}
-
-    #remove symlink to python3
-    # otherwise 2to3 is run against it
-    rm -f bin/fail2ban-python
-
-    ./fail2ban-2to3
-}
 
 do_install:append () {
     rm  -f ${D}/${bindir}/fail2ban-python
@@ -66,7 +56,8 @@ INITSCRIPT_PARAMS = "defaults 25"
 
 INSANE_SKIP:${PN}:append = "already-stripped"
 
-RDEPENDS:${PN} = "${VIRTUAL-RUNTIME_base-utils-syslog} iptables python3-core python3-pyinotify"
+RDEPENDS:${PN}:class-native = ""
+RDEPENDS:${PN} = "iptables python3-core python3-pyinotify"
 RDEPENDS:${PN} += "python3-sqlite3"
 RDEPENDS:${PN} += " python3-logging python3-fcntl python3-json"
 RDEPENDS:${PN}-ptest = "python3-core python3-io python3-modules python3-fail2ban"
