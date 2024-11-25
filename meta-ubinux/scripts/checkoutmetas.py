@@ -2,6 +2,8 @@
 import configparser 
 import string, os, sys
 import getpass
+import glob
+import subprocess
 
 def checkout_repository(name, url, branch, headid, files):
     command = "meta-ubinux/scripts/checkoutrepos.sh"
@@ -47,6 +49,25 @@ def main():
                     files  = cf.get(meta, "FILES")
 
                     checkout_repository(meta, giturl, branch, headid, files)
+
+    patch_files = glob.glob(os.path.join(r"./patches-layers", "*.patch"))
+    if not patch_files:
+        print(f"No patch files found in ./patches-layers")
+        return
+
+    for patch_file in patch_files:
+        try:
+            print(f"Applying patch: {patch_file}")
+            result = subprocess.run(['patch', '-p0', '-i', patch_file], capture_output=True, text=True, check=True, cwd="./")
+            print(result.stdout) #Print successful patch application output
+
+        except subprocess.CalledProcessError as e:
+            print(f"Error applying patch {patch_file}:")
+            print(e.stderr)
+            return False #Fail if any patch application fails
+        except FileNotFoundError:
+            print(f"Error: patch utility not found. Please ensure 'patch' is installed and in your PATH.")
+            return False
 
 if __name__ == "__main__":
     try:
