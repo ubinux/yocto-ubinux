@@ -38,7 +38,7 @@ VER = "${PV}"
 inherit autotools ptest binconfig
 
 AUTOTOOLS_SCRIPT_PATH = "${S}/unix"
-EXTRA_OECONF = "--enable-threads --disable-rpath --enable-man-suffix"
+EXTRA_OECONF = "--enable-threads --disable-rpath --enable-man-suffix=tcl8"
 
 # Prevent installing copy of tzdata based on tzdata installation on the build host
 # It doesn't install tzdata if one of the following files exist on the host:
@@ -57,8 +57,8 @@ do_install() {
 	install -m 0755 tclConfig.sh ${D}${bindir_crossscripts}
 	install -m 0755 tclConfig.sh ${D}${libdir}
 	for dir in compat generic unix; do
-		install -d ${D}${includedir}/${BPN}${VER}/$dir
-		install -m 0644 ${S}/$dir/*.h ${D}${includedir}/${BPN}${VER}/$dir/
+		install -d ${D}${includedir}/tcl${VER}/$dir
+		install -m 0644 ${S}/$dir/*.h ${D}${includedir}/tcl${VER}/$dir/
 	done
 }
 

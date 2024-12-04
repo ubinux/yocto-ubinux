@@ -2355,6 +2355,11 @@ system and gives an overview of their function and contents.
       specifies the size of padding appended to the device tree blob, used as
       extra space typically for additional properties during boot.
 
+   :term:`EFI_ARCH`
+      The CPU architecture name within EFI standard. Set in
+      :oe_git:`meta/conf/image-uefi.conf
+      <openembedded-core/tree/meta/conf/image-uefi.conf>`.
+
    :term:`EFI_PROVIDER`
       When building bootable images (i.e. where ``hddimg``, ``iso``, or
       ``wic.vmdk`` is in :term:`IMAGE_FSTYPES`), the
@@ -7130,11 +7135,6 @@ system and gives an overview of their function and contents.
       in the ":ref:`ref-manual/devtool-reference:checking on the upgrade status of a recipe`"
       section.
 
-   :term:`RECIPE_UPGRADE_EXTRA_TASKS`
-      When upgrading a recipe with ``devtool upgrade``, the variable
-      :term:`RECIPE_UPGRADE_EXTRA_TASKS` specifies a space-delimited list of
-      tasks to run after the new sources have been unpacked.
-
    :term:`RECIPE_SYSROOT`
       This variable points to the directory that holds all files populated from
       recipes specified in :term:`DEPENDS`. As the name indicates,
@@ -7165,7 +7165,11 @@ system and gives an overview of their function and contents.
       The default value is ``"${WORKDIR}/recipe-sysroot-native"``.
       Do not modify it.
 
-   :term:`RECIPE_UPDATE_EXTRA_TASKS`
+   :term:`RECIPE_UPGRADE_EXTRA_TASKS`
+      When upgrading a recipe with ``devtool upgrade``, the variable
+      :term:`RECIPE_UPGRADE_EXTRA_TASKS` specifies a space-delimited list of
+      tasks to run after the new sources have been unpacked.
+
       For some recipes, after the new source has been unpacked, additional tasks
       may need to be run during an upgrade. A good example of this is recipes
       which inherit :ref:`ref-classes-cargo-update-recipe-crates`, where the
@@ -9847,6 +9851,43 @@ system and gives an overview of their function and contents.
       passes and uses "all" for the target during the U-Boot building
       process.
 
+   :term:`UKIFY_CMD`
+      When inheriting the :ref:`ref-classes-uki` class,
+      `ukify <https://www.freedesktop.org/software/systemd/man/latest/ukify.html>`__ command to build
+      `Unified Kernel Image (UKI) <https://uapi-group.org/specifications/specs/unified_kernel_image/>`__.
+      Defaults to ``ukify build``.
+
+   :term:`UKI_CMDLINE`
+      When inheriting the :ref:`ref-classes-uki` class, the kernel command line
+      to use when booting the `Unified Kernel Image (UKI)
+      <https://uapi-group.org/specifications/specs/unified_kernel_image/>`__.
+      Defaults to ``rootwait root=LABEL=root console=${KERNEL_CONSOLE}``.
+
+   :term:`UKI_CONFIG_FILE`
+      When inheriting the :ref:`ref-classes-uki` class, an optional config
+      file for the `ukify
+      <https://www.freedesktop.org/software/systemd/man/latest/ukify.html>`__
+      command.
+
+   :term:`UKI_FILENAME`
+      When inheriting the :ref:`ref-classes-uki` class, the output file name
+      for the generated `Unified Kernel Image (UKI)
+      <https://uapi-group.org/specifications/specs/unified_kernel_image/>`__.
+      Defaults to ``uki.efi``.
+
+   :term:`UKI_KERNEL_FILENAME`
+      When inheriting the :ref:`ref-classes-uki` class, the kernel image file
+      name to use as input. Defaults to :term:`KERNEL_IMAGETYPE`.
+
+   :term:`UKI_SB_CERT`
+      When inheriting the :ref:`ref-classes-uki` class, optional UEFI
+      secureboot certificate matching the private key in :term:`UKI_SB_KEY`.
+
+   :term:`UKI_SB_KEY`
+      When inheriting the :ref:`ref-classes-uki` class, optional UEFI
+      secureboot private key to sign the `Unified Kernel Image (UKI)
+      <https://uapi-group.org/specifications/specs/unified_kernel_image/>`__.
+
    :term:`UNKNOWN_CONFIGURE_OPT_IGNORE`
       Specifies a list of options that, if reported by the configure script
       as being invalid, should not generate a warning during the
@@ -10247,6 +10288,11 @@ system and gives an overview of their function and contents.
       of system memory. If unconstrained the xz compressor can use large amounts of
       memory and become problematic with parallelism elsewhere in the build.
       "50%" has been found to be a good value.
+
+   :term:`ZSTD_COMPRESSION_LEVEL`
+      Specifies the compression level to be used with ZStandard compression
+      (from ``1`` to ``19``, set to ``3`` by default, following upstream choice).
+      Higher levels produce smaller files, but take longer to complete.
 
    :term:`ZSTD_THREADS`
       Specifies the number of parallel threads that should be used when

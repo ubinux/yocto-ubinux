@@ -24,6 +24,7 @@ TESTIMAGE_AUTO ??= "0"
 
 TESTIMAGE_FAILED_QA_ARTIFACTS = "\
     ${localstatedir}/log \
+    ${localstatedir}/volatile/log \
     ${sysconfdir}/version \
     ${sysconfdir}/os-release"
 
@@ -399,9 +400,9 @@ def testimage_main(d):
     os.symlink(d.getVar("BB_LOGFILE"), os.path.join(targetdir, os.path.basename(d.getVar("BB_LOGFILE") + "." + d.getVar('DATETIME'))))
 
     if not results or not complete:
-        bb.fatal('%s - FAILED - tests were interrupted during execution, check the logs in %s' % (pn, d.getVar("LOG_DIR")), forcelog=True)
+        bb.error('%s - FAILED - tests were interrupted during execution, check the logs in %s' % (pn, d.getVar("LOG_DIR")), forcelog=True)
     if not results.wasSuccessful():
-        bb.fatal('%s - FAILED - also check the logs in %s' % (pn, d.getVar("LOG_DIR")), forcelog=True)
+        bb.error('%s - FAILED - also check the logs in %s' % (pn, d.getVar("LOG_DIR")), forcelog=True)
 
 def get_runtime_paths(d):
     """
