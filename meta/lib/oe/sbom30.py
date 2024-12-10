@@ -364,7 +364,7 @@ class ObjectSet(oe.spdx30.SHACLObjectSet):
         if not spdxid:
             bb.fatal(f"{key} is not a valid SPDX_IMPORTS key")
 
-        for i in self.docs.import_:
+        for i in self.doc.import_:
             if i.externalSpdxId == spdxid:
                 # Already imported
                 return spdxid
@@ -393,7 +393,7 @@ class ObjectSet(oe.spdx30.SHACLObjectSet):
         if ref_varname:
             if ref_varname == varname:
                 bb.fatal(f"{varname} cannot reference itself")
-            return new_agent(varname, creation_info=creation_info)
+            return self.new_agent(ref_varname, creation_info=creation_info)
 
         import_key = self.d.getVar(f"{varname}_import")
         if import_key:
@@ -875,16 +875,11 @@ class ObjectSet(oe.spdx30.SHACLObjectSet):
             else:
                 missing_spdxids.add(spdxid)
 
-        bb.debug(1, "Linking...")
-        missing = self.link()
-        if missing != missing_spdxids:
-            bb.fatal(
-                f"Linked document doesn't match missing SPDX ID list. Got: {missing}\nExpected: {missing_spdxids}"
-            )
-
         self.doc.import_ = sorted(imports.values(), key=lambda e: e.externalSpdxId)
-
-        return missing_spdxids
+        bb.debug(1, "Linking...")
+        self.link()
+        self.missing_ids -= set(imports.keys())
+        return self.missing_ids
 
 
 def load_jsonld(d, path, required=False):

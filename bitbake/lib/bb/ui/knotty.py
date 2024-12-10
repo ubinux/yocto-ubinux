@@ -24,6 +24,12 @@ import atexit
 from itertools import groupby
 
 from bb.ui import uihelper
+import bb.build
+import bb.command
+import bb.cooker
+import bb.event
+import bb.runqueue
+import bb.utils
 
 featureSet = [bb.cooker.CookerFeatures.SEND_SANITYEVENTS, bb.cooker.CookerFeatures.BASEDATASTORE_TRACKING]
 
@@ -103,7 +109,7 @@ def new_progress(msg, maxval):
         return NonInteractiveProgress(msg, maxval)
 
 def pluralise(singular, plural, qty):
-    if(qty == 1):
+    if qty == 1:
         return singular % qty
     else:
         return plural % qty
@@ -112,6 +118,7 @@ def pluralise(singular, plural, qty):
 class InteractConsoleLogFilter(logging.Filter):
     def __init__(self, tf):
         self.tf = tf
+        super().__init__()
 
     def filter(self, record):
         if record.levelno == bb.msg.BBLogFormatter.NOTE and (record.msg.startswith("Running") or record.msg.startswith("recipe ")):
@@ -555,13 +562,23 @@ def main(server, eventHandler, params, tf = TerminalFilter):
                 }
             })
 
-        bb.utils.mkdirhier(os.path.dirname(consolelogfile))
-        loglink = os.path.join(os.path.dirname(consolelogfile), 'console-latest.log')
+        consolelogdirname = os.path.dirname(consolelogfile)
+        # `bb.utils.mkdirhier` has this check, but it reports failure using bb.fatal, which logs
+        # to the very logger we are trying to set up.
+        if '${' in str(consolelogdirname):
+            print(
+                "FATAL: Directory name {} contains unexpanded bitbake variable. This may cause build failures and WORKDIR pollution.".format(
+                    consolelogdirname))
+            if '${MACHINE}' in consolelogdirname:
+                print("HINT: It looks like you forgot to set MACHINE in local.conf.")
+
+        bb.utils.mkdirhier(consolelogdirname)
+        loglink = os.path.join(consolelogdirname, 'console-latest.log')
         bb.utils.remove(loglink)
         try:
-           os.symlink(os.path.basename(consolelogfile), loglink)
+            os.symlink(os.path.basename(consolelogfile), loglink)
         except OSError:
-           pass
+            pass
 
     # Add the logging domains specified by the user on the command line
     for (domainarg, iterator) in groupby(params.debug_domains):

@@ -596,7 +596,7 @@ def create_spdx(d):
 
             supplier = build_objset.new_agent("SPDX_PACKAGE_SUPPLIER")
             if supplier is not None:
-                spdx_package.supplier = (
+                spdx_package.suppliedBy = (
                     supplier if isinstance(supplier, str) else supplier._id
                 )
 
@@ -908,7 +908,7 @@ def write_bitbake_spdx(d):
                 [build],
                 oe.spdx30.RelationshipType.hasHost,
                 oe.spdx30.LifecycleScopeType.build,
-                [objset.new_import("SPDX_BUILD_HOST")],
+                [objset.new_import(host_import_key)],
             )
 
         if invoked_by:
