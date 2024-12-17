@@ -11,11 +11,12 @@ metas=meta-oe
  meta-spdxscanner
  meta-java
  meta-xilinx
+ meta-erlang
 
 [meta-oe]
 GITURL=http://git.openembedded.org/meta-openembedded
 BRANCH=master
-HEADID=01dd622533957d20fa860e34ff098161a103bfbf
+HEADID=da51096bcf257723a929c799bc6934877de81fa5 
 FILES=meta-oe/conf
  meta-oe/COPYING.MIT
  meta-oe/licenses/
@@ -40,8 +41,10 @@ FILES=meta-oe/conf
  meta-oe/recipes-support/libiodbc/
  meta-oe/recipes-support/libraw/
  meta-oe/recipes-support/upower/
+ meta-oe/recipes-support/smarty/
 
  meta-oe/recipes-core/ell
+ meta-oe/recipes-core/packagegroups/
  meta-oe/recipes-graphics/xorg-app/bdftopcf_1.1.bb
  meta-oe/recipes-graphics/graphene/
  meta-oe/recipes-graphics/freeglut/
@@ -158,6 +161,7 @@ FILES=meta-oe/conf
  meta-perl/recipes-extended/logcheck/
  meta-perl/recipes-extended/mime-construct/
  meta-perl/recipes-perl/libcurses/
+ meta-perl/recipes-perl/liburi/
  meta-oe/recipes-extended/logwatch/
  meta-oe/recipes-extended/lockfile-progs/
  meta-oe/recipes-extended/nicstat/
@@ -410,7 +414,9 @@ FILES=meta-oe/conf
  meta-gnome/recipes-gnome/nautilus/
  meta-gnome/recipes-gnome/libgsf/
  meta-gnome/recipes-gnome/libportal/
- meta-gnome/recipes-gnome/libadwaita
+ meta-gnome/recipes-gnome/libadwaita/
+ meta-gnome/recipes-gnome/libdex/
+ meta-gnome/recipes-gnome/libpanel/
  meta-webserver/conf/
  meta-webserver/licenses
  meta-webserver/recipes-httpd/apache2
@@ -454,7 +460,7 @@ FILES=meta-oe/conf
 [meta-freescale]
 GITURL=https://git.yoctoproject.org/git/meta-freescale
 BRANCH=master
-HEADID=26bb9bdc8d948cac3403701c1fb49a67c7c45195
+HEADID=82193457cee235862946a268ba249abf3ac83cdb
 FILES=conf/layer.conf
  custom-licenses/
  classes/
@@ -488,7 +494,7 @@ FILES=meta-cgl-common/conf/layer.conf
 [meta-cloud-services]
 GITURL=http://git.yoctoproject.org/git/meta-cloud-services
 BRANCH=master
-HEADID=00b2913ab519ade394bceecd11edeebe86ad004d
+HEADID=e606fa3e70bc407f695e2bbfadd2c6519eda4107
 FILES=conf/layer.conf
  classes/
  meta-openstack/classes/default_configs.bbclass
@@ -549,7 +555,7 @@ FILES=conf/layer.conf
 [meta-virtualization]
 GITURL=http://git.yoctoproject.org/git/meta-virtualization
 BRANCH=master
-HEADID=2747f11e79c29ed4bced84e3b536ae9549aacc79
+HEADID=88949aa04f3d337cc8ab441cf131c60b1f8552db 
 FILES=conf/layer.conf
  classes/
  files/
@@ -564,13 +570,13 @@ FILES=conf/layer.conf
 [meta-selinux]
 GITURL=http://git.yoctoproject.org/git/meta-selinux
 BRANCH=master
-HEADID=06289974f8c856a0d1bf981779545d440655ac68
+HEADID=d000ede95d6daa9792e06ce922135736b8bc1751
 FILES=conf/layer.conf
 
 [meta-security]
 GITURL=http://git.yoctoproject.org/git/meta-security
 BRANCH=master
-HEADID=84d9cd56991a646453c8817eeeb2f8556e36854e 
+HEADID=c9585ebfe802139c7a3452352723d117c82cc3af
 FILES=conf
  classes/sanity-meta-security.bbclass
  meta-tpm/classes/sanity-meta-tpm.bbclass
@@ -595,7 +601,7 @@ FILES=conf
 [meta-qt5]
 GITURL=https://github.com/meta-qt5/meta-qt5.git
 BRANCH=master
-HEADID=9976e6b152a1b90018a3f0e97fc8f7474b534422
+HEADID=957e71a90a73946acb414680f4e22a6089b606f1 
 FILES=conf/layer.conf
  recipes-qt/qt5
  recipes-qt/qtchooser
@@ -605,7 +611,7 @@ FILES=conf/layer.conf
 [meta-spdxscanner]
 GITURL=https://git.yoctoproject.org/git/meta-spdxscanner
 BRANCH=master
-HEADID=4207228ab2bad63925be14c57dd6bb5ed22a33a1
+HEADID=e35ae66342edd1e92ce9cde9ccd7627984838ddf 
 FILES=conf/layer.conf
  classes
  recipes-devtools/synopsys/
@@ -613,7 +619,7 @@ FILES=conf/layer.conf
 [meta-swupdate]
 GITURL=https://github.com/sbabic/meta-swupdate.git
 BRANCH=master
-HEADID=ecdcadf636aef5584bc7038af80267eeb52748f8 
+HEADID=9a71f94e78e74dc3476c30442ba26454fd41f5ae
 FILES=conf/layer.conf
  recipes-support/swupdate/
  recipes-bsp/u-boot/
@@ -654,3 +660,9 @@ FILES=meta-xilinx-core/conf
  meta-xilinx-core/classes-global/
  meta-xilinx-core/classes-recipe/
  meta-xilinx-core/recipes-devtools/qemu/
+
+[meta-erlang]
+GITURL=https://github.com/joaohf/meta-erlang
+BRANCH=master
+HEADID=d61ae67de63ecd57ec8ca54f01d01a8563320e66
+FILES=conf
