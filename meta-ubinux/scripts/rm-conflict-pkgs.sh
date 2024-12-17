@@ -27,4 +27,3 @@ find ./ -name "linux-yocto-*" |  xargs -n1 -I{} rm -rf  {}
 find ./ -name "watchdog-keepalive*" |  xargs -n1 -I{} rm -rf  {}
 find ./ -name "lib32-watchdog-keepalive*" |  xargs -n1 -I{} rm -rf  {}
 find ./ -name "packagegroup-core-standalone-sdk-target*" |  xargs -n1 -I{} rm -rf  {}
-find ./ -name "tcl8-doc-*" |  xargs -n1 -I{} rm -rf  {}
