@@ -16,9 +16,12 @@ Note
 
 ## 2.2 Build environment
 
-Please refer to the build environment of poky5.0(scarthgap).
-Ubuntu 22.04 is recommended.
-More than 400G space needs to be prepared for build.
+  - Please refer to the build environment of poky5.2(Walnascar). In addition, the html5lib package needs to be installed to compile qtwebengine.
+    ```
+    $ sudo pip install html5lib
+    ```
+  - Ubuntu 22.04 is recommended.
+  - More than 400G space needs to be prepared for build.
 
 # 3. Usage
 ## 3.1 Download repos
