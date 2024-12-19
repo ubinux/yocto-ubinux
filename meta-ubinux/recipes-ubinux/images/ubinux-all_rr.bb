@@ -487,7 +487,7 @@ UBINUX_PKGS = " \
 	libjs-jquery \
 	libkcapi \
 	libmemusage \
-	libpam-xtests \
+	libpam \
 	libpulsecore \
 	libsotruss \
 	libulockmgr \
