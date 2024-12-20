@@ -456,7 +456,7 @@ UBINUX_PKGS_NOCONFLICT = " \
 	libjs-jquery \
 	libkcapi \
 	libmemusage \
-	libpam-xtests \
+	libpam \
 	libpulsecore \
 	libsotruss \
 	libulockmgr \
