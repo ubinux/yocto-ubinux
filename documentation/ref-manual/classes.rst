@@ -159,27 +159,38 @@ software that includes bash-completion data.
 ``bin_package``
 ===============
 
-The :ref:`ref-classes-bin-package` class is a helper class for recipes that extract the
-contents of a binary package (e.g. an RPM) and install those contents
-rather than building the binary from source. The binary package is
-extracted and new packages in the configured output package format are
-created. Extraction and installation of proprietary binaries is a good
-example use for this class.
+The :ref:`ref-classes-bin-package` class is a helper class for recipes, that
+disables the :ref:`ref-tasks-configure` and :ref:`ref-tasks-compile` tasks and
+copies the content of the :term:`S` directory into the :term:`D` directory. This
+is useful for installing binary packages (e.g. RPM packages) by passing the
+package in the :term:`SRC_URI` variable and inheriting this class.
+
+For RPMs and other packages that do not contain a subdirectory, you should set
+the :term:`SRC_URI` option ``subdir`` to :term:`BP` so that the contents are
+extracted to the directory expected by the default value of :term:`S`. For
+example::
+
+   SRC_URI = "https://example.com/downloads/somepackage.rpm;subdir=${BP}"
+
+This class can also be used for tarballs. For example::
+
+   SRC_URI = "file://somepackage.tar.xz;subdir=${BP}"
+
+The :ref:`ref-classes-bin-package` class will copy the extracted content of the
+tarball from :term:`S` to :term:`D`.
+
+This class assumes that the content of the package as installed in :term:`S`
+mirrors the expected layout once installed on the target, which is generally the
+case for binary packages. For example, an RPM package for a library would
+usually contain the ``usr/lib`` directory, and should be extracted to
+``${S}/usr/lib/<library>.so.<version>`` to be installed in :term:`D` correctly.
 
 .. note::
 
-   For RPMs and other packages that do not contain a subdirectory, you
-   should specify an appropriate fetcher parameter to point to the
-   subdirectory. For example, if BitBake is using the Git fetcher (``git://``),
-   the "subpath" parameter limits the checkout to a specific subpath
-   of the tree. Here is an example where ``${BP}`` is used so that the files
-   are extracted into the subdirectory expected by the default value of
-   :term:`S`::
-
-      SRC_URI = "git://example.com/downloads/somepackage.rpm;branch=main;subpath=${BP}"
-
-   See the ":ref:`bitbake-user-manual/bitbake-user-manual-fetching:fetchers`" section in the BitBake User Manual for
-   more information on supported BitBake Fetchers.
+   The extraction of the package passed in :term:`SRC_URI` is not handled by the
+   :ref:`ref-classes-bin-package` class, but rather by the appropriate
+   :ref:`fetcher <bitbake-user-manual/bitbake-user-manual-fetching:fetchers>`
+   depending on the file extension.
 
 .. _ref-classes-binconfig:
 
@@ -3344,6 +3355,56 @@ and the `signature process
 
 See also the description of :ref:`ref-classes-kernel-fitimage` class, which this class
 imitates.
+
+.. _ref-classes-uki:
+
+``uki``
+=======
+
+The :ref:`ref-classes-uki` class provides support for `Unified Kernel Image
+(UKI) <https://uapi-group.org/specifications/specs/unified_kernel_image/>`__
+format. UKIs combine kernel, :term:`Initramfs`, signatures, metadata etc to a
+single UEFI firmware compatible binary. The class is intended to be inherited
+by rootfs image recipes. The build configuration should also use an
+:term:`Initramfs`, ``systemd-boot`` as boot menu provider and have UEFI support
+on target hardware. Using ``systemd`` as init is recommended. Image builds
+should create an ESP partition for UEFI firmware and copy ``systemd-boot`` and
+UKI files there. Sample configuration for Wic images is provided in
+:oe_git:`scripts/lib/wic/canned-wks/efi-uki-bootdisk.wks.in
+<openembedded-core/tree/scripts/lib/wic/canned-wks/efi-uki-bootdisk.wks.in>`.
+UKIs are generated using ``systemd`` reference implementation `ukify
+<https://www.freedesktop.org/software/systemd/man/latest/ukify.html>`__.
+This class uses a number of variables but tries to find sensible defaults for
+them.
+
+The variables used by this class are:
+
+-  :term:`EFI_ARCH`: architecture name within EFI standard, set in
+   :oe_git:`meta/conf/image-uefi.conf
+   <openembedded-core/tree/meta/conf/image-uefi.conf>`
+-  :term:`IMAGE_EFI_BOOT_FILES`: files to install to EFI boot partition
+   created by the ``bootimg-efi`` Wic plugin
+-  :term:`INITRAMFS_IMAGE`: initramfs recipe name
+-  :term:`KERNEL_DEVICETREE`: optional devicetree files to embed into UKI
+-  :term:`UKIFY_CMD`: `ukify
+   <https://www.freedesktop.org/software/systemd/man/latest/ukify.html>`__
+   command to build the UKI image
+-  :term:`UKI_CMDLINE`: kernel command line to use with UKI
+-  :term:`UKI_CONFIG_FILE`: optional config file for `ukify
+   <https://www.freedesktop.org/software/systemd/man/latest/ukify.html>`__
+-  :term:`UKI_FILENAME`: output file name for the UKI image
+-  :term:`UKI_KERNEL_FILENAME`: kernel image file name
+-  :term:`UKI_SB_CERT`: optional UEFI secureboot certificate matching the
+   private key
+-  :term:`UKI_SB_KEY`: optional UEFI secureboot private key to sign UKI with
+
+For examples on how to use this class see oeqa selftest
+:oe_git:`meta/lib/oeqa/selftest/cases/uki.py
+<openembedded-core/tree/meta/lib/oeqa/selftest/cases/uki.py>`.
+Also an oeqa runtime test :oe_git:`meta/lib/oeqa/runtime/cases/uki.py
+<openembedded-core/tree/meta/lib/oeqa/runtime/cases/uki.py>` is provided which
+verifies that the target system booted the same UKI binary as was set at
+buildtime via :term:`UKI_FILENAME`.
 
 .. _ref-classes-uninative:
 
