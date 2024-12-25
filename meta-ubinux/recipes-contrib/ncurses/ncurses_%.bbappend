@@ -69,7 +69,8 @@ MULTILIB_SCRIPTS:append:ubinux-armv8 = "${PN}-terminfo-base:${sysconfdir}/termin
                     ${PN}-terminfo:${datadir}/terminfo/x/xterm-x11mouse \
                     ${PN}-terminfo:${datadir}/terminfo/x/xterm1 \
                     ${PN}-terminfo:${datadir}/terminfo/x/xterms \
-                    ${PN}-terminfo:${datadir}/terminfo/x/xterms-sun" 
+                    ${PN}-terminfo:${datadir}/terminfo/x/xterms-sun \
+                    ${PN}-terminfo-base:${sysconfdir}/terminfo/a/alacritty" 
 
 
 
