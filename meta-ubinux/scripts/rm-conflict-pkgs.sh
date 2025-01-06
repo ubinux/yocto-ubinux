@@ -1,5 +1,5 @@
 #!/bin/sh
-find ./ -name lib32-packagegroup-ubinux-all* |  xargs -n1 -I{} rm -rf  {};
+find ./ -name "lib32-packagegroup-ubinux-all*" |  xargs -n1 -I{} rm -rf  {};
 find ./ -name "lib32-*-doc-*" |  xargs -n1 -I{} rm -rf  {};
 find ./ -name "lib32-*-symlinks-*" |  xargs -n1 -I{} rm -rf  {};
 find ./ -name "lib32-*-ptest-*" |  xargs -n1 -I{} rm -rf  {};
@@ -27,3 +27,4 @@ find ./ -name "linux-yocto-*" |  xargs -n1 -I{} rm -rf  {}
 find ./ -name "watchdog-keepalive*" |  xargs -n1 -I{} rm -rf  {}
 find ./ -name "lib32-watchdog-keepalive*" |  xargs -n1 -I{} rm -rf  {}
 find ./ -name "packagegroup-core-standalone-sdk-target*" |  xargs -n1 -I{} rm -rf  {}
+find ./ -name "lib32-packagegroup-core-standalone-sdk-target*" |  xargs -n1 -I{} rm -rf  {}
