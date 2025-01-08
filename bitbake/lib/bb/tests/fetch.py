@@ -2838,12 +2838,8 @@ class NPMTest(FetcherTest):
         bb.utils.mkdirhier(datadir)
         with open(swfile, 'w') as f:
             json.dump(data, f)
-        # Also configure the S directory
-        self.sdir = os.path.join(self.unpackdir, 'S')
-        self.d.setVar('S', self.sdir)
         return swfile
 
-    @skipIfNoNpm()
     @skipIfNoNetwork()
     def test_npmsw(self):
         swfile = self.create_shrinkwrap_file({
@@ -2873,12 +2869,11 @@ class NPMTest(FetcherTest):
         self.assertTrue(os.path.exists(os.path.join(self.dldir, 'npm2', 'content-type-1.0.4.tgz')))
         self.assertTrue(os.path.exists(os.path.join(self.dldir, 'git2', 'github.com.jshttp.cookie.git')))
         fetcher.unpack(self.unpackdir)
-        self.assertTrue(os.path.exists(os.path.join(self.sdir, 'npm-shrinkwrap.json')))
-        self.assertTrue(os.path.exists(os.path.join(self.sdir, 'node_modules', 'array-flatten', 'package.json')))
-        self.assertTrue(os.path.exists(os.path.join(self.sdir, 'node_modules', 'array-flatten', 'node_modules', 'content-type', 'package.json')))
-        self.assertTrue(os.path.exists(os.path.join(self.sdir, 'node_modules', 'array-flatten', 'node_modules', 'content-type', 'node_modules', 'cookie', 'package.json')))
+        self.assertTrue(os.path.exists(os.path.join(self.unpackdir, 'npm-shrinkwrap.json')))
+        self.assertTrue(os.path.exists(os.path.join(self.unpackdir, 'node_modules', 'array-flatten', 'package.json')))
+        self.assertTrue(os.path.exists(os.path.join(self.unpackdir, 'node_modules', 'array-flatten', 'node_modules', 'content-type', 'package.json')))
+        self.assertTrue(os.path.exists(os.path.join(self.unpackdir, 'node_modules', 'array-flatten', 'node_modules', 'content-type', 'node_modules', 'cookie', 'package.json')))
 
-    @skipIfNoNpm()
     @skipIfNoNetwork()
     def test_npmsw_git(self):
         swfile = self.create_shrinkwrap_file({
@@ -2917,7 +2912,6 @@ class NPMTest(FetcherTest):
         fetcher.download()
         self.assertTrue(os.path.exists(os.path.join(self.dldir, 'git2', 'gitlab.com.gitlab-examples.nodejs.git')))
 
-    @skipIfNoNpm()
     @skipIfNoNetwork()
     def test_npmsw_dev(self):
         swfile = self.create_shrinkwrap_file({
@@ -2946,7 +2940,6 @@ class NPMTest(FetcherTest):
         self.assertTrue(os.path.exists(os.path.join(self.dldir, 'npm2', 'array-flatten-1.1.1.tgz')))
         self.assertTrue(os.path.exists(os.path.join(self.dldir, 'npm2', 'content-type-1.0.4.tgz')))
 
-    @skipIfNoNpm()
     @skipIfNoNetwork()
     def test_npmsw_destsuffix(self):
         swfile = self.create_shrinkwrap_file({
@@ -2999,9 +2992,8 @@ class NPMTest(FetcherTest):
         fetcher = bb.fetch.Fetch(['npmsw://' + swfile], self.d)
         fetcher.download()
         fetcher.unpack(self.unpackdir)
-        self.assertTrue(os.path.exists(os.path.join(self.sdir, 'node_modules', 'array-flatten', 'package.json')))
+        self.assertTrue(os.path.exists(os.path.join(self.unpackdir, 'node_modules', 'array-flatten', 'package.json')))
 
-    @skipIfNoNpm()
     @skipIfNoNetwork()
     def test_npmsw_npm_reusability(self):
         # Fetch once with npmsw
@@ -3024,7 +3016,6 @@ class NPMTest(FetcherTest):
         fetcher.unpack(self.unpackdir)
         self.assertTrue(os.path.exists(os.path.join(self.unpackdir, 'npm', 'package.json')))
 
-    @skipIfNoNpm()
     @skipIfNoNetwork()
     def test_npmsw_bad_checksum(self):
         # Try to fetch with bad checksum
@@ -3120,6 +3111,32 @@ class NPMTest(FetcherTest):
         fetcher = bb.fetch.Fetch(['npmsw://' + swfile], self.d)
         fetcher.download()
         self.assertTrue(os.path.exists(ud.localpath))
+
+    @skipIfNoNetwork()
+    def test_npmsw_bundled(self):
+        for packages_key, package_prefix, bundled_key in [
+            ('dependencies', '', 'bundled'),
+            ('packages', 'node_modules/', 'inBundle')
+        ]:
+            swfile = self.create_shrinkwrap_file({
+                packages_key: {
+                    package_prefix + 'array-flatten': {
+                        'version': '1.1.1',
+                        'resolved': 'https://registry.npmjs.org/array-flatten/-/array-flatten-1.1.1.tgz',
+                        'integrity': 'sha1-ml9pkFGx5wczKPKgCJaLZOopVdI='
+                    },
+                    package_prefix + 'content-type': {
+                        'version': '1.0.4',
+                        'resolved': 'https://registry.npmjs.org/content-type/-/content-type-1.0.4.tgz',
+                        'integrity': 'sha512-hIP3EEPs8tB9AT1L+NUqtwOAps4mk2Zob89MWXMHjHWg9milF/j4osnnQLXBCBFBk/tvIG/tUc9mOUJiPBhPXA==',
+                        bundled_key: True
+                    }
+                }
+            })
+            fetcher = bb.fetch.Fetch(['npmsw://' + swfile], self.d)
+            fetcher.download()
+            self.assertTrue(os.path.exists(os.path.join(self.dldir, 'npm2', 'array-flatten-1.1.1.tgz')))
+            self.assertFalse(os.path.exists(os.path.join(self.dldir, 'npm2', 'content-type-1.0.4.tgz')))
 
 class GitSharedTest(FetcherTest):
     def setUp(self):

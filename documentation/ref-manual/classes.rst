@@ -614,6 +614,15 @@ You will find some more details in the
 ":ref:`dev-manual/vulnerabilities:checking for vulnerabilities`"
 section in the Development Tasks Manual.
 
+.. _ref-classes-cython:
+
+``cython``
+==========
+
+The :ref:`ref-classes-cython` class can be used by Python recipes that require
+`Cython <https://cython.org/>`__ as part of their build dependencies
+(:term:`DEPENDS`).
+
 .. _ref-classes-debian:
 
 ``debian``
@@ -1876,14 +1885,6 @@ The :ref:`ref-classes-base` class uses this class to print the revisions of
 each layer before starting every build. The :ref:`ref-classes-metadata_scm`
 class is enabled by default because it is inherited by the
 :ref:`ref-classes-base` class.
-
-.. _ref-classes-migrate_localcount:
-
-``migrate_localcount``
-======================
-
-The :ref:`ref-classes-migrate_localcount` class verifies a recipe's localcount data and
-increments it appropriately.
 
 .. _ref-classes-mime:
 
@@ -3601,3 +3602,23 @@ the Waf build system. You can use the
 :term:`PACKAGECONFIG_CONFARGS` variables
 to specify additional configuration options to be passed on the Waf
 command line.
+
+.. _ref-classes-yocto-check-layer:
+
+``yocto-check-layer``
+=====================
+
+The :ref:`ref-classes-yocto-check-layer` class is used by the
+:oe_git:`yocto-check-layer </openembedded-core/tree/scripts/yocto-check-layer>`
+script to ensure that packages from Yocto Project Compatible layers don't skip
+required QA checks listed in :term:`CHECKLAYER_REQUIRED_TESTS` defined by the
+:ref:`ref-classes-insane` class.
+
+It adds an anonymous python function with extra processing to all recipes,
+and globally inheriting this class with :term:`INHERIT` is not advised. Instead
+the ``yocto-check-layer`` script should be used as it handles usage of this
+class.
+
+For more information on the Yocto Project
+Compatible layers, see the :ref:`dev-manual/layers:Making Sure Your Layer is
+Compatible With Yocto Project` section of the Yocto Project Development Manual.

@@ -209,12 +209,11 @@ system and gives an overview of their function and contents.
          SRCREV = "${AUTOREV}"
 
       If you use the previous statement to retrieve the latest version of
-      software, you need to be sure :term:`PV` contains
-      ``${``\ :term:`SRCPV`\ ``}``. For example, suppose you have a kernel
-      recipe that inherits the :ref:`ref-classes-kernel` class and you
-      use the previous statement. In this example, ``${SRCPV}`` does not
-      automatically get into :term:`PV`. Consequently, you need to change
-      :term:`PV` in your recipe so that it does contain ``${SRCPV}``.
+      software, you need to make sure :term:`PV` contains the ``+`` sign so
+      :term:`bitbake` includes source control information to :term:`PKGV` when
+      packaging the recipe. For example::
+
+         PV = "6.10.y+git"
 
       For more information see the
       ":ref:`dev-manual/packages:automatically incrementing a package version number`"
@@ -361,24 +360,6 @@ system and gives an overview of their function and contents.
 
    :term:`BB_CURRENTTASK`
       See :term:`bitbake:BB_CURRENTTASK` in the BitBake manual.
-
-   :term:`BB_DANGLINGAPPENDS_WARNONLY`
-      Defines how BitBake handles situations where an append file
-      (``.bbappend``) has no corresponding recipe file (``.bb``). This
-      condition often occurs when layers get out of sync (e.g. ``oe-core``
-      bumps a recipe version and the old recipe no longer exists and the
-      other layer has not been updated to the new version of the recipe
-      yet).
-
-      The default fatal behavior is safest because it is the sane reaction
-      given something is out of sync. It is important to realize when your
-      changes are no longer being applied.
-
-      You can change the default behavior by setting this variable to "1",
-      "yes", or "true" in your ``local.conf`` file, which is located in the
-      :term:`Build Directory`: Here is an example::
-
-         BB_DANGLINGAPPENDS_WARNONLY = "1"
 
    :term:`BB_DEFAULT_TASK`
       See :term:`bitbake:BB_DEFAULT_TASK` in the BitBake manual.
@@ -1249,6 +1230,15 @@ system and gives an overview of their function and contents.
       :term:`Metadata` so it does not need to be parsed every time
       BitBake is started.
 
+   :term:`CARGO_INSTALL_LIBRARIES`
+      When inheriting the :ref:`ref-classes-cargo` class, the variable
+      :term:`CARGO_INSTALL_LIBRARIES` can be set to a non-empty value by
+      individual recipes to enable the installation of the libraries the
+      recipe has built in ``${B}/target/${CARGO_TARGET_SUBDIR}`` (files ending
+      with ``.so`` or ``.rlib``). By default this variable is not defined and
+      libraries are not installed, to replicate the behavior of the ``cargo
+      install`` command.
+
    :term:`CC`
       The minimal command and arguments used to run the C compiler.
 
@@ -1268,6 +1258,17 @@ system and gives an overview of their function and contents.
 
       -  :term:`BUILDSDK_CFLAGS` when building for
          an SDK (i.e. ``nativesdk-``)
+
+   :term:`CHECKLAYER_REQUIRED_TESTS`
+      The :term:`CHECKLAYER_REQUIRED_TESTS` variable lists the QA tests that are
+      required to be enabled to pass the Yocto Project Compatible status for a
+      layer. It is meant to be a read-only variable and any change to the
+      variable may be done with the approval of the :oe_wiki:`Technical Steering
+      Committee (TSC) </TSC>`.
+
+      For more information on the Yocto Project Compatible status, see
+      the :ref:`dev-manual/layers:Making Sure Your Layer is Compatible With
+      Yocto Project` section of the Yocto Project Development Manual.
 
    :term:`CLASSOVERRIDE`
       An internal variable specifying the special class override that
@@ -2605,10 +2606,14 @@ system and gives an overview of their function and contents.
         - "dbg-pkgs" --- adds -dbg packages for all installed packages including
           symbol information for debugging and profiling.
 
-        - "debug-tweaks" --- makes an image suitable for debugging. For example, allows root logins without passwords and
-          enables post-installation logging. See the 'allow-empty-password' and
-          'post-install-logging' features in the ":ref:`ref-features-image`"
-          section for more information.
+        - "empty-root-password" --- This feature can be used if you want to
+          allow root login with an empty password.
+        - "allow-empty-password" --- Allows Dropbear and OpenSSH to accept
+          logins from accounts having an empty password string.
+        - "allow-root-login" --- Allows Dropbear and OpenSSH to accept root logins.
+        - "post-install-logging" --- Enables logging postinstall script runs to
+          the ``/var/log/postinstall.log`` file on first boot of the image on
+          the target system.
         - "dev-pkgs" --- adds -dev packages for all installed packages. This is
           useful if you want to develop against the libraries in the image.
         - "read-only-rootfs" --- creates an image whose root filesystem is
@@ -3038,6 +3043,16 @@ system and gives an overview of their function and contents.
       For guidance on how to define your own file permissions settings
       tables, examine the existing ``fs-perms.txt``,
       ``fs-perms-volatile-log.txt`` and ``fs-perms-volatile-tmp.txt`` files.
+
+   :term:`FIRMWARE_COMPRESSION`
+      The :term:`FIRMWARE_COMPRESSION` allows compressing the firmware provided
+      by the ``linux-firmware`` recipe. The default value of this variable is an
+      empty string (no compression), and the possible values it can take are
+      ``xz`` and ``zst``. This can allow significant disk space savings.
+
+      For this to work, the Linux Kernel requires the
+      ``CONFIG_FW_LOADER_COMPRESS_XZ`` or ``CONFIG_FW_LOADER_COMPRESS_ZSTD``
+      configuration options to be set.
 
    :term:`FIT_ADDRESS_CELLS`
       Specifies the value of the ``#address-cells`` value for the
@@ -4579,6 +4594,19 @@ system and gives an overview of their function and contents.
       You can register custom kernel image types with the
       :ref:`ref-classes-kernel` class using this variable.
 
+   :term:`KERNEL_CONSOLE`
+     The :term:`KERNEL_CONSOLE` variable holds the value of the ``console``
+     parameter of the kernel command line and can be used in places such as a
+     ``wks`` description file for :ref:`Wic images <dev-manual/wic:creating
+     partitioned images using wic>`.
+
+     The default value of this variable is extracted from the first console
+     device and setting in :term:`SERIAL_CONSOLES`. If nothing is found in
+     :term:`SERIAL_CONSOLES`, the default value is set to ``ttyS0,115200``).
+
+     For more information, see the `Kernel command-line documentation
+     <https://www.kernel.org/doc/html/latest/admin-guide/kernel-parameters.html>`__.
+
    :term:`KERNEL_DANGLING_FEATURES_WARN_ONLY`
       When kernel configuration fragments are missing for some
       :term:`KERNEL_FEATURES` specified by layers or BSPs,
@@ -5157,7 +5185,7 @@ system and gives an overview of their function and contents.
       The :term:`LINUX_VERSION` variable is used to define :term:`PV`
       for the recipe::
 
-         PV = "${LINUX_VERSION}+git${SRCPV}"
+         PV = "${LINUX_VERSION}+git"
 
    :term:`LINUX_VERSION_EXTENSION`
       A string extension compiled into the version string of the Linux
@@ -6698,6 +6726,28 @@ system and gives an overview of their function and contents.
    :term:`PREFERRED_PROVIDERS`
       See :term:`bitbake:PREFERRED_PROVIDERS` in the BitBake manual.
 
+   :term:`PREFERRED_RPROVIDER`
+      The :term:`PREFERRED_RPROVIDER` variable works like the
+      :term:`PREFERRED_PROVIDER` variable, but it denotes packages that provide a
+      *runtime* component. Runtime providers are declared in recipes that set
+      the :term:`RPROVIDES` variable for a specific package.
+
+      For example::
+
+         PREFERRED_RPROVIDER_virtual-x-terminal-emulator = "rxvt-unicode"
+
+      This statement sets the runtime provider for the X terminal emulator to
+      ``rxvt-unicode``. The ``rxvt-unicode`` package is a runtime provider of
+      this component because the ``rxvt-unicode`` recipe set the following
+      :term:`RPROVIDES` definition for the ``rxvt-unicode`` (``${PN}``)
+      package::
+
+         RPROVIDES:${PN} = "virtual-x-terminal-emulator"
+
+      For more information on virtual providers, see the
+      ":ref:`dev-manual/new-recipe:using virtual providers`" section in the
+      Yocto Project Development Tasks Manual.
+
    :term:`PREFERRED_VERSION`
       If there are multiple versions of a recipe available, this variable
       determines which version should be given preference. You must always
@@ -6720,22 +6770,14 @@ system and gives an overview of their function and contents.
          string. You cannot use the wildcard character in any other
          location of the string.
 
-      The specified version is matched against :term:`PV`, which
-      does not necessarily match the version part of the recipe's filename.
-      For example, consider two recipes ``foo_1.2.bb`` and ``foo_git.bb``
-      where ``foo_git.bb`` contains the following assignment::
+      The specified version is matched against :term:`PV`, which does not
+      necessarily match the version part of the recipe's filename.
 
-         PV = "1.1+git${SRCPV}"
-
-      In this case, the correct way to select
-      ``foo_git.bb`` is by using an assignment such as the following::
-
-         PREFERRED_VERSION_foo = "1.1+git%"
-
-      Compare that previous example
-      against the following incorrect example, which does not work::
-
-         PREFERRED_VERSION_foo = "git"
+      If you want to select a recipe named ``foo_git.bb`` which has :term:`PV`
+      set to ``1.2.3+git``, you can do so by setting ```PREFERRED_VERSION_foo``
+      to ``1.2.3%`` (i.e. simply setting ``PREFERRED_VERSION_foo`` to ``git``
+      will not work as the name of the recipe isn't used, but rather its
+      :term:`PV` definition).
 
       Sometimes the :term:`PREFERRED_VERSION` variable can be set by
       configuration files in a way that is hard to change. You can use
@@ -7503,6 +7545,8 @@ system and gives an overview of their function and contents.
       Specifies the type of archive to create for the SDK. Valid values:
 
       - ``tar.xz`` (default)
+      - ``tar.zst``
+      - ``7zip``
       - ``zip``
 
       Only one archive type can be specified.
@@ -7826,11 +7870,6 @@ system and gives an overview of their function and contents.
       When used by recipes that inherit the :ref:`ref-classes-setuptools3`
       class, this variable can be used to specify additional arguments to be
       passed to ``setup.py build`` in the ``setuptools3_do_compile()`` task.
-
-   :term:`SETUPTOOLS_INSTALL_ARGS`
-      When used by recipes that inherit the :ref:`ref-classes-setuptools3`
-      class, this variable can be used to specify additional arguments to be
-      passed to ``setup.py install`` in the ``setuptools3_do_install()`` task.
 
    :term:`SETUPTOOLS_SETUP_PATH`
       When used by recipes that inherit the :ref:`ref-classes-setuptools3`
@@ -8321,21 +8360,23 @@ system and gives an overview of their function and contents.
       (SCM).
 
    :term:`SRCPV`
-      Returns the version string of the current package. This string is
-      used to help define the value of :term:`PV`.
+      The variable :term:`SRCPV` is deprecated. It was previously used to
+      include source control information in :term:`PV` for :term:`bitbake` to
+      work correctly but this is no longer a requirement. Source control
+      information will be automatically included by :term:`bitbake` in the
+      variable :term:`PKGV` during packaging if the ``+`` sign is present in
+      :term:`PV`.
 
-      The :term:`SRCPV` variable is defined in the ``meta/conf/bitbake.conf``
-      configuration file in the :term:`Source Directory` as
-      follows::
+      .. note::
 
-         SRCPV = "${@bb.fetch2.get_srcrev(d)}"
+         The :term:`SRCPV` variable used to be defined in the
+         ``meta/conf/bitbake.conf`` configuration file in the :term:`Source
+         Directory` as follows::
 
-      Recipes that need to define :term:`PV` do so with the help of the
-      :term:`SRCPV`. For example, the ``ofono`` recipe (``ofono_git.bb``)
-      located in ``meta/recipes-connectivity`` in the Source Directory
-      defines :term:`PV` as follows::
+            SRCPV = "${@bb.fetch2.get_srcrev(d)}"
 
-         PV = "0.12-git${SRCPV}"
+         The ``get_srcrev`` function can still be used to include source control
+         information in variables manually.
 
    :term:`SRCREV`
       The revision of the source code used to build the package. This
@@ -10179,6 +10220,17 @@ system and gives an overview of their function and contents.
    :term:`WATCHDOG_TIMEOUT`
       Specifies the timeout in seconds used by the ``watchdog`` recipe and
       also by ``systemd`` during reboot. The default is 60 seconds.
+
+   :term:`WIC_SECTOR_SIZE`
+      The variable :term:`WIC_SECTOR_SIZE` controls the sector size of Wic
+      images. In the background, this controls the value of the
+      ``PARTED_SECTOR_SIZE`` environment variable passed to the ``parted``
+      command-line utility, used to generated the images. The default value is
+      ``512``.
+
+      For more information on how to create Wic images, see the
+      ":ref:`dev-manual/wic:creating partitioned images using wic`" section in
+      the Yocto Project Development Tasks Manual.
 
    :term:`WIRELESS_DAEMON`
       For ``connman`` and ``packagegroup-base``, specifies the wireless

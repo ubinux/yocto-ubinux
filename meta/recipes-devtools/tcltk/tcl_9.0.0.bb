@@ -35,6 +35,8 @@ VER = "${PV}"
 inherit autotools ptest binconfig
 
 AUTOTOOLS_SCRIPT_PATH = "${S}/unix"
+EXTRA_AUTORECONF = "--exclude=aclocal"
+
 EXTRA_OECONF = "--disable-rpath --enable-man-suffix=tcl9"
 
 # Prevent installing copy of tzdata based on tzdata installation on the build host
@@ -80,6 +82,8 @@ do_install_ptest() {
 	cp ${B}/tcltest ${D}${PTEST_PATH}
 	cp -r ${S}/library ${D}${PTEST_PATH}
 	cp -r ${S}/tests ${D}${PTEST_PATH}
+        # handle multilib
+        sed -i s:@libdir@:${libdir}:g ${D}${PTEST_PATH}/run-ptest
 }
 
 do_install_ptest:append:libc-musl () {
