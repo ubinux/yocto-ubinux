@@ -6947,7 +6947,7 @@ system and gives an overview of their function and contents.
 
    :term:`PTEST_ENABLED`
       Specifies whether or not :ref:`Package
-      Test <dev-manual/packages:testing packages with ptest>` (ptest)
+      Test <test-manual/ptest:testing packages with ptest>` (ptest)
       functionality is enabled when building a recipe. You should not set
       this variable directly. Enabling and disabling building Package Tests
       at build time should be done by adding "ptest" to (or removing it
@@ -8080,6 +8080,31 @@ system and gives an overview of their function and contents.
 
          You can specify only a single URL in :term:`SOURCE_MIRROR_URL`.
 
+      .. note::
+
+         If the mirror is protected behind a username and password, the
+         :term:`build host` needs to be configured so the :term:`build system
+         <OpenEmbedded Build System>` is able to fetch from the mirror.
+
+         The recommended way to do that is by setting the following parameters
+         in ``$HOME/.netrc`` (``$HOME`` being the :term:`build host` home
+         directory)::
+
+            machine example.com
+            login <user>
+            password <password>
+
+         This file requires permissions set to ``400`` or ``600`` to prevent
+         other users from reading the file::
+
+            chmod 600 "$HOME/.netrc"
+
+         Another method to configure the username and password is from the URL
+         in :term:`SOURCE_MIRROR_URL` directly, with the ``user`` and ``pswd``
+         parameters::
+
+            SOURCE_MIRROR_URL = "http://example.com/my_source_mirror;user=<user>;pswd=<password>"
+
    :term:`SPDX_ARCHIVE_PACKAGED`
       This option allows to add to :term:`SPDX` output compressed archives
       of the files in the generated target packages.
@@ -8486,6 +8511,34 @@ system and gives an overview of their function and contents.
          SSTATE_MIRRORS ?= "\
              file://.* https://someserver.tld/share/sstate/PATH;downloadfilename=PATH \
              file://.* file:///some-local-dir/sstate/PATH"
+
+      .. note::
+
+         If the mirror is protected behind a username and password, the
+         :term:`build host` needs to be configured so the :term:`build system
+         <OpenEmbedded Build System>` is able to download the sstate cache using
+         authentication.
+
+         The recommended way to do that is by setting the following parameters
+         in ``$HOME/.netrc`` (``$HOME`` being the :term:`build host` home
+         directory)::
+
+            machine someserver.tld
+            login <user>
+            password <password>
+
+         This file requires permissions set to ``400`` or ``600`` to prevent
+         other users from reading the file::
+
+            chmod 600 "$HOME/.netrc"
+
+         Another method to configure the username and password is from the
+         URL in :term:`SSTATE_MIRRORS` directly, with the ``user`` and ``pswd``
+         parameters::
+
+            SSTATE_MIRRORS ?= "\
+                file://.* https://someserver.tld/share/sstate/PATH;user=<user>;pswd=<password>;downloadfilename=PATH \
+            "
 
       The Yocto Project actually shares the cache data objects built by its
       autobuilder::
@@ -9252,8 +9305,8 @@ system and gives an overview of their function and contents.
       file.
 
       For more information on testing images, see the
-      ":ref:`dev-manual/runtime-testing:performing automated runtime testing`"
-      section in the Yocto Project Development Tasks Manual.
+      ":ref:`test-manual/runtime-testing:performing automated runtime testing`"
+      section in the Yocto Project Test Environment Manual.
 
    :term:`TEST_SERIALCONTROL_CMD`
       For automated hardware testing, specifies the command to use to
@@ -9324,8 +9377,8 @@ system and gives an overview of their function and contents.
          TEST_SUITES = "test_A test_B"
 
       For more information on testing images, see the
-      ":ref:`dev-manual/runtime-testing:performing automated runtime testing`"
-      section in the Yocto Project Development Tasks Manual.
+      ":ref:`test-manual/runtime-testing:performing automated runtime testing`"
+      section in the Yocto Project Test Environment Manual.
 
    :term:`TEST_TARGET`
       Specifies the target controller to use when running tests against a
@@ -9343,8 +9396,8 @@ system and gives an overview of their function and contents.
       You can provide the following arguments with :term:`TEST_TARGET`:
 
       -  *"qemu":* Boots a QEMU image and runs the tests. See the
-         ":ref:`dev-manual/runtime-testing:enabling runtime tests on qemu`" section
-         in the Yocto Project Development Tasks Manual for more
+         ":ref:`test-manual/runtime-testing:enabling runtime tests on qemu`" section
+         in the Yocto Project Test Environment Manual for more
          information.
 
       -  *"simpleremote":* Runs the tests on target hardware that is
@@ -9359,8 +9412,8 @@ system and gives an overview of their function and contents.
             ``meta/lib/oeqa/controllers/simpleremote.py``.
 
       For information on running tests on hardware, see the
-      ":ref:`dev-manual/runtime-testing:enabling runtime tests on hardware`"
-      section in the Yocto Project Development Tasks Manual.
+      ":ref:`test-manual/runtime-testing:enabling runtime tests on hardware`"
+      section in the Yocto Project Test Environment Manual.
 
    :term:`TEST_TARGET_IP`
       The IP address of your hardware under test. The :term:`TEST_TARGET_IP`
@@ -9396,8 +9449,8 @@ system and gives an overview of their function and contents.
 
       For more information
       on enabling, running, and writing these tests, see the
-      ":ref:`dev-manual/runtime-testing:performing automated runtime testing`"
-      section in the Yocto Project Development Tasks Manual and the
+      ":ref:`test-manual/runtime-testing:performing automated runtime testing`"
+      section in the Yocto Project Test Environment Manual and the
       ":ref:`ref-classes-testimage`" section.
 
    :term:`TESTIMAGE_FAILED_QA_ARTIFACTS`
