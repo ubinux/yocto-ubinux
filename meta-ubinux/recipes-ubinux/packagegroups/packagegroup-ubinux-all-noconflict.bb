@@ -32,7 +32,6 @@ UBINUX_PKGS_NOCONFLICT = " \
 	bind-utils \
 	bison \
 	babeld \
-	blktool \
 	bluez5 \
 	bmaptool \
 	brotli \
