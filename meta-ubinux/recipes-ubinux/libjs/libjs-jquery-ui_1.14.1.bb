@@ -4,15 +4,18 @@ SECTION = "console/network"
 HOMEPAGE = "http://jqueryui.com/"
 
 LICENSE = "MIT"
-LIC_FILES_CHKSUM = "file://jquery-ui-${PV}/LICENSE.txt;md5=e0c0d3d883e83f19efa64feb54d5f63d"
+LIC_FILES_CHKSUM = "file://jquery-ui-${PV}/LICENSE.txt;md5=c43692f7b18388dbe40eb34dae75d165"
 
 DEPENDS = "virtual/libc"
 
 SRC_URI = "https://jqueryui.com/resources/download/jquery-ui-${PV}.zip;name=jui \
-	   https://jqueryui.com/resources/download/jquery-ui-themes-${PV}.zip;name=jui-themes \
-	  "
-SRC_URI[jui.sha256sum] = "fa6a6c9eb997a18522987dddba2052b9835a646e5e9679f738b1a18caabfe7ce"
-SRC_URI[jui-themes.sha256sum] = "091163207082eac14bca8bd42d8176e85cb57dd5eb3e521d62580dd4d724b811"
+           https://jqueryui.com/resources/download/jquery-ui-themes-${PV}.zip;name=jui-themes \
+          "
+
+SRC_URI[jui.md5sum] = "33803c97df687085d4c7a92039ca8182"
+SRC_URI[jui.sha256sum] = "e1d2031e6b33dcdc6b09e3cf1b838d9e0dfba20862e4cb248afb614dd4f04986"
+SRC_URI[jui-themes.md5sum] = "6c35d67bfea73dc88a9fde19a4e28f35"
+SRC_URI[jui-themes.sha256sum] = "3ab9779ecfe869ffb7172f8813a2c935184fa9f18c49363e1fbce6a6b935b4a3"
 
 PACKAGES = "${PN} ${PN}-doc"
 FILES:${PN} = "${datadir}/javascript/jquery-ui"
