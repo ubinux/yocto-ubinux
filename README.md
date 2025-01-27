@@ -20,7 +20,10 @@ Note
     ```
     $ sudo pip install html5lib
     ```
-  - Ubuntu 22.04 is recommended.
+  - Ubuntu 24.04 is recommended. By default, bitbake is broken due to file permission problem on Ubuntu 24.04. The problem can be resolved by unloading the profile.
+    ```
+    $ sudo apparmor_parser -R /etc/apparmor.d/unprivileged_userns
+    ```
   - More than 400G space needs to be prepared for build.
 
 # 3. Usage
