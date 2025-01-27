@@ -12,6 +12,7 @@ metas=meta-oe
  meta-java
  meta-xilinx
  meta-erlang
+ meta-arm
 
 [meta-oe]
 GITURL=http://git.openembedded.org/meta-openembedded
@@ -631,7 +632,7 @@ FILES=conf/layer.conf
 [meta-java]
 GITURL=https://git.yoctoproject.org/git/meta-java
 BRANCH=master
-HEADID=ac65b6e5bbd2c9b55a64a13ab4c55d212a8b585f
+HEADID=0601401b68090b0cf304393ced2072b3c3f0f206 
 FILES=conf/layer.conf
  classes
  conf/
@@ -656,7 +657,7 @@ FILES=conf/layer.conf
 [meta-xilinx]
 GITURL=http://git.yoctoproject.org/git/meta-xilinx
 BRANCH=master
-HEADID=3f3d692d66be7d9f147364828572e57dd87702eb
+HEADID=1d98f8981e3157aa265ca141a0fc9e6e2640394f
 FILES=meta-xilinx-core/conf
  meta-xilinx-core/COPYING.MIT
  meta-xilinx-core/classes/
@@ -669,3 +670,10 @@ GITURL=https://github.com/joaohf/meta-erlang
 BRANCH=master
 HEADID=d61ae67de63ecd57ec8ca54f01d01a8563320e66
 FILES=conf
+
+[meta-arm]
+GITURL=https://git.yoctoproject.org/meta-arm
+BRANCH=master
+HEADID=db933d55b46683f6349b027d6483a3b99e1fec3f 
+FILES=meta-arm/conf
+ meta-arm-toolchain/conf
