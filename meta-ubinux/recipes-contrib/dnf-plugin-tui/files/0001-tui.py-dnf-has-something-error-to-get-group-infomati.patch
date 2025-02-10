@@ -1,0 +1,27 @@
+From b6f089f657f3913862a5c6dbff75c6c602703274 Mon Sep 17 00:00:00 2001
+From: Lei Maohui <leimaohui@fujitsu.com>
+Date: Fri, 7 Feb 2025 02:16:32 +0000
+Subject: [PATCH] tui.py: dnf has something error to get group infomation. So,
+ don't get group info temporarily.
+
+Signed-off-by: Lei Maohui <leimaohui@fujitsu.com>
+---
+ dnf-plugins/tui.py | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/dnf-plugins/tui.py b/dnf-plugins/tui.py
+index d396694..b200785 100755
+--- a/dnf-plugins/tui.py
++++ b/dnf-plugins/tui.py
+@@ -472,7 +472,7 @@ class TuiCommand(commands.Command):
+ 
+         # Read comps information
+         self.base.read_comps(arch_filter=True)
+-        self.grps = self.base.comps.groups
++        self.grps = []
+         if self.grps:
+             self.group_flag = True # Has group info
+             self.group_botton = False #hotkey F6 hasn't been pressed
+-- 
+2.43.0
+
