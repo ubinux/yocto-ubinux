@@ -615,7 +615,7 @@ FILES=conf/layer.conf
 [meta-spdxscanner]
 GITURL=https://git.yoctoproject.org/git/meta-spdxscanner
 BRANCH=master
-HEADID=e35ae66342edd1e92ce9cde9ccd7627984838ddf 
+HEADID=dc1696eba47971e775d6d48cb997517870c1140d 
 FILES=conf/layer.conf
  classes
  recipes-devtools/synopsys/
