@@ -183,16 +183,11 @@ autotools_do_configure() {
 			acpaths="${acpaths}"
 		fi
 		acpaths="$acpaths ${ACLOCALEXTRAPATH}"
-		AUTOV=`automake --version | sed -e '1{s/.* //;s/\.[0-9]\+$//};q'`
-		automake --version
-		echo "AUTOV is $AUTOV"
-		if [ -d ${STAGING_DATADIR_NATIVE}/aclocal-$AUTOV ]; then
-			ACLOCAL="$ACLOCAL --automake-acdir=${STAGING_DATADIR_NATIVE}/aclocal-$AUTOV"
-		fi
 		# autoreconf is too shy to overwrite aclocal.m4 if it doesn't look
 		# like it was auto-generated.  Work around this by blowing it away
 		# by hand, unless the package specifically asked not to run aclocal.
 		if ! echo ${EXTRA_AUTORECONF} | grep -q "aclocal"; then
+			bbnote Removing existing aclocal.m4
 			rm -f aclocal.m4
 		fi
 		if [ -e configure.in ]; then
@@ -212,8 +207,8 @@ autotools_do_configure() {
 			cp ${STAGING_DATADIR_NATIVE}/gettext/config.rpath ${AUTOTOOLS_AUXDIR}/
 			if [ -d ${S}/po/ ]; then
 				cp -f ${STAGING_DATADIR_NATIVE}/gettext/po/Makefile.in.in ${S}/po/
-				if [ ! -e ${S}/po/remove-potcdate.sin ]; then
-					cp ${STAGING_DATADIR_NATIVE}/gettext/po/remove-potcdate.sin ${S}/po/
+				if [ ! -e ${S}/po/remove-potcdate.sed ]; then
+					cp ${STAGING_DATADIR_NATIVE}/gettext/po/remove-potcdate.sed ${S}/po/
 				fi
 			fi
 			PRUNE_M4="$PRUNE_M4 gettext.m4 iconv.m4 lib-ld.m4 lib-link.m4 lib-prefix.m4 nls.m4 po.m4 progtest.m4"

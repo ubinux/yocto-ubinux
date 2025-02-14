@@ -42,7 +42,6 @@ UBINUX_PKGS = " \
 	gdb-doc \
 	bison \
 	babeld \
-	blktool \
 	bluez5 \
 	bmaptool \
 	boost \

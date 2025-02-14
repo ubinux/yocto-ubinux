@@ -12,11 +12,12 @@ metas=meta-oe
  meta-java
  meta-xilinx
  meta-erlang
+ meta-arm
 
 [meta-oe]
 GITURL=http://git.openembedded.org/meta-openembedded
 BRANCH=master
-HEADID=da51096bcf257723a929c799bc6934877de81fa5 
+HEADID=fa1ebe8c8072ada4f418625d8b2a35b21f5400af 
 FILES=meta-oe/conf
  meta-oe/COPYING.MIT
  meta-oe/licenses/
@@ -42,6 +43,7 @@ FILES=meta-oe/conf
  meta-oe/recipes-support/libraw/
  meta-oe/recipes-support/upower/
  meta-oe/recipes-support/smarty/
+ meta-oe/recipes-support/lgi/
 
  meta-oe/recipes-core/ell
  meta-oe/recipes-core/packagegroups/
@@ -213,6 +215,7 @@ FILES=meta-oe/conf
  meta-oe/recipes-devtools/doxygen/
  meta-oe/recipes-devtools/perl/libparse-yapp-perl_1.21.bb
  meta-oe/recipes-devtools/valijson/
+ meta-oe/recipes-devtools/cbindgen/
  
  meta-oe/recipes-connectivity/libnet/
  meta-oe/recipes-connectivity/linuxptp/
@@ -229,7 +232,7 @@ FILES=meta-oe/conf
  meta-oe/recipes-graphics/xorg-app/xsetroot_1.1.2.bb
  meta-oe/recipes-graphics/xorg-app/twm_1.0.12.bb
  meta-oe/recipes-graphics/xorg-app/xgamma_1.0.7.bb
- meta-oe/recipes-graphics/xorg-app/xkbevd_1.1.5.bb
+ meta-oe/recipes-graphics/xorg-app/xkbevd_1.1.6.bb
  meta-oe/recipes-graphics/xorg-app/xkbprint_1.0.7.bb
  meta-oe/recipes-graphics/xorg-app/xkbutils_1.0.6.bb
  meta-oe/recipes-graphics/xorg-app/xlsatoms_1.1.4.bb
@@ -272,7 +275,6 @@ FILES=meta-oe/conf
  meta-oe/recipes-kernel/makedumpfile/
  meta-oe/recipes-support/xdelta/
  meta-oe/recipes-devtools/octave/
- meta-oe/recipes-gnome/libpeas/
  meta-oe/recipes-support/hdf5/
  meta-oe/recipes-extended/libzip/
  meta-oe/recipes-connectivity/zeromq
@@ -417,6 +419,8 @@ FILES=meta-oe/conf
  meta-gnome/recipes-gnome/libadwaita/
  meta-gnome/recipes-gnome/libdex/
  meta-gnome/recipes-gnome/libpanel/
+ meta-gnome/recipes-gnome/libpeas/
+ meta-gnome/recipes-gnome/gjs/
  meta-webserver/conf/
  meta-webserver/licenses
  meta-webserver/recipes-httpd/apache2
@@ -460,7 +464,7 @@ FILES=meta-oe/conf
 [meta-freescale]
 GITURL=https://git.yoctoproject.org/git/meta-freescale
 BRANCH=master
-HEADID=82193457cee235862946a268ba249abf3ac83cdb
+HEADID=3f8a541d01052ce4784c275d15329a83980dc6ee
 FILES=conf/layer.conf
  custom-licenses/
  classes/
@@ -494,7 +498,7 @@ FILES=meta-cgl-common/conf/layer.conf
 [meta-cloud-services]
 GITURL=http://git.yoctoproject.org/git/meta-cloud-services
 BRANCH=master
-HEADID=e606fa3e70bc407f695e2bbfadd2c6519eda4107
+HEADID=148cc0d50d0f1a006a82407da8f9d55c191aafbc
 FILES=conf/layer.conf
  classes/
  meta-openstack/classes/default_configs.bbclass
@@ -555,7 +559,7 @@ FILES=conf/layer.conf
 [meta-virtualization]
 GITURL=http://git.yoctoproject.org/git/meta-virtualization
 BRANCH=master
-HEADID=88949aa04f3d337cc8ab441cf131c60b1f8552db 
+HEADID=74087fc372e5de3820b36eea0da94803d6a80c60
 FILES=conf/layer.conf
  classes/
  files/
@@ -576,7 +580,7 @@ FILES=conf/layer.conf
 [meta-security]
 GITURL=http://git.yoctoproject.org/git/meta-security
 BRANCH=master
-HEADID=c9585ebfe802139c7a3452352723d117c82cc3af
+HEADID=dc09819b86cde5941d5b3720a8cbc321b90ae2d0
 FILES=conf
  classes/sanity-meta-security.bbclass
  meta-tpm/classes/sanity-meta-tpm.bbclass
@@ -611,7 +615,7 @@ FILES=conf/layer.conf
 [meta-spdxscanner]
 GITURL=https://git.yoctoproject.org/git/meta-spdxscanner
 BRANCH=master
-HEADID=e35ae66342edd1e92ce9cde9ccd7627984838ddf 
+HEADID=dc1696eba47971e775d6d48cb997517870c1140d 
 FILES=conf/layer.conf
  classes
  recipes-devtools/synopsys/
@@ -628,7 +632,7 @@ FILES=conf/layer.conf
 [meta-java]
 GITURL=https://git.yoctoproject.org/git/meta-java
 BRANCH=master
-HEADID=ac65b6e5bbd2c9b55a64a13ab4c55d212a8b585f
+HEADID=0601401b68090b0cf304393ced2072b3c3f0f206 
 FILES=conf/layer.conf
  classes
  conf/
@@ -653,7 +657,7 @@ FILES=conf/layer.conf
 [meta-xilinx]
 GITURL=http://git.yoctoproject.org/git/meta-xilinx
 BRANCH=master
-HEADID=3f3d692d66be7d9f147364828572e57dd87702eb
+HEADID=1d98f8981e3157aa265ca141a0fc9e6e2640394f
 FILES=meta-xilinx-core/conf
  meta-xilinx-core/COPYING.MIT
  meta-xilinx-core/classes/
@@ -666,3 +670,10 @@ GITURL=https://github.com/joaohf/meta-erlang
 BRANCH=master
 HEADID=d61ae67de63ecd57ec8ca54f01d01a8563320e66
 FILES=conf
+
+[meta-arm]
+GITURL=https://git.yoctoproject.org/meta-arm
+BRANCH=master
+HEADID=db933d55b46683f6349b027d6483a3b99e1fec3f 
+FILES=meta-arm/conf
+ meta-arm-toolchain/conf

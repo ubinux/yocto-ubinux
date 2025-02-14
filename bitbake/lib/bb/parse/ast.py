@@ -43,6 +43,21 @@ class IncludeNode(AstNode):
         else:
             bb.parse.ConfHandler.include(self.filename, s, self.lineno, data, False)
 
+class IncludeAllNode(AstNode):
+    def __init__(self, filename, lineno, what_file):
+        AstNode.__init__(self, filename, lineno)
+        self.what_file = what_file
+
+    def eval(self, data):
+        """
+        Include the file and evaluate the statements
+        """
+        s = data.expand(self.what_file)
+        logger.debug2("CONF %s:%s: including %s", self.filename, self.lineno, s)
+
+        for path in data.getVar("BBPATH").split(":"):
+            bb.parse.ConfHandler.include(self.filename, os.path.join(path, s), self.lineno, data, False)
+
 class ExportNode(AstNode):
     def __init__(self, filename, lineno, var):
         AstNode.__init__(self, filename, lineno)
@@ -137,7 +152,10 @@ class DataNode(AstNode):
 
         flag = None
         if 'flag' in groupd and groupd['flag'] is not None:
-            flag = groupd['flag']
+            if groupd["lazyques"]:
+                flag = "_defaultval_flag_"+groupd['flag']
+            else:
+                flag = groupd['flag']
         elif groupd["lazyques"]:
             flag = "_defaultval"
 
@@ -365,6 +383,9 @@ class AddFragmentsNode(AstNode):
 
 def handleInclude(statements, filename, lineno, m, force):
     statements.append(IncludeNode(filename, lineno, m.group(1), force))
+
+def handleIncludeAll(statements, filename, lineno, m):
+    statements.append(IncludeAllNode(filename, lineno, m.group(1)))
 
 def handleExport(statements, filename, lineno, m):
     statements.append(ExportNode(filename, lineno, m.group(1)))
