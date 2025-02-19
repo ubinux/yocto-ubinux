@@ -16,9 +16,10 @@ Note
 
 ## 2.2 Build environment
 
-  - Please refer to the build environment of poky5.2(Walnascar). In addition, the html5lib package needs to be installed to compile qtwebengine.
+  - Please refer to the build environment of poky5.2(Walnascar). In addition, here are the packages needed to build the ubinux image on an Ubuntu distribution.
     ```
     $ sudo pip install html5lib
+    $ sudo apt install gcc-multilib
     ```
   - Ubuntu 24.04 is recommended. By default, bitbake is broken due to file permission problem on Ubuntu 24.04. The problem can be resolved by unloading the profile.
     ```
