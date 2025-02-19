@@ -14,8 +14,8 @@ LIC_FILES_CHKSUM = "file://COPYING3;md5=d32239bcb673463ab874e80d47fae504"
 
 PN = "crash-cross-canadian-${TRANSLATED_TARGET_ARCH}"
 
-DEPENDS = "virtual/${HOST_PREFIX}gcc virtual/nativesdk-libc nativesdk-zlib nativesdk-gettext \
-           nativesdk-readline virtual/nativesdk-${HOST_PREFIX}compilerlibs\
+DEPENDS = "virtual/cross-cc virtual/nativesdk-libc nativesdk-zlib nativesdk-gettext \
+           nativesdk-readline virtual/nativesdk-compilerlibs \
            nativesdk-coreutils nativesdk-ncurses"
 
 FILESEXTRAPATHS:prepend := "${THISDIR}/crash:"
