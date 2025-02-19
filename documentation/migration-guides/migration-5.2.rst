@@ -74,6 +74,72 @@ systemd changes
    As a consequence, the ``systemd`` recipe no longer contains the ``usrmerge``
    :term:`PACKAGECONFIG` option as it is now implied by default.
 
+-  ``systemd.bbclass``: If a ``systemd`` service file had referred to other service
+   files by starting them via
+   `Also <https://www.freedesktop.org/software/systemd/man/latest/systemd.unit.html#Also=>`__,
+   the other service files were automatically added to the :term:`FILES` variable of
+   the same package. Example: 
+
+   a.service contains::
+
+      [Install]
+      Also=b.service
+
+   If ``a.service`` is packaged in package ``A``, ``b.service`` was
+   automatically packaged into package ``A`` as well. This happened even if
+   ``b.service`` was explicitly added to package ``B`` using :term:`FILES` and
+   :term:`SYSTEMD_SERVICE` variables.
+   This prevented such services from being packaged into different packages.
+   Therefore, this automatic behavior has been removed for service files (but
+   not for socket files).
+   Now all service files must be explicitly added to :term:`FILES`.
+
+Multiconfig changes
+~~~~~~~~~~~~~~~~~~~
+
+The value of ``BB_CURRENT_MC`` was changed from ``default`` to an empty string
+for the default multiconfig configuration to avoid needing to map the values
+within BitBake. This was already not happening in some cases so this fixes
+some obscure bugs.
+
+Any logic based on ``BB_CURRENT_MC`` equalling to ``default`` by default should
+be changed to be equal to an empty string.
+
+Virtual toolchain provider changes
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Support was added for virtual providers on a per-recipe basis for specific
+key toolchain providers listed in ``BB_VIRTUAL_RECIPE_PROVIDERS``. As part of
+that support, the ``cross`` providers were simplified to remove the triplet
+prefix (:term:`TARGET_PREFIX`, :term:`SDK_PREFIX` and :term:`HOST_PREFIX`) and
+generalise the naming. Here are examples of how references to these variables
+can be changed to use the new ``cross`` syntax::
+
+   virtual/${HOST_PREFIX}binutils -> virtual/cross-binutils
+   virtual/${TARGET_PREFIX}binutils -> virtual/cross-binutils
+
+   virtual/${HOST_PREFIX}gcc -> virtual/cross-cc
+   virtual/${TARGET_PREFIX}gcc -> virtual/cross-cc
+   virtual/${SDK_PREFIX}gcc -> virtual/nativesdk-cross-cc
+
+   virtual/${HOST_PREFIX}compilerlibs -> virtual/compilerlibs
+   virtual/${TARGET_PREFIX}compilerlibs -> virtual/compilerlibs
+   virtual/nativesdk-${SDK_PREFIX}compilerlibs -> virtual/nativesdk-compilerlibs
+
+   virtual/${TARGET_PREFIX}g++ -> virtual/cross-c++
+
+A :term:`PREFERRED_PROVIDER` assignment can be transformed as follows::
+
+   PREFERRED_PROVIDER_virtual/${TARGET_PREFIX}binutils -> PREFERRED_PROVIDER_virtual/cross-binutils
+   PREFERRED_PROVIDER_virtual/${SDK_PREFIX}binutils -> PREFERRED_PROVIDER_virtual/cross-binutils:class-nativesdk
+   PREFERRED_PROVIDER_virtual/${SDK_PREFIX}g++ -> PREFERRED_PROVIDER_virtual/nativesdk-cross-c++
+
+The above examples should cover most cases, but there might be situations where
+replacing is not as straightforward. For more examples, see the commit
+:oe_git:`"classes/recipes: Switch virtual/XXX-gcc to virtual/cross-cc (and
+c++/binutils)" </openembedded-core/commit/?id=4ccc3bc8266c>` in
+:term:`OpenEmbedded-Core (OE-Core)`.
+
 Recipe changes
 ~~~~~~~~~~~~~~
 
