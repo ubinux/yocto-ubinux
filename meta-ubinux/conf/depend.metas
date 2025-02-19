@@ -440,7 +440,7 @@ FILES=meta-oe/conf
  meta-perl/conf/
  meta-perl/README
  meta-perl/COPYING.MIT
- meta-oe/recipes-devtools/perl/libdbi-perl_1.644.bb
+ meta-oe/recipes-devtools/perl/libdbi-perl_1.646.bb
  meta-oe/recipes-devtools/perl/libdbi-perl/
  meta-oe/recipes-devtools/perl/libdbd-mysql-perl_5.006.bb
  meta-oe/recipes-devtools/perl/libdev-checklib-perl_1.16.bb
