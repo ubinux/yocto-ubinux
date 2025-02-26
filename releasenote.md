@@ -1,4 +1,4 @@
-# ubinux-2025.01 Release Notes
+# ubinux-2025.02 Release Notes
 
 FX Dept. UNIX & FX System Div.  
 Fujitsu Limited  
@@ -6,7 +6,7 @@ Fujitsu Limited
 ## 1. Basic Information
 ### 1.1 Version Information
 - Yocto: 5.2
-- Kernel: 6.6.66
+- Kernel: 6.6.72
 - Toolchain
   - GCC: 14.2.0
   - Binutils: 2.43.1
@@ -32,40 +32,50 @@ Fujitsu Limited
 
 ## 2. Features
 ### 2.1 Security Fixes
-Following security issues have been fixed from ubinux-2024.12.
+Following security issues have been fixed from ubinux-2025.01.
 
-smarty:
-- CVE-2018-25047
-- CVE-2020-10375
-- CVE-2021-21408
-- CVE-2021-29454
-- CVE-2022-29221
-- CVE-2023-28447
+libmemcached:
+- CVE-2023-27478
 
-libsndfile1:
-- CVE-2024-50612
+opensc:
+- CVE-2024-45615
+- CVE-2024-45616
+- CVE-2024-45617
+- CVE-2024-45618
+- CVE-2024-45619
+- CVE-2024-45620
+- CVE-2024-8443
 
-qemu:
-- CVE-2024-6505
+php:
+- CVE-2024-11233
+- CVE-2024-11234
+- CVE-2024-11236
 
-ubinux-kernel:
-- CVE-2023-52920
+procmail:
+- CVE-2014-3618
+- CVE-2017-16844
+
+samba:
+- CVE-2018-14628
+
+uw-imap:
+- CVE-2018-19518
+
+wireshark:
+- CVE-2024-9781
 
 ### 2.2 Added packages
 
-- libdex
-- libpanel
-- xxhash
+- gjs
+- lua-lgi
 
 ### 2.3 Removed packages
 
-- giflib
-- openjdk-8
-- python3-iniparse
+- blktool
 
 ## 3. Installation guide
 ### 3.1 Install Toolchain
-Run as root privilege the Toolchain installer at arbitrary directory, and Toolchain will be installed into /opt/ubinux/2025.01 directory.
+Run as root privilege the Toolchain installer at arbitrary directory, and Toolchain will be installed into /opt/ubinux/2025.02 directory.
 
 
 [TYPE1] in the description, please read as shown below.
@@ -77,7 +87,7 @@ Run as root privilege the Toolchain installer at arbitrary directory, and Toolch
 |Armv8 (32bit EL, 64bit EL)|aarch64-ubinux-armv8|
 
 
-`$ sudo sh ubinux-glibc-x86_64-meta-toolchain-[TYPE1]-toolchain-2025.01.sh`
+`$ sudo sh ubinux-glibc-x86_64-meta-toolchain-[TYPE1]-toolchain-2025.02.sh`
 
 
 ### 3.2 Set up Environment Variables
@@ -94,7 +104,7 @@ Run the following commands.
 |Armv8 (32bit EL)|armv7ahf-neon-ubinuxmllib32-linux-gnueabi|
 
 
-`$ . /opt/ubinux/2025.01/environment-setup-[TYPE2]`
+`$ . /opt/ubinux/2025.02/environment-setup-[TYPE2]`
 
 ### 3.3 Create rootfs from Userland Packages
 To create rootfs, see Section 3.1.2 and 3.1.3 of the dnf-plugin-tui documentation.  
@@ -164,9 +174,6 @@ hdf5:
 - CVE-2020-10809
 - CVE-2020-10812
 
-libmemcached:
-- CVE-2023-27478
-
 libsndfile1:
 - CVE-2024-50613
 
@@ -177,29 +184,11 @@ libvirt:
 - CVE-2023-3750
 - CVE-2024-8235
 
-opensc:
-- CVE-2024-45615
-- CVE-2024-45616
-- CVE-2024-45617
-- CVE-2024-45618
-- CVE-2024-45619
-- CVE-2024-45620
-- CVE-2024-8443
-
 openvswitch:
 - CVE-2019-25076
 
-php:
-- CVE-2024-11233
-- CVE-2024-11234
-- CVE-2024-11236
-
 polkit:
 - CVE-2016-2568
-
-procmail:
-- CVE-2014-3618
-- CVE-2017-16844
 
 qemu:
 - CVE-2023-1386
@@ -214,7 +203,6 @@ rpm:
 - CVE-2021-35937
 
 samba:
-- CVE-2018-14628
 - CVE-2021-3670
 - CVE-2022-1615
 - CVE-2022-32743
@@ -267,6 +255,7 @@ ubinux-kernel:
 - CVE-2023-37454
 - CVE-2023-4010
 - CVE-2023-4155
+- CVE-2023-52485
 - CVE-2023-6238
 - CVE-2023-6240
 - CVE-2023-6535
@@ -281,8 +270,13 @@ ubinux-kernel:
 - CVE-2024-26596
 - CVE-2024-26900
 - CVE-2024-26913
+- CVE-2024-26944
+- CVE-2024-26962
+- CVE-2024-27010
+- CVE-2024-27011
 - CVE-2024-27012
 - CVE-2024-27017
+- CVE-2024-35968
 - CVE-2024-36478
 - CVE-2024-38608
 - CVE-2024-40965
@@ -300,6 +294,7 @@ ubinux-kernel:
 - CVE-2024-42078
 - CVE-2024-42081
 - CVE-2024-42083
+- CVE-2024-42107
 - CVE-2024-42122
 - CVE-2024-42123
 - CVE-2024-42134
@@ -413,18 +408,43 @@ ubinux-kernel:
 - CVE-2024-53056
 - CVE-2024-53084
 - CVE-2024-53085
+- CVE-2024-53089
+- CVE-2024-53090
+- CVE-2024-53096
+- CVE-2024-53098
 - CVE-2024-53114
 - CVE-2024-53124
 - CVE-2024-53128
 - CVE-2024-53133
 - CVE-2024-53141
 - CVE-2024-53142
-
-uw-imap:
-- CVE-2018-19518
-
-wireshark:
-- CVE-2024-9781
+- CVE-2024-53170
+- CVE-2024-53179
+- CVE-2024-53187
+- CVE-2024-53201
+- CVE-2024-53203
+- CVE-2024-53204
+- CVE-2024-53205
+- CVE-2024-53221
+- CVE-2024-53222
+- CVE-2024-56549
+- CVE-2024-56582
+- CVE-2024-56588
+- CVE-2024-56599
+- CVE-2024-56608
+- CVE-2024-56620
+- CVE-2024-56647
+- CVE-2024-56710
+- CVE-2024-56712
+- CVE-2024-56742
+- CVE-2024-56757
+- CVE-2024-56758
+- CVE-2024-56759
+- CVE-2024-56761
+- CVE-2024-56775
+- CVE-2024-56782
+- CVE-2024-56784
+- CVE-2024-57872
 
 xrdp:
 - CVE-2022-23468
