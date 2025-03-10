@@ -6,13 +6,13 @@ argument or in a SCM managed file."
 LICENSE = "MIT"
 LIC_FILES_CHKSUM = "file://LICENSE;md5=838c366f69b72c5df05c96dff79b35f2"
 
+SRC_URI += "file://0001-respect-GIT_CEILING_DIRECTORIES.patch"
 SRC_URI[sha256sum] = "42dea1b65771cba93b7a515d65a65d8246e560768a66b9106a592c8e7f26c8a7"
 
 PYPI_PACKAGE = "setuptools_scm"
+UPSTREAM_CHECK_PYPI_PACKAGE = "${PYPI_PACKAGE}"
 
 inherit pypi python_setuptools_build_meta
-
-UPSTREAM_CHECK_REGEX = "scm-(?P<pver>.*)\.tar"
 
 DEPENDS += "python3-packaging-native python3-typing-extensions-native"
 

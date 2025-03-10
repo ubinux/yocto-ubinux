@@ -7,3 +7,5 @@ Release 5.1 (styhead)
 
    migration-5.1
    release-notes-5.1
+   release-notes-5.1.1
+   release-notes-5.1.2

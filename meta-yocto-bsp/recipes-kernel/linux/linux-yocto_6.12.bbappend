@@ -7,5 +7,5 @@ KMACHINE:beaglebone-yocto ?= "beaglebone"
 KMACHINE:genericx86 ?= "common-pc"
 KMACHINE:genericx86-64 ?= "common-pc-64"
 
-# Incorporate fixes post 6.12.3
-SRCREV_meta:genericarm64 = "9ee4baec963b10d213c060622fce6d2b34166f40"
+FILESEXTRAPATHS:prepend:genericarm64 := "${THISDIR}/files:"
+SRC_URI:append:genericarm64 = " file://0001-Revert-serial-8250_omap-Drop-pm_runtime_irq_safe.patch"

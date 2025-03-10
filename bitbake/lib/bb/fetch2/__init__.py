@@ -34,7 +34,7 @@ _revisions_cache = bb.checksum.RevisionsCache()
 
 logger = logging.getLogger("BitBake.Fetcher")
 
-CHECKSUM_LIST = [ "md5", "sha256", "sha1", "sha384", "sha512" ]
+CHECKSUM_LIST = [ "goh1", "md5", "sha256", "sha1", "sha384", "sha512" ]
 SHOWN_CHECKSUM_LIST = ["sha256"]
 
 class BBFetchException(Exception):
@@ -353,46 +353,9 @@ def decodeurl(url):
     user, password, parameters).
     """
 
-    m = re.compile('(?P<type>[^:]*)://((?P<user>[^/;]+)@)?(?P<location>[^;]+)(;(?P<parm>.*))?').match(url)
-    if not m:
-        raise MalformedUrl(url)
-
-    type = m.group('type')
-    location = m.group('location')
-    if not location:
-        raise MalformedUrl(url)
-    user = m.group('user')
-    parm = m.group('parm')
-
-    locidx = location.find('/')
-    if locidx != -1 and type.lower() != 'file':
-        host = location[:locidx]
-        path = location[locidx:]
-    elif type.lower() == 'file':
-        host = ""
-        path = location
-    else:
-        host = location
-        path = "/"
-    if user:
-        m = re.compile('(?P<user>[^:]+)(:?(?P<pswd>.*))').match(user)
-        if m:
-            user = m.group('user')
-            pswd = m.group('pswd')
-    else:
-        user = ''
-        pswd = ''
-
-    p = collections.OrderedDict()
-    if parm:
-        for s in parm.split(';'):
-            if s:
-                if not '=' in s:
-                    raise MalformedUrl(url, "The URL: '%s' is invalid: parameter %s does not specify a value (missing '=')" % (url, s))
-                s1, s2 = s.split('=', 1)
-                p[s1] = s2
-
-    return type, host, urllib.parse.unquote(path), user, pswd, p
+    uri = URI(url)
+    path = uri.path if uri.path else "/"
+    return uri.scheme, uri.hostport, path, uri.username, uri.password, uri.params
 
 def encodeurl(decoded):
     """Encodes a URL from tokens (scheme, network location, path,
@@ -403,24 +366,26 @@ def encodeurl(decoded):
 
     if not type:
         raise MissingParameterError('type', "encoded from the data %s" % str(decoded))
-    url = ['%s://' % type]
+    uri = URI()
+    uri.scheme = type
     if user and type != "file":
-        url.append("%s" % user)
+        uri.username = user
         if pswd:
-            url.append(":%s" % pswd)
-        url.append("@")
+            uri.password = pswd
     if host and type != "file":
-        url.append("%s" % host)
+        uri.hostname = host
     if path:
         # Standardise path to ensure comparisons work
         while '//' in path:
             path = path.replace("//", "/")
-        url.append("%s" % urllib.parse.quote(path))
+        uri.path = path
+        if type == "file":
+            # Use old not IETF compliant style
+            uri.relative = False
     if p:
-        for parm in p:
-            url.append(";%s=%s" % (parm, p[parm]))
+        uri.params = p
 
-    return "".join(url)
+    return str(uri)
 
 def uri_replace(ud, uri_find, uri_replace, replacements, d, mirrortarball=None):
     if not ud.url or not uri_find or not uri_replace:
@@ -461,7 +426,7 @@ def uri_replace(ud, uri_find, uri_replace, replacements, d, mirrortarball=None):
                 for k in replacements:
                     uri_replace_decoded[loc] = uri_replace_decoded[loc].replace(k, replacements[k])
                 #bb.note("%s %s %s" % (regexp, uri_replace_decoded[loc], uri_decoded[loc]))
-                result_decoded[loc] = re.sub(regexp, uri_replace_decoded[loc], uri_decoded[loc], 1)
+                result_decoded[loc] = re.sub(regexp, uri_replace_decoded[loc], uri_decoded[loc], count=1)
             if loc == 2:
                 # Handle path manipulations
                 basename = None
@@ -1182,7 +1147,7 @@ def trusted_network(d, url):
     if bb.utils.to_boolean(d.getVar("BB_NO_NETWORK")):
         return True
 
-    pkgname = d.expand(d.getVar('PN', False))
+    pkgname = d.getVar('PN')
     trusted_hosts = None
     if pkgname:
         trusted_hosts = d.getVarFlag('BB_ALLOWED_NETWORKS', pkgname, False)
@@ -1271,7 +1236,7 @@ def get_checksum_file_list(d):
             found = False
             paths = ud.method.localfile_searchpaths(ud, d)
             for f in paths:
-                pth = ud.decodedurl
+                pth = ud.path
                 if os.path.exists(f):
                     found = True
                 filelist.append(f + ":" + str(os.path.exists(f)))
@@ -1316,20 +1281,23 @@ class FetchData(object):
         self.setup = False
 
         def configure_checksum(checksum_id):
+            checksum_plain_name = "%ssum" % checksum_id
             if "name" in self.parm:
                 checksum_name = "%s.%ssum" % (self.parm["name"], checksum_id)
             else:
-                checksum_name = "%ssum" % checksum_id
-
-            setattr(self, "%s_name" % checksum_id, checksum_name)
+                checksum_name = checksum_plain_name
 
             if checksum_name in self.parm:
                 checksum_expected = self.parm[checksum_name]
-            elif self.type not in ["http", "https", "ftp", "ftps", "sftp", "s3", "az", "crate", "gs", "gomod"]:
+            elif checksum_plain_name in self.parm:
+                checksum_expected = self.parm[checksum_plain_name]
+                checksum_name = checksum_plain_name
+            elif self.type not in ["http", "https", "ftp", "ftps", "sftp", "s3", "az", "crate", "gs", "gomod", "npm"]:
                 checksum_expected = None
             else:
                 checksum_expected = d.getVarFlag("SRC_URI", checksum_name)
 
+            setattr(self, "%s_name" % checksum_id, checksum_name)
             setattr(self, "%s_expected" % checksum_id, checksum_expected)
 
         self.names = self.parm.get("name",'default').split(',')
@@ -1814,7 +1782,7 @@ class Fetch(object):
             self.ud[url] = FetchData(url, self.d)
 
         self.ud[url].setup_localpath(self.d)
-        return self.d.expand(self.ud[url].localpath)
+        return self.ud[url].localpath
 
     def localpaths(self):
         """

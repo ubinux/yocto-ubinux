@@ -48,13 +48,13 @@ def get_base_dep(d):
         return ""
     return "${BASE_DEFAULT_DEPS}"
 
-BASE_DEFAULT_DEPS = "virtual/${HOST_PREFIX}gcc virtual/${HOST_PREFIX}compilerlibs virtual/libc"
+BASE_DEFAULT_DEPS = "virtual/cross-cc virtual/compilerlibs virtual/libc"
 
 BASEDEPENDS = ""
 BASEDEPENDS:class-target = "${@get_base_dep(d)}"
 BASEDEPENDS:class-nativesdk = "${@get_base_dep(d)}"
 
-DEPENDS:prepend="${BASEDEPENDS} "
+DEPENDS:prepend = "${BASEDEPENDS} "
 
 FILESPATH = "${@base_set_filespath(["${FILE_DIRNAME}/${BP}", "${FILE_DIRNAME}/${BPN}", "${FILE_DIRNAME}/files"], d)}"
 # THISDIR only works properly with imediate expansion as it has to run
@@ -312,16 +312,6 @@ python base_eventhandler() {
         if statusheader:
             bb.plain('\n%s\n%s\n' % (statusheader, '\n'.join(statuslines)))
 
-    # This code is to silence warnings where the SDK variables overwrite the 
-    # target ones and we'd see duplicate key names overwriting each other
-    # for various PREFERRED_PROVIDERS
-    if isinstance(e, bb.event.RecipePreFinalise):
-        if d.getVar("TARGET_PREFIX") == d.getVar("SDK_PREFIX"):
-            d.delVar("PREFERRED_PROVIDER_virtual/${TARGET_PREFIX}binutils")
-            d.delVar("PREFERRED_PROVIDER_virtual/${TARGET_PREFIX}gcc")
-            d.delVar("PREFERRED_PROVIDER_virtual/${TARGET_PREFIX}g++")
-            d.delVar("PREFERRED_PROVIDER_virtual/${TARGET_PREFIX}compilerlibs")
-
     if isinstance(e, bb.event.RecipeParsed):
         #
         # If we have multiple providers of virtual/X and a PREFERRED_PROVIDER_virtual/X is set
@@ -330,7 +320,7 @@ python base_eventhandler() {
         # particular.
         #
         pn = d.getVar('PN')
-        source_mirror_fetch = d.getVar('SOURCE_MIRROR_FETCH', False)
+        source_mirror_fetch = bb.utils.to_boolean(d.getVar('SOURCE_MIRROR_FETCH', False))
         if not source_mirror_fetch:
             provs = (d.getVar("PROVIDES") or "").split()
             multiprovidersallowed = (d.getVar("BB_MULTI_PROVIDER_ALLOWED") or "").split()
@@ -474,7 +464,7 @@ python () {
             if "DEPENDS" in varname or varname.startswith("RRECOMMENDS"):
                 if bb.data.inherits_class('nativesdk', d) or bb.data.inherits_class('cross-canadian', d) :
                     appends = expandFilter(appends, "", "nativesdk-")
-                elif bb.data.inherits_class('native', d):
+                elif bb.data.inherits_class('native', d) or bb.data.inherits_class('cross', d):
                     appends = expandFilter(appends, "-native", "")
                 elif mlprefix:
                     appends = expandFilter(appends, "", mlprefix)
@@ -553,7 +543,7 @@ python () {
         d.appendVarFlag('do_devshell', 'depends', ' virtual/fakeroot-native:do_populate_sysroot')
 
     need_machine = d.getVar('COMPATIBLE_MACHINE')
-    if need_machine and not d.getVar('PARSE_ALL_RECIPES', False):
+    if need_machine and not bb.utils.to_boolean(d.getVar('PARSE_ALL_RECIPES', False)):
         import re
         compat_machines = (d.getVar('MACHINEOVERRIDES') or "").split(":")
         for m in compat_machines:
@@ -562,7 +552,8 @@ python () {
         else:
             raise bb.parse.SkipRecipe("incompatible with machine %s (not in COMPATIBLE_MACHINE)" % d.getVar('MACHINE'))
 
-    source_mirror_fetch = d.getVar('SOURCE_MIRROR_FETCH', False) or d.getVar('PARSE_ALL_RECIPES', False)
+    source_mirror_fetch = bb.utils.to_boolean(d.getVar('SOURCE_MIRROR_FETCH', False)) or \
+            bb.utils.to_boolean(d.getVar('PARSE_ALL_RECIPES', False))
     if not source_mirror_fetch:
         need_host = d.getVar('COMPATIBLE_HOST')
         if need_host:
@@ -654,9 +645,9 @@ python () {
         elif path.endswith('.deb'):
             d.appendVarFlag('do_unpack', 'depends', ' xz-native:do_populate_sysroot')
 
-        # *.7z should DEPEND on p7zip-native for unpacking
+        # *.7z should DEPEND on 7zip-native for unpacking
         elif path.endswith('.7z'):
-            d.appendVarFlag('do_unpack', 'depends', ' p7zip-native:do_populate_sysroot')
+            d.appendVarFlag('do_unpack', 'depends', ' 7zip-native:do_populate_sysroot')
 
     set_packagetriplet(d)
 

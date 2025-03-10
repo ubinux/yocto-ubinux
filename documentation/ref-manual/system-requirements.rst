@@ -62,7 +62,13 @@ supported on the following distributions:
 
 -  Ubuntu 22.04 (LTS)
 
+-  Ubuntu 24.04 (LTS)
+
 -  Fedora 38
+
+-  Fedora 39
+
+-  Fedora 40
 
 -  CentOS Stream 8
 
@@ -71,6 +77,10 @@ supported on the following distributions:
 -  Debian GNU/Linux 12 (Bookworm)
 
 -  OpenSUSE Leap 15.4
+
+-  OpenSUSE Leap 15.5
+
+-  OpenSUSE Leap 15.6
 
 -  AlmaLinux 8
 
@@ -148,11 +158,29 @@ Ubuntu and Debian
 -----------------
 
 Here are the packages needed to build an image on a headless system
-with a supported Ubuntu or Debian Linux distribution::
+with a supported Ubuntu or Debian Linux distribution:
 
-   $ sudo apt install &UBUNTU_HOST_PACKAGES_ESSENTIAL;
+.. literalinclude:: ../tools/host_packages_scripts/ubuntu_essential.sh
+   :language: shell
+
+You also need to ensure you have the ``en_US.UTF-8`` locale enabled::
+
+   $ locale --all-locales | grep en_US.utf8
+
+If this is not the case, you can reconfigure the ``locales`` package to add it
+(requires an interactive shell)::
+
+   $ sudo dpkg-reconfigure locales
 
 .. note::
+
+   -  If you are not in an interactive shell, ``dpkg-reconfigure`` will
+      not work as expected. To add the locale you will need to edit
+      ``/etc/locale.gen`` file to add/uncomment the ``en_US.UTF-8`` locale.
+      A naive way to do this as root is::
+
+         $ echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen
+         $ locale-gen
 
    -  If your build system has the ``oss4-dev`` package installed, you
       might experience QEMU build failures due to the package installing
@@ -162,45 +190,71 @@ with a supported Ubuntu or Debian Linux distribution::
          $ sudo apt build-dep qemu
          $ sudo apt remove oss4-dev
 
-Here are the packages needed to build Project documentation manuals::
+Here are the packages needed to build Project documentation manuals:
 
-   $ sudo apt install git make inkscape texlive-latex-extra
-   $ sudo apt install sphinx python3-saneyaml python3-sphinx-rtd-theme
+.. literalinclude:: ../tools/host_packages_scripts/ubuntu_docs.sh
+   :language: shell
+
+In addition to the previous packages, here are the packages needed to build the
+documentation in PDF format:
+
+.. literalinclude:: ../tools/host_packages_scripts/ubuntu_docs_pdf.sh
+   :language: shell
 
 Fedora Packages
 ---------------
 
 Here are the packages needed to build an image on a headless system
-with a supported Fedora Linux distribution::
+with a supported Fedora Linux distribution:
 
-   $ sudo dnf install &FEDORA_HOST_PACKAGES_ESSENTIAL;
+.. literalinclude:: ../tools/host_packages_scripts/fedora_essential.sh
+   :language: shell
 
-Here are the packages needed to build Project documentation manuals::
+Here are the packages needed to build Project documentation manuals:
 
-   $ sudo dnf install git make python3-pip which inkscape texlive-fncychap
-   &PIP3_HOST_PACKAGES_DOC;
+.. literalinclude:: ../tools/host_packages_scripts/fedora_docs.sh
+   :language: shell
+
+.. literalinclude:: ../tools/host_packages_scripts/pip3_docs.sh
+   :language: shell
+
+In addition to the previous packages, here are the packages needed to build the
+documentation in PDF format:
+
+.. literalinclude:: ../tools/host_packages_scripts/fedora_docs_pdf.sh
+   :language: shell
 
 openSUSE Packages
 -----------------
 
 Here are the packages needed to build an image on a headless system
-with a supported openSUSE distribution::
+with a supported openSUSE distribution:
 
-   $ sudo zypper install &OPENSUSE_HOST_PACKAGES_ESSENTIAL;
+.. literalinclude:: ../tools/host_packages_scripts/opensuse_essential.sh
+   :language: shell
 
-Here are the packages needed to build Project documentation manuals::
+Here are the packages needed to build Project documentation manuals:
 
-   $ sudo zypper install git make python3-pip which inkscape texlive-fncychap
-   &PIP3_HOST_PACKAGES_DOC;
+.. literalinclude:: ../tools/host_packages_scripts/opensuse_docs.sh
+   :language: shell
 
+.. literalinclude:: ../tools/host_packages_scripts/pip3_docs.sh
+   :language: shell
+
+In addition to the previous packages, here are the packages needed to build the
+documentation in PDF format:
+
+.. literalinclude:: ../tools/host_packages_scripts/opensuse_docs_pdf.sh
+   :language: shell
 
 AlmaLinux Packages
 ------------------
 
 Here are the packages needed to build an image on a headless system
-with a supported AlmaLinux distribution::
+with a supported AlmaLinux distribution:
 
-   $ sudo dnf install &ALMALINUX_HOST_PACKAGES_ESSENTIAL;
+.. literalinclude:: ../tools/host_packages_scripts/almalinux_essential.sh
+   :language: shell
 
 .. note::
 
@@ -215,10 +269,26 @@ with a supported AlmaLinux distribution::
    -  The ``makecache`` command consumes additional Metadata from
       ``epel-release``.
 
-Here are the packages needed to build Project documentation manuals::
+Here are the packages needed to build Project documentation manuals:
 
-   $ sudo dnf install git make python3-pip which inkscape texlive-fncychap
-   &PIP3_HOST_PACKAGES_DOC;
+.. literalinclude:: ../tools/host_packages_scripts/almalinux_docs.sh
+   :language: shell
+
+.. literalinclude:: ../tools/host_packages_scripts/pip3_docs.sh
+   :language: shell
+
+.. warning::
+
+   Unlike Fedora or OpenSUSE, AlmaLinux does not provide the packages
+   ``texlive-collection-fontsextra``, ``texlive-collection-lang*`` and
+   ``texlive-collection-latexextra``, so you may run into issues. These may be
+   installed using `tlmgr <https://tug.org/texlive/tlmgr.html>`_.
+
+In addition to the previous packages, here are the packages needed to build the
+documentation in PDF format:
+
+.. literalinclude:: ../tools/host_packages_scripts/almalinux_docs_pdf.sh
+   :language: shell
 
 .. _system-requirements-buildtools:
 

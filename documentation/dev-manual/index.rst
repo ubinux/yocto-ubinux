@@ -23,6 +23,7 @@ Yocto Project Development Tasks Manual
    speeding-up-build
    libraries
    prebuilt-libraries
+   devtool
    x32-psabi
    gobject-introspection
    external-toolchain
@@ -39,7 +40,6 @@ Yocto Project Development Tasks Manual
    external-scm
    read-only-rootfs
    build-quality
-   runtime-testing
    debugging
    licenses
    security-subjects

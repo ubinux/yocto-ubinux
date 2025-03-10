@@ -34,6 +34,8 @@ BBLAYERS ?= " \
   ##COREBASE##/meta-java \
   ##COREBASE##/meta-xilinx/meta-xilinx-core \
   ##COREBASE##/meta-erlang \
+  ##COREBASE##/meta-arm/meta-arm \
+  ##COREBASE##/meta-arm/meta-arm-toolchain \
   "
 BBLAYERS_NON_REMOVABLE ?= " \
   ##COREBASE##/meta-ubinux \

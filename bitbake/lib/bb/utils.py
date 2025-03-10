@@ -11,11 +11,8 @@ import re, fcntl, os, string, stat, shutil, time
 import sys
 import errno
 import logging
-import bb
-import bb.msg
 import locale
 import multiprocessing
-import fcntl
 import importlib
 import importlib.machinery
 import importlib.util
@@ -24,7 +21,6 @@ import subprocess
 import glob
 import fnmatch
 import traceback
-import errno
 import signal
 import collections
 import copy
@@ -36,6 +32,8 @@ import tempfile
 from subprocess import getstatusoutput
 from contextlib import contextmanager
 from ctypes import cdll
+import bb
+import bb.msg
 
 logger = logging.getLogger("BitBake.Util")
 python_extensions = importlib.machinery.all_suffixes()
@@ -584,6 +582,31 @@ def sha512_file(filename):
     """
     import hashlib
     return _hasher(hashlib.sha512(), filename)
+
+def goh1_file(filename):
+    """
+    Return the hex string representation of the Go mod h1 checksum of the
+    filename. The Go mod h1 checksum uses the Go dirhash package. The package
+    defines hashes over directory trees and is used by go mod for mod files and
+    zip archives.
+    """
+    import hashlib
+    import zipfile
+
+    lines = []
+    if zipfile.is_zipfile(filename):
+        with zipfile.ZipFile(filename) as archive:
+            for fn in sorted(archive.namelist()):
+                method = hashlib.sha256()
+                method.update(archive.read(fn))
+                hash = method.hexdigest()
+                lines.append("%s  %s\n" % (hash, fn))
+    else:
+        hash = _hasher(hashlib.sha256(), filename)
+        lines.append("%s  go.mod\n" % hash)
+    method = hashlib.sha256()
+    method.update("".join(lines).encode('utf-8'))
+    return method.hexdigest()
 
 def preserved_envvars_exported():
     """Variables which are taken from the environment and placed in and exported
@@ -1432,8 +1455,6 @@ def edit_bblayers_conf(bblayers_conf, add, remove, edit_cb=None):
             but weren't (because they weren't in the list)
     """
 
-    import fnmatch
-
     def remove_trailing_sep(pth):
         if pth and pth[-1] == os.sep:
             pth = pth[:-1]
@@ -1624,7 +1645,7 @@ def ioprio_set(who, cls, value):
         bb.warn("Unable to set IO Prio for arch %s" % _unamearch)
 
 def set_process_name(name):
-    from ctypes import cdll, byref, create_string_buffer
+    from ctypes import byref, create_string_buffer
     # This is nice to have for debugging, not essential
     try:
         libc = cdll.LoadLibrary('libc.so.6')

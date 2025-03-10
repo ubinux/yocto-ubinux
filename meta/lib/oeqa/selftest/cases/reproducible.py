@@ -162,6 +162,7 @@ class ReproducibleTests(OESelftestTestCase):
             'OEQA_REPRODUCIBLE_TEST_TARGET',
             'OEQA_REPRODUCIBLE_TEST_SSTATE_TARGETS',
             'OEQA_REPRODUCIBLE_EXCLUDED_PACKAGES',
+            'OEQA_REPRODUCIBLE_TEST_LEAF_TARGETS',
         ]
         bb_vars = get_bb_vars(needed_vars)
         for v in needed_vars:
@@ -170,11 +171,16 @@ class ReproducibleTests(OESelftestTestCase):
         if bb_vars['OEQA_REPRODUCIBLE_TEST_PACKAGE']:
             self.package_classes = bb_vars['OEQA_REPRODUCIBLE_TEST_PACKAGE'].split()
 
-        if bb_vars['OEQA_REPRODUCIBLE_TEST_TARGET']:
-            self.targets = bb_vars['OEQA_REPRODUCIBLE_TEST_TARGET'].split()
+        if bb_vars['OEQA_REPRODUCIBLE_TEST_TARGET'] or bb_vars['OEQA_REPRODUCIBLE_TEST_LEAF_TARGETS']:
+            self.targets = (bb_vars['OEQA_REPRODUCIBLE_TEST_TARGET'] or "").split() + (bb_vars['OEQA_REPRODUCIBLE_TEST_LEAF_TARGETS'] or "").split()
 
         if bb_vars['OEQA_REPRODUCIBLE_TEST_SSTATE_TARGETS']:
             self.sstate_targets = bb_vars['OEQA_REPRODUCIBLE_TEST_SSTATE_TARGETS'].split()
+
+        if bb_vars['OEQA_REPRODUCIBLE_TEST_LEAF_TARGETS']:
+            # Setup to build every DEPENDS of leaf recipes using sstate
+            for leaf_recipe in bb_vars['OEQA_REPRODUCIBLE_TEST_LEAF_TARGETS'].split():
+                self.sstate_targets.extend(get_bb_var('DEPENDS', leaf_recipe).split())
 
         self.extraresults = {}
         self.extraresults.setdefault('reproducible', {}).setdefault('files', {})
@@ -239,18 +245,31 @@ class ReproducibleTests(OESelftestTestCase):
         # may reuse the previous log file so restart the bitbake server.
         bitbake("--kill-server")
 
+        def print_condensed_error_log(logs, context_lines=10, tail_lines=20):
+            """Prints errors with context and the end of the log."""
+
+            logs = logs.split("\n")
+            for i, line in enumerate(logs):
+                if line.startswith("ERROR"):
+                    self.logger.info("Found ERROR (line %d):" % (i + 1))
+                    for l in logs[i-context_lines:i+context_lines]:
+                        self.logger.info("      " + l)
+
+            self.logger.info("End of log:")
+            for l in logs[-tail_lines:]:
+                self.logger.info("      " + l)
+
         bitbake_failure_count = 0
         if not use_sstate:
             if self.sstate_targets:
                self.logger.info("Building prebuild for %s (sstate allowed)..." % (name))
                self.write_config(config)
                try:
-                   bitbake("--continue "+' '.join(self.sstate_targets), limit_exc_output=20)
+                   bitbake("--continue "+' '.join(self.sstate_targets))
                except AssertionError as e:
                    bitbake_failure_count += 1
                    self.logger.error("Bitbake failed! but keep going... Log:")
-                   for line in str(e).split("\n"):
-                       self.logger.info("    "+line)
+                   print_condensed_error_log(str(e))
 
             # This config fragment will disable using shared and the sstate
             # mirror, forcing a complete build from scratch
@@ -262,15 +281,13 @@ class ReproducibleTests(OESelftestTestCase):
         self.logger.info("Building %s (sstate%s allowed)..." % (name, '' if use_sstate else ' NOT'))
         self.write_config(config)
         d = get_bb_vars(capture_vars)
-        # targets used to be called images
         try:
-            bitbake("--continue "+' '.join(getattr(self, 'images', self.targets)), limit_exc_output=20)
+            # targets used to be called images
+            bitbake("--continue "+' '.join(getattr(self, 'images', self.targets)))
         except AssertionError as e:
             bitbake_failure_count += 1
-
             self.logger.error("Bitbake failed! but keep going... Log:")
-            for line in str(e).split("\n"):
-                self.logger.info("    "+line)
+            print_condensed_error_log(str(e))
 
             # The calling function expects the existence of the deploy
             # directories containing the packages.
@@ -318,7 +335,9 @@ class ReproducibleTests(OESelftestTestCase):
                 self.logger.error('%s build failed. Trying to compute built packages differences but the test will fail.' % name)
                 fails.append("Bitbake %s failure" % name)
                 if self.save_results:
-                    self.copy_file(variables["BB_CONSOLELOG"], os.path.join(save_dir, "bitbake-%s.log" % name))
+                    failure_log_path = os.path.join(save_dir, "bitbake-%s.log" % name)
+                    self.logger.info('Failure log for %s will be copied to %s'% (name, failure_log_path))
+                    self.copy_file(variables["BB_CONSOLELOG"], failure_log_path)
             vars_list[i] = variables
 
         vars_A, vars_B = vars_list
