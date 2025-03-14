@@ -13,21 +13,17 @@ PACKAGEGROUP_DISABLE_COMPLEMENTARY = "1"
 # build some recent linux kernels (5.14+) for arm
 RDEPENDS:${PN} = "\
     nativesdk-pkgconfig \
-    nativesdk-qemu-xilinx \
-    nativesdk-qemu-xilinx-user-aarch64 \
-    nativesdk-qemu-xilinx-user-arm \
-    nativesdk-qemu-xilinx-user-x86-64 \
-    nativesdk-qemu-xilinx-user-i386 \
-    nativesdk-qemu-xilinx-user-microblazeel \
-    nativesdk-qemu-xilinx-user-microblaze \
-    nativesdk-qemu-xilinx-common \
-    nativesdk-qemu-xilinx-guest-agent \
-    nativesdk-qemu-xilinx-system-aarch64 \
-    nativesdk-qemu-xilinx-system-arm \
-    nativesdk-qemu-xilinx-system-i386 \
-    nativesdk-qemu-xilinx-system-x86-64 \
-    nativesdk-qemu-xilinx-system-microblaze \
-    nativesdk-qemu-xilinx-system-microblazeel \
+    nativesdk-qemu \
+    nativesdk-qemu-user-aarch64 \
+    nativesdk-qemu-user-arm \
+    nativesdk-qemu-user-x86-64 \
+    nativesdk-qemu-user-i386 \
+    nativesdk-qemu-common \
+    nativesdk-qemu-guest-agent \
+    nativesdk-qemu-system-aarch64 \
+    nativesdk-qemu-system-arm \
+    nativesdk-qemu-system-i386 \
+    nativesdk-qemu-system-x86-64 \
     nativesdk-qemu-helper \
     nativesdk-pseudo \
     nativesdk-unfs3 \
@@ -44,6 +40,7 @@ RDEPENDS:${PN} = "\
     nativesdk-bison \
     nativesdk-flex \
     nativesdk-perl-module-integer \
+    nativesdk-bash \
     "
 
 RDEPENDS:${PN}:darwin = "\

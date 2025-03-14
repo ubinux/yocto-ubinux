@@ -19,6 +19,10 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 
+def walk_error(err):
+    bb.error(f"ERROR walking {err.filename}: {err}")
+
+
 def set_timestamp_now(d, o, prop):
     if d.getVar("SPDX_INCLUDE_TIMESTAMPS") == "1":
         setattr(o, prop, datetime.now(timezone.utc))
@@ -135,7 +139,7 @@ def add_package_files(
     topdir,
     get_spdxid,
     get_purposes,
-    license_data,
+    license_data=None,
     *,
     archive=None,
     ignore_dirs=[],
@@ -148,11 +152,13 @@ def add_package_files(
     spdx_files = set()
 
     file_counter = 1
-    for subdir, dirs, files in os.walk(topdir):
+    for subdir, dirs, files in os.walk(topdir, onerror=walk_error):
         dirs[:] = [d for d in dirs if d not in ignore_dirs]
         if subdir == str(topdir):
             dirs[:] = [d for d in dirs if d not in ignore_top_level_dirs]
 
+        dirs.sort()
+        files.sort()
         for file in files:
             filepath = Path(subdir) / file
             if filepath.is_symlink() or not filepath.is_file():
@@ -169,7 +175,10 @@ def add_package_files(
             )
             spdx_files.add(spdx_file)
 
-            if oe.spdx30.software_SoftwarePurpose.source in file_purposes:
+            if (
+                oe.spdx30.software_SoftwarePurpose.source in file_purposes
+                and license_data is not None
+            ):
                 objset.scan_declared_licenses(spdx_file, filepath, license_data)
 
             if archive is not None:
@@ -353,7 +362,9 @@ def add_download_files(d, objset):
             if fd.type == "file":
                 if os.path.isdir(fd.localpath):
                     walk_idx = 1
-                    for root, dirs, files in os.walk(fd.localpath):
+                    for root, dirs, files in os.walk(fd.localpath, onerror=walk_error):
+                        dirs.sort()
+                        files.sort()
                         for f in files:
                             f_path = os.path.join(root, f)
                             if os.path.islink(f_path):
@@ -961,7 +972,7 @@ def write_bitbake_spdx(d):
     oe.sbom30.write_jsonld_doc(d, objset, deploy_dir_spdx / "bitbake.spdx.json")
 
 
-def collect_build_package_inputs(d, objset, build, packages):
+def collect_build_package_inputs(d, objset, build, packages, files_by_hash=None):
     import oe.sbom30
 
     providers = oe.spdx_common.collect_package_providers(d)
@@ -977,7 +988,7 @@ def collect_build_package_inputs(d, objset, build, packages):
         pkg_name, pkg_hashfn = providers[name]
 
         # Copy all of the package SPDX files into the Sbom elements
-        pkg_spdx, _ = oe.sbom30.find_root_obj_in_jsonld(
+        pkg_spdx, pkg_objset = oe.sbom30.find_root_obj_in_jsonld(
             d,
             "packages",
             "package-" + pkg_name,
@@ -985,6 +996,10 @@ def collect_build_package_inputs(d, objset, build, packages):
             software_primaryPurpose=oe.spdx30.software_SoftwarePurpose.install,
         )
         build_deps.add(oe.sbom30.get_element_link_id(pkg_spdx))
+
+        if files_by_hash is not None:
+            for h, f in pkg_objset.by_sha256_hash.items():
+                files_by_hash.setdefault(h, set()).update(f)
 
     if missing_providers:
         bb.fatal(
@@ -1005,6 +1020,7 @@ def create_rootfs_spdx(d):
     deploydir = Path(d.getVar("SPDXROOTFSDEPLOY"))
     root_packages_file = Path(d.getVar("SPDX_ROOTFS_PACKAGES"))
     image_basename = d.getVar("IMAGE_BASENAME")
+    image_rootfs = d.getVar("IMAGE_ROOTFS")
     machine = d.getVar("MACHINE")
 
     with root_packages_file.open("r") as f:
@@ -1034,7 +1050,44 @@ def create_rootfs_spdx(d):
         [rootfs],
     )
 
-    collect_build_package_inputs(d, objset, rootfs_build, packages)
+    files_by_hash = {}
+    collect_build_package_inputs(d, objset, rootfs_build, packages, files_by_hash)
+
+    files = set()
+    for dirpath, dirnames, filenames in os.walk(image_rootfs, onerror=walk_error):
+        dirnames.sort()
+        filenames.sort()
+        for fn in filenames:
+            fpath = Path(dirpath) / fn
+            if not fpath.is_file() or fpath.is_symlink():
+                continue
+
+            relpath = str(fpath.relative_to(image_rootfs))
+            h = bb.utils.sha256_file(fpath)
+
+            found = False
+            if h in files_by_hash:
+                for f in files_by_hash[h]:
+                    if isinstance(f, oe.spdx30.software_File) and f.name == relpath:
+                        files.add(oe.sbom30.get_element_link_id(f))
+                        found = True
+                        break
+
+            if not found:
+                files.add(
+                    objset.new_file(
+                        objset.new_spdxid("rootfs-file", relpath),
+                        relpath,
+                        fpath,
+                    )
+                )
+
+    if files:
+        objset.new_relationship(
+            [rootfs],
+            oe.spdx30.RelationshipType.contains,
+            sorted(list(files)),
+        )
 
     oe.sbom30.write_recipe_jsonld_doc(d, objset, "rootfs", deploydir)
 
@@ -1072,25 +1125,45 @@ def create_image_spdx(d):
         for image in task["images"]:
             image_filename = image["filename"]
             image_path = image_deploy_dir / image_filename
-            a = objset.add_root(
-                oe.spdx30.software_File(
-                    _id=objset.new_spdxid("image", image_filename),
-                    creationInfo=objset.doc.creationInfo,
-                    name=image_filename,
-                    verifiedUsing=[
-                        oe.spdx30.Hash(
-                            algorithm=oe.spdx30.HashAlgorithm.sha256,
-                            hashValue=bb.utils.sha256_file(image_path),
-                        )
-                    ],
+            if os.path.isdir(image_path):
+                a = add_package_files(
+                        d,
+                        objset,
+                        image_path,
+                        lambda file_counter: objset.new_spdxid(
+                            "imagefile", str(file_counter)
+                        ),
+                        lambda filepath: [],
+                        license_data=None,
+                        ignore_dirs=[],
+                        ignore_top_level_dirs=[],
+                        archive=None,
                 )
-            )
-            set_purposes(
-                d, a, "SPDX_IMAGE_PURPOSE:%s" % imagetype, "SPDX_IMAGE_PURPOSE"
-            )
-            set_timestamp_now(d, a, "builtTime")
+                artifacts.extend(a)
+            else:
+                a = objset.add_root(
+                    oe.spdx30.software_File(
+                        _id=objset.new_spdxid("image", image_filename),
+                        creationInfo=objset.doc.creationInfo,
+                        name=image_filename,
+                        verifiedUsing=[
+                            oe.spdx30.Hash(
+                                algorithm=oe.spdx30.HashAlgorithm.sha256,
+                                hashValue=bb.utils.sha256_file(image_path),
+                            )
+                        ],
+                    )
+                )
 
-            artifacts.append(a)
+                artifacts.append(a)
+
+            for a in artifacts:
+                set_purposes(
+                    d, a, "SPDX_IMAGE_PURPOSE:%s" % imagetype, "SPDX_IMAGE_PURPOSE"
+                )
+
+                set_timestamp_now(d, a, "builtTime")
+
 
         if artifacts:
             objset.new_scoped_relationship(
@@ -1219,7 +1292,9 @@ def create_sdk_sbom(d, sdk_deploydir, spdx_work_dir, toolchain_outputname):
     root_files = []
 
     # NOTE: os.walk() doesn't return symlinks
-    for dirpath, dirnames, filenames in os.walk(sdk_deploydir):
+    for dirpath, dirnames, filenames in os.walk(sdk_deploydir, onerror=walk_error):
+        dirnames.sort()
+        filenames.sort()
         for fn in filenames:
             fpath = Path(dirpath) / fn
             if not fpath.is_file() or fpath.is_symlink():
