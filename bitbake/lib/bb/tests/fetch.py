@@ -517,6 +517,10 @@ class MirrorUriTest(FetcherTest):
             : "file:///mirror/example/1.0.0/some-example-1.0.0.tgz;downloadfilename=some-example-1.0.0.tgz",
         ("https://somewhere.org/example-1.0.0.tgz;downloadfilename=some-example-1.0.0.tgz", "https://.*/.*", "file:///mirror/some-example-1.0.0.tgz")
             : "file:///mirror/some-example-1.0.0.tgz;downloadfilename=some-example-1.0.0.tgz",
+        ("git://git.invalid.infradead.org/mtd-utils.git;tag=1234567890123456789012345678901234567890", r"git://(?!internal\.git\.server).*/.*", "http://somewhere.org/somedir/")
+            : "http://somewhere.org/somedir/git2_git.invalid.infradead.org.mtd-utils.git.tar.gz",
+        ("git://internal.git.server.org/mtd-utils.git;tag=1234567890123456789012345678901234567890", r"git://(?!internal\.git\.server).*/.*", "http://somewhere.org/somedir/")
+            : None,
 
         #Renaming files doesn't work
         #("http://somewhere.org/somedir1/somefile_1.2.3.tar.gz", "http://somewhere.org/somedir1/somefile_1.2.3.tar.gz", "http://somewhere2.org/somedir3/somefile_2.3.4.tar.gz") : "http://somewhere2.org/somedir3/somefile_2.3.4.tar.gz"
@@ -525,8 +529,7 @@ class MirrorUriTest(FetcherTest):
 
     mirrorvar = "http://.*/.* file:///somepath/downloads/ " \
                 "git://someserver.org/bitbake git://git.openembedded.org/bitbake " \
-                "https://.*/.* file:///someotherpath/downloads/ " \
-                "http://.*/.* file:///someotherpath/downloads/ " \
+                "https?://.*/.* file:///someotherpath/downloads/ " \
                 "svn://svn.server1.com/ svn://svn.server2.com/"
 
     def test_urireplace(self):
@@ -536,7 +539,7 @@ class MirrorUriTest(FetcherTest):
             ud.setup_localpath(self.d)
             mirrors = bb.fetch2.mirror_from_string("%s %s" % (k[1], k[2]))
             newuris, uds = bb.fetch2.build_mirroruris(ud, mirrors, self.d)
-            self.assertEqual([v], newuris)
+            self.assertEqual([v] if v else [], newuris)
 
     def test_urilist1(self):
         fetcher = bb.fetch.FetchData("http://downloads.yoctoproject.org/releases/bitbake/bitbake-1.0.tar.gz", self.d)
@@ -1814,7 +1817,6 @@ class GitShallowTest(FetcherTest):
     def fetch_shallow(self, uri=None, disabled=False, keepclone=False):
         """Fetch a uri, generating a shallow tarball, then unpack using it"""
         fetcher, ud = self.fetch_and_unpack(uri)
-        assert os.path.exists(ud.clonedir), 'Git clone in DLDIR (%s) does not exist for uri %s' % (ud.clonedir, uri)
 
         # Confirm that the unpacked repo is unshallow
         if not disabled:
@@ -1822,9 +1824,10 @@ class GitShallowTest(FetcherTest):
 
         # fetch and unpack, from the shallow tarball
         bb.utils.remove(self.gitdir, recurse=True)
-        bb.process.run('chmod u+w -R "%s"' % ud.clonedir)
-        bb.utils.remove(ud.clonedir, recurse=True)
-        bb.utils.remove(ud.clonedir.replace('gitsource', 'gitsubmodule'), recurse=True)
+        if os.path.exists(ud.clonedir):
+            bb.process.run('chmod u+w -R "%s"' % ud.clonedir)
+            bb.utils.remove(ud.clonedir, recurse=True)
+            bb.utils.remove(ud.clonedir.replace('gitsource', 'gitsubmodule'), recurse=True)
 
         # confirm that the unpacked repo is used when no git clone or git
         # mirror tarball is available
@@ -1907,7 +1910,12 @@ class GitShallowTest(FetcherTest):
         self.add_empty_file('c')
         self.assertRevCount(3, cwd=self.srcdir)
 
+        # Clone without tarball
+        self.d.setVar('BB_GIT_SHALLOW', '0')
+        fetcher, ud = self.fetch()
+
         # Clone and generate mirror tarball
+        self.d.setVar('BB_GIT_SHALLOW', '1')
         fetcher, ud = self.fetch()
 
         # Ensure we have a current mirror tarball, but an out of date clone
@@ -1919,6 +1927,7 @@ class GitShallowTest(FetcherTest):
         fetcher, ud = self.fetch()
         fetcher.unpack(self.d.getVar('WORKDIR'))
         self.assertRevCount(1)
+        assert os.path.exists(os.path.join(self.d.getVar('WORKDIR'), 'git', 'c'))
 
     def test_shallow_single_branch_no_merge(self):
         self.add_empty_file('a')
@@ -2116,11 +2125,12 @@ class GitShallowTest(FetcherTest):
         self.add_empty_file('b')
 
         # Fetch once to generate the shallow tarball
+        self.d.setVar('BB_GIT_SHALLOW', '0')
         fetcher, ud = self.fetch()
-        assert os.path.exists(os.path.join(self.dldir, ud.mirrortarballs[0]))
 
         # Fetch and unpack with both the clonedir and shallow tarball available
         bb.utils.remove(self.gitdir, recurse=True)
+        self.d.setVar('BB_GIT_SHALLOW', '1')
         fetcher, ud = self.fetch_and_unpack()
 
         # The unpacked tree should *not* be shallow
@@ -2295,19 +2305,17 @@ class GitShallowTest(FetcherTest):
         self.assertIn("No up to date source found", context.exception.msg)
         self.assertIn("clone directory not available or not up to date", context.exception.msg)
 
-    @skipIfNoNetwork()
-    def test_that_unpack_does_work_when_using_git_shallow_tarball_but_tarball_is_not_available(self):
-        self.d.setVar('SRCREV', 'e5939ff608b95cdd4d0ab0e1935781ab9a276ac0')
-        self.d.setVar('BB_GIT_SHALLOW', '1')
-        self.d.setVar('BB_GENERATE_SHALLOW_TARBALLS', '1')
-        fetcher = bb.fetch.Fetch(["git://git.yoctoproject.org/fstests;branch=master;protocol=https"], self.d)
-        fetcher.download()
+    def test_shallow_check_is_shallow(self):
+        self.add_empty_file('a')
+        self.add_empty_file('b')
 
-        bb.utils.remove(self.dldir + "/*.tar.gz")
-        fetcher.unpack(self.unpackdir)
+        # Fetch and unpack without the clonedir and *only* shallow tarball available
+        bb.utils.remove(self.gitdir, recurse=True)
+        fetcher, ud = self.fetch_and_unpack()
 
-        dir = os.listdir(self.unpackdir + "/git/")
-        self.assertIn("fstests.doap", dir)
+        # The unpacked tree *should* be shallow
+        self.assertRevCount(1)
+        assert os.path.exists(os.path.join(self.gitdir, '.git', 'shallow'))
 
 class GitLfsTest(FetcherTest):
     def skipIfNoGitLFS():
