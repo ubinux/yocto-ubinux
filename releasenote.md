@@ -1,4 +1,4 @@
-# ubinux-2025.02 Release Notes
+# ubinux-2025.03 Release Notes
 
 FX Dept. UNIX & FX System Div.  
 Fujitsu Limited  
@@ -6,12 +6,12 @@ Fujitsu Limited
 ## 1. Basic Information
 ### 1.1 Version Information
 - Yocto: 5.2
-- Kernel: 6.6.72
+- Kernel: 6.6.78
 - Toolchain
   - GCC: 14.2.0
-  - Binutils: 2.43.1
-  - glibc: 2.40
-  - GDB: 15.2
+  - Binutils: 2.44
+  - glibc: 2.41
+  - GDB: 16.2
 - License Files Format: SPDX 2.3
 
 ### 1.2 CPU Architecture Support
@@ -32,50 +32,29 @@ Fujitsu Limited
 
 ## 2. Features
 ### 2.1 Security Fixes
-Following security issues have been fixed from ubinux-2025.01.
+Following security issues have been fixed from ubinux-2025.02.
 
-libmemcached:
-- CVE-2023-27478
+libvirt:
+- CVE-2024-8235
 
-opensc:
-- CVE-2024-45615
-- CVE-2024-45616
-- CVE-2024-45617
-- CVE-2024-45618
-- CVE-2024-45619
-- CVE-2024-45620
-- CVE-2024-8443
-
-php:
-- CVE-2024-11233
-- CVE-2024-11234
-- CVE-2024-11236
-
-procmail:
-- CVE-2014-3618
-- CVE-2017-16844
-
-samba:
-- CVE-2018-14628
-
-uw-imap:
-- CVE-2018-19518
-
-wireshark:
-- CVE-2024-9781
+ubinux-kernel:
+- CVE-2024-41071
 
 ### 2.2 Added packages
 
-- gjs
-- lua-lgi
+- avahi-libnss-mdns
+- duktape
+- giflib
+- openjdk-8
 
 ### 2.3 Removed packages
 
-- blktool
+- libnss-mdns
+- yajl
 
 ## 3. Installation guide
 ### 3.1 Install Toolchain
-Run as root privilege the Toolchain installer at arbitrary directory, and Toolchain will be installed into /opt/ubinux/2025.02 directory.
+Run as root privilege the Toolchain installer at arbitrary directory, and Toolchain will be installed into /opt/ubinux/2025.03 directory.
 
 
 [TYPE1] in the description, please read as shown below.
@@ -87,7 +66,7 @@ Run as root privilege the Toolchain installer at arbitrary directory, and Toolch
 |Armv8 (32bit EL, 64bit EL)|aarch64-ubinux-armv8|
 
 
-`$ sudo sh ubinux-glibc-x86_64-meta-toolchain-[TYPE1]-toolchain-2025.02.sh`
+`$ sudo sh ubinux-glibc-x86_64-meta-toolchain-[TYPE1]-toolchain-2025.03.sh`
 
 
 ### 3.2 Set up Environment Variables
@@ -104,7 +83,7 @@ Run the following commands.
 |Armv8 (32bit EL)|armv7ahf-neon-ubinuxmllib32-linux-gnueabi|
 
 
-`$ . /opt/ubinux/2025.02/environment-setup-[TYPE2]`
+`$ . /opt/ubinux/2025.03/environment-setup-[TYPE2]`
 
 ### 3.3 Create rootfs from Userland Packages
 To create rootfs, see Section 3.1.2 and 3.1.3 of the dnf-plugin-tui documentation.  
@@ -182,7 +161,6 @@ libuser:
 
 libvirt:
 - CVE-2023-3750
-- CVE-2024-8235
 
 openvswitch:
 - CVE-2019-25076
@@ -256,6 +234,8 @@ ubinux-kernel:
 - CVE-2023-4010
 - CVE-2023-4155
 - CVE-2023-52485
+- CVE-2023-52586
+- CVE-2023-52590
 - CVE-2023-6238
 - CVE-2023-6240
 - CVE-2023-6535
@@ -280,9 +260,9 @@ ubinux-kernel:
 - CVE-2024-36478
 - CVE-2024-38608
 - CVE-2024-40965
+- CVE-2024-40972
 - CVE-2024-41012
 - CVE-2024-41061
-- CVE-2024-41071
 - CVE-2024-41080
 - CVE-2024-41085
 - CVE-2024-42064
@@ -427,6 +407,7 @@ ubinux-kernel:
 - CVE-2024-53205
 - CVE-2024-53221
 - CVE-2024-53222
+- CVE-2024-56544
 - CVE-2024-56549
 - CVE-2024-56582
 - CVE-2024-56588
@@ -434,6 +415,7 @@ ubinux-kernel:
 - CVE-2024-56608
 - CVE-2024-56620
 - CVE-2024-56647
+- CVE-2024-56702
 - CVE-2024-56710
 - CVE-2024-56712
 - CVE-2024-56742
@@ -445,6 +427,12 @@ ubinux-kernel:
 - CVE-2024-56782
 - CVE-2024-56784
 - CVE-2024-57872
+- CVE-2024-57950
+- CVE-2025-21634
+- CVE-2025-21649
+- CVE-2025-21672
+- CVE-2025-21682
+- CVE-2025-21696
 
 xrdp:
 - CVE-2022-23468
