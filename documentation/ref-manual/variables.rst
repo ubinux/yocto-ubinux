@@ -224,6 +224,12 @@ system and gives an overview of their function and contents.
       must set this variable in your recipe. The
       :ref:`ref-classes-syslinux` class checks this variable.
 
+   :term:`AUTOTOOLS_SCRIPT_PATH`
+      When using the :ref:`ref-classes-autotools` class, the
+      :term:`AUTOTOOLS_SCRIPT_PATH` variable stores the location of the
+      different scripts used by the Autotools build system. The default
+      value for this variable is :term:`S`.
+
    :term:`AVAILTUNES`
       The list of defined CPU and Application Binary Interface (ABI)
       tunings (i.e. "tunes") available for use by the OpenEmbedded build
@@ -704,6 +710,9 @@ system and gives an overview of their function and contents.
 
    :term:`BB_TASKHASH`
       See :term:`bitbake:BB_TASKHASH` in the BitBake manual.
+
+   :term:`BB_USE_HOME_NPMRC`
+      See :term:`bitbake:BB_USE_HOME_NPMRC` in the BitBake manual.
 
    :term:`BB_VERBOSE_LOGS`
       See :term:`bitbake:BB_VERBOSE_LOGS` in the BitBake manual.
@@ -1527,6 +1536,17 @@ system and gives an overview of their function and contents.
 
    :term:`CONFIGURE_FLAGS`
       The minimal arguments for GNU configure.
+
+   :term:`CONFIGURE_SCRIPT`
+      When using the :ref:`ref-classes-autotools` class, the
+      :term:`CONFIGURE_SCRIPT` variable stores the location of the ``configure``
+      script for the Autotools build system. The default definition for this
+      variable is::
+
+         CONFIGURE_SCRIPT ?= "${AUTOTOOLS_SCRIPT_PATH}/configure"
+
+      Where :term:`AUTOTOOLS_SCRIPT_PATH` is the location of the of the
+      Autotools build system scripts, which defaults to :term:`S`.
 
    :term:`CONFLICT_DISTRO_FEATURES`
       When inheriting the :ref:`ref-classes-features_check`
@@ -3170,13 +3190,35 @@ system and gives an overview of their function and contents.
       :ref:`ref-classes-kernel-fitimage` class.
 
    :term:`FIT_SIGN_INDIVIDUAL`
-      If set to "1", then the :ref:`ref-classes-kernel-fitimage`
-      class will sign the kernel, dtb and ramdisk images individually in addition
-      to signing the FIT image itself. This could be useful if you are
-      intending to verify signatures in another context than booting via
-      U-Boot.
+      If set to "1", the :ref:`ref-classes-kernel-fitimage` class signs each
+      image node individually, including the kernel, DTB, RAM disk, and any
+      other image types present in the FIT image, in addition to signing the
+      configuration nodes.
+      This can be useful if you need to verify signatures outside of the
+      U-Boot boot process. By default, this variable is set to "0".
 
-      This variable is set to "0" by default.
+      If :term:`UBOOT_SIGN_ENABLE` is set to "1" and
+      :term:`FIT_SIGN_INDIVIDUAL` remains at its default value of "0", only the
+      configuration nodes are signed. Since configuration nodes include hashes
+      of their referenced image nodes, the integrity of the entire FIT image is
+      ensured as long as the image nodes are loaded via the configuration nodes
+      and the hashes of the image nodes are checked. That's usually the case.
+
+      Enabling :term:`FIT_SIGN_INDIVIDUAL` typically increases complexity for
+      little benefit. There might be exceptions such as image nodes that are
+      not referenced by any configuration node or loaded directly for whatever
+      reason.
+      For most use cases, setting this variable to "0" provides sufficient
+      security.
+
+      For further details, refer to the official U-Boot documentation:
+      `U-Boot fit signature <https://docs.u-boot.org/en/latest/usage/fit/signature.html>`__
+      and more specifically at:
+      `U-Boot signed configurations <https://docs.u-boot.org/en/latest/usage/fit/signature.html#signed-configurations>`__.
+
+      Signing only the image nodes is intentionally not implemented by
+      :term:`OpenEmbedded-Core (OE-Core)`, as it is vulnerable to mix-and-match
+      attacks.
 
    :term:`FIT_SIGN_NUMBITS`
       Size of the private key used in the FIT image, in number of bits.
@@ -3392,6 +3434,11 @@ system and gives an overview of their function and contents.
 
       See the :ref:`ref-classes-grub-efi` class for more
       information on how this variable is used.
+
+   :term:`GRUB_MKIMAGE_OPTS`
+      This variable controls additional options passed to the ``grub-mkimage``
+      command in the GNU GRand Unified Bootloader (GRUB) recipe during the
+      ``do_mkimage`` task.
 
    :term:`GRUB_OPTS`
       Additional options to add to the GNU GRand Unified Bootloader (GRUB)
@@ -5579,6 +5626,10 @@ system and gives an overview of their function and contents.
       you to specify the inclusion of debugging symbols and the compiler
       optimizations (none, performance or size).
 
+   :term:`MESON_INSTALL_TAGS`
+      A variable for the :ref:`ref-classes-meson` class, allowing to specify
+      install tags (``--tags`` argument of the ``meson install`` command).
+
    :term:`MESON_TARGET`
       A variable for the :ref:`ref-classes-meson` class, allowing to choose
       a Meson target to build in :ref:`ref-tasks-compile`.  Otherwise, the
@@ -5717,6 +5768,11 @@ system and gives an overview of their function and contents.
       specifies the base directory for auto-mounting filesystems. The
       default value is "/run/media".
 
+   :term:`MOUNT_GROUP`
+      On non-systemd systems (where ``udev-extraconf`` is being used),
+      specifies the mount group for auto-mounting filesystems. The
+      default value is "disk".
+
    :term:`MULTIMACH_TARGET_SYS`
       Uniquely identifies the type of the target system for which packages
       are being built. This variable allows output for different types of
@@ -5821,6 +5877,18 @@ system and gives an overview of their function and contents.
       list with::
 
          NON_MULTILIB_RECIPES = "grub grub-efi make-mod-scripts ovmf u-boot"
+
+   :term:`NVD_DB_VERSION`
+      The :term:`NVD_DB_VERSION` variable allows choosing the CVE feed when
+      using the :ref:`ref-classes-cve-check` class. It can be one of:
+
+      -  ``NVD2`` (default): the NVD feed with API version 2
+      -  ``FKIE``: the `FKIE-CAD <https://github.com/fkie-cad/nvd-json-data-feeds>`__
+         feed reconstruction
+      -  ``NVD1``: the NVD JSON feed (deprecated)
+
+      In case of a malformed feed name, the ``NVD2`` feed is selected and an
+      error is printed.
 
    :term:`NVDCVE_API_KEY`
       The NVD API key used to retrieve data from the CVE database when
@@ -7088,6 +7156,16 @@ system and gives an overview of their function and contents.
       at build time should be done by adding "ptest" to (or removing it
       from) :term:`DISTRO_FEATURES`.
 
+   :term:`PTEST_PYTEST_DIR`
+      Within the :ref:`ref-classes-ptest-python-pytest` class, the
+      :term:`PTEST_PYTEST_DIR` variable represents the path within the source
+      tree of a Python package holding the unit tests to be tested with the
+      `pytest <https://docs.pytest.org>`__ framework. The default value for this
+      variable is ``tests``.
+
+      For more information, see
+      the :ref:`ref-classes-ptest-python-pytest` class documentation.
+
    :term:`PV`
       The version of the recipe. The version is normally extracted from the
       recipe filename. For example, if the recipe is named
@@ -8341,6 +8419,11 @@ system and gives an overview of their function and contents.
       This option could be used in order to change the prefix of ``spdxDocument``
       and the prefix of ``documentNamespace``. It is set by default to
       ``http://spdx.org/spdxdoc``.
+
+   :term:`SPDX_PACKAGE_VERSION`
+      This variable controls the package version as seen in the SPDX 3.0 JSON
+      output (``software_packageVersion``). The default value for this variable
+      is :term:`PV`.
 
    :term:`SPDX_PRETTY`
       This option makes the SPDX output more human-readable, using
@@ -9949,6 +10032,45 @@ system and gives an overview of their function and contents.
 
       See `more details about #address-cells <https://elinux.org/Device_Tree_Usage#How_Addressing_Works>`__.
 
+   :term:`UBOOT_FIT_ARM_TRUSTED_FIRMWARE`
+      `Trusted Firmware-A (TF-A) <https://www.trustedfirmware.org/projects/tf-a>`__
+      is a reference implementation of secure world software for Arm A-Profile
+      architectures (Armv8-A and Armv7-A), including an Exception Level 3 (EL3)
+      Secure Monitor. This variable enables the generation of a U-Boot FIT
+      image with a Trusted Firmware-A (TF-A) binary.
+
+      Its default value is "0", so set it to "1" to enable this functionality::
+
+         UBOOT_FIT_ARM_TRUSTED_FIRMWARE = "1"
+
+   :term:`UBOOT_FIT_ARM_TRUSTED_FIRMWARE_IMAGE`
+      Specifies the path to the Trusted Firmware-A (TF-A) binary. Its default
+      value is "bl31.bin"::
+
+         UBOOT_FIT_ARM_TRUSTED_FIRMWARE_IMAGE ?= "bl31.bin"
+
+      If a relative path is provided, the file is expected to be relative to
+      U-Boot's :term:`B` directory. An absolute path can be provided too,
+      e.g.::
+
+         UBOOT_FIT_ARM_TRUSTED_FIRMWARE_IMAGE ?= "${DEPLOY_DIR_IMAGE}/bl31.bin"
+
+      If the Trusted Firmware-A (TF-A) binary is built in a separate recipe,
+      you must add the necessary dependency in a U-Boot ``.bbappend`` file. The
+      recipe name for Trusted Firmware-A (TF-A) binary is
+      ``trusted-firmware-a``, which comes from the
+      :yocto_git:`meta-arm </meta-arm>` layer::
+
+         do_compile[depends] += "trusted-firmware-a:do_deploy"
+
+   :term:`UBOOT_FIT_CONF_USER_LOADABLES`
+      Adds one or more user-defined images to the ``loadables`` property of the
+      configuration node of the U-Boot Image Tree Source (ITS). This variable
+      is handled by the local shell in the recipe so appropriate escaping
+      should be done, e.g. escaping quotes.::
+
+         UBOOT_FIT_CONF_USER_LOADABLES = '\"fwa\", \"fwb\"'
+
    :term:`UBOOT_FIT_DESC`
       Specifies the description string encoded into a U-Boot fitImage. The default
       value is set by the :ref:`ref-classes-uboot-sign` class as follows::
@@ -9996,6 +10118,105 @@ system and gives an overview of their function and contents.
       Size of the private key used in signing the U-Boot FIT image, in number
       of bits. The default value for this variable is set to "2048"
       by the :ref:`ref-classes-uboot-sign` class.
+
+   :term:`UBOOT_FIT_TEE`
+      A Trusted Execution Environment (TEE) is a secure environment for
+      executing code, ensuring high levels of trust in asset management within
+      the surrounding system. This variable enables the generation of a U-Boot
+      FIT image with a Trusted Execution Environment (TEE) binary.
+
+      Its default value is "0", so set it to "1" to enable this functionality::
+
+         UBOOT_FIT_TEE = "1"
+
+   :term:`UBOOT_FIT_TEE_IMAGE`
+      Specifies the path to the Trusted Execution Environment (TEE) binary. Its
+      default value is "tee-raw.bin"::
+
+         UBOOT_FIT_TEE_IMAGE ?= "tee-raw.bin"
+
+      If a relative path is provided, the file is expected to be relative to 
+      U-Boot's :term:`B` directory. An absolute path can be provided too,
+      e.g.::
+
+         UBOOT_FIT_TEE_IMAGE ?= "${DEPLOY_DIR_IMAGE}/tee-raw.bin"
+
+      If the Trusted Execution Environment (TEE) binary is built in a separate
+      recipe, you must add the necessary dependency in a U-Boot ``.bbappend``
+      file. The recipe name for Trusted Execution Environment (TEE) binary is
+      ``optee-os``, which comes from the :yocto_git:`meta-arm </meta-arm>`
+      layer::
+
+         do_compile[depends] += "optee-os:do_deploy"
+
+   :term:`UBOOT_FIT_USER_SETTINGS`
+      Add a user-specific snippet to the U-Boot Image Tree Source (ITS). This
+      variable allows the user to add one or more user-defined ``/images`` node
+      to the U-Boot Image Tree Source (ITS). For more details, please refer to
+      https://fitspec.osfw.foundation/\ .
+
+      The original content of the U-Boot Image Tree Source (ITS) is as
+      follows::
+
+         images {
+             uboot {
+                 description = "U-Boot image";
+                 data = /incbin/("u-boot-nodtb.bin");
+                 type = "standalone";
+                 os = "u-boot";
+                 arch = "";
+                 compression = "none";
+                 load = <0x80000000>;
+                 entry = <0x80000000>;
+             };
+         };
+
+      Users can include their custom ITS snippet in this variable, e.g.::
+
+         UBOOT_FIT_FWA_ITS = '\
+             fwa {\n\
+                 description = \"FW A\";\n\
+                 data = /incbin/(\"fwa.bin\");\n\
+                 type = \"firmware\";\n\
+                 arch = \"\";\n\
+                 os = \"\";\n\
+                 load = <0xb2000000>;\n\
+                 entry = <0xb2000000>;\n\
+                 compression = \"none\";\n\
+             };\n\
+         '
+
+         UBOOT_FIT_USER_SETTINGS = "${UBOOT_FIT_FWA_ITS}"
+
+      This variable is handled by the local shell in the recipe so appropriate
+      escaping should be done, e.g. escaping quotes and adding newlines with
+      ``\n``.
+
+      The generated content of the U-Boot Image Tree Source (ITS) is as
+      follows::
+
+         images {
+             uboot {
+                 description = "U-Boot image";
+                 data = /incbin/("u-boot-nodtb.bin");
+                 type = "standalone";
+                 os = "u-boot";
+                 arch = "";
+                 compression = "none";
+                 load = <0x80000000>;
+                 entry = <0x80000000>;
+             };
+             fwa {
+                 description = "FW A";
+                 data = /incbin/("fwa.bin");
+                 type = "firmware";
+                 arch = "";
+                 os = "";
+                 load = <0xb2000000>;
+                 entry = <0xb2000000>;
+                 compression = "none";
+             };
+         };
 
    :term:`UBOOT_FITIMAGE_ENABLE`
       This variable allows to generate a FIT image for U-Boot, which is one
@@ -10443,9 +10664,14 @@ system and gives an overview of their function and contents.
       can control with this variable, see the
       ":ref:`ref-classes-insane`" section.
 
+   :term:`WATCHDOG_RUNTIME_SEC`
+      For the ``systemd`` recipe, this controls the value of the
+      ``RuntimeWatchdogSec`` option in ``/etc/systemd/system.conf``. The default
+      value is an empty string.
+
    :term:`WATCHDOG_TIMEOUT`
-      Specifies the timeout in seconds used by the ``watchdog`` recipe and
-      also by ``systemd`` during reboot. The default is 60 seconds.
+      Specifies the timeout in seconds used by the ``watchdog-config`` recipe
+      and also by ``systemd`` during reboot. The default is 60 seconds.
 
    :term:`WIC_SECTOR_SIZE`
       The variable :term:`WIC_SECTOR_SIZE` controls the sector size of Wic
