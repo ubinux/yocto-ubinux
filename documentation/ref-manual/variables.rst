@@ -143,7 +143,7 @@ system and gives an overview of their function and contents.
       information on how this variable is used.
 
    :term:`AR`
-      The minimal command and arguments used to run ``ar``.
+      The minimal command and arguments used to run :manpage:`ar <ar(1)>`.
 
    :term:`ARCHIVER_MODE`
       When used with the :ref:`ref-classes-archiver` class,
@@ -165,7 +165,8 @@ system and gives an overview of their function and contents.
       ``meta/classes/archiver.bbclass`` file in the :term:`Source Directory`.
 
    :term:`AS`
-      Minimal command and arguments needed to run the assembler.
+      Minimal command and arguments needed to run the :manpage:`assembler
+      <as(1)>`.
 
    :term:`ASSUME_PROVIDED`
       Lists recipe names (:term:`PN` values) BitBake does not
@@ -994,31 +995,105 @@ system and gives an overview of their function and contents.
       variable is a useful pointer in case a bug in the software being
       built needs to be manually reported.
 
+   :term:`BUILD_AR`
+      Specifies the architecture-specific :manpage:`archiver <ar(1)>` for the
+      build host, and its default definition is derived in part from
+      :term:`BUILD_PREFIX`::
+
+         BUILD_AR = "${BUILD_PREFIX}ar"
+
+      When building a :ref:`ref-classes-native` recipe, :term:`AR` is set to the
+      value of this variable by default.
+
+      The :term:`BUILD_AR` variable should not be set manually, and is rarely
+      used in recipes as :term:`AR` contains the appropriate value depending on
+      the context (native or target recipes). Exception be made for target
+      recipes that need to use the :manpage:`archiver <ar(1)>` from the build
+      host at some point during the build.
+
    :term:`BUILD_ARCH`
       Specifies the architecture of the build host (e.g. ``i686``). The
       OpenEmbedded build system sets the value of :term:`BUILD_ARCH` from the
       machine name reported by the ``uname`` command.
 
+   :term:`BUILD_AS`
+      Specifies the architecture-specific :manpage:`assembler <as(1)>` for the
+      build host, and its default definition is derived in part from
+      :term:`BUILD_PREFIX`::
+
+         BUILD_AS = "${BUILD_PREFIX}as ${BUILD_AS_ARCH}"
+
+      When building a :ref:`ref-classes-native` recipe, :term:`AS` is set to the
+      value of this variable by default.
+
+      The :term:`BUILD_AS` variable should not be set manually, and is rarely
+      used in recipes as :term:`AS` contains the appropriate value depending on
+      the context (native or target recipes). Exception be made for target
+      recipes that need to use the :manpage:`assembler <as(1)>` from the build
+      host at some point during the build.
+
    :term:`BUILD_AS_ARCH`
       Specifies the architecture-specific assembler flags for the build
       host. By default, the value of :term:`BUILD_AS_ARCH` is empty.
+
+   :term:`BUILD_CC`
+      Specifies the architecture-specific C compiler for the build host,
+      and its default definition is derived in part from :term:`BUILD_PREFIX`
+      and :term:`BUILD_CC_ARCH`::
+
+         BUILD_CC = "${CCACHE}${BUILD_PREFIX}gcc ${BUILD_CC_ARCH}"
+
+      When building a :ref:`ref-classes-native` recipe, :term:`CC` is set to the
+      value of this variable by default.
+
+      The :term:`BUILD_CC` variable should not be set manually, and is rarely
+      used in recipes as :term:`CC` contains the appropriate value depending on
+      the context (native or target recipes). Exception be made for target
+      recipes that need to use the compiler from the build host at some point
+      during the build.
 
    :term:`BUILD_CC_ARCH`
       Specifies the architecture-specific C compiler flags for the build
       host. By default, the value of :term:`BUILD_CC_ARCH` is empty.
 
    :term:`BUILD_CCLD`
-      Specifies the linker command to be used for the build host when the C
-      compiler is being used as the linker. By default, :term:`BUILD_CCLD`
-      points to GCC and passes as arguments the value of
-      :term:`BUILD_CC_ARCH`, assuming
-      :term:`BUILD_CC_ARCH` is set.
+      Specifies the :manpage:`linker <ld(1)>` command to be used for the build
+      host when the C compiler is being used as the linker, and its default
+      definition is derived in part from :term:`BUILD_PREFIX` and
+      :term:`BUILD_CC_ARCH`::
+
+         BUILD_CCLD = "${BUILD_PREFIX}gcc ${BUILD_CC_ARCH}"
+
+      When building a :ref:`ref-classes-native` recipe, :term:`CCLD` is set to
+      the value of this variable by default.
+
+      The :term:`BUILD_CCLD` variable should not be set manually, and is rarely
+      used in recipes as :term:`CCLD` contains the appropriate value depending on
+      the context (native or target recipes). Exception be made for target
+      recipes that need to use the :manpage:`linker <ld(1)>` from the build host
+      at some point during the build.
 
    :term:`BUILD_CFLAGS`
       Specifies the flags to pass to the C compiler when building for the
-      build host. When building in the ``-native`` context,
+      build host. When building a :ref:`ref-classes-native` recipe,
       :term:`CFLAGS` is set to the value of this variable by
       default.
+
+   :term:`BUILD_CPP`
+      Specifies the C preprocessor command (to both the C and the C++ compilers)
+      when building for the build host, and its default definition is derived in
+      part from :term:`BUILD_PREFIX` and :term:`BUILD_CC_ARCH`::
+
+         BUILD_CPP = "${BUILD_PREFIX}gcc ${BUILD_CC_ARCH} -E"
+
+      When building a :ref:`ref-classes-native` recipe, :term:`CPP` is set to
+      the value of this variable by default.
+
+      The :term:`BUILD_CPP` variable should not be set manually, and is rarely
+      used in recipes as :term:`CPP` contains the appropriate value depending on
+      the context (native or target recipes). Exception be made for target
+      recipes that need to use the preprocessor from the build host at some
+      point during the build.
 
    :term:`BUILD_CPPFLAGS`
       Specifies the flags to pass to the C preprocessor (i.e. to both the C
@@ -1026,23 +1101,59 @@ system and gives an overview of their function and contents.
       building in the ``-native`` context, :term:`CPPFLAGS`
       is set to the value of this variable by default.
 
+   :term:`BUILD_CXX`
+      Specifies the architecture-specific C++ compiler for the build host,
+      and its default definition is derived in part from :term:`BUILD_PREFIX`
+      and :term:`BUILD_CC_ARCH`::
+
+         BUILD_CXX = "${CCACHE}${BUILD_PREFIX}g++ ${BUILD_CC_ARCH}"
+
+      When building a :ref:`ref-classes-native` recipe, :term:`CXX` is set to
+      the value of this variable by default.
+
+      The :term:`BUILD_CXX` variable should not be set manually, and is rarely
+      used in recipes as :term:`CXX` contains the appropriate value depending on
+      the context (native or target recipes). Exception be made for target
+      recipes that need to use the C++ compiler from the build host at some
+      point during the build.
+
    :term:`BUILD_CXXFLAGS`
       Specifies the flags to pass to the C++ compiler when building for the
-      build host. When building in the ``-native`` context,
+      build host. When building a :ref:`ref-classes-native` recipe,
       :term:`CXXFLAGS` is set to the value of this variable
       by default.
 
    :term:`BUILD_FC`
-      Specifies the Fortran compiler command for the build host. By
-      default, :term:`BUILD_FC` points to Gfortran and passes as arguments the
-      value of :term:`BUILD_CC_ARCH`, assuming
-      :term:`BUILD_CC_ARCH` is set.
+      Specifies the Fortran compiler command for the build host, and its default
+      definition is derived in part from :term:`BUILD_PREFIX` and
+      :term:`BUILD_CC_ARCH`::
+
+         BUILD_FC = "${BUILD_PREFIX}gfortran ${BUILD_CC_ARCH}"
+
+      When building a :ref:`ref-classes-native` recipe, :term:`FC` is set to the
+      value of this variable by default.
+
+      The :term:`BUILD_FC` variable should not be set manually, and is rarely
+      used in recipes as :term:`FC` contains the appropriate value depending on
+      the context (native or target recipes). Exception be made for target
+      recipes that need to use the Fortran compiler from the build host at some
+      point during the build.
 
    :term:`BUILD_LD`
-      Specifies the linker command for the build host. By default,
-      :term:`BUILD_LD` points to the GNU linker (ld) and passes as arguments
-      the value of :term:`BUILD_LD_ARCH`, assuming
-      :term:`BUILD_LD_ARCH` is set.
+      Specifies the linker command for the build host, and its default
+      definition is derived in part from :term:`BUILD_PREFIX` and
+      :term:`BUILD_LD_ARCH`::
+
+         BUILD_LD = "${BUILD_PREFIX}ld ${BUILD_LD_ARCH}"
+
+      When building a :ref:`ref-classes-native` recipe, :term:`LD` is set to the
+      value of this variable by default.
+
+      The :term:`BUILD_LD` variable should not be set manually, and is rarely
+      used in recipes as :term:`LD` contains the appropriate value depending on
+      the context (native or target recipes). Exception be made for target
+      recipes that need to use the linker from the build host at some point
+      during the build.
 
    :term:`BUILD_LD_ARCH`
       Specifies architecture-specific linker flags for the build host. By
@@ -1050,9 +1161,57 @@ system and gives an overview of their function and contents.
 
    :term:`BUILD_LDFLAGS`
       Specifies the flags to pass to the linker when building for the build
-      host. When building in the ``-native`` context,
+      host. When building a :ref:`ref-classes-native` recipe,
       :term:`LDFLAGS` is set to the value of this variable
       by default.
+
+   :term:`BUILD_NM`
+      Specifies the architecture-specific utility to list symbols from object
+      files for the build host, and its default definition is derived in part
+      from :term:`BUILD_PREFIX`::
+
+         BUILD_NM = "${BUILD_PREFIX}nm"
+
+      When building a :ref:`ref-classes-native` recipe, :term:`NM` is set to the
+      value of this variable by default.
+
+      The :term:`BUILD_NM` variable should not be set manually, and is rarely
+      used in recipes as :term:`NM` contains the appropriate value depending on
+      the context (native or target recipes). Exception be made for target
+      recipes that need to use the utility from the build host at some point
+      during the build.
+
+   :term:`BUILD_OBJCOPY`
+      Specifies the architecture-specific utility to copy object files for the
+      build host, and its default definition is derived in part from
+      :term:`BUILD_PREFIX`::
+
+         BUILD_OBJCOPY = "${BUILD_PREFIX}objcopy"
+
+      When building a :ref:`ref-classes-native` recipe, :term:`OBJCOPY` is set
+      to the value of this variable by default.
+
+      The :term:`BUILD_OBJCOPY` variable should not be set manually, and is
+      rarely used in recipes as :term:`OBJCOPY` contains the appropriate value
+      depending on the context (native or target recipes). Exception be made for
+      target recipes that need to use the utility from the build host at some
+      point during the build.
+
+   :term:`BUILD_OBJDUMP`
+      Specifies the architecture-specific utility to display object files
+      information for the build host, and its default definition is derived in
+      part from :term:`BUILD_PREFIX`::
+
+         BUILD_OBJDUMP = "${BUILD_PREFIX}objdump"
+
+      When building a :ref:`ref-classes-native` recipe, :term:`OBJDUMP` is set
+      to the value of this variable by default.
+
+      The :term:`BUILD_OBJDUMP` variable should not be set manually, and is
+      rarely used in recipes as :term:`OBJDUMP` contains the appropriate value
+      depending on the context (native or target recipes). Exception be made for
+      target recipes that need to use the utility from the build host at some
+      point during the build.
 
    :term:`BUILD_OPTIMIZATION`
       Specifies the optimization flags passed to the C compiler when
@@ -1074,11 +1233,53 @@ system and gives an overview of their function and contents.
       build system uses the :term:`BUILD_PREFIX` value to set the
       :term:`TARGET_PREFIX` when building for :ref:`ref-classes-native` recipes.
 
+   :term:`BUILD_RANLIB`
+      Specifies the architecture-specific utility to generate indexes for
+      archives for the build host, and its default definition is derived in part
+      from :term:`BUILD_PREFIX`::
+
+         BUILD_RANLIB = "${BUILD_PREFIX}ranlib -D"
+
+      When building a :ref:`ref-classes-native` recipe, :term:`RANLIB` is set to
+      the value of this variable by default.
+
+      The :term:`BUILD_RANLIB` variable should not be set manually, and is
+      rarely used in recipes as :term:`RANLIB` contains the appropriate value
+      depending on the context (native or target recipes). Exception be made for
+      target recipes that need to use the utility from the build host at some
+      point during the build.
+
+   :term:`BUILD_READELF`
+      Specifies the architecture-specific utility to display information about
+      ELF files for the build host, and its default definition is derived in
+      part from :term:`BUILD_PREFIX`::
+
+         BUILD_READELF = "${BUILD_PREFIX}readelf"
+
+      When building a :ref:`ref-classes-native` recipe, :term:`READELF` is set
+      to the value of this variable by default.
+
+      The :term:`BUILD_READELF` variable should not be set manually, and is
+      rarely used in recipes as :term:`READELF` contains the appropriate value
+      depending on the context (native or target recipes). Exception be made for
+      target recipes that need to use the utility from the build host at some
+      point during the build.
+
    :term:`BUILD_STRIP`
-      Specifies the command to be used to strip debugging symbols from
-      binaries produced for the build host. By default, :term:`BUILD_STRIP`
-      points to
-      ``${``\ :term:`BUILD_PREFIX`\ ``}strip``.
+      Specifies the command to be used to strip debugging symbols from binaries
+      produced for the build host, and its default definition is derived in part
+      from :term:`BUILD_PREFIX`::
+
+         BUILD_STRIP = "${BUILD_PREFIX}strip"
+
+      When building a :ref:`ref-classes-native` recipe, :term:`STRIP` is set to
+      the value of this variable by default.
+
+      The :term:`BUILD_STRIP` variable should not be set manually, and is
+      rarely used in recipes as :term:`STRIP` contains the appropriate value
+      depending on the context (native or target recipes). Exception be made for
+      target recipes that need to use the utility from the build host at some
+      point during the build.
 
    :term:`BUILD_SYS`
       Specifies the system, including the architecture and the operating
@@ -1282,6 +1483,10 @@ system and gives an overview of their function and contents.
 
    :term:`CC`
       The minimal command and arguments used to run the C compiler.
+
+   :term:`CCLD`
+      The minimal command and arguments used to run the linker when the C
+      compiler is being used as the linker.
 
    :term:`CFLAGS`
       Specifies the flags to pass to the C compiler. This variable is
@@ -2838,6 +3043,9 @@ system and gives an overview of their function and contents.
    :term:`FAKEROOTNOENV`
       See :term:`bitbake:FAKEROOTNOENV` in the BitBake manual.
 
+   :term:`FC`
+      The minimal command and arguments used to run the Fortran compiler.
+
    :term:`FEATURE_PACKAGES`
       Defines one or more packages to include in an image when a specific
       item is included in :term:`IMAGE_FEATURES`.
@@ -3490,6 +3698,20 @@ system and gives an overview of their function and contents.
       - mips
       - mipsel
 
+   :term:`HOST_AS_ARCH`
+      Specifies architecture-specific assembler flags.
+
+      Default initialization for :term:`HOST_AS_ARCH` varies depending on what
+      is being built:
+
+      -  :term:`TARGET_AS_ARCH` when building for the
+         target
+
+      -  :term:`BUILD_AS_ARCH` when building for the build host (i.e.
+         ``-native``)
+
+      -  :term:`SDK_AS_ARCH` when building for an SDK (i.e. ``nativesdk-``)
+
    :term:`HOST_CC_ARCH`
       Specifies architecture-specific compiler flags that are passed to the
       C compiler.
@@ -3503,8 +3725,20 @@ system and gives an overview of their function and contents.
       -  :term:`BUILD_CC_ARCH` when building for the build host (i.e.
          ``-native``)
 
-      -  ``BUILDSDK_CC_ARCH`` when building for an SDK (i.e.
-         ``nativesdk-``)
+      -  :term:`SDK_CC_ARCH` when building for an SDK (i.e. ``nativesdk-``)
+
+   :term:`HOST_LD_ARCH`
+      Specifies architecture-specific linker flags.
+
+      Default initialization for :term:`HOST_LD_ARCH` varies depending on what
+      is being built:
+
+      -  :term:`TARGET_LD_ARCH` when building for the target
+
+      -  :term:`BUILD_LD_ARCH` when building for the build host (i.e.
+         ``-native``)
+
+      -  :term:`SDK_LD_ARCH` when building for an SDK (i.e. ``nativesdk-``)
 
    :term:`HOST_OS`
       Specifies the name of the target operating system, which is normally
@@ -4539,8 +4773,7 @@ system and gives an overview of their function and contents.
 
       The value in :term:`INITSCRIPT_PARAMS` is passed through to the
       ``update-rc.d`` command. For more information on valid parameters,
-      please see the ``update-rc.d`` manual page at
-      https://manpages.debian.org/buster/init-system-helpers/update-rc.d.8.en.html
+      please see the manual page: :manpage:`update-rc.d <update-rc.d(8)>`.
 
    :term:`INSANE_SKIP`
       Specifies the QA checks to skip for a specific package within a
@@ -5190,7 +5423,8 @@ system and gives an overview of their function and contents.
       ``LAYERVERSION_mylayer``).
 
    :term:`LD`
-      The minimal command and arguments used to run the linker.
+      The minimal command and arguments used to run the :manpage:`linker
+      <ld(1)>`.
 
    :term:`LDFLAGS`
       Specifies the flags to pass to the linker. This variable is exported
@@ -5805,7 +6039,7 @@ system and gives an overview of their function and contents.
       variable is set.
 
    :term:`NM`
-      The minimal command and arguments to run ``nm``.
+      The minimal command and arguments to run :manpage:`nm <nm(1)>`.
 
    :term:`NO_GENERIC_LICENSE`
       Avoids QA errors when you use a non-common, non-CLOSED license in a
@@ -5906,10 +6140,10 @@ system and gives an overview of their function and contents.
           NVDCVE_API_KEY = "fe753&7a2-1427-347d-23ff-b2e2b7ca5f3"
 
    :term:`OBJCOPY`
-      The minimal command and arguments to run ``objcopy``.
+      The minimal command and arguments to run :manpage:`objcopy <objcopy(1)>`.
 
    :term:`OBJDUMP`
-      The minimal command and arguments to run ``objdump``.
+      The minimal command and arguments to run :manpage:`objdump <objdump(1)>`.
 
    :term:`OE_BINCONFIG_EXTRA_MANGLE`
       When inheriting the :ref:`ref-classes-binconfig` class,
@@ -7159,7 +7393,7 @@ system and gives an overview of their function and contents.
    :term:`PTEST_PYTEST_DIR`
       Within the :ref:`ref-classes-ptest-python-pytest` class, the
       :term:`PTEST_PYTEST_DIR` variable represents the path within the source
-      tree of a Python package holding the unit tests to be tested with the
+      tree of a Python package holding the unit tests to be run with the
       `pytest <https://docs.pytest.org>`__ framework. The default value for this
       variable is ``tests``.
 
@@ -7230,7 +7464,7 @@ system and gives an overview of their function and contents.
          QA_EMPTY_DIRS_RECOMMENDATION:/dev = "but all devices must be created at runtime"
 
    :term:`RANLIB`
-      The minimal command and arguments to run ``ranlib``.
+      The minimal command and arguments to run :manpage:`ranlib <ranlib(1)>`.
 
    :term:`RCONFLICTS`
       The list of packages that conflict with packages. Note that packages
@@ -7366,6 +7600,9 @@ system and gives an overview of their function and contents.
       ":ref:`bitbake-user-manual/bitbake-user-manual-metadata:tasks`" and
       ":ref:`bitbake-user-manual/bitbake-user-manual-execution:dependencies`" sections in the
       BitBake User Manual for additional information on tasks and dependencies.
+
+   :term:`READELF`
+      The minimal command and arguments to run :manpage:`readelf <readelf(1)>`.
 
    :term:`RECIPE_MAINTAINER`
       This variable defines the name and e-mail address of the maintainer of a
@@ -7764,10 +8001,20 @@ system and gives an overview of their function and contents.
 
       Only one archive type can be specified.
 
+   :term:`SDK_AS_ARCH`
+      Specifies architecture-specific assembler flags when building
+      :ref:`ref-classes-nativesdk` recipes. By default, the value of
+      :term:`SDK_AS_ARCH` equals the one of :term:`BUILD_AS_ARCH`.
+
    :term:`SDK_BUILDINFO_FILE`
       When using the :ref:`ref-classes-image-buildinfo` class,
       specifies the file in the SDK to write the build information into. The
       default value is "``/buildinfo``".
+
+   :term:`SDK_CC_ARCH`
+      Specifies the architecture-specific C compiler flags when building
+      :ref:`ref-classes-nativesdk` recipes. By default, the value of
+      :term:`SDK_CC_ARCH` equals the one of :term:`BUILD_CC_ARCH`.
 
    :term:`SDK_CUSTOM_TEMPLATECONF`
       When building the extensible SDK, if :term:`SDK_CUSTOM_TEMPLATECONF` is set to
@@ -7849,6 +8096,11 @@ system and gives an overview of their function and contents.
       The :term:`SDK_INCLUDE_TOOLCHAIN` variable defaults to "0" if
       :term:`SDK_EXT_TYPE` is set to "minimal", and defaults to "1" if
       :term:`SDK_EXT_TYPE` is set to "full".
+
+   :term:`SDK_LD_ARCH`
+      Specifies architecture-specific linker flags when building
+      :ref:`ref-classes-nativesdk` recipes. By default, the value of
+      :term:`SDK_LD_ARCH` equals the one of :term:`BUILD_LD_ARCH`.
 
    :term:`SDK_NAME`
       The base name for SDK output files. The default value (as set in
@@ -8975,8 +9227,8 @@ system and gives an overview of their function and contents.
       places stamps. The default directory is ``${TMPDIR}/stamps``.
 
    :term:`STRIP`
-      The minimal command and arguments to run ``strip``, which is used to
-      strip symbols.
+      The minimal command and arguments to run :manpage:`strip <strip(1)>`,
+      which is used to strip symbols.
 
    :term:`SUMMARY`
       The short (72 characters or less) summary of the binary package for
