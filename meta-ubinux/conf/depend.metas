@@ -17,7 +17,7 @@ metas=meta-oe
 [meta-oe]
 GITURL=http://git.openembedded.org/meta-openembedded
 BRANCH=master
-HEADID=29897344f7c9846e00856f46c4b3b47117a69499
+HEADID=6d13c58e386d478b8788f440b7815cb866b9d6f0
 FILES=meta-oe/conf
  meta-oe/COPYING.MIT
  meta-oe/licenses/
@@ -453,7 +453,7 @@ FILES=meta-oe/conf
  meta-perl/recipes-perl/libnet/libnet-dns-sec-perl_1.10.bb
  meta-perl/recipes-perl/libproc/
  meta-perl/recipes-perl/libmime/files/
- meta-perl/recipes-perl/libmime/libmime-types-perl_2.26.bb
+ meta-perl/recipes-perl/libmime/libmime-types-perl_2.27.bb
  meta-perl/recipes-perl/libipc/
  meta-perl/recipes-perl/libnet/
  
@@ -464,7 +464,7 @@ FILES=meta-oe/conf
 [meta-freescale]
 GITURL=https://git.yoctoproject.org/git/meta-freescale
 BRANCH=master
-HEADID=f993b8f195ecbcae3e3503bedd959ba4e1f4b821
+HEADID=914692f02b1789d45a6e4ccd15d78cbe7cc51b6d
 FILES=conf/layer.conf
  custom-licenses/
  classes/
@@ -559,7 +559,7 @@ FILES=conf/layer.conf
 [meta-virtualization]
 GITURL=http://git.yoctoproject.org/git/meta-virtualization
 BRANCH=master
-HEADID=70790134547d8722a682cc1a2a4f4bc11ab8f110
+HEADID=ee296b08d2c1a167c4f1e4daa1cdef040a71b724
 FILES=conf/layer.conf
  classes/
  files/
@@ -574,13 +574,13 @@ FILES=conf/layer.conf
 [meta-selinux]
 GITURL=http://git.yoctoproject.org/git/meta-selinux
 BRANCH=master
-HEADID=d000ede95d6daa9792e06ce922135736b8bc1751
+HEADID=5ce36d63ef4a6c5d01527dbb2d71301e3e107260
 FILES=conf/layer.conf
 
 [meta-security]
 GITURL=http://git.yoctoproject.org/git/meta-security
 BRANCH=master
-HEADID=73077556362fb99520e452cf32501a759125d298 
+HEADID=1c03fdfe5667613ef283c6d074e1b6d6ed9ad99e 
 FILES=conf
  classes/sanity-meta-security.bbclass
  meta-tpm/classes/sanity-meta-tpm.bbclass
@@ -605,7 +605,7 @@ FILES=conf
 [meta-qt5]
 GITURL=https://github.com/meta-qt5/meta-qt5.git
 BRANCH=master
-HEADID=957e71a90a73946acb414680f4e22a6089b606f1 
+HEADID=6822aba9234c0946f51f293882e2b93c09441252
 FILES=conf/layer.conf
  recipes-qt/qt5
  recipes-qt/qtchooser
@@ -663,17 +663,16 @@ FILES=meta-xilinx-core/conf
  meta-xilinx-core/classes/
  meta-xilinx-core/classes-global/
  meta-xilinx-core/classes-recipe/
- meta-xilinx-core/recipes-devtools/qemu/
 
 [meta-erlang]
 GITURL=https://github.com/joaohf/meta-erlang
 BRANCH=master
-HEADID=d61ae67de63ecd57ec8ca54f01d01a8563320e66
+HEADID=95889e0146e0209c8c07ae3dc37148c99a756866
 FILES=conf
 
 [meta-arm]
 GITURL=https://git.yoctoproject.org/meta-arm
 BRANCH=master
-HEADID=34d326f1079c8a1def06edb9487a42e5c378d132
+HEADID=f20bd9ff62860a85cfbecd109485a269388df467
 FILES=meta-arm/conf
  meta-arm-toolchain/conf

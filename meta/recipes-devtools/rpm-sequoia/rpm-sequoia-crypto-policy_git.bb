@@ -5,8 +5,7 @@ LICENSE = "LGPL-2.1-or-later"
 
 LIC_FILES_CHKSUM = "file://COPYING.LESSER;md5=a6f89e2100d9b6cdffcea4f398e37343"
 
-DEPENDS = "coreutils-native openssl-native make-native"
-
+# Python 3.11+ is needed to build fedora-crypto-policies
 inherit allarch python3native
 
 SRC_URI = "git://gitlab.com/redhat-crypto/fedora-crypto-policies.git;protocol=https;branch=master"
@@ -21,9 +20,10 @@ do_compile () {
 	# It speeds up the build and we only need DEFAULT/rpm-sequoia.
 	rm -f $(ls -1 policies/*.pol | grep -v DEFAULT.pol) || echo nothing to delete
 
-	# Don't validate openssh policy variants.
+	# Don't validate openssh and gnutls policy variants.
 	# Validation may fail and these variants are not needed.
 	export OLD_OPENSSH=1
+	export OLD_GNUTLS=1
 
 	make ASCIIDOC=echo XSLTPROC=echo
 }
