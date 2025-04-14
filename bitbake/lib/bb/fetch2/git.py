@@ -182,7 +182,7 @@ class Git(FetchMethod):
         ud.bareclone = ud.parm.get("bareclone","0") == "1"
         if ud.bareclone:
             ud.nocheckout = 1
-  
+
         ud.unresolvedrev = ""
         ud.branch = ud.parm.get("branch", "")
         if not ud.branch and not ud.nobranch:
@@ -557,7 +557,7 @@ class Git(FetchMethod):
             try:
                 self.clone_shallow_local(ud, shallowclone, d)
             except:
-                logger.warning("Fash shallow clone failed, try to skip fast mode now.")
+                logger.warning("Fast shallow clone failed, try to skip fast mode now.")
                 bb.utils.remove(tempdir, recurse=True)
                 os.mkdir(tempdir)
                 ud.shallow_skip_fast = True
@@ -634,9 +634,8 @@ class Git(FetchMethod):
 
         runfetchcmd(fetch_cmd, d, workdir=dest)
         runfetchcmd("%s update-ref %s %s" % (ud.basecmd, ref, revision), d, workdir=dest)
-        # Fetch Git LFS data for fast shallow clones
-        if not ud.shallow_skip_fast:
-            self.lfs_fetch(ud, d, dest, ud.revision)
+        # Fetch Git LFS data
+        self.lfs_fetch(ud, d, dest, ud.revision)
 
         # Apply extra ref wildcards
         all_refs_remote = runfetchcmd("%s ls-remote origin 'refs/*'" % ud.basecmd, \
@@ -872,7 +871,7 @@ class Git(FetchMethod):
         """
         # Note that we do not support passwords directly in the git urls. There are several
         # reasons. SRC_URI can be written out to things like buildhistory and people don't
-        # want to leak passwords like that. Its also all too easy to share metadata without 
+        # want to leak passwords like that. Its also all too easy to share metadata without
         # removing the password. ssh keys, ~/.netrc and ~/.ssh/config files can be used as
         # alternatives so we will not take patches adding password support here.
         if ud.user:
