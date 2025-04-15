@@ -144,7 +144,7 @@ RDEPENDS:${PN}-examples += " \
 QT_MODULE_BRANCH_CHROMIUM = "87-based"
 
 QT_MODULE_BRANCH = "5.15"
-PV = "5.15.13+git${SRCPV}"
+PV = "5.15.19+git${SRCPV}"
 
 # Patches from https://github.com/meta-qt5/qtwebengine/commits/b5.15-glibc
 # 5.15-glibc.meta-qt5.17
@@ -194,10 +194,8 @@ SRC_URI:append:libc-musl = "\
     file://chromium/0023-chromium-musl-initialize-msghdr-in-a-compatible-mann.patch;patchdir=src/3rdparty \
 "
 
-#SRCREV_qtwebengine = "d15a42baae7141952e91665bed22a7c7cfb54b95"
-SRCREV_qtwebengine = "63d4e58009c7f069ace14b64f1528ba2664272e9"
-#SRCREV_chromium = "fb66d7ca9641724670c96e999ad5b0fd6eb78d46"
-SRCREV_chromium = "91b3c705d739f6b6c58da6133e8e818e06dfcaa3"
+SRCREV_qtwebengine = "9a16262bc87bbf327e988e18c49ab0f47b766fe2"
+SRCREV_chromium = "480e246dfe9d9dffc3c18585ed53ec51eb8abfbd"
 SRCREV = "${SRCREV_qtwebengine}"
 
 SRCREV_FORMAT = "qtwebengine_chromium"

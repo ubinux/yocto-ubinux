@@ -357,6 +357,54 @@ def decodeurl(url):
     path = uri.path if uri.path else "/"
     return uri.scheme, uri.hostport, path, uri.username, uri.password, uri.params
 
+def decodemirrorurl(url):
+    """Decodes a mirror URL into the tokens (scheme, network location, path,
+    user, password, parameters).
+    """
+    m = re.compile('(?P<type>[^:]*)://((?P<user>[^/;]+)@)?(?P<location>[^;]+)(;(?P<parm>.*))?').match(url)
+    if not m:
+        raise MalformedUrl(url)
+
+    type = m.group('type')
+    location = m.group('location')
+    if not location:
+        raise MalformedUrl(url)
+    user = m.group('user')
+    parm = m.group('parm')
+
+    locidx = location.find('/')
+    if locidx != -1 and type.lower() != 'file':
+        host = location[:locidx]
+        path = location[locidx:]
+    elif type.lower() == 'file':
+        host = ""
+        path = location
+        if user:
+            path = user + '@' + path
+            user = ""
+    else:
+        host = location
+        path = "/"
+    if user:
+        m = re.compile('(?P<user>[^:]+)(:?(?P<pswd>.*))').match(user)
+        if m:
+            user = m.group('user')
+            pswd = m.group('pswd')
+    else:
+        user = ''
+        pswd = ''
+
+    p = collections.OrderedDict()
+    if parm:
+        for s in parm.split(';'):
+            if s:
+                if not '=' in s:
+                    raise MalformedUrl(url, "The URL: '%s' is invalid: parameter %s does not specify a value (missing '=')" % (url, s))
+                s1, s2 = s.split('=', 1)
+                p[s1] = s2
+
+    return type, host, urllib.parse.unquote(path), user, pswd, p
+
 def encodeurl(decoded):
     """Encodes a URL from tokens (scheme, network location, path,
     user, password, parameters).
@@ -391,9 +439,9 @@ def uri_replace(ud, uri_find, uri_replace, replacements, d, mirrortarball=None):
     if not ud.url or not uri_find or not uri_replace:
         logger.error("uri_replace: passed an undefined value, not replacing")
         return None
-    uri_decoded = list(decodeurl(ud.url))
-    uri_find_decoded = list(decodeurl(uri_find))
-    uri_replace_decoded = list(decodeurl(uri_replace))
+    uri_decoded = list(decodemirrorurl(ud.url))
+    uri_find_decoded = list(decodemirrorurl(uri_find))
+    uri_replace_decoded = list(decodemirrorurl(uri_replace))
     logger.debug2("For url %s comparing %s to %s" % (uri_decoded, uri_find_decoded, uri_replace_decoded))
     result_decoded = ['', '', '', '', '', {}]
     # 0 - type, 1 - host, 2 - path, 3 - user,  4- pswd, 5 - params
@@ -1835,25 +1883,28 @@ class Fetch(object):
                             logger.debug(str(e))
                             done = False
 
+                d = self.d
                 if premirroronly:
-                    self.d.setVar("BB_NO_NETWORK", "1")
+                    # Only disable the network in a copy
+                    d = bb.data.createCopy(self.d)
+                    d.setVar("BB_NO_NETWORK", "1")
 
                 firsterr = None
                 verified_stamp = False
                 if done:
-                    verified_stamp = m.verify_donestamp(ud, self.d)
-                if not done and (not verified_stamp or m.need_update(ud, self.d)):
+                    verified_stamp = m.verify_donestamp(ud, d)
+                if not done and (not verified_stamp or m.need_update(ud, d)):
                     try:
-                        if not trusted_network(self.d, ud.url):
+                        if not trusted_network(d, ud.url):
                             raise UntrustedUrl(ud.url)
                         logger.debug("Trying Upstream")
-                        m.download(ud, self.d)
+                        m.download(ud, d)
                         if hasattr(m, "build_mirror_data"):
-                            m.build_mirror_data(ud, self.d)
+                            m.build_mirror_data(ud, d)
                         done = True
                         # early checksum verify, so that if checksum mismatched,
                         # fetcher still have chance to fetch from mirror
-                        m.update_donestamp(ud, self.d)
+                        m.update_donestamp(ud, d)
 
                     except bb.fetch2.NetworkAccess:
                         raise
@@ -1872,17 +1923,17 @@ class Fetch(object):
                         firsterr = e
                         # Remove any incomplete fetch
                         if not verified_stamp and m.cleanup_upon_failure():
-                            m.clean(ud, self.d)
+                            m.clean(ud, d)
                         logger.debug("Trying MIRRORS")
-                        mirrors = mirror_from_string(self.d.getVar('MIRRORS'))
-                        done = m.try_mirrors(self, ud, self.d, mirrors)
+                        mirrors = mirror_from_string(d.getVar('MIRRORS'))
+                        done = m.try_mirrors(self, ud, d, mirrors)
 
-                if not done or not m.done(ud, self.d):
+                if not done or not m.done(ud, d):
                     if firsterr:
                         logger.error(str(firsterr))
                     raise FetchError("Unable to fetch URL from any source.", u)
 
-                m.update_donestamp(ud, self.d)
+                m.update_donestamp(ud, d)
 
             except IOError as e:
                 if e.errno in [errno.ESTALE]:

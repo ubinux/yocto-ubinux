@@ -49,8 +49,8 @@ EXTRA_OECONF:append:class-native = " --with-rand-seed=os,devrandom"
 EXTRA_OECONF:append:class-nativesdk = " --with-rand-seed=os,devrandom"
 
 # Relying on hardcoded built-in paths causes openssl-native to not be relocateable from sstate.
-CFLAGS:append:class-native = " -DOPENSSLDIR=/not/builtin -DENGINESDIR=/not/builtin"
-CFLAGS:append:class-nativesdk = " -DOPENSSLDIR=/not/builtin -DENGINESDIR=/not/builtin"
+EXTRA_OEMAKE:append:task-compile:class-native = ' OPENSSLDIR="/not/builtin" ENGINESDIR="/not/builtin" MODULESDIR="/not/builtin"'
+EXTRA_OEMAKE:append:task-compile:class-nativesdk = ' OPENSSLDIR="/not/builtin" ENGINESDIR="/not/builtin" MODULESDIR="/not/builtin"'
 
 # This allows disabling deprecated or undesirable crypto algorithms.
 # The default is to trust upstream choices.
@@ -176,17 +176,16 @@ do_install () {
 
 do_install:append:class-native () {
 	create_wrapper ${D}${bindir}/openssl \
-	    OPENSSL_CONF=${libdir}/ssl-3/openssl.cnf \
-	    SSL_CERT_DIR=${libdir}/ssl-3/certs \
-	    SSL_CERT_FILE=${libdir}/ssl-3/cert.pem \
-	    OPENSSL_ENGINES=${libdir}/engines-3 \
-	    OPENSSL_MODULES=${libdir}/ossl-modules
+	    OPENSSL_CONF=\${OPENSSL_CONF:-${libdir}/ssl-3/openssl.cnf} \
+	    SSL_CERT_DIR=\${SSL_CERT_DIR:-${libdir}/ssl-3/certs} \
+	    SSL_CERT_FILE=\${SSL_CERT_FILE:-${libdir}/ssl-3/cert.pem} \
+	    OPENSSL_ENGINES=\${OPENSSL_ENGINES:-${libdir}/engines-3} \
+	    OPENSSL_MODULES=\${OPENSSL_MODULES:-${libdir}/ossl-modules}
 }
 
 do_install:append:class-nativesdk () {
 	mkdir -p ${D}${SDKPATHNATIVE}/environment-setup.d
 	install -m 644 ${UNPACKDIR}/environment.d-openssl.sh ${D}${SDKPATHNATIVE}/environment-setup.d/openssl.sh
-	sed 's|/usr/lib/ssl/|/usr/lib/ssl-3/|g' -i ${D}${SDKPATHNATIVE}/environment-setup.d/openssl.sh
 }
 
 PTEST_BUILD_HOST_FILES += "configdata.pm"

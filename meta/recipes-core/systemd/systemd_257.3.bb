@@ -178,7 +178,7 @@ PACKAGECONFIG[localed] = "-Dlocaled=true,-Dlocaled=false"
 PACKAGECONFIG[logind] = "-Dlogind=true,-Dlogind=false"
 PACKAGECONFIG[lz4] = "-Dlz4=enabled,-Dlz4=disabled,lz4"
 PACKAGECONFIG[machined] = "-Dmachined=true,-Dmachined=false"
-PACKAGECONFIG[manpages] = "-Dman=enabled,-Dman=disabled,libxslt-native xmlto-native docbook-xml-dtd4-native docbook-xsl-stylesheets-native"
+PACKAGECONFIG[manpages] = "-Dman=enabled,-Dman=disabled,python3-lxml-native libxslt-native xmlto-native docbook-xml-dtd4-native docbook-xsl-stylesheets-native"
 PACKAGECONFIG[microhttpd] = "-Dmicrohttpd=enabled,-Dmicrohttpd=disabled,libmicrohttpd"
 PACKAGECONFIG[mountfsd] = "-Dmountfsd=true,-Dmountfsd=false"
 PACKAGECONFIG[myhostname] = "-Dnss-myhostname=true,-Dnss-myhostname=false,,libnss-myhostname"
@@ -287,9 +287,11 @@ do_install() {
 		fi
 	fi
 	install -d ${D}/${base_sbindir}
-	if ${@bb.utils.contains('PACKAGECONFIG', 'serial-getty-generator', 'false', 'true', d)}; then
-		# Provided by a separate recipe
-		rm ${D}${systemd_system_unitdir}/serial-getty* -f
+
+	if ! ${@bb.utils.contains('PACKAGECONFIG', 'serial-getty-generator', 'true', 'false', d)}; then
+		# Remove the serial-getty generator and instead use explicit services
+		# created by the systemd-serialgetty recipe
+		find ${D} -name \*getty-generator\* -delete
 	fi
 
 	# Provide support for initramfs
@@ -531,6 +533,7 @@ FILES:${PN}-journal-upload = "${nonarch_libdir}/systemd/systemd-journal-upload \
 SYSTEMD_SERVICE:${PN}-journal-upload = "systemd-journal-upload.service"
 
 FILES:${PN}-journal-remote = "${nonarch_libdir}/systemd/systemd-journal-remote \
+                              ${nonarch_libdir}/sysusers.d/systemd-remote.conf \
                               ${sysconfdir}/systemd/journal-remote.conf \
                               ${systemd_system_unitdir}/systemd-journal-remote.service \
                               ${systemd_system_unitdir}/systemd-journal-remote.socket \
@@ -749,7 +752,7 @@ FILES:${PN} = " ${base_bindir}/* \
 
 FILES:${PN}-dev += "${base_libdir}/security/*.la ${datadir}/dbus-1/interfaces/ ${sysconfdir}/rpm/macros.systemd"
 
-RDEPENDS:${PN} += "kmod dbus util-linux-mount util-linux-umount udev (= ${EXTENDPKGV}) systemd-udev-rules util-linux-agetty util-linux-fsck util-linux-swaponoff"
+RDEPENDS:${PN} += "kmod dbus util-linux-mount util-linux-umount udev (= ${EXTENDPKGV}) systemd-udev-rules util-linux-agetty util-linux-fsck util-linux-swaponoff util-linux-mkswap"
 RDEPENDS:${PN} += "${@bb.utils.contains('PACKAGECONFIG', 'serial-getty-generator', '', 'systemd-serialgetty', d)}"
 RDEPENDS:${PN} += "volatile-binds"
 

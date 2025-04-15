@@ -390,6 +390,9 @@ system and gives an overview of their function and contents.
    :term:`BB_CURRENTTASK`
       See :term:`bitbake:BB_CURRENTTASK` in the BitBake manual.
 
+   :term:`BB_CURRENT_MC`
+      See :term:`bitbake:BB_CURRENT_MC` in the BitBake manual.
+
    :term:`BB_DEFAULT_TASK`
       See :term:`bitbake:BB_DEFAULT_TASK` in the BitBake manual.
 
@@ -3180,6 +3183,31 @@ system and gives an overview of their function and contents.
       The default value for this variable is set to "2048"
       by the :ref:`ref-classes-kernel-fitimage` class.
 
+   :term:`FIT_UBOOT_ENV`
+      This variable allows to add a U-Boot script as a text file to the
+      FIT image. Such a script can be sourced from the U-Boot shell.
+
+      When inheriting the :ref:`ref-classes-kernel-fitimage` class a
+      script file should be included in the :term:`SRC_URI` of the Linux
+      kernel recipe.
+
+      Example:
+
+      -  Add a script ``boot.cmd`` to the Linux kernel recipe::
+
+            FIT_UBOOT_ENV = "boot.cmd"
+            SRC_URI += "file://${FIT_UBOOT_ENV}"
+
+      -  Use the script file from the U-Boot shell. The name of the script in
+         FIT image is ``bootscr-${FIT_UBOOT_ENV}``. This example loads the FIT
+         image from a TFTP server::
+
+            tftp $loadaddr $fit_tftp_path
+            source $loadaddr#bootscr-boot.cmd
+
+      More information can be found in the official U-Boot documentation:
+      `U-Boot source command <https://docs.u-boot.org/en/latest/usage/cmd/source.html#fit-image.f>`__
+
    :term:`FONT_EXTRA_RDEPENDS`
       When inheriting the :ref:`ref-classes-fontcache` class,
       this variable specifies the runtime dependencies for font packages.
@@ -3989,6 +4017,12 @@ system and gives an overview of their function and contents.
 
          IMAGE_ROOTFS_EXTRA_SPACE = "41943040"
 
+   :term:`IMAGE_ROOTFS_MAXSIZE`
+      Defines the maximum size in Kbytes for the generated image. If the
+      generated image size is above that, the build will fail. It's a good
+      idea to set this variable for images that need to fit on a limited
+      space (e.g. SD card, a fixed-size partition, ...).
+
    :term:`IMAGE_ROOTFS_SIZE`
       Defines the size in Kbytes for the generated image. The OpenEmbedded
       build system determines the final size for the generated image using
@@ -4563,6 +4597,60 @@ system and gives an overview of their function and contents.
       ":ref:`kernel-dev/common:using an "in-tree" \`\`defconfig\`\` file`"
       section in the Yocto Project Linux Kernel Development Manual.
 
+   :term:`KCONF_AUDIT_LEVEL`
+      When inheriting the :ref:`ref-classes-kernel-yocto` class and when the
+      :term:`KMETA_AUDIT` variable is set to a non-empty string, the
+      :term:`KCONF_AUDIT_LEVEL` variable specifies whether to report Kernel
+      configuration values that are different from the user-specified value. Its
+      value is a positive integer (default: 1):
+
+      -  0: no reporting is done.
+
+      -  1: report the problems as warnings and trigger an error if
+         :term:`KMETA_AUDIT_WERROR` is set.
+
+      -  2: if the :ref:`ref-tasks-kernel_configme` has failed to generate a
+         ``.config`` file, print the content of the ``merge_config_build.log``
+         file containing the errors, instead of just providing the path to
+         that file.
+
+      For more details see the :ref:`ref-classes-kernel-yocto` class and the
+      :yocto_git:`symbol_why.py </yocto-kernel-tools/tree/tools/symbol_why.py>`
+      script in :yocto_git:`yocto-kernel-tools </yocto-kernel-tools>`.
+
+   :term:`KCONF_BSP_AUDIT_LEVEL`
+      When inheriting the :ref:`ref-classes-kernel-yocto` class and when the
+      :term:`KMETA_AUDIT` variable is set to a non-empty string, the
+      :term:`KCONF_BSP_AUDIT_LEVEL` variable can be set to report:
+
+      #.  User-specified Kernel configurations that did not make it into the final
+          Kernel configuration.
+
+      #.  Configurations defined in multiple input files with differing values.
+
+      Its value is a positive integer (default: 0):
+
+      -  0: no reporting is done.
+
+      -  1: reporting of configuration options that did not make it in the
+         final configuration is done and is not limited to the current
+         architecture (``ARCH``) in use.
+
+      -  2: reporting of configuration options that did not make it in the
+         final configuration is done and is strictly limited to the current
+         architecture (``ARCH``) in use.
+
+      -  3: report the problems found when this variable equals 2, and also
+         report configurations options defined in multiple input files with
+         differing values.
+
+      For value 1, 2 and 3 an error is produced if :term:`KMETA_AUDIT_WERROR`
+      is set.
+
+      For more details see the :ref:`ref-classes-kernel-yocto` class and the
+      :yocto_git:`symbol_why.py </yocto-kernel-tools/tree/tools/symbol_why.py>`
+      script in :yocto_git:`yocto-kernel-tools </yocto-kernel-tools>`.
+
    :term:`KCONFIG_MODE`
       When used with the :ref:`ref-classes-kernel-yocto`
       class, specifies the kernel configuration values to use for options
@@ -4966,6 +5054,20 @@ system and gives an overview of their function and contents.
       that the kernel understands the machine name as "intel-core2-32".
       However, the OpenEmbedded build system understands the machine as
       "core2-32-intel-common".
+
+   :term:`KMETA_AUDIT`
+      When inheriting the :ref:`ref-classes-kernel-yocto` class, the
+      :term:`KMETA_AUDIT` variable enables or disables auditing of Linux Kernel
+      configuration. The default value for this variable is "yes", and auditing
+      is enabled. Set this variable to an empty string to disable auditing.
+
+   :term:`KMETA_AUDIT_WERROR`
+      When inheriting the :ref:`ref-classes-kernel-yocto` class and when the
+      :term:`KMETA_AUDIT` and the :term:`KMETA_AUDIT_WERROR` variables are set
+      to non-empty strings, produce an error if Linux kernel configuration
+      problems were detected, instead of warnings only. For more details on the
+      Linux Kernel configuration auditing feature, see :term:`KCONF_AUDIT_LEVEL`
+      and :term:`KCONF_BSP_AUDIT_LEVEL`.
 
    :term:`KTYPE`
       Defines the kernel type to be used in assembling the configuration.
@@ -5764,14 +5866,6 @@ system and gives an overview of their function and contents.
 
          OECMAKE_GENERATOR = "Unix Makefiles"
 
-   :term:`OE_IMPORTS`
-      An internal variable used to tell the OpenEmbedded build system what
-      Python modules to import for every Python function run by the system.
-
-      .. note::
-
-         Do not set this variable. It is for internal use only.
-
    :term:`OE_INIT_ENV_SCRIPT`
       The name of the build environment setup script for the purposes of
       setting up the environment within the extensible SDK. The default
@@ -5806,6 +5900,13 @@ system and gives an overview of their function and contents.
 
       For additional information on how this variable is used, see the
       initialization script.
+
+   :term:`OEQA_REPRODUCIBLE_TEST_LEAF_TARGETS`
+      Set build target(s) for build reproducibility testing but activate
+      :ref:`shared state <overview-manual/concepts:shared state cache>` build
+      for most dependencies (i.e. the ones explicitly listed in DEPENDS, which
+      may not be all dependencies, c.f. [depends] varflags, PACKAGE_DEPENDS and
+      other implementations). See :doc:`/test-manual/reproducible-builds`.
 
    :term:`OEQA_REPRODUCIBLE_TEST_PACKAGE`
       Set the package manager(s) for build reproducibility testing.
@@ -9790,6 +9891,44 @@ system and gives an overview of their function and contents.
       :ref:`ref-classes-kernel-uimage`, :ref:`ref-classes-kernel`,
       :ref:`ref-classes-uboot-config` and :ref:`ref-classes-uboot-sign`
       classes.
+
+   :term:`UBOOT_ENV`
+      This variable allows to add additional environment variables or a script
+      to be installed together with U-Boot.
+      This file, typically ``uEnv.txt`` or ``boot.cmd``, is installed in
+      ``/boot`` as well as copied to the :term:`DEPLOYDIR` directory.
+
+      For machine configurations needing one of these files a ``.bbappend``
+      file should include it in the :term:`SRC_URI` of the U-Boot recipe.
+
+      If the variable :term:`UBOOT_ENV_SUFFIX` is set to ``scr`` the script is
+      packaged as a uImage (``mkimage -T script..``) otherwise it gets
+      installed verbatim.
+
+      Some examples:
+
+      -  Adding a script ``boot.cmd`` as a uImage to ``/boot``::
+
+            UBOOT_ENV = "boot"
+            UBOOT_ENV_SUFFIX = "scr"
+            SRC_URI += "file://${UBOOT_ENV_SRC}"
+
+      -  Adding a script ``uEnv.txt`` as a plain text file to ``/boot``::
+
+            UBOOT_ENV = "uEnv"
+            UBOOT_ENV_SUFFIX = "txt"
+            SRC_URI += "file://${UBOOT_ENV_BINARY}"
+
+   :term:`UBOOT_ENV_SRC_SUFFIX`
+      If :term:`UBOOT_ENV_SUFFIX` is set to ``scr`` this is the suffix of the
+      plain text script file as it is specified in the :term:`SRC_URI` of the
+      U-Boot recipe. It defaults to ``cmd``.
+
+   :term:`UBOOT_ENV_SUFFIX`
+      If this variable is set to ``scr`` the script referred to by
+      :term:`UBOOT_ENV` gets packaged as a uImage before it gets installed.
+      The default is ``txt`` which means the script is installed as-is, with
+      no modification.
 
    :term:`UBOOT_FIT_ADDRESS_CELLS`
       Specifies the value of the ``#address-cells`` value for the
