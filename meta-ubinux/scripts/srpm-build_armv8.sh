@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 bitbake libevent -f -c deploy_archives
 bitbake swupdate -f -c deploy_archives
 bitbake restool -f -c deploy_archives

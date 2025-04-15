@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 bitbake lib32-open-iscsi-user -f -c deploy_archives
 bitbake lib32-jssocket -f -c deploy_archives
 bitbake  lib32-libjs-jquery-cookie -f -c deploy_archives
