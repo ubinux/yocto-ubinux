@@ -43,7 +43,7 @@ UBINUX_PKGS = " \
         ccs-tools \
         checksec \
         cifs-utils \
-	cmpi-bindings \
+	cmpi-bindings-dev \
         consolekit \
         coreutils-doc \
 	cpio \
