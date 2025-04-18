@@ -17,7 +17,7 @@ metas=meta-oe
 [meta-oe]
 GITURL=http://git.openembedded.org/meta-openembedded
 BRANCH=master
-HEADID=6d13c58e386d478b8788f440b7815cb866b9d6f0
+HEADID=0c3c7bc9f4f1e19ad67a4445664da5b4cb3ed9f1
 FILES=meta-oe/conf
  meta-oe/COPYING.MIT
  meta-oe/licenses/
@@ -190,7 +190,8 @@ FILES=meta-oe/conf
  meta-oe/recipes-extended/brotli/
  meta-oe/recipes-extended/zstd/
  meta-oe/recipes-extended/s-nail/
- meta-oe/recipes-extended/newt /
+ meta-oe/recipes-extended/newt/
+ meta-oe/recipes-extended/qhull/
 
  meta-oe/recipes-devtools/abseil-cpp/
  meta-oe/recipes-devtools/libedit/
@@ -464,7 +465,7 @@ FILES=meta-oe/conf
 [meta-freescale]
 GITURL=https://git.yoctoproject.org/git/meta-freescale
 BRANCH=master
-HEADID=914692f02b1789d45a6e4ccd15d78cbe7cc51b6d
+HEADID=9eab05eafe4e30747ea79fafe5d51129cd2ec9be
 FILES=conf/layer.conf
  custom-licenses/
  classes/
@@ -498,7 +499,7 @@ FILES=meta-cgl-common/conf/layer.conf
 [meta-cloud-services]
 GITURL=http://git.yoctoproject.org/git/meta-cloud-services
 BRANCH=master
-HEADID=148cc0d50d0f1a006a82407da8f9d55c191aafbc
+HEADID=b046dc4da020b7a01f4f733b46b43651ff4ce7af
 FILES=conf/layer.conf
  classes/
  meta-openstack/classes/default_configs.bbclass
@@ -559,7 +560,7 @@ FILES=conf/layer.conf
 [meta-virtualization]
 GITURL=http://git.yoctoproject.org/git/meta-virtualization
 BRANCH=master
-HEADID=ee296b08d2c1a167c4f1e4daa1cdef040a71b724
+HEADID=88698b34937d996b641a5869af5fbcb4c46a44aa
 FILES=conf/layer.conf
  classes/
  files/
@@ -574,13 +575,13 @@ FILES=conf/layer.conf
 [meta-selinux]
 GITURL=http://git.yoctoproject.org/git/meta-selinux
 BRANCH=master
-HEADID=5ce36d63ef4a6c5d01527dbb2d71301e3e107260
+HEADID=b60fb46e68d821d4e94766cdf8e34fdb18a22150
 FILES=conf/layer.conf
 
 [meta-security]
 GITURL=http://git.yoctoproject.org/git/meta-security
 BRANCH=master
-HEADID=1c03fdfe5667613ef283c6d074e1b6d6ed9ad99e 
+HEADID=784ca4b6584101e971b2d5d76ec7b716ad1301b5 
 FILES=conf
  classes/sanity-meta-security.bbclass
  meta-tpm/classes/sanity-meta-tpm.bbclass
@@ -605,7 +606,7 @@ FILES=conf
 [meta-qt5]
 GITURL=https://github.com/meta-qt5/meta-qt5.git
 BRANCH=master
-HEADID=6822aba9234c0946f51f293882e2b93c09441252
+HEADID=182b250bcece90f31c9ccec042f934d15088b2bd
 FILES=conf/layer.conf
  recipes-qt/qt5
  recipes-qt/qtchooser
@@ -644,7 +645,7 @@ FILES=conf/layer.conf
  recipes-core/classpathx
  recipes-core/fastjar
  recipes-core/jacl
- recipes-core/jakarta-commons
+ recipes-core/jakarta-commons7
  recipes-core/jamvm
  recipes-core/javasqlite
  recipes-core/jcraft
@@ -667,12 +668,12 @@ FILES=meta-xilinx-core/conf
 [meta-erlang]
 GITURL=https://github.com/joaohf/meta-erlang
 BRANCH=master
-HEADID=95889e0146e0209c8c07ae3dc37148c99a756866
+HEADID=9d8588eaa5f4322c68b149979064c84d208468a3
 FILES=conf
 
 [meta-arm]
 GITURL=https://git.yoctoproject.org/meta-arm
 BRANCH=master
-HEADID=f20bd9ff62860a85cfbecd109485a269388df467
+HEADID=ca5c51e25c82ed48bfaa432cac13ae061468c256
 FILES=meta-arm/conf
  meta-arm-toolchain/conf
