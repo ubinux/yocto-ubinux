@@ -645,7 +645,7 @@ FILES=conf/layer.conf
  recipes-core/classpathx
  recipes-core/fastjar
  recipes-core/jacl
- recipes-core/jakarta-commons7
+ recipes-core/jakarta-commons
  recipes-core/jamvm
  recipes-core/javasqlite
  recipes-core/jcraft
