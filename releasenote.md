@@ -1,12 +1,12 @@
-# ubinux-2025.03 Release Notes
+# ubinux-2025.04 Release Notes
 
-FX Dept. UNIX & FX System Div.  
+OSS x AI Technology Div.  
 Fujitsu Limited  
 
 ## 1. Basic Information
 ### 1.1 Version Information
 - Yocto: 5.2
-- Kernel: 6.6.78
+- Kernel: 6.6.83
 - Toolchain
   - GCC: 14.2.0
   - Binutils: 2.44
@@ -32,29 +32,27 @@ Fujitsu Limited
 
 ## 2. Features
 ### 2.1 Security Fixes
-Following security issues have been fixed from ubinux-2025.02.
+Following security issues have been fixed from ubinux-2025.03.
 
-libvirt:
-- CVE-2024-8235
+qtbase:
+- CVE-2023-43114
 
 ubinux-kernel:
-- CVE-2024-41071
+- CVE-2024-24857
+- CVE-2024-24858
+- CVE-2024-26913
 
 ### 2.2 Added packages
 
-- avahi-libnss-mdns
-- duktape
-- giflib
-- openjdk-8
+N/A
 
 ### 2.3 Removed packages
 
-- libnss-mdns
-- yajl
+- uw-imap
 
 ## 3. Installation guide
 ### 3.1 Install Toolchain
-Run as root privilege the Toolchain installer at arbitrary directory, and Toolchain will be installed into /opt/ubinux/2025.03 directory.
+Run as root privilege the Toolchain installer at arbitrary directory, and Toolchain will be installed into /opt/ubinux/2025.04 directory.
 
 
 [TYPE1] in the description, please read as shown below.
@@ -66,7 +64,7 @@ Run as root privilege the Toolchain installer at arbitrary directory, and Toolch
 |Armv8 (32bit EL, 64bit EL)|aarch64-ubinux-armv8|
 
 
-`$ sudo sh ubinux-glibc-x86_64-meta-toolchain-[TYPE1]-toolchain-2025.03.sh`
+`$ sudo sh ubinux-glibc-x86_64-meta-toolchain-[TYPE1]-toolchain-2025.04.sh`
 
 
 ### 3.2 Set up Environment Variables
@@ -83,7 +81,7 @@ Run the following commands.
 |Armv8 (32bit EL)|armv7ahf-neon-ubinuxmllib32-linux-gnueabi|
 
 
-`$ . /opt/ubinux/2025.03/environment-setup-[TYPE2]`
+`$ . /opt/ubinux/2025.04/environment-setup-[TYPE2]`
 
 ### 3.3 Create rootfs from Userland Packages
 To create rootfs, see Section 3.1.2 and 3.1.3 of the dnf-plugin-tui documentation.  
@@ -102,7 +100,18 @@ Enable some kernel configs to use following features.
 
 ### 4.2 Userland Packages
 
-N/A  
+- qtbase, qtdeclarative  
+  - Although the package names for qtbase and qtdeclarative are labeled as version 5.15.13,  
+    the actual version is 5.15.16.
+
+- busybox
+  - The following sub commands of busybox have been removed.
+    - busybox ifconfig
+    - busybox netstat
+    - busybox route  
+
+- tiptop
+  - The command tiptop cannot be used normally  
 
 ### 4.3 Tools
 
@@ -173,7 +182,6 @@ qemu:
 - CVE-2024-8354
 
 qtbase:
-- CVE-2023-43114
 - CVE-2023-51714
 - CVE-2024-39936
 
@@ -200,6 +208,14 @@ tigervnc:
 - CVE-2014-8241
 - CVE-2023-6377
 - CVE-2023-6478
+- CVE-2025-26594
+- CVE-2025-26595
+- CVE-2025-26596
+- CVE-2025-26597
+- CVE-2025-26598
+- CVE-2025-26599
+- CVE-2025-26600
+- CVE-2025-26601
 
 ubinux-kernel:
 - CVE-1999-0524
@@ -236,32 +252,39 @@ ubinux-kernel:
 - CVE-2023-52485
 - CVE-2023-52586
 - CVE-2023-52590
+- CVE-2023-52624
+- CVE-2023-52625
+- CVE-2023-52634
 - CVE-2023-6238
 - CVE-2023-6240
 - CVE-2023-6535
 - CVE-2024-21803
 - CVE-2024-23848
-- CVE-2024-24857
-- CVE-2024-24858
 - CVE-2024-24859
 - CVE-2024-24864
 - CVE-2024-25739
 - CVE-2024-25740
 - CVE-2024-26596
+- CVE-2024-26699
+- CVE-2024-26756
 - CVE-2024-26900
-- CVE-2024-26913
 - CVE-2024-26944
+- CVE-2024-26945
+- CVE-2024-26954
 - CVE-2024-26962
 - CVE-2024-27010
 - CVE-2024-27011
 - CVE-2024-27012
 - CVE-2024-27017
+- CVE-2024-27079
+- CVE-2024-35788
 - CVE-2024-35968
 - CVE-2024-36478
 - CVE-2024-38608
 - CVE-2024-40965
 - CVE-2024-40972
 - CVE-2024-41012
+- CVE-2024-41023
 - CVE-2024-41061
 - CVE-2024-41080
 - CVE-2024-41085
@@ -405,6 +428,7 @@ ubinux-kernel:
 - CVE-2024-53203
 - CVE-2024-53204
 - CVE-2024-53205
+- CVE-2024-53209
 - CVE-2024-53221
 - CVE-2024-53222
 - CVE-2024-56544
@@ -428,11 +452,18 @@ ubinux-kernel:
 - CVE-2024-56784
 - CVE-2024-57872
 - CVE-2024-57950
+- CVE-2024-57982
+- CVE-2024-58012
+- CVE-2024-58089
 - CVE-2025-21634
+- CVE-2025-21635
 - CVE-2025-21649
+- CVE-2025-21650
 - CVE-2025-21672
 - CVE-2025-21682
 - CVE-2025-21696
+- CVE-2025-21723
+- CVE-2025-21861
 
 xrdp:
 - CVE-2022-23468
