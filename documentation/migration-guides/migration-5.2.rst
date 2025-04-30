@@ -104,6 +104,13 @@ systemd changes
    ``journald.conf`` to "persistent". The ``/var/log/journal`` directory is now
    used for logging instead of ``/run/log``.
 
+-  If ``pni-names`` is not in the :term:`DISTRO_FEATURES`, the `Predictable
+   Network Interface names <https://www.freedesktop.org/wiki/Software/systemd/PredictableNetworkInterfaceNames/>`__
+   systemd feature will now be disabled. Previously the feature was still
+   enabled even if ``pni-names`` was not part of :term:`DISTRO_FEATURES`. Make
+   sure to add the feature to :term:`DISTRO_FEATURES` if you want to keep this
+   systemd behavior.
+
 Multiconfig changes
 ~~~~~~~~~~~~~~~~~~~
 
@@ -186,18 +193,20 @@ The support for having multiple Git revisions per URL in :term:`SRC_URI` was
 removed from BitBake, which means the following syntax is not supported
 anymore::
 
-   SRC_URI = "git://some.host/somepath;branch=branchX,branchY;name=nameX,nameY"
+   SRC_URI = "git://some.host/somepath;bareclone=1;branch=branchX,branchY;name=nameX,nameY"
    SRCREV_nameX = "xxxxxxxxxxxxxxxxxxxx"
    SRCREV_nameY = "yyyyyyyyyyyyyyyyyyyy"
 
-This was rarely used in the core repositories, and this removal simplifies the
-code logic in several places.
+This was rarely used in the core repositories because it would only ever make
+sense for bare clones (the ``bareclone=1`` :term:`SRC_URI` option) where recipes
+take care of the Git checkout. This removal simplifies the code logic in several
+places.
 
-If one of your recipes is still using this mechanism, you can split the
-code source fetching into two separate entries::
+If one of your recipes is using this mechanism, you can split the code source
+fetching into two separate entries::
 
-   SRC_URI = "git://some.host/somepath;branch=branchX;name=nameX \
-              git://some.host/somepath;branch=branchY;name=nameY"
+   SRC_URI = "git://some.host/somepath;bareclone=1;branch=branchX;name=nameX \
+              git://some.host/somepath;bareclone=1;branch=branchY;name=nameY"
    SRCREV_nameX = "xxxxxxxxxxxxxxxxxxxx"
    SRCREV_nameY = "yyyyyyyyyyyyyyyyyyyy"
 
