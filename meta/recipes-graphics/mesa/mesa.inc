@@ -16,13 +16,14 @@ PE = "2"
 
 SRC_URI = "https://archive.mesa3d.org/mesa-${PV}.tar.xz \
            file://0001-meson-misdetects-64bit-atomics-on-mips-clang.patch \
-           file://0001-meson-disable-SIMD-blake-optimisations-on-x32-host.patch \
-           file://0001-freedreno-don-t-encode-build-path-into-binaries.patch\
+           file://0001-freedreno-don-t-encode-build-path-into-binaries.patch \
            file://0001-mesa-clc-add-an-option-to-force-inclusion-of-OpenCL-.patch \
+           file://0001-clover-Don-t-include-libclc-headers.patch \
+           file://0001-gallium-clover-Do-not-use-LLVM_LIBRARY_DIR-for-FALLB.patch \
 "
 
-SRC_URI[sha256sum] = "adf904d083b308df95898600ffed435f4b5c600d95fb6ec6d4c45638627fdc97"
-PV = "25.0.2"
+SRC_URI[sha256sum] = "c0d245dea0aa4b49f74b3d474b16542e4a8799791cd33d676c69f650ad4378d0"
+PV = "25.0.5"
 
 UPSTREAM_CHECK_GITTAGREGEX = "mesa-(?P<pver>\d+(\.\d+)+)"
 
@@ -265,6 +266,10 @@ PACKAGES =+ "libegl-mesa libegl-mesa-dev \
              mesa-megadriver mesa-vulkan-drivers \
              mesa-vdpau-drivers mesa-tools \
             "
+
+do_compile:prepend:class-target() {
+    export BINDGEN_EXTRA_CLANG_ARGS="${HOST_CC_ARCH}${TOOLCHAIN_OPTIONS} --target=${TARGET_SYS}"
+}
 
 do_install:append () {
     # libwayland-egl has been moved to wayland 1.15+
