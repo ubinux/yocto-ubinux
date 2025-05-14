@@ -35,10 +35,10 @@ def get_clang_arch(bb, d, arch_var):
     elif re.match('aarch64$', a):                      return 'AArch64'
     elif re.match('aarch64_be$', a):                   return 'AArch64'
     elif re.match('mips(isa|)(32|64|)(r6|)(el|)$', a): return 'Mips'
-    elif re.match('riscv32$', a):                      return 'riscv32'
-    elif re.match('riscv64$', a):                      return 'riscv64'
+    elif re.match('riscv32$', a):                      return 'RISCV'
+    elif re.match('riscv64$', a):                      return 'RISCV'
     elif re.match('p(pc|owerpc)(|64)', a):             return 'PowerPC'
-    elif re.match('loongarch64$', a):                  return 'loongarch64'
+    elif re.match('loongarch64$', a):                  return 'LoongArch'
     else:
         bb.note("'%s' is not a primary llvm architecture" % a)
     return ""
@@ -115,8 +115,12 @@ LLVM_BUILD_TOOLS;LLVM_USE_HOST_TOOLS;LLVM_CONFIG_PATH;LLVM_EXTERNAL_SPIRV_HEADER
 # Default to build all OE-Core supported target arches (user overridable).
 # Gennerally setting LLVM_TARGETS_TO_BUILD = "" in local.conf is ok in most simple situations
 # where only one target architecture is needed along with just one build arch (usually X86)
-#
+# Core tier targets:
+# AArch64;AMDGPU;ARM;AVR;BPF;Hexagon;Lanai;LoongArch;Mips;MSP430;NVPTX;PowerPC;RISCV;Sparc;SPIRV;SystemZ;VE;WebAssembly;X86;XCore
+# Known experimental targets: ARC;CSKY;DirectX;M68k;Xtensa
+
 LLVM_TARGETS_TO_BUILD ?= "AMDGPU;AArch64;ARM;BPF;Mips;PowerPC;RISCV;X86;LoongArch;NVPTX;SPIRV"
+LLVM_TARGETS_TO_BUILD:class-target ?= "${@get_clang_host_arch(bb, d)};AMDGPU;BPF;NVPTX;SPIRV"
 
 LLVM_EXPERIMENTAL_TARGETS_TO_BUILD ?= ""
 
@@ -153,9 +157,6 @@ EXTRA_OECMAKE += "-DLLVM_ENABLE_ASSERTIONS=OFF \
                   -DLLVM_BUILD_EXTERNAL_COMPILER_RT=ON \
                   -DCMAKE_SYSTEM_NAME=Linux \
                   -DCMAKE_BUILD_TYPE=Release \
-                  -DCMAKE_CXX_FLAGS_RELEASE='${CXXFLAGS} -DNDEBUG -g0' \
-                  -DCMAKE_C_FLAGS_RELEASE='${CFLAGS} -DNDEBUG -g0' \
-                  -DLLVM_EXTERNAL_SPIRV_HEADERS_SOURCE_DIR=${S}/llvm/projects/SPIRV-LLVM-Translator/SPIRV-Headers \
                   -DLLVM_ENABLE_PROJECTS='${LLVM_PROJECTS}' \
                   -DLLVM_BINUTILS_INCDIR=${STAGING_INCDIR} \
                   -DLLVM_VERSION_SUFFIX='${VER_SUFFIX}' \
@@ -171,7 +172,6 @@ EXTRA_OECMAKE:append:class-nativesdk = "\
                   -DCROSS_TOOLCHAIN_FLAGS_NATIVE='-DLLDB_PYTHON_RELATIVE_PATH=${PYTHON_SITEPACKAGES_DIR} \
                                                   -DLLDB_PYTHON_EXE_RELATIVE_PATH=${PYTHON_PN} \
                                                   -DLLDB_PYTHON_EXT_SUFFIX=${SOLIBSDEV} \
-                                                  -DLLVM_EXTERNAL_SPIRV_HEADERS_SOURCE_DIR=${S}/llvm/projects/SPIRV-LLVM-Translator/SPIRV-Headers \
                                                   -DCMAKE_TOOLCHAIN_FILE=${WORKDIR}/toolchain-native.cmake' \
                   -DCMAKE_RANLIB=${STAGING_BINDIR_TOOLCHAIN}/${TARGET_PREFIX}llvm-ranlib \
                   -DCMAKE_AR=${STAGING_BINDIR_TOOLCHAIN}/${TARGET_PREFIX}llvm-ar \
@@ -187,15 +187,13 @@ EXTRA_OECMAKE:append:class-nativesdk = "\
                   -DPYTHON_EXECUTABLE='${PYTHON}' \
 "
 EXTRA_OECMAKE:append:class-target = "\
-                  -DCROSS_TOOLCHAIN_FLAGS_NATIVE='-DLLVM_EXTERNAL_SPIRV_HEADERS_SOURCE_DIR=${S}/llvm/projects/SPIRV-LLVM-Translator/SPIRV-Headers \
-' \
                   -DLLVM_NATIVE_TOOL_DIR=${STAGING_BINDIR_NATIVE} \
                   -DLLVM_HEADERS_TABLEGEN=${STAGING_BINDIR_NATIVE}/llvm-min-tblgen \
                   -DCMAKE_RANLIB=${STAGING_BINDIR_TOOLCHAIN}/${TARGET_PREFIX}llvm-ranlib \
                   -DCMAKE_AR=${STAGING_BINDIR_TOOLCHAIN}/${TARGET_PREFIX}llvm-ar \
                   -DCMAKE_NM=${STAGING_BINDIR_TOOLCHAIN}/${TARGET_PREFIX}llvm-nm \
                   -DCMAKE_STRIP=${STAGING_BINDIR_TOOLCHAIN}/${TARGET_PREFIX}llvm-strip \
-                  -DLLVM_TARGET_ARCH=${@get_clang_target_arch(bb, d)} \
+                  -DLLVM_TARGET_ARCH=${HOST_ARCH} \
                   -DLLVM_DEFAULT_TARGET_TRIPLE=${TARGET_SYS}${HF} \
                   -DLLVM_HOST_TRIPLE=${TARGET_SYS}${HF} \
                   -DPYTHON_LIBRARY=${STAGING_LIBDIR}/lib${PYTHON_DIR}${PYTHON_ABI}.so \
@@ -310,11 +308,11 @@ do_install:append:class-nativesdk () {
     fi
 }
 
-PROVIDES:append:class-native = " llvm-native libclc-native spirv-llvm-translator-native"
-PROVIDES:append:class-target = " llvm libclc spirv-llvm-translator"
-PROVIDES:append:class-nativesdk = " nativesdk-llvm nativesdk-libclc nativesdk-spirv-llvm-translator"
+PROVIDES:append:class-native = " llvm-native libclc-native"
+PROVIDES:append:class-target = " llvm libclc"
+PROVIDES:append:class-nativesdk = " nativesdk-llvm nativesdk-libclc"
 
-PACKAGES =+ "${PN}-libllvm ${PN}-lldb-python ${PN}-libclang-cpp ${PN}-tidy ${PN}-format ${PN}-tools ${PN}-clc ${PN}-spirv \
+PACKAGES =+ "${PN}-libllvm ${PN}-lldb-python ${PN}-libclang-cpp ${PN}-tidy ${PN}-format ${PN}-tools ${PN}-clc \
              libclang lldb lldb-server liblldb llvm-linker-tools"
 
 
@@ -334,7 +332,6 @@ RDEPENDS:${PN}-tools += "\
   perl-module-term-ansicolor \
 "
 
-RPROVIDES:${PN}-spirv = "${MLPREFIX}spirv-llvm-translator"
 RPROVIDES:${PN}-clc = "${MLPREFIX}libclc"
 
 RRECOMMENDS:${PN}-tidy += "${PN}-tools"
@@ -405,11 +402,6 @@ FILES:${PN} += "\
 
 FILES:${PN}-clc += "${datadir}/clc"
 
-FILES:${PN}-spirv = " \
-    ${bindir}/llvm-spirv \
-    ${libdir}/libLLVMSPIRV.so.* \
-"
-
 FILES:lldb = "\
   ${bindir}/lldb \
   ${bindir}/lldb-argdumper \
@@ -455,10 +447,6 @@ INSANE_SKIP:${PN} += "already-stripped"
 INSANE_SKIP:${PN}-lldb-python += "dev-so dev-deps"
 INSANE_SKIP:${MLPREFIX}liblldb = "dev-so"
 INSANE_SKIP:${PN}-libllvm = "dev-so"
-
-# SPIRV-LLVM-Translator provides only static libraries, they are included into
-# the clang-spirv package.
-INSANE_SKIP:${PN}-spirv += "dev-so"
 
 #Avoid SSTATE_SCAN_COMMAND running sed over llvm-config.
 SSTATE_SCAN_FILES:remove = "*-config"

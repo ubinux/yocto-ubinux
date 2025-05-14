@@ -14,24 +14,13 @@ LICENSE = "Apache-2.0-with-LLVM-exception"
 # GA Release
 RELEASE ?= "${PV}"
 BASEURI ?= "${LLVM_HTTP}/llvm-project/releases/download/llvmorg-${PV}/llvm-project-${PV}.src.tar.xz"
+UPSTREAM_CHECK_URI = "${LLVM_HTTP}/llvm-project/releases/"
+UPSTREAM_CHECK_REGEX = "releases/tag/llvmorg-?(?P<pver>\d+(\.\d+)+)"
 SOURCEDIR ?= "llvm-project-${PV}.src"
-SRC_URI[sha256sum] = "b6183c41281ee3f23da7fda790c6d4f5877aed103d1e759763b1008bdd0e2c50"
-
-SRCREV_spirv = "6dd8f2a1681a27f16c53d932d2765920f312aeb2"
-SRCREV_spirvheaders = "09913f088a1197aba4aefd300a876b2ebbaa3391"
-SRCREV_FORMAT .= "spirv_spirvheaders"
-# pattern: llvm_branch_200, currently there are no minor releases, so, no llvm_branch_201
-SPIRV_BRANCH = "llvm_release_${@oe.utils.trim_version('${PV}', 1).replace('.', '')}0"
-SPIRVURI = " \
-    git://github.com/KhronosGroup/SPIRV-LLVM-Translator;protocol=https;name=spirv;branch=${SPIRV_BRANCH};destsuffix=llvm-project-${PV}.src/llvm/projects/SPIRV-LLVM-Translator \
-    git://github.com/KhronosGroup/SPIRV-Headers;protocol=https;destsuffix=llvm-project-${PV}.src/llvm/projects/SPIRV-LLVM-Translator/SPIRV-Headers;name=spirvheaders;branch=main \
-    file://spirv-internal-build.patch \
-    file://spirv-shared-library.patch \
-"
+SRC_URI[sha256sum] = "a95365b02536ed4aef29b325c205dd89c268cba41503ab2fc05f81418613ab63"
 
 SRC_URI = "\
     ${BASEURI} \
-    ${SPIRVURI} \
     file://0001-libcxxabi-Find-libunwind-headers-when-LIBCXXABI_LIBU.patch \
     file://0002-compiler-rt-support-a-new-embedded-linux-target.patch \
     file://0003-compiler-rt-Simplify-cross-compilation.-Don-t-use-na.patch \
