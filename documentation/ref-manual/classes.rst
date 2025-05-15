@@ -2707,6 +2707,20 @@ For information on setting up and running ptests, see the
 ":ref:`test-manual/ptest:testing packages with ptest`"
 section in the Yocto Project Development Tasks Manual.
 
+.. _ref-classes-ptest-python-pytest:
+
+``ptest-python-pytest``
+=======================
+
+The :ref:`ref-classes-ptest-python-pytest` class can be inherited in Python-based
+recipes to automatically configure the :ref:`ref-classes-ptest` class for Python
+packages leveraging the `pytest <https://docs.pytest.org>`__ unit test framework.
+
+Within the recipe, the :term:`PTEST_PYTEST_DIR` variable specifies the path to
+the directory containing the tests that will be installed in :term:`D` by the
+:ref:`ref-tasks-install_ptest_base` task, as well as a specific ``run-ptest``
+script for this task.
+
 .. _ref-classes-python3-dir:
 
 ``python3-dir``
@@ -3401,6 +3415,19 @@ The variables used by this class are:
 -  :term:`UBOOT_FITIMAGE_ENABLE`: enable the generation of a U-Boot FIT image.
 -  :term:`UBOOT_MKIMAGE_DTCOPTS`: DTC options for U-Boot ``mkimage`` when
    rebuilding the FIT image containing the kernel.
+-  :term:`UBOOT_FIT_ARM_TRUSTED_FIRMWARE`: include the Trusted Firmware-A
+   (TF-A) binary in the U-Boot FIT image.
+-  :term:`UBOOT_FIT_ARM_TRUSTED_FIRMWARE_IMAGE`: specifies the path to the
+   Trusted Firmware-A (TF-A) binary.
+-  :term:`UBOOT_FIT_TEE`: include the Trusted Execution Environment (TEE)
+   binary in the U-Boot FIT image.
+-  :term:`UBOOT_FIT_TEE_IMAGE`: specifies the path to the Trusted Execution
+   Environment (TEE) binary.
+-  :term:`UBOOT_FIT_USER_SETTINGS`: adds a user-specific snippet to the U-Boot
+   Image Tree Source (ITS). Users can include their custom U-Boot Image Tree
+   Source (ITS) snippet in this variable.
+-  :term:`UBOOT_FIT_CONF_USER_LOADABLES`: adds one or more user-defined images
+   to the ``loadables`` property of the configuration node.
 
 See U-Boot's documentation for details about `verified boot
 <https://source.denx.de/u-boot/u-boot/-/blob/master/doc/uImage.FIT/verified-boot.txt>`__

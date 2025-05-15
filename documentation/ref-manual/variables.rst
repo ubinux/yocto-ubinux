@@ -143,7 +143,7 @@ system and gives an overview of their function and contents.
       information on how this variable is used.
 
    :term:`AR`
-      The minimal command and arguments used to run ``ar``.
+      The minimal command and arguments used to run :manpage:`ar <ar(1)>`.
 
    :term:`ARCHIVER_MODE`
       When used with the :ref:`ref-classes-archiver` class,
@@ -165,7 +165,8 @@ system and gives an overview of their function and contents.
       ``meta/classes/archiver.bbclass`` file in the :term:`Source Directory`.
 
    :term:`AS`
-      Minimal command and arguments needed to run the assembler.
+      Minimal command and arguments needed to run the :manpage:`assembler
+      <as(1)>`.
 
    :term:`ASSUME_PROVIDED`
       Lists recipe names (:term:`PN` values) BitBake does not
@@ -223,6 +224,12 @@ system and gives an overview of their function and contents.
       Enables creating an automatic menu for the syslinux bootloader. You
       must set this variable in your recipe. The
       :ref:`ref-classes-syslinux` class checks this variable.
+
+   :term:`AUTOTOOLS_SCRIPT_PATH`
+      When using the :ref:`ref-classes-autotools` class, the
+      :term:`AUTOTOOLS_SCRIPT_PATH` variable stores the location of the
+      different scripts used by the Autotools build system. The default
+      value for this variable is :term:`S`.
 
    :term:`AVAILTUNES`
       The list of defined CPU and Application Binary Interface (ABI)
@@ -705,6 +712,9 @@ system and gives an overview of their function and contents.
    :term:`BB_TASKHASH`
       See :term:`bitbake:BB_TASKHASH` in the BitBake manual.
 
+   :term:`BB_USE_HOME_NPMRC`
+      See :term:`bitbake:BB_USE_HOME_NPMRC` in the BitBake manual.
+
    :term:`BB_VERBOSE_LOGS`
       See :term:`bitbake:BB_VERBOSE_LOGS` in the BitBake manual.
 
@@ -985,31 +995,105 @@ system and gives an overview of their function and contents.
       variable is a useful pointer in case a bug in the software being
       built needs to be manually reported.
 
+   :term:`BUILD_AR`
+      Specifies the architecture-specific :manpage:`archiver <ar(1)>` for the
+      build host, and its default definition is derived in part from
+      :term:`BUILD_PREFIX`::
+
+         BUILD_AR = "${BUILD_PREFIX}ar"
+
+      When building a :ref:`ref-classes-native` recipe, :term:`AR` is set to the
+      value of this variable by default.
+
+      The :term:`BUILD_AR` variable should not be set manually, and is rarely
+      used in recipes as :term:`AR` contains the appropriate value depending on
+      the context (native or target recipes). Exception be made for target
+      recipes that need to use the :manpage:`archiver <ar(1)>` from the build
+      host at some point during the build.
+
    :term:`BUILD_ARCH`
       Specifies the architecture of the build host (e.g. ``i686``). The
       OpenEmbedded build system sets the value of :term:`BUILD_ARCH` from the
       machine name reported by the ``uname`` command.
 
+   :term:`BUILD_AS`
+      Specifies the architecture-specific :manpage:`assembler <as(1)>` for the
+      build host, and its default definition is derived in part from
+      :term:`BUILD_PREFIX`::
+
+         BUILD_AS = "${BUILD_PREFIX}as ${BUILD_AS_ARCH}"
+
+      When building a :ref:`ref-classes-native` recipe, :term:`AS` is set to the
+      value of this variable by default.
+
+      The :term:`BUILD_AS` variable should not be set manually, and is rarely
+      used in recipes as :term:`AS` contains the appropriate value depending on
+      the context (native or target recipes). Exception be made for target
+      recipes that need to use the :manpage:`assembler <as(1)>` from the build
+      host at some point during the build.
+
    :term:`BUILD_AS_ARCH`
       Specifies the architecture-specific assembler flags for the build
       host. By default, the value of :term:`BUILD_AS_ARCH` is empty.
+
+   :term:`BUILD_CC`
+      Specifies the architecture-specific C compiler for the build host,
+      and its default definition is derived in part from :term:`BUILD_PREFIX`
+      and :term:`BUILD_CC_ARCH`::
+
+         BUILD_CC = "${CCACHE}${BUILD_PREFIX}gcc ${BUILD_CC_ARCH}"
+
+      When building a :ref:`ref-classes-native` recipe, :term:`CC` is set to the
+      value of this variable by default.
+
+      The :term:`BUILD_CC` variable should not be set manually, and is rarely
+      used in recipes as :term:`CC` contains the appropriate value depending on
+      the context (native or target recipes). Exception be made for target
+      recipes that need to use the compiler from the build host at some point
+      during the build.
 
    :term:`BUILD_CC_ARCH`
       Specifies the architecture-specific C compiler flags for the build
       host. By default, the value of :term:`BUILD_CC_ARCH` is empty.
 
    :term:`BUILD_CCLD`
-      Specifies the linker command to be used for the build host when the C
-      compiler is being used as the linker. By default, :term:`BUILD_CCLD`
-      points to GCC and passes as arguments the value of
-      :term:`BUILD_CC_ARCH`, assuming
-      :term:`BUILD_CC_ARCH` is set.
+      Specifies the :manpage:`linker <ld(1)>` command to be used for the build
+      host when the C compiler is being used as the linker, and its default
+      definition is derived in part from :term:`BUILD_PREFIX` and
+      :term:`BUILD_CC_ARCH`::
+
+         BUILD_CCLD = "${BUILD_PREFIX}gcc ${BUILD_CC_ARCH}"
+
+      When building a :ref:`ref-classes-native` recipe, :term:`CCLD` is set to
+      the value of this variable by default.
+
+      The :term:`BUILD_CCLD` variable should not be set manually, and is rarely
+      used in recipes as :term:`CCLD` contains the appropriate value depending on
+      the context (native or target recipes). Exception be made for target
+      recipes that need to use the :manpage:`linker <ld(1)>` from the build host
+      at some point during the build.
 
    :term:`BUILD_CFLAGS`
       Specifies the flags to pass to the C compiler when building for the
-      build host. When building in the ``-native`` context,
+      build host. When building a :ref:`ref-classes-native` recipe,
       :term:`CFLAGS` is set to the value of this variable by
       default.
+
+   :term:`BUILD_CPP`
+      Specifies the C preprocessor command (to both the C and the C++ compilers)
+      when building for the build host, and its default definition is derived in
+      part from :term:`BUILD_PREFIX` and :term:`BUILD_CC_ARCH`::
+
+         BUILD_CPP = "${BUILD_PREFIX}gcc ${BUILD_CC_ARCH} -E"
+
+      When building a :ref:`ref-classes-native` recipe, :term:`CPP` is set to
+      the value of this variable by default.
+
+      The :term:`BUILD_CPP` variable should not be set manually, and is rarely
+      used in recipes as :term:`CPP` contains the appropriate value depending on
+      the context (native or target recipes). Exception be made for target
+      recipes that need to use the preprocessor from the build host at some
+      point during the build.
 
    :term:`BUILD_CPPFLAGS`
       Specifies the flags to pass to the C preprocessor (i.e. to both the C
@@ -1017,23 +1101,59 @@ system and gives an overview of their function and contents.
       building in the ``-native`` context, :term:`CPPFLAGS`
       is set to the value of this variable by default.
 
+   :term:`BUILD_CXX`
+      Specifies the architecture-specific C++ compiler for the build host,
+      and its default definition is derived in part from :term:`BUILD_PREFIX`
+      and :term:`BUILD_CC_ARCH`::
+
+         BUILD_CXX = "${CCACHE}${BUILD_PREFIX}g++ ${BUILD_CC_ARCH}"
+
+      When building a :ref:`ref-classes-native` recipe, :term:`CXX` is set to
+      the value of this variable by default.
+
+      The :term:`BUILD_CXX` variable should not be set manually, and is rarely
+      used in recipes as :term:`CXX` contains the appropriate value depending on
+      the context (native or target recipes). Exception be made for target
+      recipes that need to use the C++ compiler from the build host at some
+      point during the build.
+
    :term:`BUILD_CXXFLAGS`
       Specifies the flags to pass to the C++ compiler when building for the
-      build host. When building in the ``-native`` context,
+      build host. When building a :ref:`ref-classes-native` recipe,
       :term:`CXXFLAGS` is set to the value of this variable
       by default.
 
    :term:`BUILD_FC`
-      Specifies the Fortran compiler command for the build host. By
-      default, :term:`BUILD_FC` points to Gfortran and passes as arguments the
-      value of :term:`BUILD_CC_ARCH`, assuming
-      :term:`BUILD_CC_ARCH` is set.
+      Specifies the Fortran compiler command for the build host, and its default
+      definition is derived in part from :term:`BUILD_PREFIX` and
+      :term:`BUILD_CC_ARCH`::
+
+         BUILD_FC = "${BUILD_PREFIX}gfortran ${BUILD_CC_ARCH}"
+
+      When building a :ref:`ref-classes-native` recipe, :term:`FC` is set to the
+      value of this variable by default.
+
+      The :term:`BUILD_FC` variable should not be set manually, and is rarely
+      used in recipes as :term:`FC` contains the appropriate value depending on
+      the context (native or target recipes). Exception be made for target
+      recipes that need to use the Fortran compiler from the build host at some
+      point during the build.
 
    :term:`BUILD_LD`
-      Specifies the linker command for the build host. By default,
-      :term:`BUILD_LD` points to the GNU linker (ld) and passes as arguments
-      the value of :term:`BUILD_LD_ARCH`, assuming
-      :term:`BUILD_LD_ARCH` is set.
+      Specifies the linker command for the build host, and its default
+      definition is derived in part from :term:`BUILD_PREFIX` and
+      :term:`BUILD_LD_ARCH`::
+
+         BUILD_LD = "${BUILD_PREFIX}ld ${BUILD_LD_ARCH}"
+
+      When building a :ref:`ref-classes-native` recipe, :term:`LD` is set to the
+      value of this variable by default.
+
+      The :term:`BUILD_LD` variable should not be set manually, and is rarely
+      used in recipes as :term:`LD` contains the appropriate value depending on
+      the context (native or target recipes). Exception be made for target
+      recipes that need to use the linker from the build host at some point
+      during the build.
 
    :term:`BUILD_LD_ARCH`
       Specifies architecture-specific linker flags for the build host. By
@@ -1041,9 +1161,57 @@ system and gives an overview of their function and contents.
 
    :term:`BUILD_LDFLAGS`
       Specifies the flags to pass to the linker when building for the build
-      host. When building in the ``-native`` context,
+      host. When building a :ref:`ref-classes-native` recipe,
       :term:`LDFLAGS` is set to the value of this variable
       by default.
+
+   :term:`BUILD_NM`
+      Specifies the architecture-specific utility to list symbols from object
+      files for the build host, and its default definition is derived in part
+      from :term:`BUILD_PREFIX`::
+
+         BUILD_NM = "${BUILD_PREFIX}nm"
+
+      When building a :ref:`ref-classes-native` recipe, :term:`NM` is set to the
+      value of this variable by default.
+
+      The :term:`BUILD_NM` variable should not be set manually, and is rarely
+      used in recipes as :term:`NM` contains the appropriate value depending on
+      the context (native or target recipes). Exception be made for target
+      recipes that need to use the utility from the build host at some point
+      during the build.
+
+   :term:`BUILD_OBJCOPY`
+      Specifies the architecture-specific utility to copy object files for the
+      build host, and its default definition is derived in part from
+      :term:`BUILD_PREFIX`::
+
+         BUILD_OBJCOPY = "${BUILD_PREFIX}objcopy"
+
+      When building a :ref:`ref-classes-native` recipe, :term:`OBJCOPY` is set
+      to the value of this variable by default.
+
+      The :term:`BUILD_OBJCOPY` variable should not be set manually, and is
+      rarely used in recipes as :term:`OBJCOPY` contains the appropriate value
+      depending on the context (native or target recipes). Exception be made for
+      target recipes that need to use the utility from the build host at some
+      point during the build.
+
+   :term:`BUILD_OBJDUMP`
+      Specifies the architecture-specific utility to display object files
+      information for the build host, and its default definition is derived in
+      part from :term:`BUILD_PREFIX`::
+
+         BUILD_OBJDUMP = "${BUILD_PREFIX}objdump"
+
+      When building a :ref:`ref-classes-native` recipe, :term:`OBJDUMP` is set
+      to the value of this variable by default.
+
+      The :term:`BUILD_OBJDUMP` variable should not be set manually, and is
+      rarely used in recipes as :term:`OBJDUMP` contains the appropriate value
+      depending on the context (native or target recipes). Exception be made for
+      target recipes that need to use the utility from the build host at some
+      point during the build.
 
    :term:`BUILD_OPTIMIZATION`
       Specifies the optimization flags passed to the C compiler when
@@ -1065,11 +1233,53 @@ system and gives an overview of their function and contents.
       build system uses the :term:`BUILD_PREFIX` value to set the
       :term:`TARGET_PREFIX` when building for :ref:`ref-classes-native` recipes.
 
+   :term:`BUILD_RANLIB`
+      Specifies the architecture-specific utility to generate indexes for
+      archives for the build host, and its default definition is derived in part
+      from :term:`BUILD_PREFIX`::
+
+         BUILD_RANLIB = "${BUILD_PREFIX}ranlib -D"
+
+      When building a :ref:`ref-classes-native` recipe, :term:`RANLIB` is set to
+      the value of this variable by default.
+
+      The :term:`BUILD_RANLIB` variable should not be set manually, and is
+      rarely used in recipes as :term:`RANLIB` contains the appropriate value
+      depending on the context (native or target recipes). Exception be made for
+      target recipes that need to use the utility from the build host at some
+      point during the build.
+
+   :term:`BUILD_READELF`
+      Specifies the architecture-specific utility to display information about
+      ELF files for the build host, and its default definition is derived in
+      part from :term:`BUILD_PREFIX`::
+
+         BUILD_READELF = "${BUILD_PREFIX}readelf"
+
+      When building a :ref:`ref-classes-native` recipe, :term:`READELF` is set
+      to the value of this variable by default.
+
+      The :term:`BUILD_READELF` variable should not be set manually, and is
+      rarely used in recipes as :term:`READELF` contains the appropriate value
+      depending on the context (native or target recipes). Exception be made for
+      target recipes that need to use the utility from the build host at some
+      point during the build.
+
    :term:`BUILD_STRIP`
-      Specifies the command to be used to strip debugging symbols from
-      binaries produced for the build host. By default, :term:`BUILD_STRIP`
-      points to
-      ``${``\ :term:`BUILD_PREFIX`\ ``}strip``.
+      Specifies the command to be used to strip debugging symbols from binaries
+      produced for the build host, and its default definition is derived in part
+      from :term:`BUILD_PREFIX`::
+
+         BUILD_STRIP = "${BUILD_PREFIX}strip"
+
+      When building a :ref:`ref-classes-native` recipe, :term:`STRIP` is set to
+      the value of this variable by default.
+
+      The :term:`BUILD_STRIP` variable should not be set manually, and is
+      rarely used in recipes as :term:`STRIP` contains the appropriate value
+      depending on the context (native or target recipes). Exception be made for
+      target recipes that need to use the utility from the build host at some
+      point during the build.
 
    :term:`BUILD_SYS`
       Specifies the system, including the architecture and the operating
@@ -1273,6 +1483,10 @@ system and gives an overview of their function and contents.
 
    :term:`CC`
       The minimal command and arguments used to run the C compiler.
+
+   :term:`CCLD`
+      The minimal command and arguments used to run the linker when the C
+      compiler is being used as the linker.
 
    :term:`CFLAGS`
       Specifies the flags to pass to the C compiler. This variable is
@@ -1527,6 +1741,17 @@ system and gives an overview of their function and contents.
 
    :term:`CONFIGURE_FLAGS`
       The minimal arguments for GNU configure.
+
+   :term:`CONFIGURE_SCRIPT`
+      When using the :ref:`ref-classes-autotools` class, the
+      :term:`CONFIGURE_SCRIPT` variable stores the location of the ``configure``
+      script for the Autotools build system. The default definition for this
+      variable is::
+
+         CONFIGURE_SCRIPT ?= "${AUTOTOOLS_SCRIPT_PATH}/configure"
+
+      Where :term:`AUTOTOOLS_SCRIPT_PATH` is the location of the of the
+      Autotools build system scripts, which defaults to :term:`S`.
 
    :term:`CONFLICT_DISTRO_FEATURES`
       When inheriting the :ref:`ref-classes-features_check`
@@ -2818,6 +3043,9 @@ system and gives an overview of their function and contents.
    :term:`FAKEROOTNOENV`
       See :term:`bitbake:FAKEROOTNOENV` in the BitBake manual.
 
+   :term:`FC`
+      The minimal command and arguments used to run the Fortran compiler.
+
    :term:`FEATURE_PACKAGES`
       Defines one or more packages to include in an image when a specific
       item is included in :term:`IMAGE_FEATURES`.
@@ -3170,13 +3398,35 @@ system and gives an overview of their function and contents.
       :ref:`ref-classes-kernel-fitimage` class.
 
    :term:`FIT_SIGN_INDIVIDUAL`
-      If set to "1", then the :ref:`ref-classes-kernel-fitimage`
-      class will sign the kernel, dtb and ramdisk images individually in addition
-      to signing the FIT image itself. This could be useful if you are
-      intending to verify signatures in another context than booting via
-      U-Boot.
+      If set to "1", the :ref:`ref-classes-kernel-fitimage` class signs each
+      image node individually, including the kernel, DTB, RAM disk, and any
+      other image types present in the FIT image, in addition to signing the
+      configuration nodes.
+      This can be useful if you need to verify signatures outside of the
+      U-Boot boot process. By default, this variable is set to "0".
 
-      This variable is set to "0" by default.
+      If :term:`UBOOT_SIGN_ENABLE` is set to "1" and
+      :term:`FIT_SIGN_INDIVIDUAL` remains at its default value of "0", only the
+      configuration nodes are signed. Since configuration nodes include hashes
+      of their referenced image nodes, the integrity of the entire FIT image is
+      ensured as long as the image nodes are loaded via the configuration nodes
+      and the hashes of the image nodes are checked. That's usually the case.
+
+      Enabling :term:`FIT_SIGN_INDIVIDUAL` typically increases complexity for
+      little benefit. There might be exceptions such as image nodes that are
+      not referenced by any configuration node or loaded directly for whatever
+      reason.
+      For most use cases, setting this variable to "0" provides sufficient
+      security.
+
+      For further details, refer to the official U-Boot documentation:
+      `U-Boot fit signature <https://docs.u-boot.org/en/latest/usage/fit/signature.html>`__
+      and more specifically at:
+      `U-Boot signed configurations <https://docs.u-boot.org/en/latest/usage/fit/signature.html#signed-configurations>`__.
+
+      Signing only the image nodes is intentionally not implemented by
+      :term:`OpenEmbedded-Core (OE-Core)`, as it is vulnerable to mix-and-match
+      attacks.
 
    :term:`FIT_SIGN_NUMBITS`
       Size of the private key used in the FIT image, in number of bits.
@@ -3393,6 +3643,11 @@ system and gives an overview of their function and contents.
       See the :ref:`ref-classes-grub-efi` class for more
       information on how this variable is used.
 
+   :term:`GRUB_MKIMAGE_OPTS`
+      This variable controls additional options passed to the ``grub-mkimage``
+      command in the GNU GRand Unified Bootloader (GRUB) recipe during the
+      ``do_mkimage`` task.
+
    :term:`GRUB_OPTS`
       Additional options to add to the GNU GRand Unified Bootloader (GRUB)
       configuration. Use a semi-colon character (``;``) to separate
@@ -3443,6 +3698,20 @@ system and gives an overview of their function and contents.
       - mips
       - mipsel
 
+   :term:`HOST_AS_ARCH`
+      Specifies architecture-specific assembler flags.
+
+      Default initialization for :term:`HOST_AS_ARCH` varies depending on what
+      is being built:
+
+      -  :term:`TARGET_AS_ARCH` when building for the
+         target
+
+      -  :term:`BUILD_AS_ARCH` when building for the build host (i.e.
+         ``-native``)
+
+      -  :term:`SDK_AS_ARCH` when building for an SDK (i.e. ``nativesdk-``)
+
    :term:`HOST_CC_ARCH`
       Specifies architecture-specific compiler flags that are passed to the
       C compiler.
@@ -3456,8 +3725,20 @@ system and gives an overview of their function and contents.
       -  :term:`BUILD_CC_ARCH` when building for the build host (i.e.
          ``-native``)
 
-      -  ``BUILDSDK_CC_ARCH`` when building for an SDK (i.e.
-         ``nativesdk-``)
+      -  :term:`SDK_CC_ARCH` when building for an SDK (i.e. ``nativesdk-``)
+
+   :term:`HOST_LD_ARCH`
+      Specifies architecture-specific linker flags.
+
+      Default initialization for :term:`HOST_LD_ARCH` varies depending on what
+      is being built:
+
+      -  :term:`TARGET_LD_ARCH` when building for the target
+
+      -  :term:`BUILD_LD_ARCH` when building for the build host (i.e.
+         ``-native``)
+
+      -  :term:`SDK_LD_ARCH` when building for an SDK (i.e. ``nativesdk-``)
 
    :term:`HOST_OS`
       Specifies the name of the target operating system, which is normally
@@ -4492,8 +4773,7 @@ system and gives an overview of their function and contents.
 
       The value in :term:`INITSCRIPT_PARAMS` is passed through to the
       ``update-rc.d`` command. For more information on valid parameters,
-      please see the ``update-rc.d`` manual page at
-      https://manpages.debian.org/buster/init-system-helpers/update-rc.d.8.en.html
+      please see the manual page: :manpage:`update-rc.d <update-rc.d(8)>`.
 
    :term:`INSANE_SKIP`
       Specifies the QA checks to skip for a specific package within a
@@ -5143,7 +5423,8 @@ system and gives an overview of their function and contents.
       ``LAYERVERSION_mylayer``).
 
    :term:`LD`
-      The minimal command and arguments used to run the linker.
+      The minimal command and arguments used to run the :manpage:`linker
+      <ld(1)>`.
 
    :term:`LDFLAGS`
       Specifies the flags to pass to the linker. This variable is exported
@@ -5579,6 +5860,10 @@ system and gives an overview of their function and contents.
       you to specify the inclusion of debugging symbols and the compiler
       optimizations (none, performance or size).
 
+   :term:`MESON_INSTALL_TAGS`
+      A variable for the :ref:`ref-classes-meson` class, allowing to specify
+      install tags (``--tags`` argument of the ``meson install`` command).
+
    :term:`MESON_TARGET`
       A variable for the :ref:`ref-classes-meson` class, allowing to choose
       a Meson target to build in :ref:`ref-tasks-compile`.  Otherwise, the
@@ -5717,6 +6002,11 @@ system and gives an overview of their function and contents.
       specifies the base directory for auto-mounting filesystems. The
       default value is "/run/media".
 
+   :term:`MOUNT_GROUP`
+      On non-systemd systems (where ``udev-extraconf`` is being used),
+      specifies the mount group for auto-mounting filesystems. The
+      default value is "disk".
+
    :term:`MULTIMACH_TARGET_SYS`
       Uniquely identifies the type of the target system for which packages
       are being built. This variable allows output for different types of
@@ -5749,7 +6039,7 @@ system and gives an overview of their function and contents.
       variable is set.
 
    :term:`NM`
-      The minimal command and arguments to run ``nm``.
+      The minimal command and arguments to run :manpage:`nm <nm(1)>`.
 
    :term:`NO_GENERIC_LICENSE`
       Avoids QA errors when you use a non-common, non-CLOSED license in a
@@ -5822,6 +6112,18 @@ system and gives an overview of their function and contents.
 
          NON_MULTILIB_RECIPES = "grub grub-efi make-mod-scripts ovmf u-boot"
 
+   :term:`NVD_DB_VERSION`
+      The :term:`NVD_DB_VERSION` variable allows choosing the CVE feed when
+      using the :ref:`ref-classes-cve-check` class. It can be one of:
+
+      -  ``NVD2`` (default): the NVD feed with API version 2
+      -  ``FKIE``: the `FKIE-CAD <https://github.com/fkie-cad/nvd-json-data-feeds>`__
+         feed reconstruction
+      -  ``NVD1``: the NVD JSON feed (deprecated)
+
+      In case of a malformed feed name, the ``NVD2`` feed is selected and an
+      error is printed.
+
    :term:`NVDCVE_API_KEY`
       The NVD API key used to retrieve data from the CVE database when
       using :ref:`ref-classes-cve-check`.
@@ -5838,10 +6140,10 @@ system and gives an overview of their function and contents.
           NVDCVE_API_KEY = "fe753&7a2-1427-347d-23ff-b2e2b7ca5f3"
 
    :term:`OBJCOPY`
-      The minimal command and arguments to run ``objcopy``.
+      The minimal command and arguments to run :manpage:`objcopy <objcopy(1)>`.
 
    :term:`OBJDUMP`
-      The minimal command and arguments to run ``objdump``.
+      The minimal command and arguments to run :manpage:`objdump <objdump(1)>`.
 
    :term:`OE_BINCONFIG_EXTRA_MANGLE`
       When inheriting the :ref:`ref-classes-binconfig` class,
@@ -7088,6 +7390,16 @@ system and gives an overview of their function and contents.
       at build time should be done by adding "ptest" to (or removing it
       from) :term:`DISTRO_FEATURES`.
 
+   :term:`PTEST_PYTEST_DIR`
+      Within the :ref:`ref-classes-ptest-python-pytest` class, the
+      :term:`PTEST_PYTEST_DIR` variable represents the path within the source
+      tree of a Python package holding the unit tests to be run with the
+      `pytest <https://docs.pytest.org>`__ framework. The default value for this
+      variable is ``tests``.
+
+      For more information, see
+      the :ref:`ref-classes-ptest-python-pytest` class documentation.
+
    :term:`PV`
       The version of the recipe. The version is normally extracted from the
       recipe filename. For example, if the recipe is named
@@ -7152,7 +7464,7 @@ system and gives an overview of their function and contents.
          QA_EMPTY_DIRS_RECOMMENDATION:/dev = "but all devices must be created at runtime"
 
    :term:`RANLIB`
-      The minimal command and arguments to run ``ranlib``.
+      The minimal command and arguments to run :manpage:`ranlib <ranlib(1)>`.
 
    :term:`RCONFLICTS`
       The list of packages that conflict with packages. Note that packages
@@ -7288,6 +7600,9 @@ system and gives an overview of their function and contents.
       ":ref:`bitbake-user-manual/bitbake-user-manual-metadata:tasks`" and
       ":ref:`bitbake-user-manual/bitbake-user-manual-execution:dependencies`" sections in the
       BitBake User Manual for additional information on tasks and dependencies.
+
+   :term:`READELF`
+      The minimal command and arguments to run :manpage:`readelf <readelf(1)>`.
 
    :term:`RECIPE_MAINTAINER`
       This variable defines the name and e-mail address of the maintainer of a
@@ -7686,10 +8001,20 @@ system and gives an overview of their function and contents.
 
       Only one archive type can be specified.
 
+   :term:`SDK_AS_ARCH`
+      Specifies architecture-specific assembler flags when building
+      :ref:`ref-classes-nativesdk` recipes. By default, the value of
+      :term:`SDK_AS_ARCH` equals the one of :term:`BUILD_AS_ARCH`.
+
    :term:`SDK_BUILDINFO_FILE`
       When using the :ref:`ref-classes-image-buildinfo` class,
       specifies the file in the SDK to write the build information into. The
       default value is "``/buildinfo``".
+
+   :term:`SDK_CC_ARCH`
+      Specifies the architecture-specific C compiler flags when building
+      :ref:`ref-classes-nativesdk` recipes. By default, the value of
+      :term:`SDK_CC_ARCH` equals the one of :term:`BUILD_CC_ARCH`.
 
    :term:`SDK_CUSTOM_TEMPLATECONF`
       When building the extensible SDK, if :term:`SDK_CUSTOM_TEMPLATECONF` is set to
@@ -7771,6 +8096,11 @@ system and gives an overview of their function and contents.
       The :term:`SDK_INCLUDE_TOOLCHAIN` variable defaults to "0" if
       :term:`SDK_EXT_TYPE` is set to "minimal", and defaults to "1" if
       :term:`SDK_EXT_TYPE` is set to "full".
+
+   :term:`SDK_LD_ARCH`
+      Specifies architecture-specific linker flags when building
+      :ref:`ref-classes-nativesdk` recipes. By default, the value of
+      :term:`SDK_LD_ARCH` equals the one of :term:`BUILD_LD_ARCH`.
 
    :term:`SDK_NAME`
       The base name for SDK output files. The default value (as set in
@@ -8342,6 +8672,11 @@ system and gives an overview of their function and contents.
       and the prefix of ``documentNamespace``. It is set by default to
       ``http://spdx.org/spdxdoc``.
 
+   :term:`SPDX_PACKAGE_VERSION`
+      This variable controls the package version as seen in the SPDX 3.0 JSON
+      output (``software_packageVersion``). The default value for this variable
+      is :term:`PV`.
+
    :term:`SPDX_PRETTY`
       This option makes the SPDX output more human-readable, using
       identation and newlines, instead of the default output in a
@@ -8892,8 +9227,8 @@ system and gives an overview of their function and contents.
       places stamps. The default directory is ``${TMPDIR}/stamps``.
 
    :term:`STRIP`
-      The minimal command and arguments to run ``strip``, which is used to
-      strip symbols.
+      The minimal command and arguments to run :manpage:`strip <strip(1)>`,
+      which is used to strip symbols.
 
    :term:`SUMMARY`
       The short (72 characters or less) summary of the binary package for
@@ -9949,6 +10284,45 @@ system and gives an overview of their function and contents.
 
       See `more details about #address-cells <https://elinux.org/Device_Tree_Usage#How_Addressing_Works>`__.
 
+   :term:`UBOOT_FIT_ARM_TRUSTED_FIRMWARE`
+      `Trusted Firmware-A (TF-A) <https://www.trustedfirmware.org/projects/tf-a>`__
+      is a reference implementation of secure world software for Arm A-Profile
+      architectures (Armv8-A and Armv7-A), including an Exception Level 3 (EL3)
+      Secure Monitor. This variable enables the generation of a U-Boot FIT
+      image with a Trusted Firmware-A (TF-A) binary.
+
+      Its default value is "0", so set it to "1" to enable this functionality::
+
+         UBOOT_FIT_ARM_TRUSTED_FIRMWARE = "1"
+
+   :term:`UBOOT_FIT_ARM_TRUSTED_FIRMWARE_IMAGE`
+      Specifies the path to the Trusted Firmware-A (TF-A) binary. Its default
+      value is "bl31.bin"::
+
+         UBOOT_FIT_ARM_TRUSTED_FIRMWARE_IMAGE ?= "bl31.bin"
+
+      If a relative path is provided, the file is expected to be relative to
+      U-Boot's :term:`B` directory. An absolute path can be provided too,
+      e.g.::
+
+         UBOOT_FIT_ARM_TRUSTED_FIRMWARE_IMAGE ?= "${DEPLOY_DIR_IMAGE}/bl31.bin"
+
+      If the Trusted Firmware-A (TF-A) binary is built in a separate recipe,
+      you must add the necessary dependency in a U-Boot ``.bbappend`` file. The
+      recipe name for Trusted Firmware-A (TF-A) binary is
+      ``trusted-firmware-a``, which comes from the
+      :yocto_git:`meta-arm </meta-arm>` layer::
+
+         do_compile[depends] += "trusted-firmware-a:do_deploy"
+
+   :term:`UBOOT_FIT_CONF_USER_LOADABLES`
+      Adds one or more user-defined images to the ``loadables`` property of the
+      configuration node of the U-Boot Image Tree Source (ITS). This variable
+      is handled by the local shell in the recipe so appropriate escaping
+      should be done, e.g. escaping quotes.::
+
+         UBOOT_FIT_CONF_USER_LOADABLES = '\"fwa\", \"fwb\"'
+
    :term:`UBOOT_FIT_DESC`
       Specifies the description string encoded into a U-Boot fitImage. The default
       value is set by the :ref:`ref-classes-uboot-sign` class as follows::
@@ -9996,6 +10370,105 @@ system and gives an overview of their function and contents.
       Size of the private key used in signing the U-Boot FIT image, in number
       of bits. The default value for this variable is set to "2048"
       by the :ref:`ref-classes-uboot-sign` class.
+
+   :term:`UBOOT_FIT_TEE`
+      A Trusted Execution Environment (TEE) is a secure environment for
+      executing code, ensuring high levels of trust in asset management within
+      the surrounding system. This variable enables the generation of a U-Boot
+      FIT image with a Trusted Execution Environment (TEE) binary.
+
+      Its default value is "0", so set it to "1" to enable this functionality::
+
+         UBOOT_FIT_TEE = "1"
+
+   :term:`UBOOT_FIT_TEE_IMAGE`
+      Specifies the path to the Trusted Execution Environment (TEE) binary. Its
+      default value is "tee-raw.bin"::
+
+         UBOOT_FIT_TEE_IMAGE ?= "tee-raw.bin"
+
+      If a relative path is provided, the file is expected to be relative to 
+      U-Boot's :term:`B` directory. An absolute path can be provided too,
+      e.g.::
+
+         UBOOT_FIT_TEE_IMAGE ?= "${DEPLOY_DIR_IMAGE}/tee-raw.bin"
+
+      If the Trusted Execution Environment (TEE) binary is built in a separate
+      recipe, you must add the necessary dependency in a U-Boot ``.bbappend``
+      file. The recipe name for Trusted Execution Environment (TEE) binary is
+      ``optee-os``, which comes from the :yocto_git:`meta-arm </meta-arm>`
+      layer::
+
+         do_compile[depends] += "optee-os:do_deploy"
+
+   :term:`UBOOT_FIT_USER_SETTINGS`
+      Add a user-specific snippet to the U-Boot Image Tree Source (ITS). This
+      variable allows the user to add one or more user-defined ``/images`` node
+      to the U-Boot Image Tree Source (ITS). For more details, please refer to
+      https://fitspec.osfw.foundation/\ .
+
+      The original content of the U-Boot Image Tree Source (ITS) is as
+      follows::
+
+         images {
+             uboot {
+                 description = "U-Boot image";
+                 data = /incbin/("u-boot-nodtb.bin");
+                 type = "standalone";
+                 os = "u-boot";
+                 arch = "";
+                 compression = "none";
+                 load = <0x80000000>;
+                 entry = <0x80000000>;
+             };
+         };
+
+      Users can include their custom ITS snippet in this variable, e.g.::
+
+         UBOOT_FIT_FWA_ITS = '\
+             fwa {\n\
+                 description = \"FW A\";\n\
+                 data = /incbin/(\"fwa.bin\");\n\
+                 type = \"firmware\";\n\
+                 arch = \"\";\n\
+                 os = \"\";\n\
+                 load = <0xb2000000>;\n\
+                 entry = <0xb2000000>;\n\
+                 compression = \"none\";\n\
+             };\n\
+         '
+
+         UBOOT_FIT_USER_SETTINGS = "${UBOOT_FIT_FWA_ITS}"
+
+      This variable is handled by the local shell in the recipe so appropriate
+      escaping should be done, e.g. escaping quotes and adding newlines with
+      ``\n``.
+
+      The generated content of the U-Boot Image Tree Source (ITS) is as
+      follows::
+
+         images {
+             uboot {
+                 description = "U-Boot image";
+                 data = /incbin/("u-boot-nodtb.bin");
+                 type = "standalone";
+                 os = "u-boot";
+                 arch = "";
+                 compression = "none";
+                 load = <0x80000000>;
+                 entry = <0x80000000>;
+             };
+             fwa {
+                 description = "FW A";
+                 data = /incbin/("fwa.bin");
+                 type = "firmware";
+                 arch = "";
+                 os = "";
+                 load = <0xb2000000>;
+                 entry = <0xb2000000>;
+                 compression = "none";
+             };
+         };
 
    :term:`UBOOT_FITIMAGE_ENABLE`
       This variable allows to generate a FIT image for U-Boot, which is one
@@ -10443,9 +10916,14 @@ system and gives an overview of their function and contents.
       can control with this variable, see the
       ":ref:`ref-classes-insane`" section.
 
+   :term:`WATCHDOG_RUNTIME_SEC`
+      For the ``systemd`` recipe, this controls the value of the
+      ``RuntimeWatchdogSec`` option in ``/etc/systemd/system.conf``. The default
+      value is an empty string.
+
    :term:`WATCHDOG_TIMEOUT`
-      Specifies the timeout in seconds used by the ``watchdog`` recipe and
-      also by ``systemd`` during reboot. The default is 60 seconds.
+      Specifies the timeout in seconds used by the ``watchdog-config`` recipe
+      and also by ``systemd`` during reboot. The default is 60 seconds.
 
    :term:`WIC_SECTOR_SIZE`
       The variable :term:`WIC_SECTOR_SIZE` controls the sector size of Wic
