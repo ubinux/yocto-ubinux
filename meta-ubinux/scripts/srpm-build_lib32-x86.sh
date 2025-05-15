@@ -1,12 +1,32 @@
 #!/bin/bash
-bitbake lib32-open-iscsi-user -f -c deploy_archives
-bitbake lib32-jssocket -f -c deploy_archives
-bitbake  lib32-libjs-jquery-cookie -f -c deploy_archives
-bitbake  lib32-libjs-jquery-custom-scrollbar -f -c deploy_archives
-bitbake  lib32-libjs-jquery-dropkick -f -c deploy_archives
-bitbake  lib32-libjs-jquery-globalize -f -c deploy_archives
-bitbake  lib32-libjs-jquery-icheck -f -c deploy_archives
-bitbake  lib32-libjs-jquery-mousewheel -f -c deploy_archives
-bitbake  lib32-libjs-jquery-ui -f -c deploy_archives
-bitbake  lib32-smarty -f -c deploy_archives
-bitbake  lib32-apcupsd -f -c deploy_archives
+recipes=(
+  lib32-open-iscsi-user
+  lib32-jssocket
+  lib32-libjs-jquery-cookie
+  lib32-libjs-jquery-custom-scrollbar
+  lib32-libjs-jquery-dropkick
+  lib32-libjs-jquery-globalize
+  lib32-libjs-jquery-icheck
+  lib32-libjs-jquery-mousewheel
+  lib32-libjs-jquery-ui
+  lib32-smarty
+  lib32-apcupsd
+)
+
+failed_recipes=()
+
+for recipe in "${recipes[@]}"; do
+  if ! bitbake "$recipe" -f -c deploy_archives; then
+    echo "ERROR: Failed to deploy $recipe"
+    failed_recipes+=("$recipe")
+  fi
+done
+
+if [ ${#failed_recipes[@]} -ne 0 ]; then
+  echo "lib32-x86 Result: The following recipes failed to deploy:"
+  for failed in "${failed_recipes[@]}"; do
+    echo " - $failed"
+  done
+else
+  echo "lib32-x86 Result: All deployments completed successfully."
+fi
