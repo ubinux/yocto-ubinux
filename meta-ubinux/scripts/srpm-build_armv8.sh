@@ -27,6 +27,5 @@ if [ ${#failed_recipes[@]} -ne 0 ]; then
   for failed in "${failed_recipes[@]}"; do
     echo " - $failed"
   done
-else
-  echo "armv8 Result: All deployments completed successfully."
+  exit 1
 fi
