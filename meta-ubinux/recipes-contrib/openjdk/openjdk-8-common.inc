@@ -7,7 +7,7 @@ LIC_FILES_CHKSUM = "file://LICENSE;md5=3e0b59f8fac05c3c03d4a26bbda13f8f"
 require openjdk-common.inc
 
 AUTOTOOLS_SCRIPT_PATH = "${S}/common/autoconf/"
-export AUTOCONF_DIR="${AUTOTOOLS_SCRIPT_PATH}"
+export AUTOCONF_DIR = "${AUTOTOOLS_SCRIPT_PATH}"
 FILESPATH =. "${FILE_DIRNAME}/patches-openjdk-8:"
 
 # for weird openjdk-common.inc

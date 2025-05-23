@@ -1,0 +1,204 @@
+From dc77d5d840659e6b1911486b5476a3c2b70ce29f Mon Sep 17 00:00:00 2001
+From: Lei Maohui <leimaohui@fujitsu.com>
+Date: Wed, 21 May 2025 05:25:39 +0000
+Subject: [PATCH] Fix build error with gcc15:
+
+build-ubinux-daily/tmp/work/aarch64-ubinux-linux/openjdk-8/272/jdk8u-shenandoah-aarch64-shenandoah-jdk8u272-b10/hotspot/agent/src/os/linux/libproc.h:86:13: error: 'bool' cannot be defined via 'typedef'
+   86 | typedef int bool;
+      |             ^~~~
+core2-64-ubinux-linux/openjdk-8/272/jdk8u-jdk8u272-ga/jdk/src/solaris/native/sun/net/spi/DefaultProxySelector.c:445:10: error: too many arguments to function 'g_strfreev'; expected 0, have 1
+  445 |         (*g_strfreev)(proxies);
+      |         ~^~~~~~~~~~~~ ~~~~~~~
+core2-64-ubinux-linux/openjdk-8/272/jdk8u-jdk8u272-ga/jdk/src/solaris/native/sun/net/spi/DefaultProxySelector.c:107:43: error: 'g_proxy_resolver_get_default' redeclared as different kind of symbol
+  107 | static g_proxy_resolver_get_default_func* g_proxy_resolver_get_default = NULL;
+      |                                           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+core2-64-ubinux-linux/openjdk-8/272/jdk8u-jdk8u272-ga/jdk/src/solaris/native/sun/net/spi/DefaultProxySelector.c:107:43: error: 'g_proxy_resolver_get_default' redeclared as different kind of symbol
+  107 | static g_proxy_resolver_get_default_func* g_proxy_resolver_get_default = NULL;
+      |                                           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+core2-64-ubinux-linux/openjdk-8/272/jdk8u-jdk8u272-ga/jdk/src/solaris/native/sun/net/spi/DefaultProxySelector.c:418:34: error: too many arguments to function 'g_network_address_get_hostname'; expected 0, have 1
+  418 |                         phost = (*g_network_address_get_hostname)(conn);
+      |                                 ~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ~~~
+...
+
+Upstream-Status: Pending
+Signed-off-by: Lei Maohui <leimaohui@fujitsu.com>
+---
+ hotspot/agent/src/os/linux/libproc.h          |   2 +
+ jdk/src/share/bin/java.c                      |   2 +-
+ jdk/src/share/native/common/jni_util.h        |   2 +-
+ .../native/sun/awt/medialib/awt_ImagingLib.h  |   2 +-
+ .../solaris/native/sun/awt/awt_GraphicsEnv.h  |   2 +-
+ .../solaris/native/sun/awt/gtk2_interface.c   |   8 +-
+ .../solaris/native/sun/awt/gtk3_interface.c   |   2 +-
+ .../solaris/native/sun/awt/gtk3_interface.h   |   6 +-
+ .../native/sun/net/spi/DefaultProxySelector.c |  10 +-
+ 10 files changed, 158 insertions(+), 17 deletions(-)
+ create mode 100644 hotspot/agent/src/os/linux/libproc.h.orig
+
+diff --git a/hotspot/agent/src/os/linux/libproc.h b/hotspot/agent/src/os/linux/libproc.h
+index 6b6e41ca..5456577f 100644
+--- a/hotspot/agent/src/os/linux/libproc.h
++++ b/hotspot/agent/src/os/linux/libproc.h
+@@ -80,12 +80,14 @@ combination of ptrace and /proc calls.
+ #define user_regs_struct user_pt_regs
+ #endif
+ 
++#if !defined(__STDC_VERSION__) || __STDC_VERSION__ < 202311L
+ // This C bool type must be int for compatibility with Linux calls and
+ // it would be a mistake to equivalence it to C++ bool on many platforms
+ 
+ typedef int bool;
+ #define true  1
+ #define false 0
++#endif
+ 
+ struct ps_prochandle;
+ 
+diff --git a/jdk/src/share/bin/java.c b/jdk/src/share/bin/java.c
+index d74b185d..25489865 100644
+--- a/jdk/src/share/bin/java.c
++++ b/jdk/src/share/bin/java.c
+@@ -145,7 +145,7 @@ static struct vmdesc *knownVMs = NULL;
+ static int knownVMsCount = 0;
+ static int knownVMsLimit = 0;
+ 
+-static void GrowKnownVMs();
++static void GrowKnownVMs(int cnt);
+ static int  KnownVMIndex(const char* name);
+ static void FreeKnownVMs();
+ static jboolean IsWildCardEnabled();
+diff --git a/jdk/src/share/native/common/jni_util.h b/jdk/src/share/native/common/jni_util.h
+index 1356c8a3..5dd8d1d8 100644
+--- a/jdk/src/share/native/common/jni_util.h
++++ b/jdk/src/share/native/common/jni_util.h
+@@ -407,7 +407,7 @@ char* nativeGetStringPlatformChars(JNIEnv *env, jstring jstr, jboolean *isCopy);
+ 
+ int getFastEncoding();
+ 
+-void initializeEncoding();
++void initializeEncoding(JNIEnv *env);
+ 
+ void* getProcessHandle();
+ 
+diff --git a/jdk/src/share/native/sun/awt/medialib/awt_ImagingLib.h b/jdk/src/share/native/sun/awt/medialib/awt_ImagingLib.h
+index f0dfec5b..826c0f98 100644
+--- a/jdk/src/share/native/sun/awt/medialib/awt_ImagingLib.h
++++ b/jdk/src/share/native/sun/awt/medialib/awt_ImagingLib.h
+@@ -32,7 +32,7 @@
+ 
+ /* Struct that holds the mlib function ptrs and names */
+ typedef struct {
+-    mlib_status (*fptr)();
++    mlib_status (*fptr)(void *, ...);
+     char *fname;
+ } mlibFnS_t;
+ 
+diff --git a/jdk/src/solaris/native/sun/awt/awt_GraphicsEnv.h b/jdk/src/solaris/native/sun/awt/awt_GraphicsEnv.h
+index 1675c682..15f43f15 100644
+--- a/jdk/src/solaris/native/sun/awt/awt_GraphicsEnv.h
++++ b/jdk/src/solaris/native/sun/awt/awt_GraphicsEnv.h
+@@ -50,7 +50,7 @@
+ #define MITSHM_PERM_COMMON (0666)
+ #define MITSHM_PERM_OWNER  (0600)
+ 
+-extern int XShmQueryExtension();
++extern Bool XShmQueryExtension(Display*);
+ 
+ void TryInitMITShm(JNIEnv *env, jint *shmExt, jint *shmPixmaps);
+ void resetXShmAttachFailed();
+diff --git a/jdk/src/solaris/native/sun/awt/gtk2_interface.c b/jdk/src/solaris/native/sun/awt/gtk2_interface.c
+index 201565a1..95c47ed6 100644
+--- a/jdk/src/solaris/native/sun/awt/gtk2_interface.c
++++ b/jdk/src/solaris/native/sun/awt/gtk2_interface.c
+@@ -216,7 +216,7 @@ static GtkWidget* (*fp_gtk_label_new)(const gchar* str);
+ static GtkWidget* (*fp_gtk_menu_new)();
+ static GtkWidget* (*fp_gtk_menu_bar_new)();
+ static GtkWidget* (*fp_gtk_menu_item_new)();
+-static GtkWidget* (*fp_gtk_notebook_new)();
++static GtkWidget* (*fp_gtk_notebook_new)(void *);
+ static GtkWidget* (*fp_gtk_progress_bar_new)();
+ static GtkWidget* (*fp_gtk_progress_bar_set_orientation)(
+         GtkProgressBar *pbar,
+@@ -228,8 +228,8 @@ static GtkWidget* (*fp_gtk_scrolled_window_new)(GtkAdjustment *hadjustment,
+ static GtkWidget* (*fp_gtk_separator_menu_item_new)();
+ static GtkWidget* (*fp_gtk_separator_tool_item_new)();
+ static GtkWidget* (*fp_gtk_text_view_new)();
+-static GtkWidget* (*fp_gtk_toggle_button_new)();
+-static GtkWidget* (*fp_gtk_toolbar_new)();
++static GtkWidget* (*fp_gtk_toggle_button_new)(void *);
++static GtkWidget* (*fp_gtk_toolbar_new)(void *);
+ static GtkWidget* (*fp_gtk_tree_view_new)();
+ static GtkWidget* (*fp_gtk_viewport_new)(GtkAdjustment *hadjustment,
+         GtkAdjustment *vadjustment);
+@@ -1213,7 +1213,7 @@ static GtkWidget *gtk2_get_widget(WidgetType widget_type)
+                     (NULL == gtk2_widgets[_GTK_COMBO_BOX_ARROW_BUTTON_TYPE]))
+             {
+                 gtk2_widgets[_GTK_COMBO_BOX_ARROW_BUTTON_TYPE] =
+-                     (*fp_gtk_toggle_button_new)();
++                     (*fp_gtk_toggle_button_new)(NULL);
+             }
+             result = gtk2_widgets[_GTK_COMBO_BOX_ARROW_BUTTON_TYPE];
+             break;
+diff --git a/jdk/src/solaris/native/sun/awt/gtk3_interface.c b/jdk/src/solaris/native/sun/awt/gtk3_interface.c
+index da27ae99..4b4e6698 100644
+--- a/jdk/src/solaris/native/sun/awt/gtk3_interface.c
++++ b/jdk/src/solaris/native/sun/awt/gtk3_interface.c
+@@ -987,7 +987,7 @@ static GtkWidget *gtk3_get_widget(WidgetType widget_type)
+                     (NULL == gtk3_widgets[_GTK_COMBO_BOX_ARROW_BUTTON_TYPE]))
+             {
+                 gtk3_widgets[_GTK_COMBO_BOX_ARROW_BUTTON_TYPE] =
+-                     (*fp_gtk_toggle_button_new)();
++                     (*fp_gtk_toggle_button_new)(NULL);
+             }
+             result = gtk3_widgets[_GTK_COMBO_BOX_ARROW_BUTTON_TYPE];
+             break;
+diff --git a/jdk/src/solaris/native/sun/awt/gtk3_interface.h b/jdk/src/solaris/native/sun/awt/gtk3_interface.h
+index 1e4b4c7a..1ec62bfd 100644
+--- a/jdk/src/solaris/native/sun/awt/gtk3_interface.h
++++ b/jdk/src/solaris/native/sun/awt/gtk3_interface.h
+@@ -559,7 +559,7 @@ static GtkWidget* (*fp_gtk_label_new)(const gchar* str);
+ static GtkWidget* (*fp_gtk_menu_new)();
+ static GtkWidget* (*fp_gtk_menu_bar_new)();
+ static GtkWidget* (*fp_gtk_menu_item_new)();
+-static GtkWidget* (*fp_gtk_notebook_new)();
++static GtkWidget* (*fp_gtk_notebook_new)(void *);
+ static GtkWidget* (*fp_gtk_progress_bar_new)();
+ static GtkWidget* (*fp_gtk_progress_bar_set_orientation)(
+         GtkProgressBar *pbar,
+@@ -571,8 +571,8 @@ static GtkWidget* (*fp_gtk_scrolled_window_new)(GtkAdjustment *hadjustment,
+ static GtkWidget* (*fp_gtk_separator_menu_item_new)();
+ static GtkWidget* (*fp_gtk_separator_tool_item_new)();
+ static GtkWidget* (*fp_gtk_text_view_new)();
+-static GtkWidget* (*fp_gtk_toggle_button_new)();
+-static GtkWidget* (*fp_gtk_toolbar_new)();
++static GtkWidget* (*fp_gtk_toggle_button_new)(void *);
++static GtkWidget* (*fp_gtk_toolbar_new)(void *);
+ static GtkWidget* (*fp_gtk_tree_view_new)();
+ static GtkWidget* (*fp_gtk_viewport_new)(GtkAdjustment *hadjustment,
+         GtkAdjustment *vadjustment);
+diff --git a/jdk/src/solaris/native/sun/net/spi/DefaultProxySelector.c b/jdk/src/solaris/native/sun/net/spi/DefaultProxySelector.c
+index 76b2e2da..59c3c599 100644
+--- a/jdk/src/solaris/native/sun/net/spi/DefaultProxySelector.c
++++ b/jdk/src/solaris/native/sun/net/spi/DefaultProxySelector.c
+@@ -95,11 +95,11 @@ typedef struct _GProxyResolver GProxyResolver;
+ typedef struct _GSocketConnectable GSocketConnectable;
+ typedef struct GError GError;
+ typedef GProxyResolver* g_proxy_resolver_get_default_func();
+-typedef char** g_proxy_resolver_lookup_func();
+-typedef GSocketConnectable* g_network_address_parse_uri_func();
+-typedef const char* g_network_address_get_hostname_func();
+-typedef unsigned short g_network_address_get_port_func();
+-typedef void g_strfreev_func();
++typedef char** g_proxy_resolver_lookup_func(GProxyResolver*  resolver, char* uri, void* cancellable, GError ** error);
++typedef GSocketConnectable* g_network_address_parse_uri_func(char* uri, int default_port, GError** error);
++typedef const char* g_network_address_get_hostname_func(GSocketConnectable* conn);
++typedef unsigned short g_network_address_get_port_func(GSocketConnectable* conn);
++typedef void g_strfreev_func(char** proxies);
+ 
+ static g_proxy_resolver_get_default_func* g_proxy_resolver_get_default = NULL;
+ static g_proxy_resolver_lookup_func* g_proxy_resolver_lookup = NULL;
+-- 
+2.43.0
+

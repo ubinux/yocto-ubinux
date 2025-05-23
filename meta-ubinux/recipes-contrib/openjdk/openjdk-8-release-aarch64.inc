@@ -2,7 +2,7 @@ require openjdk-8-release-common.inc
 
 COMPATIBLE_HOST = "aarch64"
 
-CHANGESET_ID="b10"
+CHANGESET_ID = "b10"
 
 CORBA_CHANGESET:aarch64 = "aarch64-shenandoah-jdk8u${PV}-${CHANGESET_ID}"
 SRC_URI[corba.sha256sum] = "112143d935a94cb95a0f9dba19a86184d08e699a68a82db58cdd9f0de1baeeae"

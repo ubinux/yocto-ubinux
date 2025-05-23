@@ -47,6 +47,7 @@ HOTSPOT_UB_PATCH:append:armv7ve = " file://1201-hotspot-aarch32-fix-missing-retu
 
 PATCHES_URI:append:class-target = "\
     file://1013-hotspot-add-missing-includes-for-shark-build-pt2.patch \
+    file://0001-Fix-build-error-with-gcc15.patch  \
 "
 
 PATCHES_URI:append:libc-musl = "\
