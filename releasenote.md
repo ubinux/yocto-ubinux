@@ -1,4 +1,4 @@
-# ubinux-2025.04 Release Notes
+# ubinux-2025.05 Release Notes
 
 OSS x AI Technology Div.  
 Fujitsu Limited  
@@ -6,7 +6,7 @@ Fujitsu Limited
 ## 1. Basic Information
 ### 1.1 Version Information
 - Yocto: 5.2
-- Kernel: 6.6.83
+- Kernel: 6.6.87
 - Toolchain
   - GCC: 14.2.0
   - Binutils: 2.44
@@ -32,27 +32,30 @@ Fujitsu Limited
 
 ## 2. Features
 ### 2.1 Security Fixes
-Following security issues have been fixed from ubinux-2025.03.
+Following security issues have been fixed from ubinux-2025.04.
 
-qtbase:
-- CVE-2023-43114
+strace:
+- CVE-2000-0006
 
 ubinux-kernel:
-- CVE-2024-24857
-- CVE-2024-24858
-- CVE-2024-26913
+- CVE-2024-53209
 
 ### 2.2 Added packages
 
-N/A
+- llvm
+- python3-pybind11
+- qhull
+- spirv-headers
+- spirv-tools
 
 ### 2.3 Removed packages
 
-- uw-imap
+- libndp
+- networkmanager
 
 ## 3. Installation guide
 ### 3.1 Install Toolchain
-Run as root privilege the Toolchain installer at arbitrary directory, and Toolchain will be installed into /opt/ubinux/2025.04 directory.
+Run as root privilege the Toolchain installer at arbitrary directory, and Toolchain will be installed into /opt/ubinux/2025.05 directory.
 
 
 [TYPE1] in the description, please read as shown below.
@@ -64,7 +67,7 @@ Run as root privilege the Toolchain installer at arbitrary directory, and Toolch
 |Armv8 (32bit EL, 64bit EL)|aarch64-ubinux-armv8|
 
 
-`$ sudo sh ubinux-glibc-x86_64-meta-toolchain-[TYPE1]-toolchain-2025.04.sh`
+`$ sudo sh ubinux-glibc-x86_64-meta-toolchain-[TYPE1]-toolchain-2025.05.sh`
 
 
 ### 3.2 Set up Environment Variables
@@ -81,7 +84,7 @@ Run the following commands.
 |Armv8 (32bit EL)|armv7ahf-neon-ubinuxmllib32-linux-gnueabi|
 
 
-`$ . /opt/ubinux/2025.04/environment-setup-[TYPE2]`
+`$ . /opt/ubinux/2025.05/environment-setup-[TYPE2]`
 
 ### 3.3 Create rootfs from Userland Packages
 To create rootfs, see Section 3.1.2 and 3.1.3 of the dnf-plugin-tui documentation.  
@@ -99,16 +102,6 @@ Enable some kernel configs to use following features.
   - CONFIG_DRM_FBDEV_EMULATION
 
 ### 4.2 Userland Packages
-
-- qtbase, qtdeclarative  
-  - Although the package names for qtbase and qtdeclarative are labeled as version 5.15.13,  
-    the actual version is 5.15.16.
-
-- busybox
-  - The following sub commands of busybox have been removed.
-    - busybox ifconfig
-    - busybox netstat
-    - busybox route  
 
 - tiptop
   - The command tiptop cannot be used normally  
@@ -142,6 +135,9 @@ The following objects are not validated because the hardware of the test environ
 
 ## 5. Known Security Issues
 The following security issues were known in this release:  
+corosync:
+- CVE-2025-30472
+
 db:
 - CVE-2016-0682
 - CVE-2016-0689
@@ -161,6 +157,10 @@ hdf5:
 - CVE-2019-8396
 - CVE-2020-10809
 - CVE-2020-10812
+- CVE-2025-2915
+- CVE-2025-2924
+- CVE-2025-2925
+- CVE-2025-2926
 
 libsndfile1:
 - CVE-2024-50613
@@ -170,6 +170,10 @@ libuser:
 
 libvirt:
 - CVE-2023-3750
+
+libxml2:
+- CVE-2025-32414
+- CVE-2025-32415
 
 openvswitch:
 - CVE-2019-25076
@@ -184,6 +188,7 @@ qemu:
 qtbase:
 - CVE-2023-51714
 - CVE-2024-39936
+- CVE-2025-30348
 
 rpm:
 - CVE-2021-35937
@@ -194,9 +199,6 @@ samba:
 - CVE-2022-32743
 - CVE-2022-38023
 - CVE-2023-37369
-
-strace:
-- CVE-2000-0006
 
 sysstat:
 - CVE-2022-39377
@@ -218,8 +220,6 @@ tigervnc:
 - CVE-2025-26601
 
 ubinux-kernel:
-- CVE-1999-0524
-- CVE-1999-0656
 - CVE-2007-4998
 - CVE-2008-4609
 - CVE-2010-4563
@@ -265,8 +265,11 @@ ubinux-kernel:
 - CVE-2024-25739
 - CVE-2024-25740
 - CVE-2024-26596
+- CVE-2024-26672
 - CVE-2024-26699
 - CVE-2024-26756
+- CVE-2024-26757
+- CVE-2024-26758
 - CVE-2024-26900
 - CVE-2024-26944
 - CVE-2024-26945
@@ -278,6 +281,7 @@ ubinux-kernel:
 - CVE-2024-27017
 - CVE-2024-27079
 - CVE-2024-35788
+- CVE-2024-35843
 - CVE-2024-35968
 - CVE-2024-36478
 - CVE-2024-38608
@@ -428,7 +432,6 @@ ubinux-kernel:
 - CVE-2024-53203
 - CVE-2024-53204
 - CVE-2024-53205
-- CVE-2024-53209
 - CVE-2024-53221
 - CVE-2024-53222
 - CVE-2024-56544
@@ -450,6 +453,8 @@ ubinux-kernel:
 - CVE-2024-56775
 - CVE-2024-56782
 - CVE-2024-56784
+- CVE-2024-57795
+- CVE-2024-57857
 - CVE-2024-57872
 - CVE-2024-57950
 - CVE-2024-57982
@@ -461,9 +466,21 @@ ubinux-kernel:
 - CVE-2025-21650
 - CVE-2025-21672
 - CVE-2025-21682
+- CVE-2025-21693
 - CVE-2025-21696
+- CVE-2025-21714
+- CVE-2025-21722
 - CVE-2025-21723
+- CVE-2025-21729
+- CVE-2025-21739
+- CVE-2025-21751
+- CVE-2025-21786
+- CVE-2025-21833
 - CVE-2025-21861
+- CVE-2025-21927
+- CVE-2025-21949
+- CVE-2025-21961
+- CVE-2025-37838
 
 xrdp:
 - CVE-2022-23468
