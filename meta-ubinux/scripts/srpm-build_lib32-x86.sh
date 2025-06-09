@@ -1,6 +1,5 @@
 #!/bin/bash
 recipes=(
-  lib32-open-iscsi-user
   lib32-jssocket
   lib32-libjs-jquery-cookie
   lib32-libjs-jquery-custom-scrollbar
