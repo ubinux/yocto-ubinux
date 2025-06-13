@@ -18,25 +18,25 @@ KBRANCH:qemux86.104 ?= "v6.12/standard/base"
 KBRANCH:qemuloongarch64  ?= "v6.12/standard/base"
 KBRANCH:qemumips64 ?= "v6.12/standard/mti-malta64"
 
-SRCREV_machine:qemuarm ?= "e1aec462165a127bd7a549f77e8e955c6d38ba79"
-SRCREV_machine:qemuarm64 ?= "5b22e7aef539a991b75fa45101cbc02051327cb6"
-SRCREV_machine:qemuloongarch64 ?= "5b22e7aef539a991b75fa45101cbc02051327cb6"
-SRCREV_machine:qemumips ?= "c8eb4283f60d76e0f0e3db984bb09e1309550604"
-SRCREV_machine:qemuppc ?= "5b22e7aef539a991b75fa45101cbc02051327cb6"
-SRCREV_machine:qemuriscv64 ?= "5b22e7aef539a991b75fa45101cbc02051327cb6"
-SRCREV_machine:qemuriscv32 ?= "5b22e7aef539a991b75fa45101cbc02051327cb6"
-SRCREV_machine:qemux86 ?= "5b22e7aef539a991b75fa45101cbc02051327cb6"
-SRCREV_machine:qemux86-64 ?= "5b22e7aef539a991b75fa45101cbc02051327cb6"
-SRCREV_machine:qemumips64 ?= "8e88d1714f7f56efc4650cf84b86845d44c01eb1"
-SRCREV_machine ?= "5b22e7aef539a991b75fa45101cbc02051327cb6"
-SRCREV_meta ?= "a50ff542f8d79235030741f9e850d34768907d2d"
+SRCREV_machine:qemuarm ?= "37a1fd13ca538e7785daf01434495a614bc55ead"
+SRCREV_machine:qemuarm64 ?= "298aefdf4112e7c0a84522e4acf2c722e433c8a0"
+SRCREV_machine:qemuloongarch64 ?= "298aefdf4112e7c0a84522e4acf2c722e433c8a0"
+SRCREV_machine:qemumips ?= "2bcf58ea5aa19d54c436e63c59ab09b307e9ee8e"
+SRCREV_machine:qemuppc ?= "298aefdf4112e7c0a84522e4acf2c722e433c8a0"
+SRCREV_machine:qemuriscv64 ?= "298aefdf4112e7c0a84522e4acf2c722e433c8a0"
+SRCREV_machine:qemuriscv32 ?= "298aefdf4112e7c0a84522e4acf2c722e433c8a0"
+SRCREV_machine:qemux86 ?= "298aefdf4112e7c0a84522e4acf2c722e433c8a0"
+SRCREV_machine:qemux86-64 ?= "298aefdf4112e7c0a84522e4acf2c722e433c8a0"
+SRCREV_machine:qemumips64 ?= "6470f58a8f04951f202cf85afb4421d2e7ec9995"
+SRCREV_machine ?= "298aefdf4112e7c0a84522e4acf2c722e433c8a0"
+SRCREV_meta ?= "60b8562e9989f268ad5d241989f56b71cfa1f648"
 
 # set your preferred provider of linux-yocto to 'linux-yocto-upstream', and you'll
 # get the <version>/base branch, which is pure upstream -stable, and the same
 # meta SRCREV as the linux-yocto-standard builds. Select your version using the
 # normal PREFERRED_VERSION settings.
 BBCLASSEXTEND = "devupstream:target"
-SRCREV_machine:class-devupstream ?= "b801eaa96a5a2f2a8fe0b5982ffe4a1fba3c1e93"
+SRCREV_machine:class-devupstream ?= "df3f6d10f353de274cc7c87f52dba5d26f185393"
 PN:class-devupstream = "linux-yocto-upstream"
 KBRANCH:class-devupstream = "v6.12/base"
 
@@ -44,7 +44,7 @@ SRC_URI = "git://git.yoctoproject.org/linux-yocto.git;name=machine;branch=${KBRA
            git://git.yoctoproject.org/yocto-kernel-cache;type=kmeta;name=meta;branch=yocto-6.12;destsuffix=${KMETA};protocol=https"
 
 LIC_FILES_CHKSUM = "file://COPYING;md5=6bc538ed5bd9a7fc9398086aedcd7e46"
-LINUX_VERSION ?= "6.12.27"
+LINUX_VERSION ?= "6.12.31"
 
 PV = "${LINUX_VERSION}+git"
 
@@ -72,5 +72,8 @@ KERNEL_FEATURES:append = " ${@bb.utils.contains("DISTRO_FEATURES", "ptest", " cg
 KERNEL_FEATURES:append:powerpc = " arch/powerpc/powerpc-debug.scc"
 KERNEL_FEATURES:append:powerpc64 = " arch/powerpc/powerpc-debug.scc"
 KERNEL_FEATURES:append:powerpc64le = " arch/powerpc/powerpc-debug.scc"
-
+# Do not add debug info for riscv32, it fails during depmod
+# ERROR: modpost: __ex_table+0x17a4 references non-executable section '.debug_loclists'
+# Check again during next major version upgrade
+KERNEL_FEATURES:remove:riscv32 = "features/debug/debug-kernel.scc"
 INSANE_SKIP:kernel-vmlinux:qemuppc64 = "textrel"

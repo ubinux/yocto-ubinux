@@ -240,17 +240,13 @@ BB_DISKMON_DIRS ??= "\
 # Using the CDN rather than the yoctoproject.org address is suggested/preferred.
 #
 #BB_HASHSERVE_UPSTREAM = 'wss://hashserv.yoctoproject.org/ws'
-#SSTATE_MIRRORS ?= "file://.* http://cdn.jsdelivr.net/yocto/sstate/all/PATH;downloadfilename=PATH"
-#
-###SSTATE_MIRRORS ?= "file://.* http://sstate.yoctoproject.org/all/PATH;downloadfilename=PATH"
-
+#SSTATE_MIRRORS ?= "file://.* http://sstate.yoctoproject.org/all/PATH;downloadfilename=PATH"
 
 #
 # Qemu configuration
 #
-# By default native qemu will build with a builtin VNC server where graphical output can be
-# seen. The line below enables the SDL UI frontend too.
-PACKAGECONFIG:append:pn-qemu-system-native = " sdl"
+# By default native qemu will build with a builtin VNC server and a SDL UI frontend
+# where graphical output can be seen.
 # By default libsdl2-native will be built, if you want to use your host's libSDL instead of 
 # the minimal libsdl built by libsdl2-native then uncomment the ASSUME_PROVIDED line below.
 #ASSUME_PROVIDED += "libsdl2-native"

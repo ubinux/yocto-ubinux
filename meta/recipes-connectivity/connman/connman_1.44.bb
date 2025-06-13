@@ -22,6 +22,7 @@ SRC_URI = "${KERNELORG_MIRROR}/linux/network/${BPN}/${BP}.tar.xz \
            file://connman \
            file://0002-resolve-musl-does-not-implement-res_ninit.patch \
            file://CVE-2025-32743.patch \
+           file://CVE-2025-32366.patch \
            "
 
 SRC_URI[sha256sum] = "2be2b00321632b775f9eff713acd04ef21e31fbf388f6ebf45512ff4289574ff"
@@ -91,7 +92,7 @@ SYSTEMD_SERVICE:${PN} = "connman.service"
 SYSTEMD_SERVICE:${PN}-vpn = "connman-vpn.service"
 SYSTEMD_SERVICE:${PN}-wait-online = "connman-wait-online.service"
 
-ALTERNATIVE_PRIORITY = "100"
+ALTERNATIVE_PRIORITY = "${@bb.utils.contains('DISTRO_FEATURES','systemd-resolved','10','100',d)}"
 ALTERNATIVE:${PN} = "${@bb.utils.contains('DISTRO_FEATURES','systemd','resolv-conf','',d)}"
 ALTERNATIVE_TARGET[resolv-conf] = "${@bb.utils.contains('DISTRO_FEATURES','systemd','${sysconfdir}/resolv-conf.connman','',d)}"
 ALTERNATIVE_LINK_NAME[resolv-conf] = "${@bb.utils.contains('DISTRO_FEATURES','systemd','${sysconfdir}/resolv.conf','',d)}"

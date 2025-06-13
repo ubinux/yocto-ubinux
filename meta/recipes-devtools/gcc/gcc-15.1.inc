@@ -10,6 +10,8 @@ BINV = "15.1.0"
 
 FILESEXTRAPATHS =. "${FILE_DIRNAME}/gcc:${FILE_DIRNAME}/gcc/backport:"
 
+TOOLCHAIN = "gcc"
+
 DEPENDS =+ "mpfr gmp libmpc zlib zstd flex-native"
 NATIVEDEPS = "mpfr-native gmp-native libmpc-native zlib-native flex-native zstd-native"
 
@@ -69,13 +71,15 @@ SRC_URI = "${BASEURI} \
            file://0023-Fix-install-path-of-linux64.h.patch \
            file://0024-Avoid-hardcoded-build-paths-into-ppc-libgcc.patch \
            file://0025-gcc-testsuite-tweaks-for-mips-OE.patch \
+           file://0026-arm-fully-validate-mem_noofs_operand-PR120351.patch \
+           file://0026-fix-incorrect-preprocessor-line-numbers.patch \
 "
 
 S = "${TMPDIR}/work-shared/gcc-${PV}-${PR}/${SOURCEDIR}"
 B = "${WORKDIR}/gcc-${PV}/build.${HOST_SYS}.${TARGET_SYS}"
 
 # Language Overrides
-FORTRAN = ""
+FORTRAN ?= ""
 
 SSP ?= "--disable-libssp"
 SSP:mingw32 = "--enable-libssp"
