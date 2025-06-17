@@ -1,8 +1,6 @@
 require pseudo.inc
 
 SRC_URI = "git://git.yoctoproject.org/pseudo;branch=master;protocol=https \
-           file://0001-configure-Prune-PIE-flags.patch \
-           file://glibc238.patch \
            file://fallback-passwd \
            file://fallback-group \
            "
@@ -14,7 +12,7 @@ SRC_URI:append:class-nativesdk = " \
     file://older-glibc-symbols.patch"
 SRC_URI[prebuilt.sha256sum] = "ed9f456856e9d86359f169f46a70ad7be4190d6040282b84c8d97b99072485aa"
 
-SRCREV = "28dcefb809ce95db997811b5662f0b893b9923e0"
+SRCREV = "2c43381180f9cfef4c0a8bb0c1658a86c3fcc876"
 S = "${WORKDIR}/git"
 PV = "1.9.0+git"
 

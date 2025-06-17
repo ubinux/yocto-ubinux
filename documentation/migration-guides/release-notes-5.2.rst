@@ -354,7 +354,7 @@ New Features / Enhancements in |yocto-ver|
          HTTPS tokens may not be required.
 
    -  ``compress``: use ``lz4`` instead of ``lz4c``, as ``lz4c`` as been
-      considered deprecrated since 2018.
+      considered deprecated since 2018.
 
    -  ``server/process``: decrease idle/main loop frequency, as it is idle and
       main loops have socket select calls to know when to execute.
@@ -373,7 +373,7 @@ New Features / Enhancements in |yocto-ver|
    -  ``bb/build``: add a function ``bb.build.listtasks()`` to list the tasks in
       a datastore.
 
-   -  Remove custom exception backtrace formatting, and replace occurences of
+   -  Remove custom exception backtrace formatting, and replace occurrences of
       ``bb.exception.format_exception()`` by ``traceback.format_exception()``.
 
    -  ``runqueue``: various performance optimizations including:
@@ -447,6 +447,10 @@ New Features / Enhancements in |yocto-ver|
       with a matching hash and path, it will be linked, otherwise a new File
       element will be created.
 
+   -  The output of :ref:`devtool upgrade-status
+      <ref-manual/devtool-reference:Checking on the Upgrade Status of a Recipe>`
+      is now sorted by recipe name.
+
 -  Patchtest-related changes:
 
    -  Refactor pattern definitions in a ``patterns`` module.
@@ -519,9 +523,10 @@ New Features / Enhancements in |yocto-ver|
          ``${libdir}`` if the ``set-time-epoch`` :term:`PACKAGECONFIG` config is
          set.
 
-      -  really disable Predictable Network Interface names if the ``pni-names``
-         feature is not part of :term:`DISTRO_FEATURES`. Previously it was only
-         really disable for QEMU machines.
+      -  really disable `Predictable Network Interface names
+         <https://www.freedesktop.org/wiki/Software/systemd/PredictableNetworkInterfaceNames/>`__
+         if the ``pni-names`` feature is not part of :term:`DISTRO_FEATURES`.
+         Previously it was only really disabled for QEMU machines.
 
       -  split ``networkd`` into its own package named ``systemd-networkd``.
 
@@ -593,7 +598,7 @@ New Features / Enhancements in |yocto-ver|
       code in :oe_git:`meta/lib/oe/license.py </openembedded-core/tree/meta/lib/oe/license.py>`.
 
    -  The recipe ``cairo`` now disables the features ``symbol-lookup``,
-      ``spectre`, and ``tests`` by default.
+      ``spectre``, and ``tests`` by default.
 
    -  The recipe ``glib-2.0`` now disables the feature ``sysprof`` by default.
 
@@ -805,7 +810,7 @@ The following CVEs have been fixed:
    * - ``curl``
      - :cve_nist:`2024-8096`, :cve_nist:`2024-9681`, :cve_nist:`2024-11053`, :cve_nist:`2025-0167`, :cve_nist:`2025-0665`, :cve_nist:`2025-0725`
    * - ``expat``
-     - :cve_nist:`2024-50602`, :cve_nist:`2024-8176`
+     - :cve_nist:`2024-8176`, :cve_nist:`2024-50602`
    * - ``ghostscript``
      - :cve_nist:`2024-46951`, :cve_nist:`2024-46952`, :cve_nist:`2024-46953`, :cve_nist:`2024-46954`, :cve_nist:`2024-46955`, :cve_nist:`2024-46956`
    * - ``gnutls``
@@ -813,23 +818,29 @@ The following CVEs have been fixed:
    * - ``go``
      - :cve_nist:`2024-34155`, :cve_nist:`2024-34156`, :cve_nist:`2024-34158`, :cve_nist:`2024-45336`, :cve_nist:`2024-45341`, :cve_nist:`2025-22866`, :cve_nist:`2025-22870`
    * - ``grub``
-     - :cve_nist:`2024-45781`, :cve_nist:`2024-45782`, :cve_nist:`2024-56737`, :cve_nist:`2024-45780`, :cve_nist:`2024-45783`, :cve_nist:`2025-0624`, :cve_nist:`2024-45774`, :cve_nist:`2024-45775`, :cve_nist:`2025-0622`, :cve_nist:`2024-45776`, :cve_nist:`2024-45777`, :cve_nist:`2025-0690`, :cve_nist:`2025-1118`, :cve_nist:`2024-45778`, :cve_nist:`2024-45779`, :cve_nist:`2025-0677`, :cve_nist:`2025-0684`, :cve_nist:`2025-0685`, :cve_nist:`2025-0686`, :cve_nist:`2025-0689`, :cve_nist:`2025-0678`, :cve_nist:`2025-1125`
+     - :cve_nist:`2024-45774`, :cve_nist:`2024-45775`, :cve_nist:`2024-45776`, :cve_nist:`2024-45777`, :cve_nist:`2024-45778`, :cve_nist:`2024-45779`, :cve_nist:`2024-45780`, :cve_nist:`2024-45781`, :cve_nist:`2024-45782`, :cve_nist:`2024-45783`, :cve_nist:`2024-56737`, :cve_nist:`2025-0622`, :cve_nist:`2025-0624`, :cve_nist:`2025-0677`, :cve_nist:`2025-0678`, :cve_nist:`2025-0684`, :cve_nist:`2025-0685`, :cve_nist:`2025-0686`, :cve_nist:`2025-0689`, :cve_nist:`2025-0690`, :cve_nist:`2025-1118`, :cve_nist:`2025-1125`
+   * -  ``gstreamer1.0``
+     - :cve_nist:`2024-47606`
+   * -  ``gstreamer1.0-plugins-base``
+     - :cve_nist:`2024-47538`, :cve_nist:`2024-47541`, :cve_nist:`2024-47542`,  :cve_nist:`2024-47600`, :cve_nist:`2024-47607`, :cve_nist:`2024-47615`, :cve_nist:`2024-47835`
+   * -  ``gstreamer1.0-plugins-good``
+     - :cve_nist:`2024-47537`, :cve_nist:`2024-47539`, :cve_nist:`2024-47540`, :cve_nist:`2024-47543`, :cve_nist:`2024-47544`, :cve_nist:`2024-47545`, :cve_nist:`2024-47546`, :cve_nist:`2024-47596`, :cve_nist:`2024-47597`, :cve_nist:`2024-47598`, :cve_nist:`2024-47599`, :cve_nist:`2024-47601`, :cve_nist:`2024-47602`, :cve_nist:`2024-47603`, :cve_nist:`2024-47606`, :cve_nist:`2024-47613`, :cve_nist:`2024-47774`, :cve_nist:`2024-47775`, :cve_nist:`2024-47776`, :cve_nist:`2024-47777`, :cve_nist:`2024-47778`, :cve_nist:`2024-47834`
    * - ``libarchive``
-     - :cve_nist:`2024-57970`, :cve_nist:`2025-25724`, :cve_nist:`2025-1632`
+     - :cve_nist:`2024-57970`, :cve_nist:`2025-1632`, :cve_nist:`2025-25724`
    * - ``libcap``
      - :cve_nist:`2025-1390`
    * - ``libsndfile1``
      - :cve_nist:`2024-50612`
-   * - ``libssh2``
-     - :cve_nist:`2023-48795`
    * - ``libtasn1``
      - :cve_nist:`2024-12133`
    * - ``libxml2``
-     - :cve_nist:`2025-24928`, :cve_nist:`2024-56171`
+     - :cve_nist:`2024-56171`, :cve_nist:`2025-24928`
    * - ``ofono``
      - :cve_nist:`2024-7539`, :cve_nist:`2024-7540`, :cve_nist:`2024-7541`, :cve_nist:`2024-7542`
    * - ``omvf``
      - :cve_nist:`2023-45236`, :cve_nist:`2023-45237`, :cve_nist:`2024-25742`
+   * - ``openssh``
+     - :cve_nist:`2025-26465`, :cve_nist:`2025-26466`
    * - ``openssl``
      - :cve_nist:`2024-9143`, :cve_nist:`2024-12797`, :cve_nist:`2024-13176`
    * - ``orc``
@@ -844,10 +855,12 @@ The following CVEs have been fixed:
      - :cve_nist:`2024-41123`, :cve_nist:`2024-41946`
    * - ``rust``
      - :cve_nist:`2024-43402`
+   * - ``socat``
+     - :cve_nist:`2024-54661`
    * - ``tiff``
-     - :cve_nist:`2023-52356`, :cve_nist:`2023-6228`, :cve_nist:`2023-6277`
+     - :cve_nist:`2023-6277`, :cve_nist:`2023-6228`, :cve_nist:`2023-52356`
    * - ``vim``
-     - :cve_nist:`2024-45306`, :cve_nist:`2024-47814`, :cve_nist:`2025-22134`, :cve_nist:`2025-24014`, :cve_nist:`2025-26603`, :cve_nist:`2025-1215`, :cve_nist:`2025-27423`, :cve_nist:`2025-29768`
+     - :cve_nist:`2024-45306`, :cve_nist:`2024-47814`, :cve_nist:`2025-1215`, :cve_nist:`2025-22134`, :cve_nist:`2025-24014`, :cve_nist:`2025-26603`, :cve_nist:`2025-27423`, :cve_nist:`2025-29768`
    * - ``webkitgtk``
      - :cve_nist:`2025-24143`, :cve_nist:`2025-24150`, :cve_nist:`2025-24158`, :cve_nist:`2025-24162`
    * - ``wpa-supplicant``
@@ -1155,32 +1168,32 @@ Recipe Upgrades in |yocto-ver|
    * - ``gst-devtools``
      - 1.24.10
      - 1.24.12
-   * - ``gstreamer1``
-     - .0 1.24.10
+   * - ``gstreamer1.0``
+     - 1.24.10
      - 1.24.12
-   * - ``gstreamer1``
-     - .0-libav 1.24.10
+   * - ``gstreamer1.0-libav``
+     - 1.24.10
      - 1.24.12
-   * - ``gstreamer1``
-     - .0-plugins-bad 1.24.10
+   * - ``gstreamer1.0-plugins-bad``
+     - 1.24.10
      - 1.24.12
-   * - ``gstreamer1``
-     - .0-plugins-base 1.24.10
+   * - ``gstreamer1.0-plugins-base``
+     - 1.24.10
      - 1.24.12
-   * - ``gstreamer1``
-     - .0-plugins-good 1.24.10
+   * - ``gstreamer1.0-plugins-good``
+     - 1.24.10
      - 1.24.12
-   * - ``gstreamer1``
-     - .0-plugins-ugly 1.24.10
+   * - ``gstreamer1.0-plugins-ugly``
+     - 1.24.10
      - 1.24.12
-   * - ``gstreamer1``
-     - .0-python 1.24.10
+   * - ``gstreamer1.0-python``
+     - 1.24.10
      - 1.24.12
-   * - ``gstreamer1``
-     - .0-rtsp-server 1.24.10
+   * - ``gstreamer1.0-rtsp-server``
+     - 1.24.10
      - 1.24.12
-   * - ``gstreamer1``
-     - .0-vaapi 1.24.10
+   * - ``gstreamer1.0-vaapi``
+     - 1.24.10
      - 1.24.12
    * - ``gtk4``
      - 4.14.5
@@ -2228,3 +2241,60 @@ Thanks to the following people who contributed to this release:
 
 Repositories / Downloads for Yocto-|yocto-ver|
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+poky
+
+-  Repository Location: :yocto_git:`/poky`
+-  Branch: :yocto_git:`walnascar </poky/log/?h=walnascar>`
+-  Tag:  :yocto_git:`yocto-5.2 </poky/log/?h=yocto-5.2>`
+-  Git Revision: :yocto_git:`9b96fdbb0cab02f4a6180e812b02bc9d4c41b1a5 </poky/commit/?id=9b96fdbb0cab02f4a6180e812b02bc9d4c41b1a5>`
+-  Release Artefact: poky-9b96fdbb0cab02f4a6180e812b02bc9d4c41b1a5
+-  sha: 2d3c0e216c7fa71a364986be6754549e2059d37581aad0a53f0f95c33fb1eefe
+-  Download Locations:
+   https://downloads.yoctoproject.org/releases/yocto/yocto-5.2/poky-9b96fdbb0cab02f4a6180e812b02bc9d4c41b1a5.tar.bz2
+   https://mirrors.kernel.org/yocto/yocto/yocto-5.2/poky-9b96fdbb0cab02f4a6180e812b02bc9d4c41b1a5.tar.bz2
+
+openembedded-core
+
+-  Repository Location: :oe_git:`/openembedded-core`
+-  Branch: :oe_git:`walnascar </openembedded-core/log/?h=walnascar>`
+-  Tag:  :oe_git:`yocto-5.2 </openembedded-core/log/?h=yocto-5.2>`
+-  Git Revision: :oe_git:`6ec2c52b938302b894f119f701ffcf0a847eee85 </openembedded-core/commit/?id=6ec2c52b938302b894f119f701ffcf0a847eee85>`
+-  Release Artefact: oecore-6ec2c52b938302b894f119f701ffcf0a847eee85
+-  sha: 00453354efdd9c977d559f7c0047691bb974170ce313ac9a1e6cb94108d6c648
+-  Download Locations:
+   https://downloads.yoctoproject.org/releases/yocto/yocto-5.2/oecore-6ec2c52b938302b894f119f701ffcf0a847eee85.tar.bz2
+   https://mirrors.kernel.org/yocto/yocto/yocto-5.2/oecore-6ec2c52b938302b894f119f701ffcf0a847eee85.tar.bz2
+
+meta-mingw
+
+-  Repository Location: :yocto_git:`/meta-mingw`
+-  Branch: :yocto_git:`walnascar </meta-mingw/log/?h=walnascar>`
+-  Tag:  :yocto_git:`yocto-5.2 </meta-mingw/log/?h=yocto-5.2>`
+-  Git Revision: :yocto_git:`edce693e1b8fabd84651aa6c0888aafbcf238577 </meta-mingw/commit/?id=edce693e1b8fabd84651aa6c0888aafbcf238577>`
+-  Release Artefact: meta-mingw-edce693e1b8fabd84651aa6c0888aafbcf238577
+-  sha: 6cfed41b54f83da91a6cf201ec1c2cd4ac284f642b1268c8fa89d2335ea2bce1
+-  Download Locations:
+   https://downloads.yoctoproject.org/releases/yocto/yocto-5.2/meta-mingw-edce693e1b8fabd84651aa6c0888aafbcf238577.tar.bz2
+   https://mirrors.kernel.org/yocto/yocto/yocto-5.2/meta-mingw-edce693e1b8fabd84651aa6c0888aafbcf238577.tar.bz2
+
+bitbake
+
+-  Repository Location: :oe_git:`/bitbake`
+-  Branch: :oe_git:`2.12 </bitbake/log/?h=2.12>`
+-  Tag:  :oe_git:`yocto-5.2 </bitbake/log/?h=yocto-5.2>`
+-  Git Revision: :oe_git:`5b4e20377eea8d428edf1aeb2187c18f82ca6757 </bitbake/commit/?id=5b4e20377eea8d428edf1aeb2187c18f82ca6757>`
+-  Release Artefact: bitbake-5b4e20377eea8d428edf1aeb2187c18f82ca6757
+-  sha: 48cff22c1e61f47adce474b636ca865e7e0b62293fc5c8829d09e7f1ac5252af
+-  Download Locations:
+   https://downloads.yoctoproject.org/releases/yocto/yocto-5.2/bitbake-5b4e20377eea8d428edf1aeb2187c18f82ca6757.tar.bz2
+   https://mirrors.kernel.org/yocto/yocto/yocto-5.2/bitbake-5b4e20377eea8d428edf1aeb2187c18f82ca6757.tar.bz2
+
+yocto-docs
+
+-  Repository Location: :yocto_git:`/yocto-docs`
+-  Branch: :yocto_git:`walnascar </yocto-docs/log/?h=walnascar>`
+-  Tag: :yocto_git:`yocto-5.2 </yocto-docs/log/?h=yocto-5.2>`
+-  Git Revision: :yocto_git:`b8d9cf79d299b2e553e6bc962527d835206022ec </yocto-docs/commit/?id=b8d9cf79d299b2e553e6bc962527d835206022ec>`
+

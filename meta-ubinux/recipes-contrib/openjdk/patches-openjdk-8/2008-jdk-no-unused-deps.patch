@@ -3,6 +3,7 @@ From: Jens Rehsack <rehsack@gmail.com>
 Date: Thu, 2 Jan 2020 13:26:42 +0100
 Subject: [PATCH] jdk: no unused deps
 
+Upstream-Status: Pending
 Signed-off-by: Richard Leitner <richard.leitner@skidata.com>
 
 ---

@@ -19,9 +19,9 @@ CVE_PRODUCT = "connman connection_manager"
 DEPENDS  = "dbus glib-2.0"
 
 SRC_URI = "${KERNELORG_MIRROR}/linux/network/${BPN}/${BP}.tar.xz \
-           file://0001-connman.service-stop-systemd-resolved-when-we-use-co.patch \
            file://connman \
            file://0002-resolve-musl-does-not-implement-res_ninit.patch \
+           file://CVE-2025-32743.patch \
            "
 
 SRC_URI[sha256sum] = "2be2b00321632b775f9eff713acd04ef21e31fbf388f6ebf45512ff4289574ff"
@@ -30,14 +30,17 @@ RRECOMMENDS:${PN} = "connman-conf"
 RCONFLICTS:${PN} = "networkmanager"
 
 EXTRA_OECONF += "\
-    ac_cv_path_WPASUPPLICANT=${sbindir}/wpa_supplicant \
+    ac_cv_path_IP6TABLES_SAVE=${sbindir}/ip6tables-save \
+    ac_cv_path_IPTABLES_SAVE=${sbindir}/iptables-save \
     ac_cv_path_PPPD=${sbindir}/pppd \
+    ac_cv_path_WPASUPPLICANT=${sbindir}/wpa_supplicant \
     --enable-debug \
     --enable-loopback \
     --enable-ethernet \
     --enable-tools \
     --disable-polkit \
-    --runstatedir=/run \
+    --runstatedir='${runtimedir}' \
+    --with-dns-backend='${@bb.utils.contains("DISTRO_FEATURES", "systemd-resolved", "systemd-resolved", "internal", d)}' \
 "
 # For smooth operation it would be best to start only one wireless daemon at a time.
 # If wpa-supplicant is running, connman will use it preferentially.
@@ -67,8 +70,8 @@ PACKAGECONFIG[l2tp] = "--enable-l2tp --with-l2tp=${sbindir}/xl2tpd,--disable-l2t
 PACKAGECONFIG[pptp] = "--enable-pptp --with-pptp=${sbindir}/pptp,--disable-pptp,ppp,pptp-linux"
 # WISPr support for logging into hotspots, requires TLS
 PACKAGECONFIG[wispr] = "--enable-wispr,--disable-wispr,gnutls,"
-PACKAGECONFIG[nftables] = "--with-firewall=nftables ,,libmnl libnftnl,,kernel-module-nf-tables kernel-module-nft-chain-nat-ipv4 kernel-module-nft-chain-route-ipv4 kernel-module-nft-masq-ipv4 kernel-module-nft-nat"
-PACKAGECONFIG[iptables] = "--with-firewall=iptables ,,iptables,iptables"
+PACKAGECONFIG[nftables] = "--with-firewall=nftables ,,libmnl libnftnl,,kernel-module-nf-tables kernel-module-nft-chain-nat-ipv4 kernel-module-nft-chain-route-ipv4 kernel-module-nft-masq-ipv4 kernel-module-nft-nat,iptables"
+PACKAGECONFIG[iptables] = "--with-firewall=iptables,,iptables,,,nftables"
 PACKAGECONFIG[nfc] = "--enable-neard, --disable-neard, neard, neard"
 PACKAGECONFIG[client] = "--enable-client,--disable-client,readline"
 PACKAGECONFIG[wireguard] = "--enable-wireguard,--disable-wireguard,libmnl"
@@ -115,6 +118,7 @@ do_install:append() {
 
 	# For read-only filesystem, do not create links during bootup
 	if ${@bb.utils.contains('DISTRO_FEATURES','systemd','true','false',d)}; then
+		install -d ${D}${sysconfdir}
 		ln -sf ../run/connman/resolv.conf ${D}${sysconfdir}/resolv-conf.connman
 	fi
 }
@@ -164,6 +168,7 @@ FILES:${PN}-tools = "${bindir}/wispr"
 RDEPENDS:${PN}-tools = "${PN}"
 
 FILES:${PN}-tests = "${bindir}/*-test"
+RDEPENDS:${PN}-tests = "${@bb.utils.contains('PACKAGECONFIG', 'iptables', 'iptables', '', d)}"
 
 FILES:${PN}-client = "${bindir}/connmanctl"
 RDEPENDS:${PN}-client = "${PN}"

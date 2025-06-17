@@ -102,7 +102,7 @@ do_install:append() {
 do_install[vardepsexclude] += "BB_NUMBER_THREADS"
 
 export MAKE_VERBOSE = "y"
-export MFLAGS="${@jdk_make_options(d)} MAKE_VERBOSE=y QUIETLY= VERBOSE=-s LOG_LEVEL=trace STRIP_POLICY=no_strip"
+export MFLAGS = "${@jdk_make_options(d)} MAKE_VERBOSE=y QUIETLY= VERBOSE=-s LOG_LEVEL=trace STRIP_POLICY=no_strip"
 
 EXTRA_OEMAKE:append = '\
     ${@jdk_make_options(d)} \

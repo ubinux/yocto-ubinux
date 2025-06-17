@@ -19,9 +19,9 @@ SRC_URI = "${GITHUB_BASE_URI}/download/v${PV}/flex-${PV}.tar.gz \
            file://check-funcs.patch \
            file://0001-Emit-no-line-directives-if-gen_line_dirs-is-false.patch \
            file://0001-build-tests-add-missing-parser-scanner-dependencies.patch \
+           file://0001-Match-malloc-signature-to-its-use.patch \
            "
 
-SRC_URI[md5sum] = "2882e3179748cc9f9c23ec593d6adc8d"
 SRC_URI[sha256sum] = "e87aae032bf07c26f85ac0ed3250998c37621d95f8bd748b31f15b33c45ee995"
 
 GITHUB_BASE_URI = "https://github.com/westes/flex/releases"

@@ -8,7 +8,7 @@ DEPENDS = "gperf-native libcap util-linux python3-jinja2-native"
 
 SECTION = "base/shell"
 
-inherit useradd pkgconfig meson perlnative update-rc.d update-alternatives qemu systemd gettext bash-completion manpages features_check mime
+inherit useradd pkgconfig meson perlnative update-rc.d update-alternatives systemd gettext bash-completion manpages features_check mime
 
 # unmerged-usr support is deprecated upstream, taints the system and will be
 # removed in the near future. Fail the build if it is not enabled.
@@ -92,6 +92,7 @@ PACKAGECONFIG ??= " \
     quotacheck \
     randomseed \
     resolved \
+    serial-getty-generator \
     set-time-epoch \
     sysusers \
     timedated \
@@ -239,6 +240,7 @@ RESOLV_CONF ??= ""
 # bpf-framework: pass the recipe-sysroot to the compiler used to build
 # the eBPFs, so that it can find needed system includes in there.
 CFLAGS:append = " --sysroot=${STAGING_DIR_TARGET}"
+LDFLAGS:append:aarch64 = " ${@bb.utils.contains('PACKAGECONFIG', 'openssl', '-Wl,-z,gcs-report-dynamic=none', '', d)}"
 
 EXTRA_OEMESON += "-Dnobody-user=nobody \
                   -Dnobody-group=nogroup \
@@ -360,7 +362,7 @@ do_install() {
 		ln -s ../run/systemd/resolve/resolv.conf ${D}${sysconfdir}/resolv-conf.systemd
 	else
 		resolv_conf="${@bb.utils.contains('RESOLV_CONF', 'stub-resolv', 'run/systemd/resolve/stub-resolv.conf', 'run/systemd/resolve/resolv.conf', d)}"
-		sed -i -e "s%^L! /etc/resolv.conf.*$%L! /etc/resolv.conf - - - - ../${resolv_conf}%g" ${D}${exec_prefix}/lib/tmpfiles.d/etc.conf
+		sed -i -e "s%^L! /etc/resolv.conf.*$%L! /etc/resolv.conf - - - - ../${resolv_conf}%g" ${D}${exec_prefix}/lib/tmpfiles.d/systemd-resolve.conf
 		ln -s ../${resolv_conf} ${D}${sysconfdir}/resolv-conf.systemd
 	fi
 	if ${@bb.utils.contains('DISTRO_FEATURES', 'x11', 'false', 'true', d)}; then
@@ -601,26 +603,16 @@ FILES:${PN}-extra-utils = "\
                         ${bindir}/systemd-cgls \
                         ${bindir}/systemd-cgtop \
                         ${bindir}/systemd-stdio-bridge \
-                        ${base_bindir}/systemd-ask-password \
-                        ${base_bindir}/systemd-tty-ask-password-agent \
                         ${base_sbindir}/mount.ddi \
                         ${systemd_system_unitdir}/initrd.target.wants/systemd-pcrphase-initrd.path \
-                        ${systemd_system_unitdir}/systemd-ask-password-console.path \
-                        ${systemd_system_unitdir}/systemd-ask-password-console.service \
-                        ${systemd_system_unitdir}/systemd-ask-password-wall.path \
-                        ${systemd_system_unitdir}/systemd-ask-password-wall.service \
-                        ${systemd_system_unitdir}/sysinit.target.wants/systemd-ask-password-console.path \
-                        ${systemd_system_unitdir}/sysinit.target.wants/systemd-ask-password-wall.path \
                         ${systemd_system_unitdir}/sysinit.target.wants/systemd-pcrphase.path \
                         ${systemd_system_unitdir}/sysinit.target.wants/systemd-pcrphase-sysinit.path \
-                        ${systemd_system_unitdir}/multi-user.target.wants/systemd-ask-password-wall.path \
                         ${nonarch_libdir}/systemd/systemd-resolve-host \
                         ${nonarch_libdir}/systemd/systemd-ac-power \
                         ${nonarch_libdir}/systemd/systemd-activate \
                         ${nonarch_libdir}/systemd/systemd-measure \
                         ${nonarch_libdir}/systemd/systemd-pcrphase \
                         ${nonarch_libdir}/systemd/systemd-socket-proxyd \
-                        ${nonarch_libdir}/systemd/systemd-reply-password \
                         ${nonarch_libdir}/systemd/systemd-sleep \
                         ${nonarch_libdir}/systemd/system-sleep \
                         ${systemd_system_unitdir}/systemd-hibernate.service \
@@ -753,7 +745,7 @@ FILES:${PN} = " ${base_bindir}/* \
 FILES:${PN}-dev += "${base_libdir}/security/*.la ${datadir}/dbus-1/interfaces/ ${sysconfdir}/rpm/macros.systemd"
 
 RDEPENDS:${PN} += "kmod ${VIRTUAL-RUNTIME_dbus} util-linux-mount util-linux-umount udev (= ${EXTENDPKGV}) systemd-udev-rules util-linux-agetty util-linux-fsck util-linux-swaponoff util-linux-mkswap"
-RDEPENDS:${PN} += "${@bb.utils.contains('PACKAGECONFIG', 'serial-getty-generator', '', 'systemd-serialgetty', d)}"
+RDEPENDS:${PN} += "systemd-serialgetty"
 RDEPENDS:${PN} += "volatile-binds"
 
 RRECOMMENDS:${PN} += "${PN}-extra-utils \
@@ -932,7 +924,8 @@ pkg_prerm:${PN}:libc-glibc () {
 	fi
 }
 
-PACKAGE_WRITE_DEPS += "qemu-native"
+PACKAGE_WRITE_DEPS += "qemuwrapper-cross"
+
 pkg_postinst:udev-hwdb () {
 	if test -n "$D"; then
 		$INTERCEPT_DIR/postinst_intercept update_udev_hwdb ${PKG} mlprefix=${MLPREFIX} binprefix=${MLPREFIX} \
