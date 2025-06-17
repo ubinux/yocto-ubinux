@@ -786,7 +786,7 @@ FIT_CONF_PREFIX = "foo-"
         EXPECTED_COMP = ["ti,am335x-bone-green", "ti,am335x-bone-black", "ti,am335x-bone", "ti,am33xx"]
 
         config = """
-DISTRO="poky"
+DISTRO = "poky"
 MACHINE = "beaglebone-yocto"
 """
         self.write_config(config)
@@ -918,7 +918,7 @@ UBOOT_MKIMAGE_SIGN_ARGS = "-c 'a smart comment'"
         bb_vars = self._fit_get_bb_vars()
 
         # Ensure new keys are generated and FIT_GENERATE_KEYS = "1" is tested
-        bitbake("kernel-signing-keys-native -c cleansstate")
+        bitbake("kernel-signing-keys-native -c compile -f")
 
         self._test_fitimage(bb_vars)
 
@@ -938,7 +938,7 @@ UBOOT_MKIMAGE_SIGN_ARGS = "-c 'a smart comment'"
         """
 
         config = """
-DISTRO="poky"
+DISTRO = "poky"
 MACHINE = "beaglebone-yocto"
 INITRAMFS_IMAGE = "core-image-minimal-initramfs"
 INITRAMFS_SCRIPTS = ""
@@ -992,7 +992,7 @@ FIT_HASH_ALG = "sha256"
         """
 
         config = """
-DISTRO="poky"
+DISTRO = "poky"
 MACHINE = "beaglebone-yocto"
 INITRAMFS_IMAGE_BUNDLE = "1"
 INITRAMFS_IMAGE = "core-image-minimal-initramfs"
