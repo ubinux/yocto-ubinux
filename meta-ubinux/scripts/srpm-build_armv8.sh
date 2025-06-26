@@ -3,7 +3,6 @@ recipes=(
   libevent
   swupdate
   restool
-  openjdk-8
   giflib
   libiodbc
   pgpool2
