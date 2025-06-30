@@ -36,7 +36,7 @@ SRC_URI:append:class-native = " \
            file://0001-Lib-sysconfig.py-use-prefix-value-from-build-configu.patch \
            "
 
-SRC_URI[sha256sum] = "27b15a797562a2971dce3ffe31bb216042ce0b995b39d768cf15f784cc757365"
+SRC_URI[sha256sum] = "93e583f243454e6e9e4588ca2c2662206ad961659863277afcdb96801647d640"
 
 # exclude pre-releases for both python 2.x and 3.x
 UPSTREAM_CHECK_REGEX = "[Pp]ython-(?P<pver>\d+(\.\d+)+).tar"
@@ -53,7 +53,7 @@ CVE_STATUS[CVE-2023-36632] = "disputed: Not an issue, in fact expected behaviour
 
 PYTHON_MAJMIN = "3.13"
 
-S = "${WORKDIR}/Python-${PV}"
+S = "${UNPACKDIR}/Python-${PV}"
 
 BBCLASSEXTEND = "native nativesdk"
 
@@ -64,7 +64,6 @@ MULTILIB_SUFFIX = "${@d.getVar('base_libdir',1).split('/')[-1]}"
 ALTERNATIVE:${PN}-dev = "python3-config"
 ALTERNATIVE_LINK_NAME[python3-config] = "${bindir}/python${PYTHON_MAJMIN}-config"
 ALTERNATIVE_TARGET[python3-config] = "${bindir}/python${PYTHON_MAJMIN}-config-${MULTILIB_SUFFIX}"
-
 
 DEPENDS = "\
     autoconf-archive-native \

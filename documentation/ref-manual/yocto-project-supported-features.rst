@@ -78,7 +78,7 @@ Below is a list of primary tested features, their maintainer(s) and builder(s):
      - meta-agl-core
    * - `meta-arm <https://git.yoctoproject.org/meta-arm>`__
      - meta-arm layer testing
-     - TBD
+     - meta-arm mailing list <meta-arm@lists.yoctoproject.org>
      - meta-arm
    * - `meta-aws <https://github.com/aws4embeddedlinux/meta-aws>`__
      - meta-aws layer testing
@@ -88,10 +88,14 @@ Below is a list of primary tested features, their maintainer(s) and builder(s):
      - meta-intel layer testing
      - TBD
      - meta-intel
-   * - `meta-virtualization <https://git.yoctoproject.org/meta-virtualization/>`__
-     - meta-virtualization layer testing
+   * - `meta-exein <https://github.com/exein-io/meta-exein>`__
+     - meta-exein layer testing
      - TBD
-     - meta-virt
+     - meta-exein
+   * - `meta-webosose <https://github.com/webosose/meta-webosose>`__
+     - meta-webosose layer testing
+     - TBD
+     - meta-webosose
    * - :ref:`Multilib <dev-manual/libraries:Combining Multiple Versions of Library Files into One Image>`
      - Multilib feature testing
      - Collective effort
@@ -110,7 +114,7 @@ Below is a list of primary tested features, their maintainer(s) and builder(s):
      - pkgman-non-rpm (other builders use RPM by default)
    * - :ref:`Patchtest <contributor-guide/submit-changes:Validating Patches with Patchtest>`
      - Patchtest tool selftests
-     - TBD
+     - Collective effort
      - patchtest-selftest
    * - :wikipedia:`RISC-V (64-bit) <RISC-V>`
      - RISC-V architecture testing (64-bit)
@@ -207,23 +211,22 @@ builder(s):
      - PowerPC architecture testing (32-bit)
      - TBD
      - qemuppc,
-       qemuppc-alt,
        qemuppc-tc
    * - :oe_git:`meta-openembedded </meta-openembedded>`
      - meta-openembedded layer testing
-     - TBD
+     - Collective effort / openembedded-devel mailing list <openebedded-devel@lists.openembedded.org>
      - meta-oe
    * - `meta-mingw <https://git.yoctoproject.org/meta-mingw>`__
      - mingw based SDKs testing
      - TBD
      - meta-mingw
-   * - `meta-webosose <https://github.com/webosose/meta-webosose>`__
-     - meta-webosose layer testing
-     - TBD
-     - meta-webosose
+   * - `meta-virtualization <https://git.yoctoproject.org/meta-virtualization/>`__
+     - meta-virtualization layer testing
+     - meta-virtualization mailing list <meta-virtualization@lists.yoctoproject.org>
+     - meta-virt
    * - :wikipedia:`RISC-V (32-bit) <RISC-V>`
      - RISC-V architecture testing (32-bit)
-     - Collective effort
+     - TBD
      - qemuriscv32,
        qemuriscv32,
        qemuriscv32-tc
@@ -244,10 +247,6 @@ it is on a best effort only basis.
      - Description
      - Maintainer(s)
      - Builder(s)
-   * - `meta-exein <https://github.com/exein-io/meta-exein>`__
-     - meta-exein layer testing
-     - TBD
-     - meta-exein
    * - :wikipedia:`MIPS <MIPS_architecture>`
      - MIPS architecture testing
      - No maintainers
@@ -256,6 +255,10 @@ it is on a best effort only basis.
        qemumips-alt,
        qemumips-tc,
        qemumips64-tc
+   * - :wikipedia:`PowerPC (32-bit) <PowerPC>` Systemd
+     - PowerPC architecture testing (32-bit) with systemd
+     - No maintainers
+     - qemuppc-alt
    * - :wikipedia:`PowerPC (64-bit) <PowerPC>`
      - PowerPC architecture testing (64-bit)
      - No maintainers

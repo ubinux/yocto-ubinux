@@ -14,11 +14,11 @@ SRC_URI = "git://gitlab.freedesktop.org/gstreamer/gstreamer.git;protocol=https;b
 
 SRCREV = "100c21e1faf68efe7f3830b6e9f856760697ab48"
 
-S = "${WORKDIR}/git/subprojects/gst-examples"
+S = "${UNPACKDIR}/${BP}/subprojects/gst-examples"
 
 inherit meson pkgconfig features_check
 
-UPSTREAM_CHECK_GITTAGREGEX = "(?P<pver>\d+\.(\d*[02468])+(\.\d+)+)"
+UPSTREAM_CHECK_GITTAGREGEX = "^(?P<pver>\d+\.(\d*[02468])+(\.\d+)+)"
 
 ANY_OF_DISTRO_FEATURES = "${GTK3DISTROFEATURES}"
 

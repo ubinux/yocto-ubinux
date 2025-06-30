@@ -18,7 +18,7 @@ SRC_URI = "git://gitlab.eclipse.org/eclipse/tcf/tcf.agent.git;protocol=https;bra
 DEPENDS = "util-linux openssl"
 RDEPENDS:${PN} = "bash"
 
-S = "${WORKDIR}/git/agent"
+S = "${UNPACKDIR}/${BP}/agent"
 
 inherit update-rc.d systemd
 
@@ -36,7 +36,6 @@ EXTRA_OEMAKE = "MACHINE=${MAKE_ARCH} OPSYS=${MAKE_OS} 'CC=${CC}' 'AR=${AR}'"
 LCL_STOP_SERVICES = "-DSERVICE_RunControl=0 -DSERVICE_Breakpoints=0 \
     -DSERVICE_Memory=0 -DSERVICE_Registers=0 -DSERVICE_MemoryMap=0 \
     -DSERVICE_StackTrace=0 -DSERVICE_Expressions=0"
-
 
 # These features don't compile for several cases.
 #
