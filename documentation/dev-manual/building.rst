@@ -591,7 +591,7 @@ If build speed and package feed maintenance are considerations, you
 should consider the points in this section that can help you optimize
 your tunings to best consider build times and package feed maintenance.
 
--  *Share the :term:`Build Directory`:* If at all possible, share the
+-  *Share the* :term:`Build Directory` *:* If at all possible, share the
    :term:`TMPDIR` across builds. The Yocto Project supports switching between
    different :term:`MACHINE` values in the same :term:`TMPDIR`. This practice
    is well supported and regularly used by developers when building for
@@ -813,7 +813,7 @@ directory:
 
 #. *Using Local Files Only:* Inside your ``local.conf`` file, add the
    :term:`SOURCE_MIRROR_URL` variable, inherit the
-   :ref:`ref-classes-own-mirrors` class, and use the
+   :ref:`ref-classes-own-mirrors` class, and add the
    :term:`BB_NO_NETWORK` variable to your ``local.conf``::
 
       SOURCE_MIRROR_URL ?= "file:///home/your-download-dir/"

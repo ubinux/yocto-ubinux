@@ -265,7 +265,7 @@ system and gives an overview of their function and contents.
       build process. By default, this directory is the same as the
       :term:`S` directory, which is defined as::
 
-         S = "${WORKDIR}/${BP}"
+         S = "${UNPACKDIR}/${BP}"
 
       You can separate the (:term:`S`) directory and the directory pointed to
       by the :term:`B` variable. Most Autotools-based recipes support
@@ -559,6 +559,13 @@ system and gives an overview of their function and contents.
 
    :term:`BB_GENERATE_SHALLOW_TARBALLS`
       See :term:`bitbake:BB_GENERATE_SHALLOW_TARBALLS` in the BitBake manual.
+
+   :term:`BB_GIT_DEFAULT_DESTSUFFIX`
+      See :term:`bitbake:BB_GIT_DEFAULT_DESTSUFFIX` in the BitBake manual.
+
+      In :term:`OpenEmbedded-Core (OE-Core)`, this variable is set to
+      :term:`BP` by default in :oe_git:`bitbake.conf
+      </openembedded-core/tree/meta/conf/bitbake.conf>`.
 
    :term:`BB_GIT_SHALLOW`
       See :term:`bitbake:BB_GIT_SHALLOW` in the BitBake manual.
@@ -5350,6 +5357,27 @@ system and gives an overview of their function and contents.
       the :term:`KERNEL_PATH` variable. Both variables are common variables
       used by external Makefiles to point to the kernel source directory.
 
+   :term:`KERNEL_SPLIT_MODULES`
+      When inheriting the :ref:`ref-classes-kernel-module-split` class, this
+      variable controls whether kernel modules are split into separate packages
+      or bundled into a single package.
+
+      For some use cases, a monolithic kernel module package
+      :term:`KERNEL_PACKAGE_NAME` that contains all modules built from the
+      kernel sources may be preferred to speed up the installation.
+
+      By default, this variable is set to ``1``, resulting in one package per
+      module. Setting it to any other value will generate a single monolithic
+      package containing all kernel modules.
+
+      .. note::
+
+         If :term:`KERNEL_SPLIT_MODULES` is set to 0, it is still possible to
+         install all kernel modules at once by adding ``kernel-modules`` (assuming
+         :term:`KERNEL_PACKAGE_NAME` is ``kernel-modules``) to :term:`IMAGE_INSTALL`.
+         The way it works is that a placeholder "kernel-modules" package will be
+         created and will depend on every other individual kernel module packages.
+
    :term:`KERNEL_SRC`
       The location of the kernel sources. This variable is set to the value
       of the :term:`STAGING_KERNEL_DIR` within the :ref:`ref-classes-module`
@@ -8039,7 +8067,7 @@ system and gives an overview of their function and contents.
    :term:`S`
       The location in the :term:`Build Directory` where
       unpacked recipe source code resides. By default, this directory is
-      ``${``\ :term:`WORKDIR`\ ``}/${``\ :term:`BPN`\ ``}-${``\ :term:`PV`\ ``}``,
+      ``${``\ :term:`UNPACKDIR`\ ``}/${``\ :term:`BPN`\ ``}-${``\ :term:`PV`\ ``}``,
       where ``${BPN}`` is the base recipe name and ``${PV}`` is the recipe
       version. If the source tarball extracts the code to a directory named
       anything other than ``${BPN}-${PV}``, or if the source code is
@@ -8052,18 +8080,9 @@ system and gives an overview of their function and contents.
       ``poky/build``. In this case, the work directory the build system
       uses to keep the unpacked recipe for ``db`` is the following::
 
-         poky/build/tmp/work/qemux86-poky-linux/db/5.1.19-r3/db-5.1.19
+         poky/build/tmp/work/qemux86-poky-linux/db/5.1.19-r3/sources/db-5.1.19
 
       The unpacked source code resides in the ``db-5.1.19`` folder.
-
-      This next example assumes a Git repository. By default, Git
-      repositories are cloned to ``${WORKDIR}/git`` during
-      :ref:`ref-tasks-fetch`. Since this path is different
-      from the default value of :term:`S`, you must set it specifically so the
-      source can be located::
-
-         SRC_URI = "git://path/to/repo.git;branch=main"
-         S = "${WORKDIR}/git"
 
    :term:`SANITY_REQUIRED_UTILITIES`
       Specifies a list of command-line utilities that should be checked for
@@ -8439,7 +8458,6 @@ system and gives an overview of their function and contents.
       sources are fetched from a Git repository and ``setup.py`` is in a
       ``python/pythonmodule`` subdirectory, you would have this::
 
-         S = "${WORKDIR}/git"
          SETUPTOOLS_SETUP_PATH = "${S}/python/pythonmodule"
 
    :term:`SIGGEN_EXCLUDE_SAFE_RECIPE_DEPS`
