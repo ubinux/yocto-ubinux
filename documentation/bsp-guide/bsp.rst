@@ -172,7 +172,7 @@ section.
 #. *Optionally Clone the meta-intel BSP Layer:* If your hardware is
    based on current Intel CPUs and devices, you can leverage this BSP
    layer. For details on the ``meta-intel`` BSP layer, see the layer's
-   :yocto_git:`README </meta-intel/tree/README>` file.
+   :yocto_git:`README </meta-intel/tree/README.md>` file.
 
    #. *Navigate to Your Source Directory:* Typically, you set up the
       ``meta-intel`` Git repository inside the :term:`Source Directory` (e.g.
@@ -204,7 +204,7 @@ section.
       .. note::
 
          To see the available branch names in a cloned repository, use the ``git
-         branch -al`` command. See the
+         branch -a`` command. See the
          ":ref:`dev-manual/start:checking out by branch in poky`"
          section in the Yocto Project Development Tasks Manual for more
          information.
