@@ -8,6 +8,9 @@ SRC_URI += " \
 	file://0001-Fix-build-error-of-jni.cpp-openjdk.patch;apply=no \
 "
 
+HOST_COMPILER_MAJOR = "${@oe.utils.get_host_gcc_version(d).split(".", 2)[0]}"
+
+S = "${UNPACKDIR}/${ICEDTEA}"
 
 EXTRA_OEMAKE:append = " LDD=:"
 

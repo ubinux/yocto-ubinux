@@ -5,7 +5,7 @@ AUTHOR = "Apache Software Foundation"
 
 SRC_URI = "http://archive.apache.org/dist/jakarta/poi/release/src/${BPN}-src-${PV}-FINAL-20070503.tar.gz"
 
-S = "${WORKDIR}/${BPN}-3.0-rc4"
+S = "${UNPACKDIR}/${BPN}-3.0-rc4"
 
 PACKAGE_ARCH = "${TUNE_PKGARCH}"
 

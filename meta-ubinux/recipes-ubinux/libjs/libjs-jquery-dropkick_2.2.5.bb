@@ -21,8 +21,6 @@ FILES:${PN}-doc += "${datadir}/doc/${PN}"
 
 PR = "r1"
 
-S = "${WORKDIR}/git"
-
 do_install() {
 	install -d ${D}${datadir}/javascript/jquery-dropkick/
 	install -p -m 0644 ${S}/webpack.config.js ${D}${datadir}/javascript/jquery-dropkick/

@@ -36,7 +36,7 @@ LIC_FILES_CHKSUM = "file://LICENSE;md5=15b3012575eeffacc3cec27a6d3cb31f"
 
 DEPENDS = "lvm2"
 
-S = "${WORKDIR}/${BPN}/${PV}"
+S = "${UNPACKDIR}/${BPN}/${PV}"
 
 EXTRA_OECONF += " --disable-static_link --enable-led --enable-intel_led --enable-debug  "
 

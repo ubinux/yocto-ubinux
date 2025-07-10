@@ -14,7 +14,7 @@ SRC_URI = "http://www.cs.princeton.edu/~appel/modern/java/CUP/java_${BPN}_v10k.t
 	   file://cup \
 	  "
 
-S = "${WORKDIR}/java_cup"
+S = "${UNPACKDIR}/java_cup"
 
 do_configure() {
 	sed -i \

@@ -17,7 +17,6 @@ SRC_URI = "\
 	file://rhino-jsc \
 	"
 
-S = "${WORKDIR}/git"
 
 PACKAGES = "${JPN} rhino"
 

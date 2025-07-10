@@ -20,7 +20,7 @@ SRC_URI = "http://archive.apache.org/dist/xerces/j/Xerces-J-src.${PV}.tar.gz"
 # https://bugzilla.redhat.com/show_bug.cgi?id=1567542
 CVE_CHECK_IGNORE += "CVE-2018-2799"
 
-S = "${WORKDIR}/xerces-2_12_0"
+S = "${UNPACKDIR}/xerces-2_12_0"
 
 inherit java-library
 

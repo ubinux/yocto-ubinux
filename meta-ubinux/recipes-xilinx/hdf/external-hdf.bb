@@ -23,8 +23,6 @@ SRC_URI = "${HDF_BASE}${HDF_PATH};${BRANCHARG}"
 COMPATIBLE_HOST:xilinx-standalone = "${HOST_SYS}"
 PACKAGE_ARCH ?= "${MACHINE_ARCH}"
 
-S = "${WORKDIR}/git"
-
 do_configure[noexec] = "1"
 do_compile[noexec] = "1"
 do_install[noexec] = "1"

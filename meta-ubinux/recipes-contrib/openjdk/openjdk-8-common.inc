@@ -11,7 +11,7 @@ export AUTOCONF_DIR = "${AUTOTOOLS_SCRIPT_PATH}"
 FILESPATH =. "${FILE_DIRNAME}/patches-openjdk-8:"
 
 # for weird openjdk-common.inc
-S = "${WORKDIR}/${OPENJDK_HG_U}-${OPENJDK_CHANGESET}"
+S = "${UNPACKDIR}/${OPENJDK_HG_U}-${OPENJDK_CHANGESET}"
 
 SRC_URI = "\
     ${OPENJDK_URI} \

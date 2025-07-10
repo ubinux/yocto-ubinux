@@ -9,7 +9,7 @@ SRC_URI = "http://archive.apache.org/dist/ant/source/apache-ant-${PV}-src.tar.gz
 	   file://ant \
 	  "
 
-S = "${WORKDIR}/apache-ant-${PV}"
+S = "${UNPACKDIR}/apache-ant-${PV}"
 
 inherit java-library native
 

@@ -8,7 +8,7 @@ SRC_URI = "http://archive.apache.org/dist/avalon/logkit/source/${BP}-src.tar.gz"
 
 inherit java-library
 
-S = "${WORKDIR}/${BP}-dev"
+S = "${UNPACKDIR}/${BP}-dev"
 
 DEPENDS = "oro servlet2.3 gnumail gnujaf log4j1.2 avalon-framework-api"
 

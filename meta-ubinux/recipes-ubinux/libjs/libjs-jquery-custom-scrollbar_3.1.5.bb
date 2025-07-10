@@ -11,8 +11,6 @@ SRC_URI = "git://github.com/malihu/malihu-custom-scrollbar-plugin.git;branch=mas
 
 SRCREV = "eac2b0af71a7ca06cc19e28d15ba60f6db2dfd29"
 
-S = "${WORKDIR}/git"
-
 PACKAGES = "${PN} ${PN}-doc"
 FILES:${PN} += "${datadir}/javascript/jquery-custom-scrollbar"
 FILES:${PN}-doc += "${datadir}/doc/${PN}"
