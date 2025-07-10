@@ -1,0 +1,68 @@
+diff -Naur meta-cgl.orig/meta-cgl-common/recipes-cgl/cluster-glue/cluster-glue_1.0.12.bb meta-cgl/meta-cgl-common/recipes-cgl/cluster-glue/cluster-glue_1.0.12.bb
+--- meta-cgl.orig/meta-cgl-common/recipes-cgl/cluster-glue/cluster-glue_1.0.12.bb	2025-07-10 02:50:08.332229507 +0000
++++ meta-cgl/meta-cgl-common/recipes-cgl/cluster-glue/cluster-glue_1.0.12.bb	2025-07-04 01:31:54.024937740 +0000
+@@ -32,7 +32,6 @@
+ HA_USER = "hacluster"
+ HA_GROUP = "haclient"
+ 
+-S = "${WORKDIR}/git"
+ PV = "1.0.12+git${SRCPV}"
+ 
+ PACKAGECONFIG ??= "${@bb.utils.filter('DISTRO_FEATURES', 'systemd', d)}"
+diff -Naur meta-cgl.orig/meta-cgl-common/recipes-cgl/cluster-resource-agents/resource-agents_4.5.0.bb meta-cgl/meta-cgl-common/recipes-cgl/cluster-resource-agents/resource-agents_4.5.0.bb
+--- meta-cgl.orig/meta-cgl-common/recipes-cgl/cluster-resource-agents/resource-agents_4.5.0.bb	2025-07-10 02:50:08.333229502 +0000
++++ meta-cgl/meta-cgl-common/recipes-cgl/cluster-resource-agents/resource-agents_4.5.0.bb	2025-07-04 08:33:01.234271805 +0000
+@@ -28,8 +28,6 @@
+ 
+ UPSTREAM_CHECK_GITTAGREGEX = "v(?P<pver>\d+(\.\d+)+)"
+ 
+-S="${WORKDIR}/git"
+-
+ LIC_FILES_CHKSUM = "file://COPYING;md5=751419260aa954499f7abaabaa882bbe \
+                     file://COPYING.LGPL;md5=4fbd65380cdd255951079008b364516c \
+                     file://COPYING.GPLv3;md5=d32239bcb673463ab874e80d47fae504"
+diff -Naur meta-cgl.orig/meta-cgl-common/recipes-perl/perl/libmailtools-perl_2.21.bb meta-cgl/meta-cgl-common/recipes-perl/perl/libmailtools-perl_2.21.bb
+--- meta-cgl.orig/meta-cgl-common/recipes-perl/perl/libmailtools-perl_2.21.bb	2025-07-10 02:50:08.334229497 +0000
++++ meta-cgl/meta-cgl-common/recipes-perl/perl/libmailtools-perl_2.21.bb	2025-07-04 07:06:07.466703665 +0000
+@@ -20,6 +20,6 @@
+ SRC_URI = "http://search.cpan.org/CPAN/authors/id/M/MA/MARKOV/MailTools-${PV}.tar.gz"
+ SRC_URI[sha256sum] = "4ad9bd6826b6f03a2727332466b1b7d29890c8d99a32b4b3b0a8d926ee1a44cb"
+ 
+-S = "${WORKDIR}/MailTools-${PV}"
++S = "${UNPACKDIR}/MailTools-${PV}"
+ 
+ inherit cpan
+diff -Naur meta-cgl.orig/meta-cgl-common/recipes-perl/perl/libsocket6-perl_0.29.bb meta-cgl/meta-cgl-common/recipes-perl/perl/libsocket6-perl_0.29.bb
+--- meta-cgl.orig/meta-cgl-common/recipes-perl/perl/libsocket6-perl_0.29.bb	2025-07-10 02:50:08.334229497 +0000
++++ meta-cgl/meta-cgl-common/recipes-perl/perl/libsocket6-perl_0.29.bb	2025-07-04 05:55:31.361497723 +0000
+@@ -15,7 +15,7 @@
+ "
+ SRC_URI[socket6-perl-0.29.sha256sum] = "468915fa3a04dcf6574fc957eff495915e24569434970c91ee8e4e1459fc9114"
+ 
+-S = "${WORKDIR}/Socket6-${PV}"
++S = "${UNPACKDIR}/Socket6-${PV}"
+ 
+ do_configure:prepend () {
+ 	mkdir -p m4
+diff -Naur meta-cgl.orig/meta-cgl-common/recipes-perl/perl/libtest-pod-perl_1.52.bb meta-cgl/meta-cgl-common/recipes-perl/perl/libtest-pod-perl_1.52.bb
+--- meta-cgl.orig/meta-cgl-common/recipes-perl/perl/libtest-pod-perl_1.52.bb	2025-07-10 02:50:08.334229497 +0000
++++ meta-cgl/meta-cgl-common/recipes-perl/perl/libtest-pod-perl_1.52.bb	2025-07-04 07:25:44.696318871 +0000
+@@ -14,6 +14,6 @@
+ SRC_URI ="http://search.cpan.org/CPAN/authors/id/E/ET/ETHER/Test-Pod-${PV}.tar.gz;name=test-pod-perl-${PV}"
+ SRC_URI[test-pod-perl-1.52.md5sum] = "472dda77746d48e6465bf62e47aeca81"
+ SRC_URI[test-pod-perl-1.52.sha256sum] = "60a8dbcc60168bf1daa5cc2350236df9343e9878f4ab9830970a5dde6fe8e5fc"
+-S = "${WORKDIR}/Test-Pod-${PV}"
++S = "${UNPACKDIR}/Test-Pod-${PV}"
+ 
+ inherit cpan
+diff -Naur meta-cgl.orig/meta-cgl-common/recipes-perl/perl/libwww-perl_6.43.bb meta-cgl/meta-cgl-common/recipes-perl/perl/libwww-perl_6.43.bb
+--- meta-cgl.orig/meta-cgl-common/recipes-perl/perl/libwww-perl_6.43.bb	2025-07-10 02:50:08.334229497 +0000
++++ meta-cgl/meta-cgl-common/recipes-perl/perl/libwww-perl_6.43.bb	2025-07-04 05:37:10.820803040 +0000
+@@ -18,6 +18,6 @@
+ SRC_URI = "https://cpan.metacpan.org/authors/id/O/OA/OALDERS/libwww-perl-${PV}.tar.gz;name=libwww-perl-${PV}"
+ SRC_URI[libwww-perl-6.43.sha256sum] = "e9849d7ee6fd0e89cc999e63d7612c951afd6aeea6bc721b767870d9df4ac40d"
+ 
+-S = "${WORKDIR}/libwww-perl-${PV}"
++S = "${UNPACKDIR}/libwww-perl-${PV}"
+ 
+ inherit cpan
