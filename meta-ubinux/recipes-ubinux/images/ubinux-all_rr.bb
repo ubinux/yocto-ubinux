@@ -530,7 +530,6 @@ UBINUX_PKGS = " \
 	qtsvg \
 	qtwebchannel \
 	qtwebsockets \
-	qtwebengine \
 	qtlocation \
 	qtmultimedia \
 	qtquickcontrols \
