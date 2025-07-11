@@ -17,7 +17,7 @@ metas=meta-oe
 [meta-oe]
 GITURL=http://git.openembedded.org/meta-openembedded
 BRANCH=master
-HEADID=3f77bb395c332b12135889bb6b57caee0801b43e
+HEADID=79147e14b83f94b9dec0d8cbd6ba19512cdfd9fc
 FILES=meta-oe/conf
  meta-oe/COPYING.MIT
  meta-oe/licenses/
@@ -180,7 +180,8 @@ FILES=meta-oe/conf
  meta-oe/recipes-extended/openlmi/
  meta-oe/recipes-extended/sysdig/
  meta-oe/recipes-extended/cmpi-bindings/
- meta-python/recipes-extended/pywbem
+ meta-python/recipes-extended/pywbem/
+ meta-python/recipes-extended/python-rich/
  meta-oe/recipes-extended/konkretcmpi/
  meta-oe/recipes-extended/sblim-cmpi-devel/
  meta-oe/recipes-extended/sblim-sfc-common/
@@ -465,7 +466,7 @@ FILES=meta-oe/conf
 [meta-freescale]
 GITURL=https://git.yoctoproject.org/git/meta-freescale
 BRANCH=master
-HEADID=c724226831007df299332430df5da25a1ac320f5
+HEADID=06e69dcd392637b5c3ec1f4bfb91313d45198c14
 FILES=conf/layer.conf
  custom-licenses/
  classes/
@@ -499,7 +500,7 @@ FILES=meta-cgl-common/conf/layer.conf
 [meta-cloud-services]
 GITURL=http://git.yoctoproject.org/git/meta-cloud-services
 BRANCH=master
-HEADID=d0f515b9eca348893339f2063b6a97f61cba992c
+HEADID=ff75057ed28f942543c951f7af22b891752557f1
 FILES=conf/layer.conf
  classes/
  meta-openstack/classes/default_configs.bbclass
@@ -560,7 +561,7 @@ FILES=conf/layer.conf
 [meta-virtualization]
 GITURL=http://git.yoctoproject.org/git/meta-virtualization
 BRANCH=master
-HEADID=0115e61cdd5fe8c705bb0350a0d75ebebcf84c79
+HEADID=640bca7e046689b789dd068059a7b18749d10c0c
 FILES=conf/layer.conf
  classes/
  files/
@@ -575,13 +576,13 @@ FILES=conf/layer.conf
 [meta-selinux]
 GITURL=http://git.yoctoproject.org/git/meta-selinux
 BRANCH=master
-HEADID=32adf788c70a3e75e947ea7394b9a746686bb01e
+HEADID=9239ba5d0ab3a0e69aa0df6205742bbfe200e3f5
 FILES=conf/layer.conf
 
 [meta-security]
 GITURL=http://git.yoctoproject.org/git/meta-security
 BRANCH=master
-HEADID=784ca4b6584101e971b2d5d76ec7b716ad1301b5 
+HEADID=d750c6cf48c48fa5deeaae937a3d764f73c4b53b
 FILES=conf
  classes/sanity-meta-security.bbclass
  meta-tpm/classes/sanity-meta-tpm.bbclass
@@ -606,7 +607,7 @@ FILES=conf
 [meta-qt5]
 GITURL=https://github.com/meta-qt5/meta-qt5.git
 BRANCH=master
-HEADID=397346b1dc8a8325149cea62cb02c610e488d44f
+HEADID=e10fdabb88eb85d33e9483f44891710a95510c86
 FILES=conf/layer.conf
  recipes-qt/qt5
  recipes-qt/qtchooser
@@ -616,7 +617,7 @@ FILES=conf/layer.conf
 [meta-spdxscanner]
 GITURL=https://git.yoctoproject.org/git/meta-spdxscanner
 BRANCH=master
-HEADID=bb7dd0e1f4d8f23525994180ed9a95de17f15dfe
+HEADID=d7a4234322219afd9fd9ad66bcf3e16f34fd55f3
 FILES=conf/layer.conf
  classes
  recipes-devtools/synopsys/
@@ -668,12 +669,12 @@ FILES=meta-xilinx-core/conf
 [meta-erlang]
 GITURL=https://github.com/joaohf/meta-erlang
 BRANCH=master
-HEADID=4ab3ea0de4aab52fb49d00bbdd4250d506465fdc
+HEADID=e2de575b0308c70875ccab8cebbe961f0950da86
 FILES=conf
 
 [meta-arm]
 GITURL=https://git.yoctoproject.org/meta-arm
 BRANCH=master
-HEADID=6fad8cc83380459625feb50a1cae7768be9438eb
+HEADID=54cb65ca03a663a66a6d88c3397b76630ce7b043
 FILES=meta-arm/conf
  meta-arm-toolchain/conf
