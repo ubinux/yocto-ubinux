@@ -576,7 +576,7 @@ FILES=conf/layer.conf
 [meta-selinux]
 GITURL=http://git.yoctoproject.org/git/meta-selinux
 BRANCH=master
-HEADID=9239ba5d0ab3a0e69aa0df6205742bbfe200e3f5
+HEADID=05178ce17879c04a6be6f173b86eb18f68a10414
 FILES=conf/layer.conf
 
 [meta-security]
