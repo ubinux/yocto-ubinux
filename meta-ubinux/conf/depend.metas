@@ -625,7 +625,7 @@ FILES=conf/layer.conf
 [meta-swupdate]
 GITURL=https://github.com/sbabic/meta-swupdate.git
 BRANCH=master
-HEADID=47cb53b31f044048bd095f544111004259540870
+HEADID=83751a08e5932d537beda6d1961d9751d242335c
 FILES=conf/layer.conf
  recipes-support/swupdate/
  recipes-bsp/u-boot/
