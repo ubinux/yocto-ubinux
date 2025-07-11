@@ -7,12 +7,10 @@ LIC_FILES_CHKSUM = "file://LICENSE;md5=48aa35cefb768436223a6e7f18dc2a2a"
 
 SRC_URI = "gitsm://github.com/KhronosGroup/Vulkan-Samples.git;branch=main;protocol=https;lfs=0 \
            file://0001-SPIRV-SpvBuilder.h-add-missing-cstdint-include.patch;patchdir=third_party/glslang \
-           file://0001-framework-Include-stdint.h.patch \
-           file://0003-bldsys-cmake-global_options.cmake-removed-unused-ROO.patch \
            "
 
 UPSTREAM_CHECK_COMMITS = "1"
-SRCREV = "8547ce1022a19870d3e49075b5b08ca2d11c8773"
+SRCREV = "d27205d14d01ea7d33efc8ba2862478612370182"
 
 UPSTREAM_CHECK_GITTAGREGEX = "These are not the releases you're looking for"
 S = "${WORKDIR}/git"
@@ -32,5 +30,9 @@ EXTRA_OECMAKE += "-DCMAKE_DISABLE_PRECOMPILE_HEADERS=ON"
 
 # This needs to be specified explicitly to avoid xcb/xlib dependencies
 EXTRA_OECMAKE += "-DVKB_WSI_SELECTION=D2D"
+
+# Clang is fussy about incompatible options on aarch64/x86_64
+# x86_64-poky-linux-clang++: error: overriding '-ffp-model=precise' option with '-ffp-contract=fast' [-Werror,-Woverriding-option]
+CXXFLAGS:append:toolchain-clang = " -Wno-error=overriding-option"
 
 COMPATIBLE_HOST = "(aarch64|x86_64).*-linux"

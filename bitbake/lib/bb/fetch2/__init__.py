@@ -1117,7 +1117,10 @@ def try_mirror_url(fetch, origud, ud, ld, check = False):
                     origud.method.build_mirror_data(origud, ld)
             return origud.localpath
         # Otherwise the result is a local file:// and we symlink to it
-        ensure_symlink(ud.localpath, origud.localpath)
+        # This may also be a link to a shallow archive
+        # When using shallow mode, add a symlink to the original fullshallow
+        # path to ensure a valid symlink even in the `PREMIRRORS` case
+        origud.method.update_mirror_links(ud, origud)
         update_stamp(origud, ld)
         return ud.localpath
 
@@ -1150,25 +1153,6 @@ def try_mirror_url(fetch, origud, ud, ld, check = False):
     finally:
         if ud.lockfile and ud.lockfile != origud.lockfile:
             bb.utils.unlockfile(lf)
-
-
-def ensure_symlink(target, link_name):
-    if not os.path.exists(link_name):
-        dirname = os.path.dirname(link_name)
-        bb.utils.mkdirhier(dirname)
-        if os.path.islink(link_name):
-            # Broken symbolic link
-            os.unlink(link_name)
-
-        # In case this is executing without any file locks held (as is
-        # the case for file:// URLs), two tasks may end up here at the
-        # same time, in which case we do not want the second task to
-        # fail when the link has already been created by the first task.
-        try:
-            os.symlink(target, link_name)
-        except FileExistsError:
-            pass
-
 
 def try_mirrors(fetch, d, origud, mirrors, check = False):
     """
@@ -1589,11 +1573,11 @@ class FetchMethod(object):
                 datafile = None
                 if output:
                     for line in output.decode().splitlines():
-                        if line.startswith('data.tar.'):
+                        if line.startswith('data.tar.') or line == 'data.tar':
                             datafile = line
                             break
                     else:
-                        raise UnpackError("Unable to unpack deb/ipk package - does not contain data.tar.* file", urldata.url)
+                        raise UnpackError("Unable to unpack deb/ipk package - does not contain data.tar* file", urldata.url)
                 else:
                     raise UnpackError("Unable to unpack deb/ipk package - could not list contents", urldata.url)
                 cmd = 'ar x %s %s && %s -p -f %s && rm %s' % (file, datafile, tar_cmd, datafile, datafile)
@@ -1654,6 +1638,28 @@ class FetchMethod(object):
         Clean any existing full or partial download
         """
         bb.utils.remove(urldata.localpath)
+
+    def ensure_symlink(self, target, link_name):
+        if not os.path.exists(link_name):
+            dirname = os.path.dirname(link_name)
+            bb.utils.mkdirhier(dirname)
+            if os.path.islink(link_name):
+                # Broken symbolic link
+                os.unlink(link_name)
+
+            # In case this is executing without any file locks held (as is
+            # the case for file:// URLs), two tasks may end up here at the
+            # same time, in which case we do not want the second task to
+            # fail when the link has already been created by the first task.
+            try:
+                os.symlink(target, link_name)
+            except FileExistsError:
+                pass
+
+    def update_mirror_links(self, ud, origud):
+        # For local file:// results, create a symlink to them
+        # This may also be a link to a shallow archive
+        self.ensure_symlink(ud.localpath, origud.localpath)
 
     def try_premirror(self, urldata, d):
         """

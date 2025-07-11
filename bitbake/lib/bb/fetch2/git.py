@@ -348,6 +348,13 @@ class Git(FetchMethod):
     def tarball_need_update(self, ud):
         return ud.write_tarballs and not os.path.exists(ud.fullmirror)
 
+    def update_mirror_links(self, ud, origud):
+        super().update_mirror_links(ud, origud)
+        # When using shallow mode, add a symlink to the original fullshallow
+        # path to ensure a valid symlink even in the `PREMIRRORS` case
+        if ud.shallow and not os.path.exists(origud.fullshallow):
+            self.ensure_symlink(ud.localpath, origud.fullshallow)
+
     def try_premirror(self, ud, d):
         # If we don't do this, updating an existing checkout with only premirrors
         # is not possible
@@ -639,7 +646,7 @@ class Git(FetchMethod):
                 extra_refs.append(r)
 
         for ref in extra_refs:
-            ref_fetch = os.path.basename(ref)
+            ref_fetch = ref.replace('refs/heads/', '').replace('refs/remotes/origin/', '').replace('refs/tags/', '')
             runfetchcmd("%s fetch origin --depth 1 %s" % (ud.basecmd, ref_fetch), d, workdir=dest)
             revision = runfetchcmd("%s rev-parse FETCH_HEAD" % ud.basecmd, d, workdir=dest)
             runfetchcmd("%s update-ref %s %s" % (ud.basecmd, ref, revision), d, workdir=dest)

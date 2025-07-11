@@ -25,10 +25,10 @@ SRCREV_machine:qemumips ?= "6cdf7de2dc6c90e973201f52871a3301ec822226"
 SRCREV_machine:qemuppc ?= "9c2dd8954dad0430e83ee55b985ba55070e50cf7"
 SRCREV_machine:qemuriscv64 ?= "9c2dd8954dad0430e83ee55b985ba55070e50cf7"
 SRCREV_machine:qemuriscv32 ?= "9c2dd8954dad0430e83ee55b985ba55070e50cf7"
-SRCREV_machine:qemux86 ?= "83ae9aec0b8178489290d7f5097f4650bf9a06e9"
-SRCREV_machine:qemux86-64 ?= "83ae9aec0b8178489290d7f5097f4650bf9a06e9"
+SRCREV_machine:qemux86 ?= "dbc28205654b693ad9557f6ed0387b33eb9b1766"
+SRCREV_machine:qemux86-64 ?= "dbc28205654b693ad9557f6ed0387b33eb9b1766"
 SRCREV_machine:qemumips64 ?= "c8da027284e8c7ece7e04dcdd1cf49850fea911d"
-SRCREV_machine ?= "83ae9aec0b8178489290d7f5097f4650bf9a06e9"
+SRCREV_machine ?= "dbc28205654b693ad9557f6ed0387b33eb9b1766"
 SRCREV_meta ?= "dff911ce87fe7b9944c6058907f079ddb0f3e840"
 
 # set your preferred provider of linux-yocto to 'linux-yocto-upstream', and you'll
@@ -42,11 +42,10 @@ KBRANCH:class-devupstream = "v6.6/base"
 
 SRC_URI = "git://git.yoctoproject.org/linux-yocto.git;name=machine;branch=${KBRANCH};protocol=https \
            git://git.yoctoproject.org/yocto-kernel-cache;type=kmeta;name=meta;branch=yocto-6.6;destsuffix=${KMETA};protocol=https \
-           file://0001-Fix-the-fowwlowing-build-error.patch \
            "
 
 LIC_FILES_CHKSUM = "file://COPYING;md5=6bc538ed5bd9a7fc9398086aedcd7e46"
-LINUX_VERSION ?= "6.6.91"
+LINUX_VERSION ?= "6.6.93"
 
 PV = "${LINUX_VERSION}+git"
 
