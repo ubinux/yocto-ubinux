@@ -35,5 +35,13 @@ SRC_URI = "\
      file://0012-Only-generate-an-RPATH-entry-if-LD_RUN_PATH-is-not-e.patch \
      file://0013-Define-alignof-using-_Alignof-when-using-C11-or-newe.patch \
      file://0014-Remove-duplicate-pe-dll.o-entry-deom-targ_extra_ofil.patch \
+     file://0015-CVE-2025-1178.patch \
+     file://CVE-2025-1180.patch \
+     file://CVE-2025-1182.patch \
+     file://0016-CVE-2025-1181-1.patch \
+     file://0017-CVE-2025-1181-2.patch \
+     file://0018-CVE-2025-5245.patch \
+     file://0019-CVE-2025-5244.patch \
+     file://0019-CVE-2025-3198.patch \
 "
 S  = "${WORKDIR}/git"

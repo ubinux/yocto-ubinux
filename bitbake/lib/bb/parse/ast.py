@@ -340,9 +340,7 @@ class InheritDeferredNode(AstNode):
         self.inherit = (classes, filename, lineno)
 
     def eval(self, data):
-        inherits = data.getVar('__BBDEFINHERITS', False) or []
-        inherits.append(self.inherit)
-        data.setVar('__BBDEFINHERITS', inherits)
+        bb.parse.BBHandler.inherit_defer(*self.inherit, data)
 
 class AddFragmentsNode(AstNode):
     def __init__(self, filename, lineno, fragments_path_prefix, fragments_variable, flagged_variables_list_variable):
@@ -471,6 +469,17 @@ def finalize(fn, d, variant = None):
         if d.getVar("_FAILPARSINGERRORHANDLED", False) == True:
             raise bb.BBHandledException()
 
+        inherits = [x[0] for x in (d.getVar('__BBDEFINHERITS', False) or [('',)])]
+        bb.event.fire(bb.event.RecipePreDeferredInherits(fn, inherits), d)
+
+        while True:
+            inherits = d.getVar('__BBDEFINHERITS', False) or []
+            if not inherits:
+                break
+            inherit, filename, lineno = inherits.pop(0)
+            d.setVar('__BBDEFINHERITS', inherits)
+            bb.parse.BBHandler.inherit(inherit, filename, lineno, d, deferred=True)
+
         for var in d.getVar('__BBHANDLERS', False) or []:
             # try to add the handler
             handlerfn = d.getVarFlag(var, "filename", False)
@@ -525,14 +534,6 @@ def multi_finalize(fn, d):
         logger.debug("Appending .bbappend file %s to %s", append, fn)
         bb.parse.BBHandler.handle(append, d, True)
 
-    while True:
-        inherits = d.getVar('__BBDEFINHERITS', False) or []
-        if not inherits:
-            break
-        inherit, filename, lineno = inherits.pop(0)
-        d.setVar('__BBDEFINHERITS', inherits)
-        bb.parse.BBHandler.inherit(inherit, filename, lineno, d, deferred=True)
-
     onlyfinalise = d.getVar("__ONLYFINALISE", False)
 
     safe_d = d
@@ -568,7 +569,7 @@ def multi_finalize(fn, d):
                 d.setVar("BBEXTENDVARIANT", variantmap[name])
             else:
                 d.setVar("PN", "%s-%s" % (pn, name))
-            bb.parse.BBHandler.inherit(extendedmap[name], fn, 0, d)
+            bb.parse.BBHandler.inherit_defer(extendedmap[name], fn, 0, d)
 
         safe_d.setVar("BBCLASSEXTEND", extended)
         _create_variants(datastores, extendedmap.keys(), extendfunc, onlyfinalise)

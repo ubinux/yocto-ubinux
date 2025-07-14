@@ -81,6 +81,16 @@ LDFLAGS = "-ldl -lutil"
 # avoiding the 'buildpaths' QA warning.
 TARGET_CC_ARCH += "${SELECTED_OPTIMIZATION} ${DEBUG_PREFIX_MAP}"
 
+#| libbpf.c: In function 'find_kernel_btf_id.constprop':
+#| libbpf.c:10009:33: error: 'mod_len' may be used uninitialized [-Werror=maybe-uninitialized]
+#| 10009 |                 if (mod_name && strncmp(mod->name, mod_name, mod_len) != 0)
+#|       |                                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#| libbpf.c:9979:21: note: 'mod_len' was declared here
+#|  9979 |         int ret, i, mod_len;
+#|       |                     ^~~~~~~
+#| cc1: all warnings being treated as errors
+TARGET_CC_ARCH:append:toolchain-clang:arm = " -fno-error=maybe-uninitialized"
+
 EXTRA_OEMAKE = '\
     V=1 \
     VF=1 \
@@ -141,6 +151,7 @@ PERF_SRC ?= "Makefile \
              arch/arm64/tools \
              ${PERF_BPF_EVENT_SRC} \
              arch/${ARCH}/Makefile \
+             include/uapi/asm-generic/Kbuild \
 "
 
 PERF_EXTRA_LDFLAGS = ""
@@ -198,7 +209,7 @@ python copy_perf_source_from_kernel() {
 do_configure:prepend () {
     # If building a multlib based perf, the incorrect library path will be
     # detected by perf, since it triggers via: ifeq ($(ARCH),x86_64). In a 32 bit
-    # build, with a 64 bit multilib, the arch won't match and the detection of a 
+    # build, with a 64 bit multilib, the arch won't match and the detection of a
     # 64 bit build (and library) are not exected. To ensure that libraries are
     # installed to the correct location, we can use the weak assignment in the
     # config/Makefile.

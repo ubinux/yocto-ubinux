@@ -2243,7 +2243,7 @@ system and gives an overview of their function and contents.
       resides within the :term:`Build Directory` as ``${TMPDIR}/deploy``.
 
       For more information on the structure of the Build Directory, see
-      ":ref:`ref-manual/structure:the build directory --- \`\`build/\`\``" section.
+      ":ref:`ref-manual/structure:the build directory --- ``build/```" section.
       For more detail on the contents of the ``deploy`` directory, see the
       ":ref:`overview-manual/concepts:images`",
       ":ref:`overview-manual/concepts:package feeds`", and
@@ -2285,7 +2285,7 @@ system and gives an overview of their function and contents.
       contents of :term:`IMGDEPLOYDIR` by the :ref:`ref-classes-image` class.
 
       For more information on the structure of the :term:`Build Directory`, see
-      ":ref:`ref-manual/structure:the build directory --- \`\`build/\`\``" section.
+      ":ref:`ref-manual/structure:the build directory --- ``build/```" section.
       For more detail on the contents of the ``deploy`` directory, see the
       ":ref:`overview-manual/concepts:images`" and
       ":ref:`overview-manual/concepts:application development sdk`" sections both in
@@ -4299,9 +4299,33 @@ system and gives an overview of their function and contents.
          IMAGE_ROOTFS_EXTRA_SPACE = "41943040"
 
    :term:`IMAGE_ROOTFS_MAXSIZE`
-      Defines the maximum size in Kbytes for the generated image. If the
-      generated image size is above that, the build will fail. It's a good
-      idea to set this variable for images that need to fit on a limited
+      Defines the maximum allowed size of the generated image in kilobytes.
+      The build will fail if the generated image size exceeds this value.
+
+      The generated image size undergoes several calculation steps before being
+      compared to :term:`IMAGE_ROOTFS_MAXSIZE`.
+      In the first step, the size of the directory pointed to by :term:`IMAGE_ROOTFS`
+      is calculated.
+      In the second step, the result from the first step is multiplied
+      by :term:`IMAGE_OVERHEAD_FACTOR`.
+      In the third step, the result from the second step is compared with
+      :term:`IMAGE_ROOTFS_SIZE`. The larger value of these is added to
+      :term:`IMAGE_ROOTFS_EXTRA_SPACE`.
+      In the fourth step, the result from the third step is checked for
+      a decimal part. If it has one, it is rounded up to the next integer.
+      If it does not, it is simply converted into an integer.
+      In the fifth step, the :term:`IMAGE_ROOTFS_ALIGNMENT` is added to the result
+      from the fourth step and "1" is subtracted.
+      In the sixth step, the remainder of the division between the result
+      from the fifth step and :term:`IMAGE_ROOTFS_ALIGNMENT` is subtracted from the
+      result of the fifth step. In this way, the result from the fourth step is
+      rounded up to the nearest multiple of :term:`IMAGE_ROOTFS_ALIGNMENT`.
+
+      Thus, if the :term:`IMAGE_ROOTFS_MAXSIZE` is set, is compared with the result
+      of the above calculations and is independent of the final image type.
+      No default value is set for :term:`IMAGE_ROOTFS_MAXSIZE`.
+
+      It's a good idea to set this variable for images that need to fit on a limited
       space (e.g. SD card, a fixed-size partition, ...).
 
    :term:`IMAGE_ROOTFS_SIZE`
@@ -4487,6 +4511,24 @@ system and gives an overview of their function and contents.
 
          INHERIT_DISTRO ?= "debian devshell sstate license remove-libtool create-spdx"
 
+   :term:`INHIBIT_AUTOTOOLS_DEPS`
+      Prevents the :ref:`ref-classes-autotools` class from automatically adding
+      its default build-time dependencies.
+
+      When a recipe inherits the :ref:`ref-classes-autotools` class, several
+      native cross tools such as ``autoconf-native``, ``automake-native``,
+      ``libtool-native``, ``libtool-cross`` are added to :term:`DEPENDS` to
+      support the ``autotools`` build process.
+
+      To prevent the build system from adding these dependencies automatically,
+      set the :term:`INHIBIT_AUTOTOOLS_DEPS` variable as follows::
+
+         INHIBIT_AUTOTOOLS_DEPS = "1"
+
+      By default, the value of :term:`INHIBIT_AUTOTOOLS_DEPS` is empty. Setting
+      it to "0" does not disable inhibition. Only the empty string will disable
+      inhibition.
+
    :term:`INHIBIT_DEFAULT_DEPS`
       Prevents the default dependencies, namely the C compiler and standard
       C library (libc), from being added to :term:`DEPENDS`.
@@ -4495,6 +4537,23 @@ system and gives an overview of their function and contents.
 
       Set the variable to "1" to prevent the default dependencies from
       being added.
+
+   :term:`INHIBIT_DEFAULT_RUST_DEPS`
+      Prevents the :ref:`ref-classes-rust` class from automatically adding
+      its default build-time dependencies.
+
+      When a recipe inherits the :ref:`ref-classes-rust` class, several
+      tools such as ``rust-native`` and ``${RUSTLIB_DEP}`` (only added when cross-compiling) are added
+      to :term:`DEPENDS` to support the ``rust`` build process.
+
+      To prevent the build system from adding these dependencies automatically,
+      set the :term:`INHIBIT_DEFAULT_RUST_DEPS` variable as follows::
+
+         INHIBIT_DEFAULT_RUST_DEPS = "1"
+
+      By default, the value of :term:`INHIBIT_DEFAULT_RUST_DEPS` is empty. Setting
+      it to "0" does not disable inhibition. Only the empty string will disable
+      inhibition.
 
    :term:`INHIBIT_PACKAGE_DEBUG_SPLIT`
       Prevents the OpenEmbedded build system from splitting out debug
@@ -4541,6 +4600,25 @@ system and gives an overview of their function and contents.
          bare-metal firmware by using an external GCC toolchain. Furthermore,
          even if the toolchain's binaries are strippable, there are other files
          needed for the build that are not strippable.
+
+   :term:`INHIBIT_UPDATERCD_BBCLASS`
+      Prevents the :ref:`ref-classes-update-rc.d` class from automatically
+      installing and registering SysV init scripts for packages.
+
+      When a recipe inherits the :ref:`ref-classes-update-rc.d` class, init
+      scripts are typically installed and registered for the packages listed in
+      :term:`INITSCRIPT_PACKAGES`. This ensures that the relevant
+      services are started and stopped at the appropriate runlevels using the
+      traditional SysV init system.
+
+      To prevent the build system from adding these scripts and configurations
+      automatically, set the :term:`INHIBIT_UPDATERCD_BBCLASS` variable as follows::
+
+         INHIBIT_UPDATERCD_BBCLASS = "1"
+
+      By default, the value of :term:`INHIBIT_UPDATERCD_BBCLASS` is empty. Setting
+      it to "0" does not disable inhibition. Only the empty string will disable
+      inhibition.
 
    :term:`INIT_MANAGER`
       Specifies the system init manager to use. Available options are:
@@ -4707,6 +4785,20 @@ system and gives an overview of their function and contents.
 
       See the :term:`MACHINE` variable for additional
       information.
+
+   :term:`INITRAMFS_MAXSIZE`
+      Defines the maximum allowed size of the :term:`Initramfs` image in Kbytes.
+      The build will fail if the :term:`Initramfs` image size exceeds this value.
+
+      The :term:`Initramfs` image size undergoes several calculation steps before
+      being compared to :term:`INITRAMFS_MAXSIZE`.
+      These steps are the same as those used for :term:`IMAGE_ROOTFS_MAXSIZE`
+      and are described in detail in that entry.
+
+      Thus, :term:`INITRAMFS_MAXSIZE` is compared with the result of the calculations
+      and is independent of the final image type (e.g. compressed).
+      A default value for :term:`INITRAMFS_MAXSIZE` is set in
+      :oe_git:`meta/conf/bitbake.conf </openembedded-core/tree/meta/conf/bitbake.conf>`.
 
    :term:`INITRAMFS_MULTICONFIG`
       Defines the multiconfig to create a multiconfig dependency to be used by
@@ -4944,15 +5036,8 @@ system and gives an overview of their function and contents.
       options not explicitly specified will be disabled in the kernel
       config.
 
-      In case :term:`KCONFIG_MODE` is not set the behaviour will depend on where
-      the ``defconfig`` file is coming from. An "in-tree" ``defconfig`` file
-      will be handled in ``alldefconfig`` mode, a ``defconfig`` file placed
-      in ``${WORKDIR}`` through a meta-layer will be handled in
-      ``allnoconfig`` mode.
-
-      An "in-tree" ``defconfig`` file can be selected via the
-      :term:`KBUILD_DEFCONFIG` variable. :term:`KCONFIG_MODE` does not need to
-      be explicitly set.
+      In case :term:`KCONFIG_MODE` is not set the ``defconfig`` file
+      will be handled in ``allnoconfig`` mode.
 
       A ``defconfig`` file compatible with ``allnoconfig`` mode can be
       generated by copying the ``.config`` file from a working Linux kernel
@@ -6131,7 +6216,7 @@ system and gives an overview of their function and contents.
       By default, no API key is used, which results in larger delays between API
       requests and limits the number of queries to the public rate limits posted
       at the `NVD developer's page <https://nvd.nist.gov/developers/start-here>`__.
-      
+
       NVD API keys can be requested through the
       `Request an API Key <https://nvd.nist.gov/developers/request-an-api-key>`__
       page. You can set this variable to the NVD API key in your ``local.conf`` file.
@@ -7010,7 +7095,7 @@ system and gives an overview of their function and contents.
       For examples of how this data is used, see the
       ":ref:`overview-manual/concepts:automatically added runtime dependencies`"
       section in the Yocto Project Overview and Concepts Manual and the
-      ":ref:`dev-manual/debugging:viewing package information with \`\`oe-pkgdata-util\`\``"
+      ":ref:`dev-manual/debugging:viewing package information with ``oe-pkgdata-util```"
       section in the Yocto Project Development Tasks Manual. For more
       information on the shared, global-state directory, see
       :term:`STAGING_DIR_HOST`.
@@ -7064,7 +7149,7 @@ system and gives an overview of their function and contents.
          the package is built, the version information can be retrieved with
          ``oe-pkgdata-util package-info <package name>``. See the
          :ref:`dev-manual/debugging:Viewing Package Information with
-         \`\`oe-pkgdata-util\`\`` section of the Yocto Project Development Tasks
+         ``oe-pkgdata-util``` section of the Yocto Project Development Tasks
          Manual for more information on ``oe-pkgdata-util``.
 
 
@@ -7761,17 +7846,12 @@ system and gives an overview of their function and contents.
          prefer to have a read-only root filesystem and prefer to keep
          writeable data in one place.
 
-      You can override the default by setting the variable in any layer or
-      in the ``local.conf`` file. Because the default is set using a "weak"
-      assignment (i.e. "??="), you can use either of the following forms to
-      define your override::
+      When setting ``INIT_MANAGER = systemd``, the default will be set to::
 
-         ROOT_HOME = "/root"
          ROOT_HOME ?= "/root"
 
-      These
-      override examples use ``/root``, which is probably the most commonly
-      used override.
+      You can also override the default by setting the variable in your distro
+      configuration or in the ``local.conf`` file.
 
    :term:`ROOTFS`
       Indicates a filesystem image to include as the root filesystem.
@@ -8766,7 +8846,7 @@ system and gives an overview of their function and contents.
       class.
 
    :term:`SPL_SIGN_KEYNAME`
-      The name of keys used by the :ref:`ref-classes-kernel-fitimage` class
+      The name of keys used by the :ref:`ref-classes-uboot-sign` class
       for signing U-Boot FIT image stored in the :term:`SPL_SIGN_KEYDIR`
       directory. If we have for example a ``dev.key`` key and a ``dev.crt``
       certificate stored in the :term:`SPL_SIGN_KEYDIR` directory, you will
@@ -9030,7 +9110,7 @@ system and gives an overview of their function and contents.
       The Yocto Project actually shares the cache data objects built by its
       autobuilder::
 
-         SSTATE_MIRRORS ?= "file://.* http://cdn.jsdelivr.net/yocto/sstate/all/PATH;downloadfilename=PATH"
+         SSTATE_MIRRORS ?= "file://.* http://sstate.yoctoproject.org/all/PATH;downloadfilename=PATH"
 
       As such binary artifacts are built for the generic QEMU machines
       supported by the various Poky releases, they are less likely to be
@@ -9053,6 +9133,26 @@ system and gives an overview of their function and contents.
       :ref:`ref-classes-sstate` class specifies the default list of files.
 
       For details on the process, see the :ref:`ref-classes-staging` class.
+
+   :term:`SSTATE_SKIP_CREATION`
+      The :term:`SSTATE_SKIP_CREATION` variable can be used to skip the
+      creation of :ref:`shared state <overview-manual/concepts:shared state cache>`
+      tarball files. It makes sense e.g. for image creation tasks as tarring images
+      and keeping them in sstate would consume a lot of disk space.
+
+      In general it is not recommended to use this variable as missing sstate
+      artefacts adversely impact the build, particularly for entries in the
+      middle of dependency chains. The case it can make sense is where the
+      size and time costs of the artefact are similar to just running the
+      tasks. This generally only applies to end artefact output like images.
+
+      The syntax to disable it for one task is::
+
+         SSTATE_SKIP_CREATION:task-image-complete = "1"
+
+      The syntax to disable it for the whole recipe is::
+
+         SSTATE_SKIP_CREATION = "1"
 
    :term:`STAGING_BASE_LIBDIR_NATIVE`
       Specifies the path to the ``/lib`` subdirectory of the sysroot
@@ -10332,6 +10432,15 @@ system and gives an overview of their function and contents.
 
          do_compile[depends] += "trusted-firmware-a:do_deploy"
 
+   :term:`UBOOT_FIT_CONF_FIRMWARE`
+      Adds one image to the ``firmware`` property of the configuration node of
+      the U-Boot Image Tree Source (ITS). Sets the ``firmware`` property to
+      select the image to boot first::
+
+         UBOOT_FIT_CONF_FIRMWARE = "fwa"
+
+      If not set, the first entry in "loadables" is used to boot instead.
+
    :term:`UBOOT_FIT_CONF_USER_LOADABLES`
       Adds one or more user-defined images to the ``loadables`` property of the
       configuration node of the U-Boot Image Tree Source (ITS). This variable
@@ -10404,7 +10513,7 @@ system and gives an overview of their function and contents.
 
          UBOOT_FIT_TEE_IMAGE ?= "tee-raw.bin"
 
-      If a relative path is provided, the file is expected to be relative to 
+      If a relative path is provided, the file is expected to be relative to
       U-Boot's :term:`B` directory. An absolute path can be provided too,
       e.g.::
 
@@ -10941,6 +11050,20 @@ system and gives an overview of their function and contents.
    :term:`WATCHDOG_TIMEOUT`
       Specifies the timeout in seconds used by the ``watchdog-config`` recipe
       and also by ``systemd`` during reboot. The default is 60 seconds.
+
+   :term:`WIC_CREATE_EXTRA_ARGS`
+      If the :term:`IMAGE_FSTYPES` variable contains "wic", the build
+      will generate a
+      :ref:`Wic image <dev-manual/wic:creating partitioned images using wic>`
+      automatically when BitBake builds an image recipe. As part of
+      this process BitBake will invoke the "`wic create`" command. The
+      :term:`WIC_CREATE_EXTRA_ARGS` variable is placed at the end of this
+      command which allows the user to supply additional arguments.
+
+      One such useful purpose for this mechanism is to add the ``-D`` (or
+      ``--debug``) argument to the "`wic create`" command. This increases the
+      amount of debugging information written out to the Wic log during the
+      Wic creation process.
 
    :term:`WIC_SECTOR_SIZE`
       The variable :term:`WIC_SECTOR_SIZE` controls the sector size of Wic

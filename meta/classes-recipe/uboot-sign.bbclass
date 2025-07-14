@@ -101,12 +101,19 @@ UBOOT_FIT_TEE_IMAGE ?= "tee-raw.bin"
 # User specific settings
 UBOOT_FIT_USER_SETTINGS ?= ""
 
+# Sets the firmware property to select the image to boot first.
+# If not set, the first entry in "loadables" is used instead.
+UBOOT_FIT_CONF_FIRMWARE ?= ""
+
 # Unit name containing a list of users additional binaries to be loaded.
 # It is a comma-separated list of strings.
 UBOOT_FIT_CONF_USER_LOADABLES ?= ''
 
 UBOOT_FIT_UBOOT_LOADADDRESS ?= "${UBOOT_LOADADDRESS}"
 UBOOT_FIT_UBOOT_ENTRYPOINT ?= "${UBOOT_ENTRYPOINT}"
+
+
+DEPENDS:append = " ${@'kernel-signing-keys-native' if d.getVar('FIT_GENERATE_KEYS') == '1' else ''}"
 
 python() {
     # We need u-boot-tools-native if we're creating a U-Boot fitImage
@@ -359,6 +366,7 @@ EOF
 # we want to sign it so that the SPL can verify it
 uboot_fitimage_assemble() {
 	conf_loadables="\"uboot\""
+	conf_firmware=""
 	rm -f ${UBOOT_ITS} ${UBOOT_FITIMAGE_BINARY}
 
 	# First we create the ITS script
@@ -423,11 +431,15 @@ EOF
 	fi
 
 	if [ -n "${UBOOT_FIT_USER_SETTINGS}" ] ; then
-		echo -e "${UBOOT_FIT_USER_SETTINGS}" >> ${UBOOT_ITS}
+		printf "%b" "${UBOOT_FIT_USER_SETTINGS}" >> ${UBOOT_ITS}
 	fi
 
 	if [ -n "${UBOOT_FIT_CONF_USER_LOADABLES}" ] ; then
 		conf_loadables="${conf_loadables}${UBOOT_FIT_CONF_USER_LOADABLES}"
+	fi
+
+	if [ -n "${UBOOT_FIT_CONF_FIRMWARE}" ] ; then
+		conf_firmware="firmware = \"${UBOOT_FIT_CONF_FIRMWARE}\";"
 	fi
 
 	cat << EOF >> ${UBOOT_ITS}
@@ -437,6 +449,7 @@ EOF
         default = "conf";
         conf {
             description = "Boot with signed U-Boot FIT";
+            ${conf_firmware}
             loadables = ${conf_loadables};
             fdt = "fdt";
         };

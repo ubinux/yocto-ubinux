@@ -58,11 +58,21 @@ BUILD_CXX = "${CCACHE}clang++ ${BUILD_CC_ARCH}"
 LDFLAGS += "${COMPILER_RT} ${UNWINDLIB}"
 CXXFLAGS += "${LIBCPLUSPLUS}"
 
+TOOLCHAIN = "clang"
+
+def get_compiler_rt_arch(bb, d):
+    if bb.utils.contains('TUNE_FEATURES', 'armv5 thumb dsp', True, False, d):
+        return 'armv5te'
+    elif bb.utils.contains('TUNE_FEATURES', 'armv4 thumb', True, False, d):
+        return 'armv4t'
+    elif bb.utils.contains('TUNE_FEATURES', 'arm vfp callconvention-hard', True, False, d):
+        return 'armhf'
+    return d.getVar('HOST_ARCH')
+
 OECMAKE_TARGET_COMPILE = "compiler-rt"
 OECMAKE_TARGET_INSTALL = "install-compiler-rt install-compiler-rt-headers"
 OECMAKE_SOURCEPATH = "${S}/llvm"
 EXTRA_OECMAKE += "-DCMAKE_BUILD_TYPE=RelWithDebInfo \
-                  -DCMAKE_C_COMPILER_TARGET=${HOST_SYS} \
                   -DLLVM_ENABLE_PER_TARGET_RUNTIME_DIR=OFF \
                   -DCOMPILER_RT_STANDALONE_BUILD=ON \
                   -DCOMPILER_RT_INCLUDE_TESTS=OFF \
@@ -70,11 +80,10 @@ EXTRA_OECMAKE += "-DCMAKE_BUILD_TYPE=RelWithDebInfo \
                   -DCOMPILER_RT_BUILD_SANITIZERS=OFF \
                   -DCOMPILER_RT_BUILD_MEMPROF=OFF \
                   -DCOMPILER_RT_BUILD_LIBFUZZER=OFF \
-                  -DCOMPILER_RT_DEFAULT_TARGET_ARCH=${HOST_ARCH} \
+                  -DCOMPILER_RT_DEFAULT_TARGET_ARCH=${@get_compiler_rt_arch(bb, d)} \
                   -DLLVM_ENABLE_RUNTIMES='compiler-rt' \
                   -DLLVM_LIBDIR_SUFFIX=${LLVM_LIBDIR_SUFFIX} \
                   -DLLVM_APPEND_VC_REV=OFF \
-                  -DCOMPILER_RT_DEFAULT_TARGET_ONLY=ON \
                   -S ${S}/runtimes \
 "
 
@@ -82,6 +91,8 @@ EXTRA_OECMAKE:append:class-target = "\
                -DCMAKE_RANLIB=${STAGING_BINDIR_TOOLCHAIN}/${TARGET_PREFIX}llvm-ranlib \
                -DCMAKE_AR=${STAGING_BINDIR_TOOLCHAIN}/${TARGET_PREFIX}llvm-ar \
                -DCMAKE_NM=${STAGING_BINDIR_TOOLCHAIN}/${TARGET_PREFIX}llvm-nm \
+               -DCMAKE_C_COMPILER_TARGET=${HOST_SYS} \
+               -DCOMPILER_RT_DEFAULT_TARGET_ONLY=ON \
                -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
 "
 
@@ -91,6 +102,8 @@ EXTRA_OECMAKE:append:class-nativesdk = "\
                -DCMAKE_NM=${STAGING_BINDIR_TOOLCHAIN}/${TARGET_PREFIX}llvm-nm \
                -DLLVM_TABLEGEN=${STAGING_BINDIR_NATIVE}/llvm-tblgen \
                -DCLANG_TABLEGEN=${STAGING_BINDIR_NATIVE}/clang-tblgen \
+               -DCMAKE_C_COMPILER_TARGET=${HOST_SYS} \
+               -DCOMPILER_RT_DEFAULT_TARGET_ONLY=ON \
 "
 
 do_install:append () {

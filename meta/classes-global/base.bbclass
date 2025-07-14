@@ -19,6 +19,21 @@ PACKAGECONFIG_CONFARGS ??= ""
 
 inherit metadata_scm
 
+PREFERRED_TOOLCHAIN_TARGET ??= "gcc"
+PREFERRED_TOOLCHAIN_NATIVE ??= "gcc"
+PREFERRED_TOOLCHAIN_SDK ??= "gcc"
+
+PREFERRED_TOOLCHAIN = "${PREFERRED_TOOLCHAIN_TARGET}"
+PREFERRED_TOOLCHAIN:class-native = "${PREFERRED_TOOLCHAIN_NATIVE}"
+PREFERRED_TOOLCHAIN:class-cross = "${PREFERRED_TOOLCHAIN_NATIVE}"
+PREFERRED_TOOLCHAIN:class-crosssdk = "${PREFERRED_TOOLCHAIN_SDK}"
+PREFERRED_TOOLCHAIN:class-nativesdk = "${PREFERRED_TOOLCHAIN_SDK}"
+
+TOOLCHAIN ??= "${PREFERRED_TOOLCHAIN}"
+
+inherit toolchain/gcc-native
+inherit_defer toolchain/${TOOLCHAIN}
+
 def lsb_distro_identifier(d):
     adjust = d.getVar('LSB_DISTRO_ADJUST')
     adjust_func = None
@@ -267,9 +282,18 @@ def buildcfg_neededvars(d):
         bb.fatal('The following variable(s) were not set: %s\nPlease set them directly, or choose a MACHINE or DISTRO that sets them.' % ', '.join(pesteruser))
 
 addhandler base_eventhandler
-base_eventhandler[eventmask] = "bb.event.ConfigParsed bb.event.MultiConfigParsed bb.event.BuildStarted bb.event.RecipePreFinalise bb.event.RecipeParsed"
+base_eventhandler[eventmask] = "bb.event.ConfigParsed bb.event.MultiConfigParsed bb.event.BuildStarted bb.event.RecipePreFinalise bb.event.RecipeParsed bb.event.RecipePreDeferredInherits"
 python base_eventhandler() {
     import bb.runqueue
+
+    if isinstance(e, bb.event.RecipePreDeferredInherits):
+        # Use this to snoop on class extensions and set these up before the deferred inherits
+        # are processed which allows overrides on conditional variables.
+        for c in ['native', 'nativesdk', 'crosssdk', 'cross']:
+            if c in e.inherits:
+                d.setVar('CLASSOVERRIDE', 'class-' + c)
+                break
+        return
 
     if isinstance(e, bb.event.ConfigParsed):
         if not d.getVar("NATIVELSBSTRING", False):
