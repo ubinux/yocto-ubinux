@@ -277,6 +277,9 @@ in the ``meta-poky`` layer:
 -  *Shared State Directory:* Controlled by the
    :term:`SSTATE_DIR` variable.
 
+-  *Persistent Data Directory:* Controlled by the
+   :term:`PERSISTENT_DIR` variable.
+
 -  *Build Output:* Controlled by the
    :term:`TMPDIR` variable.
 
@@ -2393,8 +2396,8 @@ The contents of ``sayhello_0.1.bb`` are::
    RDEPENDS:${PN} += "libhello"
 
    do_install(){
-      install -d ${D}/usr/bin
-      install -m 0700 sayhello ${D}/usr/bin
+      install -d ${D}${bindir}
+      install -m 0700 sayhello ${D}${bindir}
    }
 
 After placing the recipes in a custom layer we can run ``bitbake sayhello``

@@ -246,7 +246,8 @@ section in the Yocto Project Development Tasks Manual.
 ----------------
 
 This directory contains several internal files used by the OpenEmbedded
-build system.
+build system. The path to this directory is defined by the
+:term:`PERSISTENT_DIR` variable.
 
 It also contains ``sanity_info``, a text file keeping track of important
 build information such as the values of :term:`TMPDIR`, :term:`SSTATE_DIR`,

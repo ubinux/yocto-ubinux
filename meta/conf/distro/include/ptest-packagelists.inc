@@ -25,6 +25,7 @@ PTESTS_FAST = "\
     gdk-pixbuf \
     glib-networking \
     gzip \
+    icu \
     json-c \
     json-glib \
     libconvert-asn1-perl \
@@ -99,6 +100,7 @@ PTESTS_SLOW = "\
     coreutils \
     curl \
     dbus \
+    dosfstools \
     e2fsprogs \
     elfutils \
     gettext \
