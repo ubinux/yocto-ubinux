@@ -57,6 +57,7 @@ UBINUX_PKGS_NOCONFLICT = " \
 	dfu-util \
 	dhcpcd \
 	dnf \
+	dialog \
 	dool \
 	dosfstools \
 	dovecot \
