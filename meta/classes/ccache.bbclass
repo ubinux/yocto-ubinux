@@ -37,22 +37,9 @@ CCACHE_NATIVE_RECIPES_ALLOWED ?= ""
 # in different builds.
 export CCACHE_BASEDIR ?= "${TMPDIR}"
 
-# Used for sharing cache files after compiler is rebuilt
-export CCACHE_COMPILERCHECK ?= "%compiler% -dumpspecs"
-
 export CCACHE_CONFIGPATH ?= "${COREBASE}/meta/conf/ccache.conf"
 
 export CCACHE_DIR ?= "${CCACHE_TOP_DIR}/${MULTIMACH_TARGET_SYS}/${PN}"
-
-# Fixed errors:
-# ccache: error: Failed to create directory /run/user/0/ccache-tmp: Permission denied
-export CCACHE_TEMPDIR ?= "${CCACHE_DIR}/tmp"
-
-# We need to stop ccache considering the current directory or the
-# debug-prefix-map target directory to be significant when calculating
-# its hash. Without this the cache would be invalidated every time
-# ${PV} or ${PR} change.
-export CCACHE_NOHASHDIR ?= "1"
 
 python() {
     """
