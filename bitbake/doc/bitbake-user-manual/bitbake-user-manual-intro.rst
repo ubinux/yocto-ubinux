@@ -206,6 +206,18 @@ installing (empty by default) and packaging (empty by default). These
 tasks are often overridden or extended by other classes added during the
 project development process.
 
+.. note::
+
+   While BitBake comes with just the one ``base.bbclass`` file in the
+   ``classes`` directory, it supports class files also being installed
+   in related directories ``classes-global`` and ``classes-recipe`` and
+   will automatically search all three directories for a selected class
+   file.
+
+   This means that, in this documentation, when you see a reference to
+   class files being in the ``classes`` directory, you can interpret that
+   as meaning in any one of the above three directories.
+
 Layers
 ------
 
@@ -258,6 +270,8 @@ the append file would match the following recipe names::
   busybox_1.21.1.bb
   busybox_1.21.2.bb
   busybox_1.21.3.bb
+  busybox_1.21.10.bb
+  busybox_1.21.11.bb
 
 .. note::
 
