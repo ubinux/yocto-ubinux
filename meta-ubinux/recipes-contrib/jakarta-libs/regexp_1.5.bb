@@ -8,7 +8,7 @@ SRC_URI = "http://archive.apache.org/dist/jakarta/regexp/source/jakarta-${BP}.ta
 
 inherit java-library
 
-S = "${WORKDIR}/jakarta-${BP}"
+S = "${UNPACKDIR}/jakarta-${BP}"
 
 do_compile() {
   mkdir -p build

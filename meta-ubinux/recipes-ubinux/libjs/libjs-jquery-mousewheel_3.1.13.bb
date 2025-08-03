@@ -16,8 +16,6 @@ PACKAGES = "${PN} ${PN}-doc"
 FILES:${PN} = "${datadir}/javascript/jquery-mousewheel"
 FILES:${PN}-doc += "${datadir}/doc/${PN}"
 
-S = "${WORKDIR}/git"
-
 do_install() {
 	install -d ${D}${datadir}/javascript/jquery-mousewheel
 	install -p -m 0644 ${S}/jquery.mousewheel.js ${D}${datadir}/javascript/jquery-mousewheel/

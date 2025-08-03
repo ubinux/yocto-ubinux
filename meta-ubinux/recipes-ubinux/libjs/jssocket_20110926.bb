@@ -14,8 +14,6 @@ PACKAGES = "${PN} ${PN}-doc"
 FILES:${PN} = "${datadir}/javascript/jssocket"
 FILES:${PN}-doc += "${datadir}/doc/${PN}"
 
-S = "${WORKDIR}/git"
-
 do_install() {
 	install -d ${D}${datadir}/javascript/jssocket/
 	install -p -m 0644 ${S}/src/jsSocket.js ${D}${datadir}/javascript/jssocket/

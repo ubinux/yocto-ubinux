@@ -30,8 +30,9 @@ PREFERRED_TOOLCHAIN:class-crosssdk = "${PREFERRED_TOOLCHAIN_SDK}"
 PREFERRED_TOOLCHAIN:class-nativesdk = "${PREFERRED_TOOLCHAIN_SDK}"
 
 TOOLCHAIN ??= "${PREFERRED_TOOLCHAIN}"
+TOOLCHAIN_NATIVE ??= "${PREFERRED_TOOLCHAIN_NATIVE}"
 
-inherit toolchain/gcc-native
+inherit_defer toolchain/${TOOLCHAIN_NATIVE}-native
 inherit_defer toolchain/${TOOLCHAIN}
 
 def lsb_distro_identifier(d):
@@ -154,6 +155,7 @@ do_fetch[file-checksums] = "${@bb.fetch.get_checksum_file_list(d)}"
 do_fetch[file-checksums] += " ${@get_lic_checksum_file_list(d)}"
 do_fetch[prefuncs] += "fetcher_hashes_dummyfunc"
 do_fetch[network] = "1"
+do_fetch[umask] = "${OE_SHARED_UMASK}"
 python base_do_fetch() {
 
     src_uri = (d.getVar('SRC_URI') or "").split()
@@ -183,23 +185,16 @@ python base_do_unpack() {
 
     basedir = None
     unpackdir = d.getVar('UNPACKDIR')
-    workdir = d.getVar('WORKDIR')
-    if sourcedir.startswith(workdir) and not sourcedir.startswith(unpackdir):
-        basedir = sourcedir.replace(workdir, '').strip("/").split('/')[0]
+    if sourcedir.startswith(unpackdir):
+        basedir = sourcedir.replace(unpackdir, '').strip("/").split('/')[0]
         if basedir:
-            bb.utils.remove(workdir + '/' + basedir, True)
-            d.setVar("SOURCE_BASEDIR", workdir + '/' + basedir)
+            d.setVar("SOURCE_BASEDIR", unpackdir + '/' + basedir)
 
     try:
         fetcher = bb.fetch2.Fetch(src_uri, d)
         fetcher.unpack(d.getVar('UNPACKDIR'))
     except bb.fetch2.BBFetchException as e:
         bb.fatal("Bitbake Fetcher Error: " + repr(e))
-
-    if basedir and os.path.exists(unpackdir + '/' + basedir):
-        # Compatibility magic to ensure ${WORKDIR}/git and ${WORKDIR}/${BP}
-        # as often used in S work as expected.
-        shutil.move(unpackdir + '/' + basedir, workdir + '/' + basedir)
 }
 
 SSTATETASKS += "do_deploy_source_date_epoch"

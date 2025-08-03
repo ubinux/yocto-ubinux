@@ -1,0 +1,12 @@
+diff -Naur meta-xilinx.orig/meta-xilinx-core/conf/layer.conf meta-xilinx/meta-xilinx-core/conf/layer.conf
+--- meta-xilinx.orig/meta-xilinx-core/conf/layer.conf	2025-07-11 07:41:34.479343866 +0000
++++ meta-xilinx/meta-xilinx-core/conf/layer.conf	2025-06-30 06:37:31.015624147 +0000
+@@ -25,7 +25,7 @@
+ LAYERDEPENDS_xilinx = "core meta-arm"
+ LAYERRECOMMENDS_xilinx = "openembedded-layer"
+ 
+-LAYERSERIES_COMPAT_xilinx = "styhead walnascar"
++LAYERSERIES_COMPAT_xilinx = "styhead walnascar whinlatter"
+ 
+ SIGGEN_EXCLUDE_SAFE_RECIPE_DEPS += " \
+   *->xrt \

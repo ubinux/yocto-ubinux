@@ -11,7 +11,7 @@ inherit java-library
 
 DEPENDS = "gnumail gnujaf"
 
-S = "${WORKDIR}/apache-log4j-${PV}"
+S = "${UNPACKDIR}/apache-log4j-${PV}"
 
 JARFILENAME = "log4j-${PV}.jar"
 ALTJARFILENAMES = "log4j-1.2.jar log4j1.2.jar"

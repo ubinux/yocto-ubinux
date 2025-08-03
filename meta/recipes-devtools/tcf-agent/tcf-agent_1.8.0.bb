@@ -18,7 +18,7 @@ SRC_URI = "git://gitlab.eclipse.org/eclipse/tcf/tcf.agent.git;protocol=https;bra
 DEPENDS = "util-linux openssl"
 RDEPENDS:${PN} = "bash"
 
-S = "${WORKDIR}/git/agent"
+S = "${UNPACKDIR}/${BP}/agent"
 
 inherit update-rc.d systemd
 
@@ -37,7 +37,6 @@ LCL_STOP_SERVICES = "-DSERVICE_RunControl=0 -DSERVICE_Breakpoints=0 \
     -DSERVICE_Memory=0 -DSERVICE_Registers=0 -DSERVICE_MemoryMap=0 \
     -DSERVICE_StackTrace=0 -DSERVICE_Expressions=0"
 
-
 # These features don't compile for several cases.
 #
 CFLAGS:append:arc = " ${LCL_STOP_SERVICES}"
@@ -49,6 +48,12 @@ CFLAGS:append:powerpc64le = " ${LCL_STOP_SERVICES}"
 CFLAGS:append:riscv64 = " ${LCL_STOP_SERVICES}"
 CFLAGS:append:riscv32 = " ${LCL_STOP_SERVICES}"
 CFLAGS:append:loongarch64 = " ${LCL_STOP_SERVICES}"
+
+# This works with gcc-ranlib wrapper only because it exists without error if nothing
+# is passed as argument but binutils ranlib and llvm ranlib do not and expect an input
+# passing $@ ensures that Makefile default target which is the archive name in tcf makefiles
+# is passed to RANLIB, ensures that whichever ranlib is used, the behavior is identical
+RANLIB:append = " $@"
 
 do_install() {
 	oe_runmake install INSTALLROOT=${D}

@@ -6,7 +6,7 @@ SECTION  = "libs"
 
 ICEDTEA_VERSION = "${@bb.parse.vars_from_file(d.getVar('FILE', False),d)[1].split("-")[1] or '1.0'}"
 
-S = "${WORKDIR}/${ICEDTEA}"
+S = "${UNPACKDIR}/${ICEDTEA}"
 
 DEPENDS:append_libc-uclibc = " virtual/libiconv "
 

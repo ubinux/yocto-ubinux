@@ -7,7 +7,7 @@ PR = "r1"
 
 SRC_URI = "http://downloads.sourceforge.net/junit/junit${PV}.zip"
 
-S = "${WORKDIR}/junit${PV}"
+S = "${UNPACKDIR}/junit${PV}"
 
 DEPENDS += "unzip-native"
 

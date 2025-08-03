@@ -6,7 +6,7 @@ diff -Naur meta-java-orig/conf/layer.conf meta-java/conf/layer.conf
  BBFILE_PATTERN_meta-java := "^${LAYERDIR}/"
  BBFILE_PRIORITY_meta-java = "10"
 -LAYERSERIES_COMPAT_meta-java = "styhead"
-+LAYERSERIES_COMPAT_meta-java = "styhead walnascar"
++LAYERSERIES_COMPAT_meta-java = "styhead walnascar whinlatter"
  LAYERDEPENDS_meta-java += "openembedded-layer"
  
  LICENSE_PATH += "${LAYERDIR}/licenses"

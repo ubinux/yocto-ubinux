@@ -18,6 +18,7 @@ from urllib.parse import urlparse, urldefrag, urlsplit
 import hashlib
 import bb.fetch2
 logger = logging.getLogger('recipetool')
+from oe.license import tidy_licenses
 from oe.license_finder import find_licenses
 
 tinfoil = None
@@ -638,7 +639,6 @@ def create_recipe(args):
                     if len(splitline) > 1:
                         if splitline[0] == 'origin' and scriptutils.is_src_url(splitline[1]):
                             srcuri = reformat_git_uri(splitline[1]) + ';branch=master'
-                            srcsubdir = 'git'
                             break
 
     if args.src_subdir:
@@ -736,7 +736,7 @@ def create_recipe(args):
     if srcsubdir and not args.binary:
         # (for binary packages we explicitly specify subdir= when fetching to
         # match the default value of S, so we don't need to set it in that case)
-        lines_before.append('S = "${WORKDIR}/%s"' % srcsubdir)
+        lines_before.append('S = "${UNPACKDIR}/%s"' % srcsubdir)
         lines_before.append('')
 
     if pkgarch:
@@ -765,6 +765,7 @@ def create_recipe(args):
     extrafiles = extravalues.pop('extrafiles', {})
     extra_pn = extravalues.pop('PN', None)
     extra_pv = extravalues.pop('PV', None)
+    run_tasks = extravalues.pop('run_tasks', "").split()
 
     if extra_pv and not realpv:
         realpv = extra_pv
@@ -825,7 +826,8 @@ def create_recipe(args):
             extraoutdir = os.path.join(os.path.dirname(outfile), pn)
         bb.utils.mkdirhier(extraoutdir)
         for destfn, extrafile in extrafiles.items():
-            shutil.move(extrafile, os.path.join(extraoutdir, destfn))
+            fn = destfn.format(pn=pn, pv=realpv)
+            shutil.move(extrafile, os.path.join(extraoutdir, fn))
 
     lines = lines_before
     lines_before = []
@@ -840,7 +842,7 @@ def create_recipe(args):
                 line = line.replace(realpv, '${PV}')
             if pn:
                 line = line.replace(pn, '${BPN}')
-            if line == 'S = "${WORKDIR}/${BPN}-${PV}"':
+            if line == 'S = "${UNPACKDIR}/${BPN}-${PV}"' or 'tmp-recipetool-' in line:
                 skipblank = True
                 continue
         elif line.startswith('SRC_URI = '):
@@ -918,6 +920,10 @@ def create_recipe(args):
         log_info_cond('Recipe %s has been created; further editing may be required to make it fully functional' % outfile, args.devtool)
         tinfoil.modified_files()
 
+    for task in run_tasks:
+        logger.info("Running task %s" % task)
+        tinfoil.build_file_sync(outfile, task)
+
     if tempsrc:
         if args.keep_temp:
             logger.info('Preserving temporary directory %s' % tempsrc)
@@ -944,16 +950,6 @@ def fixup_license(value):
     if '|' in value:
         return '(' + value + ')'
     return value
-
-def tidy_licenses(value):
-    """Flat, split and sort licenses"""
-    from oe.license import flattened_licenses
-    def _choose(a, b):
-        str_a, str_b  = sorted((" & ".join(a), " & ".join(b)), key=str.casefold)
-        return ["(%s | %s)" % (str_a, str_b)]
-    if not isinstance(value, str):
-        value = " & ".join(value)
-    return sorted(list(set(flattened_licenses(value, _choose))), key=str.casefold)
 
 def handle_license_vars(srctree, lines_before, handled, extravalues, d):
     lichandled = [x for x in handled if x[0] == 'license']

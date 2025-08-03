@@ -12,8 +12,6 @@ SRCREV = "a0323579ac50b9a9d4033754d089f1fed0f59a00"
 SRC_URI = "git://github.com/kaniini/libucontext;branch=master;protocol=https \
            "
 
-S = "${WORKDIR}/git"
-
 COMPATIBLE_HOST = ".*-musl.*"
 
 valid_archs = " \
@@ -50,3 +48,9 @@ def map_kernel_arch(a, d):
 
 EXTRA_OEMESON = "-Dcpu=${@map_kernel_arch(d.getVar('TARGET_ARCH'), d)}"
 inherit meson
+
+ARM_TARGET_CPPFLAGS = ""
+ARM_TARGET_CPPFLAGS:append:arm = "${@bb.utils.contains('TARGET_FPU', 'hard', ' -DFORCE_HARD_FLOAT', '', d)}"
+ARM_TARGET_CPPFLAGS:append:arm = "${@bb.utils.contains('TARGET_FPU', 'soft', ' -DFORCE_SOFT_FLOAT', '', d)}"
+
+TARGET_CPPFLAGS .= "${ARM_TARGET_CPPFLAGS}"

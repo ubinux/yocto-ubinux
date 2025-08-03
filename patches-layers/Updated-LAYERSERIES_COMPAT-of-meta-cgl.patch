@@ -6,6 +6,6 @@ diff -Naur meta-cgl-orig/meta-cgl-common/conf/layer.conf meta-cgl/meta-cgl-commo
  LAYERDEPENDS_cgl-common = "core openembedded-layer networking-layer perl-layer filesystems-layer security selinux yocto"
  
 -LAYERSERIES_COMPAT_cgl-common = "honister kirkstone langdale mickledore nanbield scarthgap styhead"
-+LAYERSERIES_COMPAT_cgl-common = "honister kirkstone langdale mickledore nanbield scarthgap styhead walnascar"
++LAYERSERIES_COMPAT_cgl-common = "honister kirkstone langdale mickledore nanbield scarthgap styhead walnascar whinlatter"
  
  require conf/distro/include/cgl_common_security_flags.inc
