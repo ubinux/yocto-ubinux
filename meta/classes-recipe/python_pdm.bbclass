@@ -6,4 +6,4 @@
 
 inherit python_pep517
 
-DEPENDS += "python3-poetry-core-native"
+DEPENDS += "python3-pdm-backend-native"
