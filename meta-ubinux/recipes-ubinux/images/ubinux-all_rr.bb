@@ -351,6 +351,7 @@ UBINUX_PKGS = " \
 	openvpn-sample \
 	openwsman \
 	passwdqc \
+	pam-radius \
 	pam-plugin-access \
 	pam-plugin-debug \
 	pam-plugin-deny \
