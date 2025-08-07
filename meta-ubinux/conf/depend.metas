@@ -17,7 +17,7 @@ metas=meta-oe
 [meta-oe]
 GITURL=http://git.openembedded.org/meta-openembedded
 BRANCH=master
-HEADID=79147e14b83f94b9dec0d8cbd6ba19512cdfd9fc
+HEADID=5e7559a17fc29d53ec1538d2c66507e4b06b31ae
 FILES=meta-oe/conf
  meta-oe/COPYING.MIT
  meta-oe/licenses/
@@ -54,7 +54,7 @@ FILES=meta-oe/conf
  meta-oe/recipes-graphics/tslib/
  meta-oe/recipes-graphics/xorg-app/xlsfonts_1.0.8.bb
  meta-oe/recipes-graphics/xorg-app/xrdb_1.2.0.bb
- meta-oe/recipes-graphics/xorg-app/xterm_394.bb
+ meta-oe/recipes-graphics/xorg-app/xterm_401.bb
  meta-oe/recipes-graphics/xorg-app/xterm/
  meta-oe/recipes-graphics/xorg-app/xwd_1.0.9.bb
  meta-oe/recipes-graphics/xorg-app/iceauth_1.0.10.bb
@@ -153,6 +153,7 @@ FILES=meta-oe/conf
  meta-oe/recipes-extended/polkit/
  meta-oe/recipes-extended/rrdtool/
  meta-oe/recipes-extended/liblockfile/
+ meta-oe/recipes-extended/pam/pam-radius_3.0.0.bb
  meta-oe/recipes-extended/smartmontools/
  meta-oe/recipes-extended/snappy/
  meta-oe/recipes-extended/wtmpdb/
@@ -233,7 +234,7 @@ FILES=meta-oe/conf
  meta-oe/recipes-graphics/xorg-app/xrdb_1.2.2.bb
  meta-oe/recipes-graphics/xorg-app/xsetroot_1.1.2.bb
  meta-oe/recipes-graphics/xorg-app/twm_1.0.13.1.bb
- meta-oe/recipes-graphics/xorg-app/xgamma_1.0.7.bb
+ meta-oe/recipes-graphics/xorg-app/xgamma_1.0.8.bb
  meta-oe/recipes-graphics/xorg-app/xkbevd_1.1.6.bb
  meta-oe/recipes-graphics/xorg-app/xkbprint_1.0.7.bb
  meta-oe/recipes-graphics/xorg-app/xkbutils_1.0.6.bb
@@ -449,7 +450,7 @@ FILES=meta-oe/conf
  meta-oe/recipes-devtools/perl/libdev-checklib-perl/
  meta-perl/recipes-perl/libdigest/files/
  meta-perl/recipes-perl/libdigest/
- meta-perl/recipes-perl/libhtml/libhtml-parser-perl_3.72.bb
+ meta-perl/recipes-perl/libhtml/libhtml-parser-perl_3.73.bb
  meta-perl/recipes-perl/libhtml/libhtml-tagset-perl_3.20.bb
  meta-perl/recipes-perl/libnet/libnet-dns-perl_1.35.bb
  meta-perl/recipes-perl/libnet/libnet-dns-sec-perl_1.10.bb
@@ -466,7 +467,7 @@ FILES=meta-oe/conf
 [meta-freescale]
 GITURL=https://git.yoctoproject.org/git/meta-freescale
 BRANCH=master
-HEADID=06e69dcd392637b5c3ec1f4bfb91313d45198c14
+HEADID=3795a8155a619b07d919ce6f81f2c22a2ab6af34
 FILES=conf/layer.conf
  custom-licenses/
  classes/
@@ -500,7 +501,7 @@ FILES=meta-cgl-common/conf/layer.conf
 [meta-cloud-services]
 GITURL=http://git.yoctoproject.org/git/meta-cloud-services
 BRANCH=master
-HEADID=ff75057ed28f942543c951f7af22b891752557f1
+HEADID=6c5afb77aa5580dbe737f682ee2f792122c0c2f3
 FILES=conf/layer.conf
  classes/
  meta-openstack/classes/default_configs.bbclass
@@ -561,7 +562,7 @@ FILES=conf/layer.conf
 [meta-virtualization]
 GITURL=http://git.yoctoproject.org/git/meta-virtualization
 BRANCH=master
-HEADID=640bca7e046689b789dd068059a7b18749d10c0c
+HEADID=9b034e3defd4aa1108d7a6b4dcca600d4352b132
 FILES=conf/layer.conf
  classes/
  files/
@@ -582,7 +583,7 @@ FILES=conf/layer.conf
 [meta-security]
 GITURL=http://git.yoctoproject.org/git/meta-security
 BRANCH=master
-HEADID=d750c6cf48c48fa5deeaae937a3d764f73c4b53b
+HEADID=06bd60600e8db1b843cf5cc0f074a11eac7e9a80
 FILES=conf
  classes/sanity-meta-security.bbclass
  meta-tpm/classes/sanity-meta-tpm.bbclass
@@ -607,7 +608,7 @@ FILES=conf
 [meta-qt5]
 GITURL=https://github.com/meta-qt5/meta-qt5.git
 BRANCH=master
-HEADID=e10fdabb88eb85d33e9483f44891710a95510c86
+HEADID=27f58b05ab62c63b9ea65cd5fa684d84e4cb9ec1
 FILES=conf/layer.conf
  recipes-qt/qt5
  recipes-qt/qtchooser
@@ -625,7 +626,7 @@ FILES=conf/layer.conf
 [meta-swupdate]
 GITURL=https://github.com/sbabic/meta-swupdate.git
 BRANCH=master
-HEADID=83751a08e5932d537beda6d1961d9751d242335c
+HEADID=b0253e9cecccc47ebee31c71403957cccd941e0f
 FILES=conf/layer.conf
  recipes-support/swupdate/
  recipes-bsp/u-boot/
@@ -675,6 +676,6 @@ FILES=conf
 [meta-arm]
 GITURL=https://git.yoctoproject.org/meta-arm
 BRANCH=master
-HEADID=54cb65ca03a663a66a6d88c3397b76630ce7b043
+HEADID=77ba0e68e3d6ffd380346c616a60bf0c7e35a08b
 FILES=meta-arm/conf
  meta-arm-toolchain/conf
