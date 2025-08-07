@@ -1,4 +1,4 @@
-# ubinux-2025.06 Release Notes
+# ubinux-2025.07 Release Notes
 
 OSS x AI Technology Div.  
 Fujitsu Limited  
@@ -6,7 +6,7 @@ Fujitsu Limited
 ## 1. Basic Information
 ### 1.1 Version Information
 - Yocto: 5.2
-- Kernel: 6.6.92
+- Kernel: 6.6.93
 - Toolchain
   - GCC: 15.1.0
   - Binutils: 2.44
@@ -32,30 +32,29 @@ Fujitsu Limited
 
 ## 2. Features
 ### 2.1 Security Fixes
-Following security issues have been fixed from ubinux-2025.05.
+Following security issues have been fixed from ubinux-2025.06.
 
-corosync:
-- CVE-2025-30472
+binutils:
+- CVE-2025-3198
 
-libxml2:
-- CVE-2025-32414
-- CVE-2025-32415
+openssh:
+- CVE-2025-32728
 
 ubinux-kernel:
-- CVE-2025-37838
+- CVE-2024-35788
+- CVE-2024-44955
 
 ### 2.2 Added packages
 
-- clang (renamed from llvm)
-- spirv-llvm-translator (package split from llvm)
+N/A
 
 ### 2.3 Removed packages
 
-- llvm
+N/A
 
 ## 3. Installation guide
 ### 3.1 Install Toolchain
-Run as root privilege the Toolchain installer at arbitrary directory, and Toolchain will be installed into /opt/ubinux/2025.06 directory.
+Run as root privilege the Toolchain installer at arbitrary directory, and Toolchain will be installed into /opt/ubinux/2025.07 directory.
 
 
 [TYPE1] in the description, please read as shown below.
@@ -67,7 +66,7 @@ Run as root privilege the Toolchain installer at arbitrary directory, and Toolch
 |Armv8 (32bit EL, 64bit EL)|aarch64-ubinux-armv8|
 
 
-`$ sudo sh ubinux-glibc-x86_64-meta-toolchain-[TYPE1]-toolchain-2025.06.sh`
+`$ sudo sh ubinux-glibc-x86_64-meta-toolchain-[TYPE1]-toolchain-2025.07.sh`
 
 
 ### 3.2 Set up Environment Variables
@@ -84,7 +83,7 @@ Run the following commands.
 |Armv8 (32bit EL)|armv7ahf-neon-ubinuxmllib32-linux-gnueabi|
 
 
-`$ . /opt/ubinux/2025.06/environment-setup-[TYPE2]`
+`$ . /opt/ubinux/2025.07/environment-setup-[TYPE2]`
 
 ### 3.3 Create rootfs from Userland Packages
 To create rootfs, see Section 3.1.2 and 3.1.3 of the dnf-plugin-tui documentation.  
@@ -107,7 +106,7 @@ N/A
 
 ### 4.3 Tools
 
-Added the mkimage command to the toolchain for armv8.  
+N/A  
 
 ### 4.4 validation
 The following objects are not validated because the hardware of the test environment does not support them:
@@ -134,9 +133,6 @@ The following objects are not validated because the hardware of the test environ
 
 ## 5. Known Security Issues
 The following security issues were known in this release:  
-binutils:
-- CVE-2025-3198
-
 db:
 - CVE-2016-0682
 - CVE-2016-0689
@@ -165,6 +161,9 @@ hdf5:
 - CVE-2025-2925
 - CVE-2025-2926
 
+libarchive:
+- CVE-2025-5914
+
 libraw:
 - CVE-2025-43961
 - CVE-2025-43962
@@ -180,11 +179,11 @@ libuser:
 libvirt:
 - CVE-2023-3750
 
-openssh:
-- CVE-2025-32728
-
 openvswitch:
 - CVE-2019-25076
+
+php:
+- CVE-2024-3566
 
 polkit:
 - CVE-2016-2568
@@ -291,7 +290,6 @@ ubinux-kernel:
 - CVE-2024-27012
 - CVE-2024-27017
 - CVE-2024-27079
-- CVE-2024-35788
 - CVE-2024-35843
 - CVE-2024-35968
 - CVE-2024-36478
@@ -335,7 +333,6 @@ ubinux-kernel:
 - CVE-2024-43913
 - CVE-2024-44950
 - CVE-2024-44951
-- CVE-2024-44955
 - CVE-2024-44956
 - CVE-2024-44963
 - CVE-2024-46681
