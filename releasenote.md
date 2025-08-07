@@ -1,12 +1,12 @@
-# ubinux-2025.07 Release Notes
+# ubinux-2025.08 Release Notes
 
 OSS x AI Technology Div.  
 Fujitsu Limited  
 
 ## 1. Basic Information
 ### 1.1 Version Information
-- Yocto: 5.2
-- Kernel: 6.6.93
+- Yocto: 5.3
+- Kernel: 6.12.38
 - Toolchain
   - GCC: 15.1.0
   - Binutils: 2.44
@@ -32,232 +32,21 @@ Fujitsu Limited
 
 ## 2. Features
 ### 2.1 Security Fixes
-Following security issues have been fixed from ubinux-2025.06.
-
-binutils:
-- CVE-2025-3198
-
-openssh:
-- CVE-2025-32728
-
-ubinux-kernel:
-- CVE-2024-35788
-- CVE-2024-44955
-
-### 2.2 Added packages
-
-N/A
-
-### 2.3 Removed packages
-
-N/A
-
-## 3. Installation guide
-### 3.1 Install Toolchain
-Run as root privilege the Toolchain installer at arbitrary directory, and Toolchain will be installed into /opt/ubinux/2025.07 directory.
-
-
-[TYPE1] in the description, please read as shown below.
-
-
-|CPU|[TYPE1]|
-|---|--------|
-|x86 (64bit)|core2-64-ubinux-x86-64|
-|Armv8 (32bit EL, 64bit EL)|aarch64-ubinux-armv8|
-
-
-`$ sudo sh ubinux-glibc-x86_64-meta-toolchain-[TYPE1]-toolchain-2025.07.sh`
-
-
-### 3.2 Set up Environment Variables
-Run the following commands.
-
-
-[TYPE2] in the description, please read as shown below.
-
-
-|CPU|[TYPE2]|
-|---|--------|
-|x86 (64bit)|core2-64-ubinux-linux|
-|Armv8 (64bit EL)|aarch64-ubinux-linux|
-|Armv8 (32bit EL)|armv7ahf-neon-ubinuxmllib32-linux-gnueabi|
-
-
-`$ . /opt/ubinux/2025.07/environment-setup-[TYPE2]`
-
-### 3.3 Create rootfs from Userland Packages
-To create rootfs, see Section 3.1.2 and 3.1.3 of the dnf-plugin-tui documentation.  
-https://github.com/ubinux/dnf-plugin-tui/blob/dc41277946edbca76e375a72e4c0babd38d71d35/README.md#312-initialize
-
-## 4. Notice
-### 4.1 Kernel
-Enable some kernel configs to use following features.
-- systemd
-  - CONFIG_CGROUPS
-  - CONFIG_FHANDLE
-- Booting with UEFI
-  - CONFIG_EFI_STUB
-- Display Console in some environments (x86_64 only)
-  - CONFIG_DRM_FBDEV_EMULATION
-
-### 4.2 Userland Packages
-
-N/A  
-
-### 4.3 Tools
-
-N/A  
-
-### 4.4 validation
-The following objects are not validated because the hardware of the test environment does not support them:
-
-#### 4.4.1 X86_64
-- ipmi
-- tcsd
-- edac-util
-- mdadm
-
-#### 4.4.2 Armv8
-- smartd
-- hostapd
-- ipmi
-- resizecons
-- lm_sensors
-- cpufreq-aperf
-- busybox devmem
-- busybox setkeycodes
-- cransh-cross-canadian
-- mdadm
-- dool
-- tiptop
-
-## 5. Known Security Issues
-The following security issues were known in this release:  
-db:
-- CVE-2016-0682
-- CVE-2016-0689
-- CVE-2016-0692
-- CVE-2016-0694
-- CVE-2016-3418
-
-dovecot:
-- CVE-2022-30550
-
-glibc:
-- CVE-2010-4756
-
-hdf5:
-- CVE-2018-17433
-- CVE-2018-17436
-- CVE-2019-8396
-- CVE-2020-10809
-- CVE-2020-10812
-- CVE-2025-2912
-- CVE-2025-2913
-- CVE-2025-2914
-- CVE-2025-2915
-- CVE-2025-2923
-- CVE-2025-2924
-- CVE-2025-2925
-- CVE-2025-2926
+Following security issues have been fixed from ubinux-2025.07.
 
 libarchive:
 - CVE-2025-5914
 
-libraw:
-- CVE-2025-43961
-- CVE-2025-43962
-- CVE-2025-43963
-- CVE-2025-43964
-
-libsndfile1:
-- CVE-2024-50613
-
-libuser:
-- CVE-2012-5644
-
-libvirt:
-- CVE-2023-3750
-
-openvswitch:
-- CVE-2019-25076
-
-php:
-- CVE-2024-3566
-
-polkit:
-- CVE-2016-2568
-
-qemu:
-- CVE-2023-1386
-- CVE-2024-8354
-
-qtbase:
-- CVE-2023-51714
-- CVE-2024-39936
-- CVE-2025-30348
-
-rpm:
-- CVE-2021-35937
-
-samba:
-- CVE-2021-3670
-- CVE-2022-1615
-- CVE-2022-32743
-- CVE-2022-38023
-- CVE-2023-37369
-
-sqlite3:
-- CVE-2025-29087
-
-sysstat:
-- CVE-2022-39377
-
-tiff:
-- CVE-2023-1916
-
-tigervnc:
-- CVE-2014-8241
-- CVE-2023-6377
-- CVE-2023-6478
-- CVE-2025-26594
-- CVE-2025-26595
-- CVE-2025-26596
-- CVE-2025-26597
-- CVE-2025-26598
-- CVE-2025-26599
-- CVE-2025-26600
-- CVE-2025-26601
-
 ubinux-kernel:
-- CVE-2007-4998
-- CVE-2008-4609
-- CVE-2010-4563
-- CVE-2019-14899
-- CVE-2020-35501
-- CVE-2021-3714
-- CVE-2021-3847
-- CVE-2021-3864
-- CVE-2022-0400
 - CVE-2022-0480
-- CVE-2022-1247
-- CVE-2022-25265
-- CVE-2022-2961
-- CVE-2022-38096
 - CVE-2022-41848
 - CVE-2022-44032
 - CVE-2022-44033
 - CVE-2022-44034
-- CVE-2022-4543
 - CVE-2022-45884
 - CVE-2022-45885
 - CVE-2022-45888
-- CVE-2023-23039
-- CVE-2023-26242
-- CVE-2023-3397
-- CVE-2023-3640
 - CVE-2023-37454
-- CVE-2023-4010
 - CVE-2023-4155
 - CVE-2023-52485
 - CVE-2023-52586
@@ -265,15 +54,10 @@ ubinux-kernel:
 - CVE-2023-52624
 - CVE-2023-52625
 - CVE-2023-52634
-- CVE-2023-6238
-- CVE-2023-6240
-- CVE-2023-6535
 - CVE-2024-21803
 - CVE-2024-23848
 - CVE-2024-24859
-- CVE-2024-24864
 - CVE-2024-25739
-- CVE-2024-25740
 - CVE-2024-26596
 - CVE-2024-26672
 - CVE-2024-26699
@@ -468,7 +252,6 @@ ubinux-kernel:
 - CVE-2024-57982
 - CVE-2024-58012
 - CVE-2024-58089
-- CVE-2024-58097
 - CVE-2025-21634
 - CVE-2025-21635
 - CVE-2025-21649
@@ -482,16 +265,237 @@ ubinux-kernel:
 - CVE-2025-21723
 - CVE-2025-21729
 - CVE-2025-21739
-- CVE-2025-21751
 - CVE-2025-21786
-- CVE-2025-21833
 - CVE-2025-21861
 - CVE-2025-21927
-- CVE-2025-21949
 - CVE-2025-21961
 - CVE-2025-22037
 - CVE-2025-22070
 - CVE-2025-37802
+
+### 2.2 Added packages
+
+- python3-pygments
+- python3-rich
+- python3-rich-argparse
+
+### 2.3 Removed packages
+
+N/A
+
+## 3. Installation guide
+### 3.1 Install Toolchain
+Run as root privilege the Toolchain installer at arbitrary directory, and Toolchain will be installed into /opt/ubinux/2025.08 directory.
+
+
+[TYPE1] in the description, please read as shown below.
+
+
+|CPU|[TYPE1]|
+|---|--------|
+|x86 (64bit)|core2-64-ubinux-x86-64|
+|Armv8 (32bit EL, 64bit EL)|aarch64-ubinux-armv8|
+
+
+`$ sudo sh ubinux-glibc-x86_64-meta-toolchain-[TYPE1]-toolchain-2025.08.sh`
+
+
+### 3.2 Set up Environment Variables
+Run the following commands.
+
+
+[TYPE2] in the description, please read as shown below.
+
+
+|CPU|[TYPE2]|
+|---|--------|
+|x86 (64bit)|core2-64-ubinux-linux|
+|Armv8 (64bit EL)|aarch64-ubinux-linux|
+|Armv8 (32bit EL)|armv7ahf-neon-ubinuxmllib32-linux-gnueabi|
+
+
+`$ . /opt/ubinux/2025.08/environment-setup-[TYPE2]`
+
+### 3.3 Create rootfs from Userland Packages
+To create rootfs, see Section 3.1.2 and 3.1.3 of the dnf-plugin-tui documentation.  
+https://github.com/ubinux/dnf-plugin-tui/blob/dc41277946edbca76e375a72e4c0babd38d71d35/README.md#312-initialize
+
+## 4. Notice
+### 4.1 Kernel
+Enable some kernel configs to use following features.
+- systemd
+  - CONFIG_CGROUPS
+  - CONFIG_FHANDLE
+- Booting with UEFI
+  - CONFIG_EFI_STUB
+- Display Console in some environments (x86_64 only)
+  - CONFIG_DRM_FBDEV_EMULATION
+
+### 4.2 Userland Packages
+
+- lib32-dialog  
+  It is temporarily unavailable in the current release.  
+
+### 4.3 Tools
+
+N/A  
+
+### 4.4 validation
+The following objects are not validated because the hardware of the test environment does not support them:
+
+#### 4.4.1 X86_64
+- ipmi
+- tcsd
+- edac-util
+- mdadm
+
+#### 4.4.2 Armv8
+- smartd
+- hostapd
+- ipmi
+- resizecons
+- lm_sensors
+- cpufreq-aperf
+- busybox devmem
+- busybox setkeycodes
+- cransh-cross-canadian
+- mdadm
+- dool
+- tiptop
+
+## 5. Known Security Issues
+The following security issues were known in this release:  
+db:
+- CVE-2016-0682
+- CVE-2016-0689
+- CVE-2016-0692
+- CVE-2016-0694
+- CVE-2016-3418
+
+dovecot:
+- CVE-2022-30550
+
+giflib:
+- CVE-2024-45993
+
+glibc:
+- CVE-2010-4756
+
+hdf5:
+- CVE-2018-17433
+- CVE-2018-17436
+- CVE-2019-8396
+- CVE-2020-10809
+- CVE-2020-10812
+- CVE-2025-2912
+- CVE-2025-2913
+- CVE-2025-2914
+- CVE-2025-2915
+- CVE-2025-2923
+- CVE-2025-2924
+- CVE-2025-2925
+- CVE-2025-2926
+- CVE-2025-6269
+- CVE-2025-6270
+- CVE-2025-6516
+
+libraw:
+- CVE-2025-43961
+- CVE-2025-43962
+- CVE-2025-43963
+- CVE-2025-43964
+
+libsndfile1:
+- CVE-2024-50613
+
+libuser:
+- CVE-2012-5644
+
+libvirt:
+- CVE-2023-3750
+
+openvswitch:
+- CVE-2019-25076
+
+php:
+- CVE-2024-3566
+
+polkit:
+- CVE-2016-2568
+
+qemu:
+- CVE-2023-1386
+- CVE-2024-8354
+
+qtbase:
+- CVE-2023-51714
+- CVE-2024-36048
+- CVE-2024-39936
+- CVE-2025-30348
+
+rpm:
+- CVE-2021-35937
+
+samba:
+- CVE-2021-3670
+- CVE-2022-1615
+- CVE-2022-32743
+- CVE-2022-38023
+- CVE-2023-37369
+
+sqlite3:
+- CVE-2025-29087
+
+sysstat:
+- CVE-2022-39377
+
+tiff:
+- CVE-2023-1916
+
+tigervnc:
+- CVE-2014-8241
+- CVE-2023-6377
+- CVE-2023-6478
+- CVE-2025-26594
+- CVE-2025-26595
+- CVE-2025-26596
+- CVE-2025-26597
+- CVE-2025-26598
+- CVE-2025-26599
+- CVE-2025-26600
+- CVE-2025-26601
+
+ubinux-kernel:
+- CVE-2007-4998
+- CVE-2008-4609
+- CVE-2010-4563
+- CVE-2019-14899
+- CVE-2020-35501
+- CVE-2021-3714
+- CVE-2021-3847
+- CVE-2021-3864
+- CVE-2022-0400
+- CVE-2022-1247
+- CVE-2022-25265
+- CVE-2022-2961
+- CVE-2022-38096
+- CVE-2022-4543
+- CVE-2023-23039
+- CVE-2023-26242
+- CVE-2023-3397
+- CVE-2023-3640
+- CVE-2023-4010
+- CVE-2023-6238
+- CVE-2023-6240
+- CVE-2023-6535
+- CVE-2024-24864
+- CVE-2024-25740
+- CVE-2024-57995
+- CVE-2024-58097
+- CVE-2025-21751
+- CVE-2025-21833
+- CVE-2025-21949
+- CVE-2025-23137
 - CVE-2025-37860
 - CVE-2025-37925
 - CVE-2025-40014
