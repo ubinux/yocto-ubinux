@@ -467,7 +467,7 @@ FILES=meta-oe/conf
 [meta-freescale]
 GITURL=https://git.yoctoproject.org/git/meta-freescale
 BRANCH=master
-HEADID=3795a8155a619b07d919ce6f81f2c22a2ab6af34
+HEADID=0dfb65fb2f785f916cb60f0b96f297f02ef22630
 FILES=conf/layer.conf
  custom-licenses/
  classes/
@@ -562,7 +562,7 @@ FILES=conf/layer.conf
 [meta-virtualization]
 GITURL=http://git.yoctoproject.org/git/meta-virtualization
 BRANCH=master
-HEADID=9b034e3defd4aa1108d7a6b4dcca600d4352b132
+HEADID=f707bbe323261f41f69267708d6751c1bb0edd0b
 FILES=conf/layer.conf
  classes/
  files/
@@ -577,13 +577,13 @@ FILES=conf/layer.conf
 [meta-selinux]
 GITURL=http://git.yoctoproject.org/git/meta-selinux
 BRANCH=master
-HEADID=05178ce17879c04a6be6f173b86eb18f68a10414
+HEADID=954e13ed6c8a23274950920df2cf55e697a17388
 FILES=conf/layer.conf
 
 [meta-security]
 GITURL=http://git.yoctoproject.org/git/meta-security
 BRANCH=master
-HEADID=06bd60600e8db1b843cf5cc0f074a11eac7e9a80
+HEADID=1b1028e35b0b7c280bc5e72e17df666d150e4aeb
 FILES=conf
  classes/sanity-meta-security.bbclass
  meta-tpm/classes/sanity-meta-tpm.bbclass
@@ -670,7 +670,7 @@ FILES=meta-xilinx-core/conf
 [meta-erlang]
 GITURL=https://github.com/joaohf/meta-erlang
 BRANCH=master
-HEADID=e2de575b0308c70875ccab8cebbe961f0950da86
+HEADID=da5e17c23281598bfd45e42e775eca6e72d77136
 FILES=conf
 
 [meta-arm]
