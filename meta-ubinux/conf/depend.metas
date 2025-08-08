@@ -9,7 +9,6 @@ metas=meta-oe
  meta-qt5
  meta-swupdate
  meta-spdxscanner
- meta-java
  meta-xilinx
  meta-erlang
  meta-arm
@@ -631,31 +630,6 @@ FILES=conf/layer.conf
  recipes-support/swupdate/
  recipes-bsp/u-boot/
  recipes-devtools/mtd/
-
-[meta-java]
-GITURL=https://git.yoctoproject.org/git/meta-java
-BRANCH=master
-HEADID=533426eadcd64b2d2649387e6d8c783bfc5e4725 
-FILES=conf/layer.conf
- classes
- conf/
- recipes-core/bcel
- recipes-core/classpath
- recipes-core/ant-contrib
- recipes-core/ca-certificates-java
- recipes-core/cacao
- recipes-core/classpathx
- recipes-core/fastjar
- recipes-core/jacl
- recipes-core/jakarta-commons
- recipes-core/jamvm
- recipes-core/javasqlite
- recipes-core/jcraft
- recipes-core/jdepend
- recipes-core/libmatthew
- recipes-core/servlet-api
- recipes-core/xerces-j
- recipes-core/xml-commons
 
 [meta-xilinx]
 GITURL=http://git.yoctoproject.org/git/meta-xilinx
