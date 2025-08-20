@@ -1003,6 +1003,21 @@ The :ref:`ref-classes-go-mod` class allows to use Go modules, and inherits the
 
 See the associated :term:`GO_WORKDIR` variable.
 
+.. _ref-classes-go-mod-update-modules:
+
+``go-mod-update-modules``
+=========================
+
+The :ref:`ref-classes-go-mod-update-modules` class can be used in Go recipes and
+defines a ``do_update_modules`` task that can be run manually to update two
+files ("BPN" below corresponds to :term:`BPN`):
+
+-  ``BPN-go-mods.inc``: list of Go modules the recipe depends on.
+-  ``BPN-licenses.inc``: list of licenses for each Go modules the recipe depends
+   on.
+
+These files can then updated automatically with the ``do_update_modules`` task.
+
 .. _ref-classes-go-vendor:
 
 ``go-vendor``
@@ -1142,80 +1157,6 @@ the packages containing the modules.
 The :ref:`ref-classes-gzipnative` class enables the use of different native versions of
 ``gzip`` and ``pigz`` rather than the versions of these tools from the
 build host.
-
-.. _ref-classes-icecc:
-
-``icecc``
-=========
-
-The :ref:`ref-classes-icecc` class supports
-`Icecream <https://github.com/icecc/icecream>`__, which facilitates
-taking compile jobs and distributing them among remote machines.
-
-The class stages directories with symlinks from ``gcc`` and ``g++`` to
-``icecc``, for both native and cross compilers. Depending on each
-configure or compile, the OpenEmbedded build system adds the directories
-at the head of the ``PATH`` list and then sets the ``ICECC_CXX`` and
-``ICECC_CC`` variables, which are the paths to the ``g++`` and ``gcc``
-compilers, respectively.
-
-For the cross compiler, the class creates a ``tar.gz`` file that
-contains the Yocto Project toolchain and sets ``ICECC_VERSION``, which
-is the version of the cross-compiler used in the cross-development
-toolchain, accordingly.
-
-The class handles all three different compile stages (i.e native,
-cross-kernel and target) and creates the necessary environment
-``tar.gz`` file to be used by the remote machines. The class also
-supports SDK generation.
-
-If :term:`ICECC_PATH` is not set in your
-``local.conf`` file, then the class tries to locate the ``icecc`` binary
-using ``which``. If :term:`ICECC_ENV_EXEC` is set
-in your ``local.conf`` file, the variable should point to the
-``icecc-create-env`` script provided by the user. If you do not point to
-a user-provided script, the build system uses the default script
-provided by the recipe :oe_git:`icecc-create-env_0.1.bb
-</openembedded-core/tree/meta/recipes-devtools/icecc-create-env/icecc-create-env_0.1.bb>`.
-
-.. note::
-
-   This script is a modified version and not the one that comes with
-   ``icecream``.
-
-If you do not want the Icecream distributed compile support to apply to
-specific recipes or classes, you can ask them to be ignored by Icecream
-by listing the recipes and classes using the
-:term:`ICECC_RECIPE_DISABLE` and
-:term:`ICECC_CLASS_DISABLE` variables,
-respectively, in your ``local.conf`` file. Doing so causes the
-OpenEmbedded build system to handle these compilations locally.
-
-Additionally, you can list recipes using the
-:term:`ICECC_RECIPE_ENABLE` variable in
-your ``local.conf`` file to force ``icecc`` to be enabled for recipes
-using an empty :term:`PARALLEL_MAKE` variable.
-
-Inheriting the :ref:`ref-classes-icecc` class changes all sstate signatures.
-Consequently, if a development team has a dedicated build system that
-populates :term:`SSTATE_MIRRORS` and they want to
-reuse sstate from :term:`SSTATE_MIRRORS`, then all developers and the build
-system need to either inherit the :ref:`ref-classes-icecc` class or nobody should.
-
-At the distribution level, you can inherit the :ref:`ref-classes-icecc` class to be
-sure that all builders start with the same sstate signatures. After
-inheriting the class, you can then disable the feature by setting the
-:term:`ICECC_DISABLED` variable to "1" as follows::
-
-   INHERIT_DISTRO:append = " icecc"
-   ICECC_DISABLED ??= "1"
-
-This practice
-makes sure everyone is using the same signatures but also requires
-individuals that do want to use Icecream to enable the feature
-individually as follows in your ``local.conf`` file::
-
-   ICECC_DISABLED = ""
 
 .. _ref-classes-image:
 
@@ -3027,6 +2968,22 @@ class assuming :term:`PATCHRESOLVE` is set to "user", the
 :ref:`ref-classes-cml1` class, and the :ref:`ref-classes-devshell` class all
 use the :ref:`ref-classes-terminal` class.
 
+.. _ref-classes-testexport:
+
+``testexport``
+==============
+
+Based on the :ref:`ref-classes-testimage` class, the
+:ref:`ref-classes-testexport` class can be used to export the test environment
+outside of the :term:`OpenEmbedded Build System`. This will generate the
+directory structure to execute the runtime tests using the
+:oe_git:`runexported.py </openembedded-core/tree/meta/lib/oeqa/runexported.py>`
+Python script.
+
+For more details on how to use :ref:`ref-classes-testexport`, see
+the :ref:`test-manual/runtime-testing:Exporting Tests` section in the Yocto
+Project Test Environment Manual.
+
 .. _ref-classes-testimage:
 
 ``testimage``
@@ -3068,6 +3025,9 @@ kits (SDKs). The :ref:`ref-classes-testsdk` class runs tests on an SDK when call
 using the following::
 
    $ bitbake -c testsdk image
+
+The list of test modules that are run can be controlled with the
+:term:`TESTSDK_SUITES` variable.
 
 .. note::
 
@@ -3237,6 +3197,9 @@ The variables used by this class are:
 -  :term:`SPL_SIGN_ENABLE`: enable signing the FIT image.
 -  :term:`SPL_SIGN_KEYDIR`: directory containing the signing keys.
 -  :term:`SPL_SIGN_KEYNAME`: base filename of the signing keys.
+-  :term:`SPL_DTB_BINARY`: Name of the SPL device tree binary. Can be set to an
+   empty string to indicate that no SPL should be created and added to the FIT
+   image.
 -  :term:`UBOOT_FIT_ADDRESS_CELLS`: ``#address-cells`` value for the FIT image.
 -  :term:`UBOOT_FIT_DESC`: description string encoded into the FIT image.
 -  :term:`UBOOT_FIT_GENERATE_KEYS`: generate the keys if they don't exist yet.
@@ -3302,7 +3265,7 @@ The variables used by this class are:
    :oe_git:`meta/conf/image-uefi.conf
    </openembedded-core/tree/meta/conf/image-uefi.conf>`
 -  :term:`IMAGE_EFI_BOOT_FILES`: files to install to EFI boot partition
-   created by the ``bootimg-efi`` Wic plugin
+   created by the ``bootimg_efi`` Wic plugin
 -  :term:`INITRAMFS_IMAGE`: initramfs recipe name
 -  :term:`KERNEL_DEVICETREE`: optional devicetree files to embed into UKI
 -  :term:`UKIFY_CMD`: `ukify
