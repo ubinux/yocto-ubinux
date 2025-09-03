@@ -10,6 +10,8 @@
 # This class will build a wheel in do_compile, and use pypa/installer to install
 # it in do_install.
 
+inherit python3native python3-dir setuptools3-base
+
 DEPENDS:append = " python3-build-native python3-installer-native"
 
 # Where to execute the build process from
@@ -61,3 +63,6 @@ python_pep517_do_bootstrap_install () {
 }
 
 EXPORT_FUNCTIONS do_configure do_compile do_install
+
+# Tell externalsrc this changing means it needs to reconfigure
+CONFIGURE_FILES += "pyproject.toml"

@@ -589,8 +589,12 @@ system and gives an overview of their function and contents.
       See :term:`bitbake:BB_INVALIDCONF` in the BitBake manual.
 
    :term:`BB_LOADFACTOR_MAX`
-      The system load threshold above which BitBake will stop runnig extra
-      tasks.
+      The system load threshold above which :term:`BitBake` will stop running
+      extra tasks.
+
+      For more information on how to limit the resources used during builds, see
+      the :doc:`/dev-manual/limiting-resources` section of the Yocto Project
+      Development Tasks Manual.
 
    :term:`BB_LOGCONFIG`
       See :term:`bitbake:BB_LOGCONFIG` in the BitBake manual.
@@ -649,11 +653,9 @@ system and gives an overview of their function and contents.
       An alternative to using :term:`BB_NUMBER_THREADS` to keep the usage
       of build system resources under control is to use the smarter
       :term:`BB_PRESSURE_MAX_CPU`, :term:`BB_PRESSURE_MAX_IO` or
-      :term:`BB_PRESSURE_MAX_MEMORY` controls. They will prevent BitBake
-      from starting new tasks as long as thresholds are exceeded. Anyway,
-      as with :term:`BB_NUMBER_THREADS`, such controls won't prevent the
-      tasks already being run from using all CPU threads on the system
-      if :term:`PARALLEL_MAKE` is not set to a low value.
+      :term:`BB_PRESSURE_MAX_MEMORY` controls. See the
+      :doc:`/dev-manual/limiting-resources` section of the Yocto Project
+      Development Tasks Manual.
 
    :term:`BB_ORIGENV`
       See :term:`bitbake:BB_ORIGENV` in the BitBake manual.
@@ -664,11 +666,23 @@ system and gives an overview of their function and contents.
    :term:`BB_PRESSURE_MAX_CPU`
       See :term:`bitbake:BB_PRESSURE_MAX_CPU` in the BitBake manual.
 
+      For more information on how to limit the resources used during builds, see
+      the :doc:`/dev-manual/limiting-resources` section of the Yocto Project
+      Development Tasks Manual.
+
    :term:`BB_PRESSURE_MAX_IO`
       See :term:`bitbake:BB_PRESSURE_MAX_IO` in the BitBake manual.
 
+      For more information on how to limit the resources used during builds, see
+      the :doc:`/dev-manual/limiting-resources` section of the Yocto Project
+      Development Tasks Manual.
+
    :term:`BB_PRESSURE_MAX_MEMORY`
       See :term:`bitbake:BB_PRESSURE_MAX_MEMORY` in the BitBake manual.
+
+      For more information on how to limit the resources used during builds, see
+      the :doc:`/dev-manual/limiting-resources` section of the Yocto Project
+      Development Tasks Manual.
 
    :term:`BB_RUNFMT`
       See :term:`bitbake:BB_RUNFMT` in the BitBake manual.
@@ -4228,13 +4242,13 @@ system and gives an overview of their function and contents.
       variable.
 
    :term:`IMAGE_PKGTYPE`
-      Defines the package type (i.e. DEB, RPM, IPK, or TAR) used by the
+      Defines the package type (i.e. DEB, RPM or IPK) used by the
       OpenEmbedded build system. The variable is defined appropriately by
-      the :ref:`ref-classes-package_deb`, :ref:`ref-classes-package_rpm`,
-      or :ref:`ref-classes-package_ipk` class.
+      one of the :ref:`ref-classes-package_deb`, :ref:`ref-classes-package_rpm`,
+      or :ref:`ref-classes-package_ipk` classes.
 
       The :ref:`ref-classes-populate-sdk-*` and :ref:`ref-classes-image`
-      classes use the :term:`IMAGE_PKGTYPE` for packaging up images and SDKs.
+      classes use the :term:`IMAGE_PKGTYPE` for packaging images and SDKs.
 
       You should not set the :term:`IMAGE_PKGTYPE` manually. Rather, the
       variable is set indirectly through the appropriate
@@ -4242,12 +4256,6 @@ system and gives an overview of their function and contents.
       :term:`PACKAGE_CLASSES` variable. The
       OpenEmbedded build system uses the first package type (e.g. DEB, RPM,
       or IPK) that appears with the variable
-
-      .. note::
-
-         Files using the ``.tar`` format are never used as a substitute
-         packaging format for DEB, RPM, and IPK formatted files for your image
-         or SDK.
 
    :term:`IMAGE_POSTPROCESS_COMMAND`
       Specifies a list of functions to call once the OpenEmbedded build
@@ -7006,6 +7014,10 @@ system and gives an overview of their function and contents.
       ":ref:`dev-manual/speeding-up-build:speeding up a build`"
       section in the Yocto Project Development Tasks Manual.
 
+      For more information on how to limit the resources used during builds, see
+      the :doc:`/dev-manual/limiting-resources` section of the Yocto Project
+      Development Tasks Manual.
+
    :term:`PARALLEL_MAKEINST`
       Extra options passed to the build tool install command
       (``make install``, ``ninja install`` or more specific ones)
@@ -7312,6 +7324,57 @@ system and gives an overview of their function and contents.
       For more information on virtual providers, see the
       ":ref:`dev-manual/new-recipe:using virtual providers`" section in the
       Yocto Project Development Tasks Manual.
+
+   :term:`PREFERRED_TOOLCHAIN`
+      The :term:`PREFERRED_TOOLCHAIN` variable selects the toolchain to use for
+      compiling recipes. This variable is not meant to be overridden globally.
+      Instead, the values of :term:`PREFERRED_TOOLCHAIN_TARGET`,
+      :term:`PREFERRED_TOOLCHAIN_NATIVE` and :term:`PREFERRED_TOOLCHAIN_SDK`
+      should be overridden.
+
+   :term:`PREFERRED_TOOLCHAIN_NATIVE`
+      This variable controls the toolchain used for compiling
+      :ref:`ref-classes-native` recipes.
+
+      This variable should be set globally from a :term:`configuration file`.
+
+      See :term:`PREFERRED_TOOLCHAIN_TARGET` for more details on the possible
+      values for this variable.
+
+      A recipe that does not support the toolchain specified by
+      :term:`PREFERRED_TOOLCHAIN_NATIVE` can override it locally with
+      :term:`TOOLCHAIN_NATIVE`.
+
+   :term:`PREFERRED_TOOLCHAIN_SDK`
+      This variable controls the toolchain used for compiling
+      :ref:`ref-classes-nativesdk` recipes.
+
+      This variable should be set globally from a :term:`configuration file`.
+
+      See :term:`PREFERRED_TOOLCHAIN_TARGET` for more details on the possible
+      values for this variable.
+
+   :term:`PREFERRED_TOOLCHAIN_TARGET`
+      This variable controls the toolchain used for compiling recipes in the
+      architecture of the target :term:`MACHINE`.
+
+      There are two possible values for this variable at the moment:
+
+      -  :ref:`gcc <ref-classes-toolchain-gcc>` (default): the GCC/Binutils toolchain.
+      -  :ref:`clang <ref-classes-toolchain-clang>`: the Clang/LLVM toolchain.
+
+      :term:`PREFERRED_TOOLCHAIN_TARGET` will make the :ref:`ref-classes-base`
+      class inherit one of the toolchain classes defined in
+      :oe_git:`meta/classes/toolchain
+      </openembedded-core/tree/meta/classes/toolchain>`. As a consequence, this
+      variable should be set globally from a :term:`configuration file`.
+
+      These classes define commands used for cross-compiling such as :term:`CC`,
+      :term:`CXX`, :term:`LD` and so on.
+
+      A recipe that does not support the toolchain specified by
+      :term:`PREFERRED_TOOLCHAIN_TARGET` can override it locally with
+      :term:`TOOLCHAIN`.
 
    :term:`PREFERRED_VERSION`
       If there are multiple versions of a recipe available, this variable
@@ -10113,6 +10176,21 @@ system and gives an overview of their function and contents.
       implementations, NFS does not meet this minimum requirement.
       Consequently, :term:`TMPDIR` cannot be on NFS.
 
+   :term:`TOOLCHAIN`
+      The :term:`TOOLCHAIN` variable can be used to override the toolchain used
+      by a recipe.
+
+      The default value for this variable is the value of
+      :term:`PREFERRED_TOOLCHAIN`. See the description of
+      :term:`PREFERRED_TOOLCHAIN` to know the list of possible values for
+      :term:`TOOLCHAIN`.
+
+      It is possible to override the value of this variable from a recipe if
+      this recipe is known to support only a specific toolchain. For example,
+      the :oe_git:`Pseudo </openembedded-core/tree/meta/recipes-devtools/pseudo/pseudo_git.bb>`
+      recipe overrides this variable to "gcc", because Pseudo uses GCC compiler
+      built-ins options that the Clang/LLVM compiler does not provide.
+
    :term:`TOOLCHAIN_HOST_TASK`
       This variable lists packages the OpenEmbedded build system uses when
       building an SDK, which contains a cross-development environment. The
@@ -10167,6 +10245,18 @@ system and gives an overview of their function and contents.
       the :term:`SDK_NAME` and
       :term:`SDK_VERSION` variables for additional
       information.
+
+   :term:`TOOLCHAIN_NATIVE`
+      The :term:`TOOLCHAIN_NATIVE` variable can be used to override the
+      toolchain used by a :ref:`ref-classes-native` recipe.
+
+      The default value for this variable is the value of
+      :term:`PREFERRED_TOOLCHAIN` (in :ref:`ref-classes-native` contexts). See
+      the description of :term:`PREFERRED_TOOLCHAIN` to know the list of
+      possible values for :term:`TOOLCHAIN_NATIVE`.
+
+      It is possible to override the value of this variable from a recipe if
+      this recipe is known to support only a specific toolchain.
 
    :term:`TOOLCHAIN_TARGET_TASK`
       This variable lists packages the OpenEmbedded build system uses when

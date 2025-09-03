@@ -8,7 +8,7 @@ SECTION = "base"
 require common-clang.inc
 require common-source.inc
 
-inherit cmake python3native
+inherit cmake
 
 BPN = "libcxx"
 
@@ -21,8 +21,7 @@ PACKAGECONFIG[no-atomics] = "-D_LIBCXXABI_HAS_ATOMIC_BUILTINS=OFF -DCMAKE_SHARED
 PACKAGECONFIG[compiler-rt] = "-DLIBCXX_USE_COMPILER_RT=ON -DLIBCXXABI_USE_COMPILER_RT=ON -DLIBUNWIND_USE_COMPILER_RT=ON,,compiler-rt"
 PACKAGECONFIG[unwind-shared] = "-DLIBUNWIND_ENABLE_SHARED=ON,-DLIBUNWIND_ENABLE_SHARED=OFF,,"
 
-DEPENDS += "ninja-native"
-DEPENDS:append:class-target = " virtual/cross-c++ clang-cross-${TARGET_ARCH} virtual/${MLPREFIX}libc virtual/${MLPREFIX}compilerlibs"
+DEPENDS:append:class-target = " virtual/cross-c++ ${MLPREFIX}clang-cross-${TARGET_ARCH} virtual/${MLPREFIX}libc virtual/${MLPREFIX}compilerlibs"
 DEPENDS:append:class-nativesdk = " virtual/cross-c++ clang-crosssdk-${SDK_SYS} nativesdk-compiler-rt"
 DEPENDS:append:class-native = " clang-native compiler-rt-native"
 DEPENDS:remove:class-native = "libcxx-native"
@@ -102,7 +101,7 @@ CXXFLAGS:append:armv5 = " -mfpu=vfp2"
 
 ALLOW_EMPTY:${PN} = "1"
 
-PROVIDES:append:runtime-llvm = " libunwind"
+PROVIDES:append = " ${@bb.utils.contains("TC_CXX_RUNTIME", "llvm", "libunwind", "false", d)}"
 
 do_install:append() {
     if ${@bb.utils.contains("TC_CXX_RUNTIME", "llvm", "true", "false", d)}
@@ -116,8 +115,8 @@ do_install:append() {
     fi
 }
 
-PACKAGES:append:runtime-llvm = " libunwind"
-FILES:libunwind:runtime-llvm = "${libdir}/libunwind.so.*"
+PACKAGES:append = "${@bb.utils.contains("TC_CXX_RUNTIME", "llvm", " libunwind", "", d)}"
+FILES:libunwind = "${@bb.utils.contains("TC_CXX_RUNTIME", "llvm", " ${libdir}/libunwind.so.*", "", d)}"
 # Package library module manifest path
 FILES:${PN}-dev += "${datadir}/libc++/v1/ ${libdir}/libc++.modules.json"
 

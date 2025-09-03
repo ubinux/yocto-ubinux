@@ -228,6 +228,12 @@ particular working environment and set of practices.
        used by developers in the same organization and share the same
        source directories on their machines.
 
+    -  Set up a local :ref:`overview-manual/concepts:Hash Equivalence` server.
+
+       See the :ref:`overview-manual/concepts:Hash Equivalence` section of the
+       Yocto Project Overview and Concepts Manual for more details on the hash
+       equivalence feature.
+
     -  Set up an Autobuilder and have it populate the sstate cache and
        source directories.
 
@@ -543,6 +549,7 @@ your Yocto Project build host:
          DISKPART> select vdisk file="<path_to_VHDX_file>"
          DISKPART> attach vdisk readonly
          DISKPART> compact vdisk
+         DISKPART> detach
          DISKPART> exit
 
 .. note::
