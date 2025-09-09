@@ -16,7 +16,7 @@ metas=meta-oe
 [meta-oe]
 GITURL=http://git.openembedded.org/meta-openembedded
 BRANCH=master
-HEADID=5e7559a17fc29d53ec1538d2c66507e4b06b31ae
+HEADID=2e9e58b7389534626d161d20a1c4f2a501be2a8e
 FILES=meta-oe/conf
  meta-oe/COPYING.MIT
  meta-oe/licenses/
@@ -466,7 +466,7 @@ FILES=meta-oe/conf
 [meta-freescale]
 GITURL=https://git.yoctoproject.org/git/meta-freescale
 BRANCH=master
-HEADID=0dfb65fb2f785f916cb60f0b96f297f02ef22630
+HEADID=b7287efdc47d5c8f0cb53dfb6a4ba66a8a8eb7ba
 FILES=conf/layer.conf
  custom-licenses/
  classes/
@@ -484,7 +484,7 @@ FILES=conf/layer.conf
 [meta-cgl]
 GITURL=https://git.yoctoproject.org/git/meta-cgl
 BRANCH=master
-HEADID=c9c269231e34d961a3b5101da98f04dfb4591969 
+HEADID=b6b8fbf80b3e5c2f950ab8d203403887bd76435d
 FILES=meta-cgl-common/conf/layer.conf
  meta-cgl-common/conf/distro/include/cgl_common_security_flags.inc
  meta-cgl-common/recipes-cgl/cluster-glue/
@@ -561,7 +561,7 @@ FILES=conf/layer.conf
 [meta-virtualization]
 GITURL=http://git.yoctoproject.org/git/meta-virtualization
 BRANCH=master
-HEADID=f707bbe323261f41f69267708d6751c1bb0edd0b
+HEADID=8f15c45f7d9cf5d6b25ab7c5865496e4ce3eb6d0
 FILES=conf/layer.conf
  classes/
  files/
@@ -576,7 +576,7 @@ FILES=conf/layer.conf
 [meta-selinux]
 GITURL=http://git.yoctoproject.org/git/meta-selinux
 BRANCH=master
-HEADID=954e13ed6c8a23274950920df2cf55e697a17388
+HEADID=db37a0b841adddd9e6aa43bf40b3a9e418bb0396
 FILES=conf/layer.conf
 
 [meta-security]
@@ -607,7 +607,7 @@ FILES=conf
 [meta-qt5]
 GITURL=https://github.com/meta-qt5/meta-qt5.git
 BRANCH=master
-HEADID=27f58b05ab62c63b9ea65cd5fa684d84e4cb9ec1
+HEADID=9d9966d81d6a98876f3919127ece3a6829edf609
 FILES=conf/layer.conf
  recipes-qt/qt5
  recipes-qt/qtchooser
@@ -644,12 +644,12 @@ FILES=meta-xilinx-core/conf
 [meta-erlang]
 GITURL=https://github.com/joaohf/meta-erlang
 BRANCH=master
-HEADID=da5e17c23281598bfd45e42e775eca6e72d77136
+HEADID=ba5443715f01136bd6b203a82ee81b5f594fa22a
 FILES=conf
 
 [meta-arm]
 GITURL=https://git.yoctoproject.org/meta-arm
 BRANCH=master
-HEADID=77ba0e68e3d6ffd380346c616a60bf0c7e35a08b
+HEADID=84b96041d393a71d085b967e57431d8674c314cd
 FILES=meta-arm/conf
  meta-arm-toolchain/conf
