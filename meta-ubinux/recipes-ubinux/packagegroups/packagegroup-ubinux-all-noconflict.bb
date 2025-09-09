@@ -464,7 +464,7 @@ UBINUX_PKGS_NOCONFLICT = " \
 	lmsensors-sensord \
 	lmsensors-config-sensord \
 	lmsensors-sensorsdetect \
-	babeltrace \
+	babeltrace2 \
 	matchbox-keyboard \
 	mesa-megadriver \
 	nano \
