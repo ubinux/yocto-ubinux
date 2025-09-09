@@ -234,7 +234,6 @@ UBINUX_PKGS_NOCONFLICT = " \
 	xdelta3 \
 	xdpyinfo \
 	xf86-input-evdev \
-	xf86-input-mouse \
 	xf86-input-synaptics \
 	xf86-video-fbdev \
 	xhost \
