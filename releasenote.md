@@ -1,4 +1,4 @@
-# ubinux-2025.08 Release Notes
+# ubinux-2025.09 Release Notes
 
 OSS x AI Technology Div.  
 Fujitsu Limited  
@@ -6,10 +6,10 @@ Fujitsu Limited
 ## 1. Basic Information
 ### 1.1 Version Information
 - Yocto: 5.3
-- Kernel: 6.12.38
+- Kernel: 6.12.41
 - Toolchain
   - GCC: 15.1.0
-  - Binutils: 2.44
+  - Binutils: 2.45
   - glibc: 2.41
   - GDB: 16.3
 - License Files Format: SPDX 2.3
@@ -32,260 +32,26 @@ Fujitsu Limited
 
 ## 2. Features
 ### 2.1 Security Fixes
-Following security issues have been fixed from ubinux-2025.07.
-
-libarchive:
-- CVE-2025-5914
+Following security issues have been fixed from ubinux-2025.08.
 
 ubinux-kernel:
-- CVE-2022-0480
-- CVE-2022-41848
-- CVE-2022-44032
-- CVE-2022-44033
-- CVE-2022-44034
-- CVE-2022-45884
-- CVE-2022-45885
-- CVE-2022-45888
-- CVE-2023-37454
-- CVE-2023-4155
-- CVE-2023-52485
-- CVE-2023-52586
-- CVE-2023-52590
-- CVE-2023-52624
-- CVE-2023-52625
-- CVE-2023-52634
-- CVE-2024-21803
-- CVE-2024-23848
-- CVE-2024-24859
-- CVE-2024-25739
-- CVE-2024-26596
-- CVE-2024-26672
-- CVE-2024-26699
-- CVE-2024-26756
-- CVE-2024-26757
-- CVE-2024-26758
-- CVE-2024-26900
-- CVE-2024-26944
-- CVE-2024-26945
-- CVE-2024-26954
-- CVE-2024-26962
-- CVE-2024-27010
-- CVE-2024-27011
-- CVE-2024-27012
-- CVE-2024-27017
-- CVE-2024-27079
-- CVE-2024-35843
-- CVE-2024-35968
-- CVE-2024-36478
-- CVE-2024-38608
-- CVE-2024-40965
-- CVE-2024-40972
-- CVE-2024-41012
-- CVE-2024-41023
-- CVE-2024-41061
-- CVE-2024-41080
-- CVE-2024-41085
-- CVE-2024-42064
-- CVE-2024-42065
-- CVE-2024-42066
-- CVE-2024-42071
-- CVE-2024-42072
-- CVE-2024-42075
-- CVE-2024-42078
-- CVE-2024-42081
-- CVE-2024-42083
-- CVE-2024-42107
-- CVE-2024-42122
-- CVE-2024-42123
-- CVE-2024-42134
-- CVE-2024-42139
-- CVE-2024-42151
-- CVE-2024-42155
-- CVE-2024-42156
-- CVE-2024-42158
-- CVE-2024-42162
-- CVE-2024-42227
-- CVE-2024-42252
-- CVE-2024-43819
-- CVE-2024-43835
-- CVE-2024-43840
-- CVE-2024-43886
-- CVE-2024-43899
-- CVE-2024-43901
-- CVE-2024-43904
-- CVE-2024-43911
-- CVE-2024-43913
-- CVE-2024-44950
-- CVE-2024-44951
-- CVE-2024-44956
-- CVE-2024-44963
-- CVE-2024-46681
-- CVE-2024-46727
-- CVE-2024-46730
-- CVE-2024-46751
-- CVE-2024-46772
-- CVE-2024-46774
-- CVE-2024-46775
-- CVE-2024-46778
-- CVE-2024-46808
-- CVE-2024-46813
-- CVE-2024-46823
-- CVE-2024-46833
-- CVE-2024-46834
-- CVE-2024-46841
-- CVE-2024-46842
-- CVE-2024-46863
-- CVE-2024-46870
-- CVE-2024-47661
-- CVE-2024-47662
-- CVE-2024-47702
-- CVE-2024-47703
-- CVE-2024-47726
-- CVE-2024-47736
-- CVE-2024-49854
-- CVE-2024-49885
-- CVE-2024-49888
-- CVE-2024-49891
-- CVE-2024-49893
-- CVE-2024-49897
-- CVE-2024-49898
-- CVE-2024-49899
-- CVE-2024-49904
-- CVE-2024-49906
-- CVE-2024-49908
-- CVE-2024-49909
-- CVE-2024-49910
-- CVE-2024-49911
-- CVE-2024-49914
-- CVE-2024-49915
-- CVE-2024-49916
-- CVE-2024-49917
-- CVE-2024-49918
-- CVE-2024-49919
-- CVE-2024-49920
-- CVE-2024-49921
-- CVE-2024-49922
-- CVE-2024-49923
-- CVE-2024-49926
-- CVE-2024-49928
-- CVE-2024-49932
-- CVE-2024-49934
-- CVE-2024-49940
-- CVE-2024-49945
-- CVE-2024-49968
-- CVE-2024-49970
-- CVE-2024-49971
-- CVE-2024-49972
-- CVE-2024-49974
-- CVE-2024-49990
-- CVE-2024-49994
-- CVE-2024-49998
-- CVE-2024-50004
-- CVE-2024-50009
-- CVE-2024-50010
-- CVE-2024-50014
-- CVE-2024-50017
-- CVE-2024-50027
-- CVE-2024-50028
-- CVE-2024-50090
-- CVE-2024-50091
-- CVE-2024-50102
-- CVE-2024-50106
-- CVE-2024-50137
-- CVE-2024-50138
-- CVE-2024-50146
-- CVE-2024-50157
-- CVE-2024-50177
-- CVE-2024-50178
-- CVE-2024-50217
-- CVE-2024-50221
-- CVE-2024-50225
-- CVE-2024-50277
-- CVE-2024-50304
-- CVE-2024-53050
-- CVE-2024-53051
-- CVE-2024-53056
-- CVE-2024-53084
-- CVE-2024-53085
-- CVE-2024-53089
-- CVE-2024-53090
-- CVE-2024-53096
-- CVE-2024-53098
-- CVE-2024-53114
-- CVE-2024-53124
-- CVE-2024-53128
-- CVE-2024-53133
-- CVE-2024-53141
-- CVE-2024-53142
-- CVE-2024-53170
-- CVE-2024-53179
-- CVE-2024-53187
-- CVE-2024-53201
-- CVE-2024-53203
-- CVE-2024-53204
-- CVE-2024-53205
-- CVE-2024-53221
-- CVE-2024-53222
-- CVE-2024-56544
-- CVE-2024-56549
-- CVE-2024-56582
-- CVE-2024-56588
-- CVE-2024-56599
-- CVE-2024-56608
-- CVE-2024-56620
-- CVE-2024-56647
-- CVE-2024-56702
-- CVE-2024-56710
-- CVE-2024-56712
-- CVE-2024-56742
-- CVE-2024-56757
-- CVE-2024-56758
-- CVE-2024-56759
-- CVE-2024-56761
-- CVE-2024-56775
-- CVE-2024-56782
-- CVE-2024-56784
-- CVE-2024-57795
-- CVE-2024-57857
-- CVE-2024-57872
-- CVE-2024-57950
-- CVE-2024-57982
-- CVE-2024-58012
-- CVE-2024-58089
-- CVE-2025-21634
-- CVE-2025-21635
-- CVE-2025-21649
-- CVE-2025-21650
-- CVE-2025-21672
-- CVE-2025-21682
-- CVE-2025-21693
-- CVE-2025-21696
-- CVE-2025-21714
-- CVE-2025-21722
-- CVE-2025-21723
-- CVE-2025-21729
-- CVE-2025-21739
-- CVE-2025-21786
-- CVE-2025-21861
-- CVE-2025-21927
-- CVE-2025-21961
-- CVE-2025-22037
-- CVE-2025-22070
-- CVE-2025-37802
+- CVE-2025-23137
 
 ### 2.2 Added packages
 
-- python3-pygments
-- python3-rich
-- python3-rich-argparse
+- libclc
+- pam-radius
+- python3-pytest-asyncio
+- vim
 
 ### 2.3 Removed packages
 
-N/A
+- giflib
+- openjdk-8
 
 ## 3. Installation guide
 ### 3.1 Install Toolchain
-Run as root privilege the Toolchain installer at arbitrary directory, and Toolchain will be installed into /opt/ubinux/2025.08 directory.
+Run as root privilege the Toolchain installer at arbitrary directory, and Toolchain will be installed into /opt/ubinux/2025.09 directory.
 
 
 [TYPE1] in the description, please read as shown below.
@@ -297,7 +63,7 @@ Run as root privilege the Toolchain installer at arbitrary directory, and Toolch
 |Armv8 (32bit EL, 64bit EL)|aarch64-ubinux-armv8|
 
 
-`$ sudo sh ubinux-glibc-x86_64-meta-toolchain-[TYPE1]-toolchain-2025.08.sh`
+`$ sudo sh ubinux-glibc-x86_64-meta-toolchain-[TYPE1]-toolchain-2025.09.sh`
 
 
 ### 3.2 Set up Environment Variables
@@ -314,7 +80,7 @@ Run the following commands.
 |Armv8 (32bit EL)|armv7ahf-neon-ubinuxmllib32-linux-gnueabi|
 
 
-`$ . /opt/ubinux/2025.08/environment-setup-[TYPE2]`
+`$ . /opt/ubinux/2025.09/environment-setup-[TYPE2]`
 
 ### 3.3 Create rootfs from Userland Packages
 To create rootfs, see Section 3.1.2 and 3.1.3 of the dnf-plugin-tui documentation.  
@@ -333,12 +99,14 @@ Enable some kernel configs to use following features.
 
 ### 4.2 Userland Packages
 
-- lib32-dialog  
-  It is temporarily unavailable in the current release.  
+- openjdk-8  
+  After this release, openjdk-8 is no longer available.  
 
 ### 4.3 Tools
 
-N/A  
+- Kernel Build  
+  Use "make nconfig" instead of "make meunconfig"  
+  Please contact us if you want to use "make menuconfig"
 
 ### 4.4 validation
 The following objects are not validated because the hardware of the test environment does not support them:
@@ -375,11 +143,12 @@ db:
 dovecot:
 - CVE-2022-30550
 
-giflib:
-- CVE-2024-45993
-
 glibc:
 - CVE-2010-4756
+
+gnutls:
+- CVE-2025-32989
+- CVE-2025-32990
 
 hdf5:
 - CVE-2018-17433
@@ -399,6 +168,9 @@ hdf5:
 - CVE-2025-6270
 - CVE-2025-6516
 
+icu:
+- CVE-2025-5222
+
 libraw:
 - CVE-2025-43961
 - CVE-2025-43962
@@ -408,11 +180,19 @@ libraw:
 libsndfile1:
 - CVE-2024-50613
 
+libssh:
+- CVE-2025-8114
+
 libuser:
 - CVE-2012-5644
 
 libvirt:
 - CVE-2023-3750
+
+openjpeg:
+- CVE-2023-39327
+- CVE-2023-39328
+- CVE-2023-39329
 
 openvswitch:
 - CVE-2019-25076
@@ -426,6 +206,7 @@ polkit:
 qemu:
 - CVE-2023-1386
 - CVE-2024-8354
+- CVE-2024-6519
 
 qtbase:
 - CVE-2023-51714
@@ -445,6 +226,8 @@ samba:
 
 sqlite3:
 - CVE-2025-29087
+- CVE-2025-3277
+- CVE-2025-6965
 
 sysstat:
 - CVE-2022-39377
@@ -495,10 +278,13 @@ ubinux-kernel:
 - CVE-2025-21751
 - CVE-2025-21833
 - CVE-2025-21949
-- CVE-2025-23137
 - CVE-2025-37860
 - CVE-2025-37925
 - CVE-2025-40014
+
+vim:
+- CVE-2025-53905
+- CVE-2025-53906
 
 xrdp:
 - CVE-2022-23468
