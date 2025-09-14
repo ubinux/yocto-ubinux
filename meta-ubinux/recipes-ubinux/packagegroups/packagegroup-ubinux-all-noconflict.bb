@@ -76,6 +76,7 @@ UBINUX_PKGS_NOCONFLICT = " \
 	font-util \
 	fontconfig \
 	formfactor \
+	freeradius \
 	freetype \
 	f2fs-tools \
 	fscryptctl \

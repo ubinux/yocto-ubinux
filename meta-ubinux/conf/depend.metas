@@ -314,6 +314,7 @@ FILES=meta-oe/conf
  meta-networking/recipes-support/dovecot/
  meta-networking/recipes-support/fetchmail/
  meta-networking/recipes-connectivity/networkmanager
+ meta-networking/recipes-connectivity/freeradius
  meta-networking/recipes-support/ifenslave/
  meta-networking/recipes-support/wireshark/
  meta-networking/recipes-support/tcpdump/

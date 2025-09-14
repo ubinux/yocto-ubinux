@@ -78,6 +78,7 @@ UBINUX_PKGS = " \
 	font-alias \
 	font-util \
 	fontconfig \
+	freeradius \
 	freetype \
 	frr \
 	f2fs-tools \
