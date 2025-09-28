@@ -17,7 +17,6 @@ LICENSE:${PN}-colcrt = "BSD-4-Clause-UC"
 LICENSE:${PN}-colrm = "BSD-4-Clause-UC & ${LIBCOMMON_LICENSES}"
 LICENSE:${PN}-column = "BSD-4-Clause-UC & ${LIBCOMMON_LICENSES}"
 LICENSE:${PN}-coresched = "EUPL-1.2 & ${LIBCOMMON_LICENSES}"
-LICENSE:${PN}-fcntl-lock = "MIT"
 LICENSE:${PN}-fdisk = "GPL-1.0-or-later & ${DEFAULT_LICENSES}"
 LICENSE:${PN}-fsfreeze = "GPL-1.0-or-later"
 LICENSE:${PN}-hexdump = "BSD-4-Clause-UC & ${LIBCOMMON_LICENSES}"
@@ -207,7 +206,7 @@ RDEPENDS:${PN}-dev += " util-linux-libuuid-dev"
 RPROVIDES:${PN}-dev = "${PN}-libblkid-dev ${PN}-libmount-dev"
 
 RDEPENDS:${PN}-bash-completion += "${PN}-lsblk ${PN}-findmnt"
-RDEPENDS:${PN}-ptest += "bash bc btrfs-tools coreutils e2fsprogs findutils grep iproute2 kmod procps sed socat which xz diffutils"
+RDEPENDS:${PN}-ptest += "bash bc btrfs-tools coreutils e2fsprogs findutils grep iproute2 kmod procps sed socat xz diffutils"
 RRECOMMENDS:${PN}-ptest += "kernel-module-scsi-debug kernel-module-sd-mod kernel-module-loop kernel-module-algif-hash"
 RDEPENDS:${PN}-swaponoff = "${PN}-swapon ${PN}-swapoff"
 ALLOW_EMPTY:${PN}-swaponoff = "1"
@@ -225,11 +224,6 @@ do_compile:prepend () {
 	# When newly release tarball contains the above fix, the following workaround could be dropped.
 	[ -e ${S}/libsmartcols/src/filter-scanner.c ] && touch ${S}/libsmartcols/src/filter-scanner.c
 	[ -e ${S}/libsmartcols/src/filter-parser.c ] && touch ${S}/libsmartcols/src/filter-parser.c
-}
-
-do_compile:append () {
-	cp ${UNPACKDIR}/fcntl-lock.c ${S}/fcntl-lock.c
-	${CC} ${CFLAGS} ${LDFLAGS} ${S}/fcntl-lock.c -o ${B}/fcntl-lock
 }
 
 do_install:append () {
@@ -261,8 +255,6 @@ do_install:append () {
 	echo 'MOUNTALL="-t nonfs,nosmbfs,noncpfs"' > ${D}${sysconfdir}/default/mountall
 
 	rm -f ${D}${bindir}/chkdupexe
-
-	install -m 0755 ${B}/fcntl-lock ${D}${bindir}
 }
 
 do_install:append:class-target () {

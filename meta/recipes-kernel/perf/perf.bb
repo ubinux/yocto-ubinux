@@ -10,7 +10,9 @@ HOMEPAGE = "https://perf.wiki.kernel.org/index.php/Main_Page"
 LICENSE = "GPL-2.0-only"
 
 # zstd is required for kernels 6.14+ when libelf-zstd is detected
-PACKAGECONFIG ??= "python tui libunwind libtraceevent zstd"
+# Respect the coresight machine feature, but note this causes a
+# dependency on meta-arm.
+PACKAGECONFIG ??= "python tui libunwind libtraceevent zstd ${@bb.utils.filter('MACHINE_FEATURES', 'coresight', d)}"
 PACKAGECONFIG[dwarf] = ",NO_DWARF=1"
 PACKAGECONFIG[perl] = ",NO_LIBPERL=1,perl"
 PACKAGECONFIG[python] = ",NO_LIBPYTHON=1,python3 python3-setuptools-native"
@@ -28,7 +30,7 @@ PACKAGECONFIG[libtraceevent] = ",NO_LIBTRACEEVENT=1,libtraceevent"
 # jevents requires host python for generating a .c file, but is
 # unrelated to the python item.
 PACKAGECONFIG[jevents] = ",NO_JEVENTS=1,python3-native"
-# Arm CoreSight
+# Arm CoreSight support, requires meta-arm for opencsd
 PACKAGECONFIG[coresight] = "CORESIGHT=1,,opencsd"
 PACKAGECONFIG[pfm4] = ",NO_LIBPFM4=1,libpfm4"
 PACKAGECONFIG[babeltrace] = ",NO_LIBBABELTRACE=1,babeltrace"
@@ -103,7 +105,7 @@ EXTRA_OEMAKE = '\
     LDSHARED="${CC} -shared" \
     AR="${AR}" \
     LD="${LD}" \
-    EXTRA_CFLAGS="-ldw -I${S}" \
+    EXTRA_CFLAGS="-ldw -I${S} -I${S}/libperf/include -I${S}/tools/lib/perf/include" \
     YFLAGS='-y --file-prefix-map=${WORKDIR}=${TARGET_DBGSRC_DIR}' \
     EXTRA_LDFLAGS="${PERF_EXTRA_LDFLAGS}" \
     perfexecdir=${libexecdir} \
@@ -169,7 +171,11 @@ do_compile() {
             sed -i -e 's|\$(libdir)/traceevent/plugins|\$(libdir)/traceevent_${KERNEL_VERSION}/plugins|g' ${S}/tools/lib/traceevent/plugins/Makefile
 	test -e ${S}/tools/perf/Makefile.config && \
             sed -i -e 's|\$(libdir)/traceevent/plugins|\$(libdir)/traceevent_${KERNEL_VERSION}/plugins|g' ${S}/tools/perf/Makefile.config
-	oe_runmake all
+	# There are two copies of internal headers such as:
+	# libperf/include/internal/xyarray.h and tools/lib/perf/include/internal/xyarray.h
+	# For reproducibile binaries, we need to find one copy, hence force libperf to be created first
+	oe_runmake ${B}/libperf/libperf.a V=1
+	oe_runmake all V=1
 }
 
 do_install() {

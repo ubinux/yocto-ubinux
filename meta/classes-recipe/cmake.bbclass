@@ -56,7 +56,7 @@ OECMAKE_NATIVE_C_COMPILER_LAUNCHER ?= "${@oecmake_map_compiler('BUILD_CC', d)[1]
 OECMAKE_NATIVE_CXX_COMPILER ?= "${@oecmake_map_compiler('BUILD_CXX', d)[0]}"
 OECMAKE_NATIVE_CXX_COMPILER_LAUNCHER ?= "${@oecmake_map_compiler('BUILD_CXX', d)[1]}"
 OECMAKE_NATIVE_AR ?= "${BUILD_AR}"
-OECMAKE_NATIVE_RANLIB ?= "${BUILD_RANLIB}"
+OECMAKE_NATIVE_RANLIB ?= "${@d.getVar('BUILD_RANLIB').split()[0]}"
 OECMAKE_NATIVE_NM ?= "${BUILD_NM}"
 
 # Native compiler flags
@@ -122,6 +122,7 @@ cmake_do_generate_toolchain_file() {
 	if [ "${BUILD_SYS}" = "${HOST_SYS}" ]; then
 		cmake_crosscompiling="set( CMAKE_CROSSCOMPILING FALSE )"
 	else
+		cmake_crosscompiling="set( CMAKE_CROSSCOMPILING TRUE )"
 		cmake_sysroot="set( CMAKE_SYSROOT \"${RECIPE_SYSROOT}\" )"
 	fi
 

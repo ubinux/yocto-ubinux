@@ -13,11 +13,11 @@ LICENSE = "Apache-2.0-with-LLVM-exception"
 
 # GA Release
 RELEASE ?= "${PV}"
-BASEURI ?= "${LLVM_HTTP}/llvm-project/releases/download/llvmorg-${PV}/llvm-project-${PV}.src.tar.xz"
+BASEURI ?= "${LLVM_HTTP}/llvm-project/releases/download/llvmorg-${PV}${VER_SUFFIX}/llvm-project-${PV}${VER_SUFFIX}.src.tar.xz"
 UPSTREAM_CHECK_URI = "${LLVM_HTTP}/llvm-project/releases/"
 UPSTREAM_CHECK_REGEX = "releases/tag/llvmorg-?(?P<pver>\d+(\.\d+)+)"
-SOURCEDIR ?= "llvm-project-${PV}.src"
-SRC_URI[sha256sum] = "6898f963c8e938981e6c4a302e83ec5beb4630147c7311183cf61069af16333d"
+SOURCEDIR ?= "llvm-project-${PV}${VER_SUFFIX}.src"
+SRC_URI[sha256sum] = "8863980e14484a72a9b7d2c80500e1749054d74f08f8c5102fd540a3c5ac9f8a"
 
 SRC_URI = "\
     ${BASEURI} \
@@ -46,23 +46,21 @@ SRC_URI = "\
     file://0023-compiler-rt-Enable-__int128-for-ppc32.patch \
     file://0024-llvm-Do-not-use-cmake-infra-to-detect-libzstd.patch \
     file://0025-compiler-rt-Fix-stat-struct-s-size-for-O32-ABI.patch \
-    file://0026-compiler-rt-Undef-_TIME_BITS-along-with-_FILE_OFFSET.patch \
-    file://0027-ToolChains-Gnu.cpp-ARMLibDirs-search-also-in-lib32.patch \
-    file://0028-clang-llvm-Add-OE-specific-ABI-triple-for-N32-ABI.patch \
-    file://0029-llvm-Add-libunwind.pc.in-and-llvm-config-scripts.patch \
-    file://0030-scan-build-py-respect-LLVM_LIBDIR_SUFFIX-like-other-.patch \
-    file://0031-compiler-rt-Do-not-pass-target-to-clang-compiler.patch \
-    file://0032-clangd-Add-a-build-option-to-disable-building-dexp.patch \
-    file://0033-AsmMatcherEmitter-sort-ClassInfo-lists-by-name-as-we.patch \
-    file://0034-llvm-config-remove-LLVM_LDFLAGS-from-ldflags-output.patch \
-    file://0035-openmp-Do-not-emit-date-and-time-into-generate-files.patch \
-    file://0036-libunwind-Use-gcs-instead-of-gcs-target-attribute.patch \
-    file://0037-compiler-rt-Exclude-sync_fetch_and_-for-any-pre-ARMv.patch \
-    file://0038-compiler-rt-Hardcode-uptr-sptr-typedefs-on-Mips-Linu.patch \
-    file://0001-libclc-allow-existing-prepare-builtins-in-standalone.patch \
-    file://no-c-index-test.patch \
-    file://0001-llvm-Allow-users-to-set-LLVM_HAVE_OPT_VIEWER_MODULES.patch \
-    file://0001-compiler-rt-AArch64-Add-GCS-property-in-assembly-fil.patch \
+    file://0026-ToolChains-Gnu.cpp-ARMLibDirs-search-also-in-lib32.patch \
+    file://0027-clang-llvm-Add-OE-specific-ABI-triple-for-N32-ABI.patch \
+    file://0028-llvm-Add-libunwind.pc.in-and-llvm-config-scripts.patch \
+    file://0029-scan-build-py-respect-LLVM_LIBDIR_SUFFIX-like-other-.patch \
+    file://0030-compiler-rt-Do-not-pass-target-to-clang-compiler.patch \
+    file://0031-AsmMatcherEmitter-sort-ClassInfo-lists-by-name-as-we.patch \
+    file://0032-llvm-config-remove-LLVM_LDFLAGS-from-ldflags-output.patch \
+    file://0033-compiler-rt-Exclude-sync_fetch_and_-for-any-pre-ARMv.patch \
+    file://0034-compiler-rt-Hardcode-uptr-sptr-typedefs-on-Mips-Linu.patch \
+    file://0035-clang-Use-sysroot-relative-paths-for-getArchSpecific.patch \
+    file://0036-allow-external-prepare_builtins.patch \
+    file://0037-Revert-libc-Remap-headers-in-the-debug-info-when-bui.patch \
+    file://0038-Prevent-revisiting-block-when-searching-for-noreturn.patch \
+    file://0039-Only-build-c-index-test-when-clang-tests-are-include.patch \
+    file://0001-Install-lldb-tblgen.patch \
 "
 # Fallback to no-PIE if not set
 GCCPIE ??= ""

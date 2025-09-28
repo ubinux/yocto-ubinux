@@ -109,7 +109,7 @@ However, the current WIC code automatically converts dashes to underscore for
 any ``--source`` call, so existing WKS files will not break if they use upstream
 plugins from :term:`OpenEmbedded-Core (OE-Core)`.
 
-``fitImage`` no longer supporter for :term:`KERNEL_IMAGETYPE`
+``fitImage`` no longer supported for :term:`KERNEL_IMAGETYPE`
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The ``fitImage`` type for :term:`KERNEL_IMAGETYPE` is no longer supported. The
@@ -117,6 +117,22 @@ logic for creating a FIT image was moved out of the :ref:`ref-classes-kernel`
 class. Instead, one should create a new recipe to build this FIT image, as
 described in the :ref:`Removed Classes <migration-guides/migration-5.3:Removed
 Classes>` section of the Migration notes for |yocto-ver| (|yocto-codename|).
+
+systemd Predictable Interface Names no longer MAC policy by default
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The :oe_git:`systemd recipe </openembedded-core/tree/meta/recipes-core/systemd>`
+used to forcibly set the "mac" policy by default when the ``pni-names``
+:term:`distro feature <DISTRO_FEATURES>` is enabled.
+
+This is no longer the case as this was not following upstream changes. Now when
+the ``pni-names`` :term:`distro feature <DISTRO_FEATURES>` is enabled, the
+default policy from systemd is selected (from
+https://github.com/systemd/systemd/blob/v257.8/network/99-default.link).
+
+To set back the "mac" policy in systemd (version 257.8 at the time of writing
+this note), you should set the ``NamePolicy`` and ``AlternativeNamesPolicy`` as
+detailed in :manpage:`systemd.link(5)`.
 
 Supported kernel versions
 ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -163,9 +179,9 @@ Removed recipes
 
 The following recipes have been removed in this release:
 
--  ``libsoup``: The last user in :term:`OpenEmbedded-Core (OE-Core)` was
-   ``gst-examples``, which has been upgraded with its ``libsoup`` dependency
-   dropped.
+-  ``libsoup-2.4``: The last user in :term:`OpenEmbedded-Core (OE-Core)` was
+   ``gst-examples``, which has been upgraded with its ``libsoup-2.4`` dependency
+   dropped. The recipe has been moved to ``meta-oe``.
 
 -  ``glibc-y2038-tests``: removed as the recipe only provides tests which are
    now provided by ``glibc-testsuite``.
@@ -173,6 +189,11 @@ The following recipes have been removed in this release:
 -  ``python3-ndg-httpsclient``: The last dependency in core on this recipe was
    removed in May 2024 with dfa482f1998 ("python3-requests: cleanup RDEPENDS"),
    and there is no other user of this variable.
+
+-  ``xf86-input-mouse``: The project has stopped supporting Linux.
+
+-  ``xf86-input-vmmouse``: It has a runtime dependency on ``xf86-input-mouse``,
+   which stopped supporting Linux.
 
 Removed :term:`PACKAGECONFIG` entries
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -247,3 +268,5 @@ Miscellaneous changes
 
 -  ``xserver-xorg``: remove sub-package ``${PN}-xwayland``, as ``xwayland`` is
    now its own recipe.
+
+-  The Wic-specific option ``--extra-space`` has been renamed to ``--extra-filesystem-space``.
