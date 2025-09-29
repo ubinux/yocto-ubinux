@@ -7,7 +7,6 @@ PTESTS_FAST = "\
     acl \
     apr-util \
     attr \
-    babeltrace \
     babeltrace2 \
     bc \
     bluez5 \
@@ -101,6 +100,7 @@ PTESTS_SLOW = "\
     curl \
     dbus \
     dosfstools \
+    dpkg \
     e2fsprogs \
     elfutils \
     gettext \

@@ -76,6 +76,7 @@ UBINUX_PKGS_NOCONFLICT = " \
 	font-util \
 	fontconfig \
 	formfactor \
+	freeradius \
 	freetype \
 	f2fs-tools \
 	fscryptctl \
@@ -234,7 +235,6 @@ UBINUX_PKGS_NOCONFLICT = " \
 	xdelta3 \
 	xdpyinfo \
 	xf86-input-evdev \
-	xf86-input-mouse \
 	xf86-input-synaptics \
 	xf86-video-fbdev \
 	xhost \
@@ -465,7 +465,7 @@ UBINUX_PKGS_NOCONFLICT = " \
 	lmsensors-sensord \
 	lmsensors-config-sensord \
 	lmsensors-sensorsdetect \
-	babeltrace \
+	babeltrace2 \
 	matchbox-keyboard \
 	mesa-megadriver \
 	nano \

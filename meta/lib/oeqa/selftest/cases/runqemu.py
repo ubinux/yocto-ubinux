@@ -31,9 +31,9 @@ class RunqemuTests(OESelftestTestCase):
         if self.td["HOST_ARCH"] in ('i586', 'i686', 'x86_64'):
             self.fstypes += " iso hddimg"
         if self.machine == "qemux86-64":
-            self.fstypes += " wic.vmdk wic.qcow2 wic.vdi"
+            self.fstypes += " wic.vmdk wic.qcow2 wic.vdi wic.zst"
 
-        self.cmd_common = "runqemu nographic"
+        self.cmd_common = "runqemu nographic snapshot"
         kvm = oe.types.qemu_use_kvm(get_bb_var('QEMU_USE_KVM'), self.td["TARGET_ARCH"])
         if kvm:
             self.cmd_common += " kvm"
@@ -152,6 +152,25 @@ SYSLINUX_TIMEOUT = "10"
             with open(qemu.qemurunnerlog) as f:
                 self.assertTrue(qemu.runner.logged, "Failed: %s, %s" % (cmd, f.read()))
 
+    @skipIfNotMachine("qemux86-64", "wic tests are qemux86-64 specific currently")
+    def test_boot_compressed_wic_by_path(self):
+        """Test runqemu /path/to/rootfs.wic.zst"""
+        rootfs = "%s.wic.zst" % (self.image_link_name)
+        rootfs = os.path.join(self.deploy_dir_image, rootfs)
+        if not os.path.exists(rootfs):
+            self.skipTest("%s not found" % rootfs)
+        cmd = "%s %s snapshot" % (self.cmd_common, rootfs)
+        with runqemu(self.recipe, ssh=False, launch_cmd=cmd) as qemu:
+            with open(qemu.qemurunnerlog) as f:
+                self.assertTrue(qemu.runner.logged, "Failed: %s, %s" % (cmd, f.read()))
+
+    @skipIfNotMachine("qemux86-64", "wic tests are qemux86-64 specific currently")
+    def test_boot_compressed_wic_by_recipe(self):
+        """Test runqemu recipe-image wic.zst"""
+        cmd = "%s %s snapshot wic.zst" % (self.cmd_common, self.recipe)
+        with runqemu(self.recipe, ssh=False, launch_cmd=cmd) as qemu:
+            with open(qemu.qemurunnerlog) as f:
+                self.assertTrue(qemu.runner.logged, "Failed: %s, %s" % (cmd, f.read()))
 
 # This test was designed as a separate class to test that shutdown
 # command will shutdown qemu as expected on each qemu architecture
@@ -173,9 +192,15 @@ class QemuTest(OESelftestTestCase):
         cls.machine = get_bb_var('MACHINE')
         cls.deploy_dir_image = get_bb_var('DEPLOY_DIR_IMAGE')
         cls.image_link_name = get_bb_var('IMAGE_LINK_NAME', cls.recipe)
-        cls.cmd_common = "runqemu nographic"
+        cls.cmd_common = "runqemu nographic snapshot"
         cls.qemuboot_conf = "%s.qemuboot.conf" % (cls.image_link_name)
         cls.qemuboot_conf = os.path.join(cls.deploy_dir_image, cls.qemuboot_conf)
+
+        cls.write_config(cls,
+"""
+IMAGE_FSTYPES += "tar.bz2"
+""")
+
         bitbake(cls.recipe)
 
     def _start_qemu_shutdown_check_if_shutdown_succeeded(self, qemu, timeout):
@@ -199,7 +224,7 @@ class QemuTest(OESelftestTestCase):
 
     def test_qemu_can_shutdown(self):
         self.assertExists(self.qemuboot_conf)
-        cmd = "%s %s" % (self.cmd_common, self.qemuboot_conf)
+        cmd = "%s snapshot %s" % (self.cmd_common, self.qemuboot_conf)
         shutdown_timeout = 120
         with runqemu(self.recipe, ssh=False, launch_cmd=cmd) as qemu:
             qemu_shutdown_succeeded = self._start_qemu_shutdown_check_if_shutdown_succeeded(qemu, shutdown_timeout)

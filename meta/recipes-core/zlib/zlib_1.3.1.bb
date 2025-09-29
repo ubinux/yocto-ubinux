@@ -20,6 +20,9 @@ SRC_URI[sha256sum] = "9a93b2b7dfdac77ceba5a558a580e74667dd6fede4585b91eefb60f03b
 PREMIRRORS:append = " https://zlib.net/ https://zlib.net/fossils/"
 
 CFLAGS += "-D_REENTRANT -fPIE"
+# zlib does not build with lld, keep it until https://github.com/madler/zlib/pull/936
+# is addressed
+LDFLAGS:append = " -fuse-ld=bfd"
 
 RDEPENDS:${PN}-ptest += "make"
 
@@ -45,8 +48,6 @@ do_install_ptest() {
 }
 
 BBCLASSEXTEND = "native nativesdk"
-
-CVE_STATUS[CVE-2023-45853] = "not-applicable-config: we don't build minizip"
 
 # Adding 'CVE_PRODUCT' to avoid false detection of CVEs
 CVE_PRODUCT = "zlib:zlib gnu:zlib"

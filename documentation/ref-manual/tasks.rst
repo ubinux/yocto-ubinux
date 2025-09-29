@@ -225,7 +225,7 @@ section in the Yocto Project Overview and Concepts Manual.
 -----------------
 
 Runs QA checks on packaged files. For more information on these checks,
-see the :ref:`ref-classes-insane` class.
+see the :doc:`/ref-manual/qa-checks` document.
 
 .. _ref-tasks-package_write_deb:
 
@@ -396,6 +396,17 @@ Installs the files into the individual recipe specific sysroots (i.e.
 ``${``\ :term:`WORKDIR`\ ``}`` based upon the
 dependencies specified by :term:`DEPENDS`). See the
 ":ref:`ref-classes-staging`" class for more information.
+
+.. _ref-tasks-recipe-qa:
+
+``do_recipe_qa``
+----------------
+
+Performs QA check on recipes that can operate entirely from recipe metadata and
+do not need any of the build artefacts or source code.
+
+The list of QA checks that this tasks defines are documented in
+:doc:`/ref-manual/qa-checks`.
 
 .. _ref-tasks-rm_work:
 
