@@ -157,7 +157,12 @@ class BitbakeLayers(OESelftestTestCase):
         with open(jsonfile) as f:
             data = json.load(f)
         for s in data['sources']:
-            data['sources'][s]['git-remote']['rev'] = '5200799866b92259e855051112520006e1aaaac0'
+            if s == 'poky':
+                data['sources'][s]['git-remote']['rev'] = '5200799866b92259e855051112520006e1aaaac0'
+            elif s == 'meta-yocto':
+                data['sources'][s]['git-remote']['rev'] = '913bd8ba4dd1d5d2a38261bde985b64a36e36281'
+            else:
+                data['sources'][s]['git-remote']['rev'] = '744a2277844ec9a384a9ca7dae2a634d5a0d3590'
         with open(jsonfile, 'w') as f:
             json.dump(data, f)
 
@@ -271,6 +276,38 @@ class BitbakeConfigBuild(OESelftestTestCase):
         runCmd('bitbake-config-build disable-fragment selftest/more-fragments-here/test-another-fragment')
         self.assertEqual(get_bb_var('SELFTEST_FRAGMENT_VARIABLE'), None)
         self.assertEqual(get_bb_var('SELFTEST_FRAGMENT_ANOTHER_VARIABLE'), None)
+
+    def test_enable_disable_builtin_fragments(self):
+        """
+        Tests that the meta-selftest properly adds a new built-in fragment from
+        its layer.conf configuration file.
+        The test sequence goes as follows:
+        1. Verify that SELFTEST_BUILTIN_FRAGMENT_VARIABLE is not set yet.
+        2. Verify that SELFTEST_BUILTIN_FRAGMENT_VARIABLE is set after setting
+           the fragment.
+        3. Verify that SELFTEST_BUILTIN_FRAGMENT_VARIABLE is set after setting
+           the fragment with another value that replaces the first one.
+        4. Repeat steps 2 and 3 to verify that going back and forth between values
+           works.
+        5. Verify that SELFTEST_BUILTIN_FRAGMENT_VARIABLE is not set after
+           removing the final assignment.
+        """
+        self.assertEqual(get_bb_var('SELFTEST_BUILTIN_FRAGMENT_VARIABLE'), None)
+
+        runCmd('bitbake-config-build enable-fragment selftest-fragment/somevalue')
+        self.assertEqual(get_bb_var('SELFTEST_BUILTIN_FRAGMENT_VARIABLE'), 'somevalue')
+
+        runCmd('bitbake-config-build enable-fragment selftest-fragment/someothervalue')
+        self.assertEqual(get_bb_var('SELFTEST_BUILTIN_FRAGMENT_VARIABLE'), 'someothervalue')
+
+        runCmd('bitbake-config-build enable-fragment selftest-fragment/somevalue')
+        self.assertEqual(get_bb_var('SELFTEST_BUILTIN_FRAGMENT_VARIABLE'), 'somevalue')
+
+        runCmd('bitbake-config-build enable-fragment selftest-fragment/someothervalue')
+        self.assertEqual(get_bb_var('SELFTEST_BUILTIN_FRAGMENT_VARIABLE'), 'someothervalue')
+
+        runCmd('bitbake-config-build disable-fragment selftest-fragment/someothervalue')
+        self.assertEqual(get_bb_var('SELFTEST_BUILTIN_FRAGMENT_VARIABLE'), None)
 
     def test_show_fragment(self):
         """
