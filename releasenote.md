@@ -1,4 +1,4 @@
-# ubinux-2025.09 Release Notes
+# ubinux-2025.10 Release Notes
 
 OSS x AI Technology Div.  
 Fujitsu Limited  
@@ -6,11 +6,11 @@ Fujitsu Limited
 ## 1. Basic Information
 ### 1.1 Version Information
 - Yocto: 5.3
-- Kernel: 6.12.41
+- Kernel: 6.12.47
 - Toolchain
-  - GCC: 15.1.0
+  - GCC: 15.2.0
   - Binutils: 2.45
-  - glibc: 2.41
+  - glibc: 2.42
   - GDB: 16.3
 - License Files Format: SPDX 2.3
 
@@ -32,26 +32,40 @@ Fujitsu Limited
 
 ## 2. Features
 ### 2.1 Security Fixes
-Following security issues have been fixed from ubinux-2025.08.
+Following security issues have been fixed from ubinux-2025.09.
+
+samba:
+- CVE-2021-3670
+- CVE-2022-1615
+- CVE-2022-32743
+
+gnutls:
+- CVE-2025-32989
+- CVE-2025-32990
+
+icu:
+- CVE-2025-5222
 
 ubinux-kernel:
-- CVE-2025-23137
+- CVE-2025-37925
+
+vim:
+- CVE-2025-53905
+- CVE-2025-53906
 
 ### 2.2 Added packages
 
-- libclc
-- pam-radius
-- python3-pytest-asyncio
-- vim
+- babeltrace2
+- freeradius
 
 ### 2.3 Removed packages
 
-- giflib
-- openjdk-8
+- babeltrace
+- xf86-input-mouse
 
 ## 3. Installation guide
 ### 3.1 Install Toolchain
-Run as root privilege the Toolchain installer at arbitrary directory, and Toolchain will be installed into /opt/ubinux/2025.09 directory.
+Run as root privilege the Toolchain installer at arbitrary directory, and Toolchain will be installed into /opt/ubinux/2025.10 directory.
 
 
 [TYPE1] in the description, please read as shown below.
@@ -63,7 +77,7 @@ Run as root privilege the Toolchain installer at arbitrary directory, and Toolch
 |Armv8 (32bit EL, 64bit EL)|aarch64-ubinux-armv8|
 
 
-`$ sudo sh ubinux-glibc-x86_64-meta-toolchain-[TYPE1]-toolchain-2025.09.sh`
+`$ sudo sh ubinux-glibc-x86_64-meta-toolchain-[TYPE1]-toolchain-2025.10.sh`
 
 
 ### 3.2 Set up Environment Variables
@@ -80,7 +94,7 @@ Run the following commands.
 |Armv8 (32bit EL)|armv7ahf-neon-ubinuxmllib32-linux-gnueabi|
 
 
-`$ . /opt/ubinux/2025.09/environment-setup-[TYPE2]`
+`$ . /opt/ubinux/2025.10/environment-setup-[TYPE2]`
 
 ### 3.3 Create rootfs from Userland Packages
 To create rootfs, see Section 3.1.2 and 3.1.3 of the dnf-plugin-tui documentation.  
@@ -99,8 +113,7 @@ Enable some kernel configs to use following features.
 
 ### 4.2 Userland Packages
 
-- openjdk-8  
-  After this release, openjdk-8 is no longer available.  
+N/A
 
 ### 4.3 Tools
 
@@ -133,6 +146,11 @@ The following objects are not validated because the hardware of the test environ
 
 ## 5. Known Security Issues
 The following security issues were known in this release:  
+
+cups:
+- CVE-2025-58060
+- CVE-2025-58364
+
 db:
 - CVE-2016-0682
 - CVE-2016-0689
@@ -143,12 +161,13 @@ db:
 dovecot:
 - CVE-2022-30550
 
+exiv2:
+- CVE-2025-26623
+- CVE-2025-54080
+- CVE-2025-55304
+
 glibc:
 - CVE-2010-4756
-
-gnutls:
-- CVE-2025-32989
-- CVE-2025-32990
 
 hdf5:
 - CVE-2018-17433
@@ -168,8 +187,13 @@ hdf5:
 - CVE-2025-6270
 - CVE-2025-6516
 
-icu:
-- CVE-2025-5222
+jasper:
+- CVE-2025-8835
+- CVE-2025-8836
+- CVE-2025-8837
+
+libpcre2:
+- CVE-2025-58050
 
 libraw:
 - CVE-2025-43961
@@ -179,6 +203,7 @@ libraw:
 
 libsndfile1:
 - CVE-2024-50613
+- CVE-2025-52194
 
 libssh:
 - CVE-2025-8114
@@ -188,6 +213,9 @@ libuser:
 
 libvirt:
 - CVE-2023-3750
+
+libxslt:
+- CVE-2025-7424
 
 openjpeg:
 - CVE-2023-39327
@@ -218,9 +246,6 @@ rpm:
 - CVE-2021-35937
 
 samba:
-- CVE-2021-3670
-- CVE-2022-1615
-- CVE-2022-32743
 - CVE-2022-38023
 - CVE-2023-37369
 
@@ -234,6 +259,8 @@ sysstat:
 
 tiff:
 - CVE-2023-1916
+- CVE-2025-8961
+- CVE-2025-9165
 
 tigervnc:
 - CVE-2014-8241
@@ -279,12 +306,7 @@ ubinux-kernel:
 - CVE-2025-21833
 - CVE-2025-21949
 - CVE-2025-37860
-- CVE-2025-37925
 - CVE-2025-40014
-
-vim:
-- CVE-2025-53905
-- CVE-2025-53906
 
 xrdp:
 - CVE-2022-23468
