@@ -44,4 +44,12 @@ def get_clang_host_arch(bb, d):
 def get_clang_target_arch(bb, d):
     return get_clang_arch(bb, d, 'TARGET_ARCH')
 
+# Don't put build-time RPATHs in the binaries, whilst they'll be stripped on
+# install they cause non-deterministic binaries.
+EXTRA_OECMAKE += "-DCMAKE_BUILD_WITH_INSTALL_RPATH=ON"
+
+# Don't embed found git information into the version string as this
+# will include the git server URL.
+EXTRA_OECMAKE += "-DLLVM_APPEND_VC_REV=OFF"
+
 require common.inc
