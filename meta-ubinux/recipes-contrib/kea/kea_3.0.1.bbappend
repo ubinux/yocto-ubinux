@@ -1,6 +1,9 @@
 FILESEXTRAPATHS:prepend := "${THISDIR}/files:"
 
-SRC_URI += "file://0001-Fix-multilib-conflict-error-after-kea-been-upgraded-.patch \
-            file://0001-meson-Correct-installation-umask-to-0022.patch "
+SRC_URI += "file://0001-Fix-multilib-conflict-error-after-kea-been-upgraded-.patch "
 
+EXTRA_OEMESON += "-Dcrypto=openssl -Drunstatedir=${runtimedir} -Dkrb5=disabled -Dnetconf=disabled --install-umask=0022"
 
+do_install:append() {
+    rm -rf ${D}${runtimedir}
+}
