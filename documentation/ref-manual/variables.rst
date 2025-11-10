@@ -397,6 +397,18 @@ system and gives an overview of their function and contents.
    :term:`BB_CHECK_SSL_CERTS`
       See :term:`bitbake:BB_CHECK_SSL_CERTS` in the BitBake manual.
 
+   :term:`BB_CONF_FRAGMENT_DESCRIPTION`
+      The :term:`BB_CONF_FRAGMENT_DESCRIPTION` variable defines the textual
+      description of a :term:`Configuration Fragment`. For details on how to use
+      fragments, see the :doc:`/ref-manual/fragments` section of the Yocto
+      Project Reference Manual.
+
+   :term:`BB_CONF_FRAGMENT_SUMMARY`
+      The :term:`BB_CONF_FRAGMENT_SUMMARY` variable defines the one-line textual
+      summary of a :term:`Configuration Fragment`. For details on how to use
+      fragments, see the :doc:`/ref-manual/fragments` section of the Yocto
+      Project Reference Manual.
+
    :term:`BB_CONSOLELOG`
       See :term:`bitbake:BB_CONSOLELOG` in the BitBake manual.
 
@@ -4166,6 +4178,12 @@ system and gives an overview of their function and contents.
       added to the image by using the :term:`IMAGE_ROOTFS_EXTRA_SPACE`
       variable.
 
+      When using Wic tool, beware that a second overhead factor is also applied.
+      This overhead value is defined by the ``--overhead-factor`` option, which
+      defaults to "1.3" when omitted. See the
+      :ref:`ref-manual/kickstart:command: part or partition` chapter in
+      :doc:`/ref-manual/kickstart` for details.
+
    :term:`IMAGE_PKGTYPE`
       Defines the package type (i.e. DEB, RPM or IPK) used by the
       OpenEmbedded build system. The variable is defined appropriately by
@@ -4886,8 +4904,7 @@ system and gives an overview of their function and contents.
       would place patch files and configuration fragment files (i.e.
       "out-of-tree"). However, if you want to use a ``defconfig`` file that
       is part of the kernel tree (i.e. "in-tree"), you can use the
-      :term:`KBUILD_DEFCONFIG` variable and append the
-      :term:`KMACHINE` variable to point to the
+      :term:`KBUILD_DEFCONFIG` variable to point to the
       ``defconfig`` file.
 
       To use the variable, set it in the append file for your kernel recipe
@@ -6224,6 +6241,33 @@ system and gives an overview of their function and contents.
       See the ``meta/classes-recipe/binconfig.bbclass`` in the
       :term:`Source Directory` for details on how this class
       applies these additional sed command arguments.
+
+   :term:`OE_FRAGMENTS`
+      The :term:`OE_FRAGMENTS` variable holds the list of :term:`Configuration
+      Fragments <Configuration Fragment>` currently enabled for the build. For
+      details on how to use fragments, see the :doc:`/ref-manual/fragments`
+      section of the Yocto Project Reference Manual.
+
+   :term:`OE_FRAGMENTS_BUILTIN`
+      The :term:`OE_FRAGMENTS_BUILTIN` variable holds the list of
+      :term:`Built-in Fragments <Built-in Fragment>` available for being set with
+      :oe_git:`bitbake-config-build </bitbake/tree/bin/bitbake-config-build>`.
+      For details on how to use fragments, see the :doc:`/ref-manual/fragments`
+      section of the Yocto Project Reference Manual.
+
+   :term:`OE_FRAGMENTS_METADATA_VARS`
+      The :term:`OE_FRAGMENTS_METADATA_VARS` variable holds the list of
+      variables that are required to set in a standard :term:`Configuration
+      Fragment` file. In :term:`OpenEmbedded-Core (OE-Core)`, these variables
+      are :term:`BB_CONF_FRAGMENT_SUMMARY` and
+      :term:`BB_CONF_FRAGMENT_DESCRIPTION`.
+
+   :term:`OE_FRAGMENTS_PREFIX`
+      The :term:`OE_FRAGMENTS_PREFIX` variable defines the prefix where
+      :term:`BitBake` tries to locate :term:`Configuration Fragments
+      <Configuration Fragment>` in :term:`layers <Layer>`. For details on how to
+      use fragments, see the :doc:`/ref-manual/fragments` section of the Yocto
+      Project Reference Manual.
 
    :term:`OE_INIT_ENV_SCRIPT`
       The name of the build environment setup script for the purposes of
@@ -9267,7 +9311,7 @@ system and gives an overview of their function and contents.
       directory for the build host.
 
    :term:`STAGING_DIR`
-      Helps construct the ``recipe-sysroots`` directory, which is used
+      Helps construct the ``recipe-sysroot*`` directories, which are used
       during packaging.
 
       For information on how staging for recipe-specific sysroots occurs,

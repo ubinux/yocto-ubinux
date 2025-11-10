@@ -16,7 +16,7 @@ metas=meta-oe
 [meta-oe]
 GITURL=http://git.openembedded.org/meta-openembedded
 BRANCH=master
-HEADID=2e9e58b7389534626d161d20a1c4f2a501be2a8e
+HEADID=d1b67ac99e023f9abc34f215caba770a46af5723
 FILES=meta-oe/conf
  meta-oe/COPYING.MIT
  meta-oe/licenses/
@@ -53,7 +53,7 @@ FILES=meta-oe/conf
  meta-oe/recipes-graphics/tslib/
  meta-oe/recipes-graphics/xorg-app/xlsfonts_1.0.8.bb
  meta-oe/recipes-graphics/xorg-app/xrdb_1.2.0.bb
- meta-oe/recipes-graphics/xorg-app/xterm_401.bb
+ meta-oe/recipes-graphics/xorg-app/xterm_402.bb
  meta-oe/recipes-graphics/xorg-app/xterm/
  meta-oe/recipes-graphics/xorg-app/xwd_1.0.9.bb
  meta-oe/recipes-graphics/xorg-app/iceauth_1.0.10.bb
@@ -450,13 +450,13 @@ FILES=meta-oe/conf
  meta-oe/recipes-devtools/perl/libdev-checklib-perl/
  meta-perl/recipes-perl/libdigest/files/
  meta-perl/recipes-perl/libdigest/
- meta-perl/recipes-perl/libhtml/libhtml-parser-perl_3.73.bb
- meta-perl/recipes-perl/libhtml/libhtml-tagset-perl_3.20.bb
+ meta-perl/recipes-perl/libhtml/libhtml-parser-perl_3.75.bb
+ meta-perl/recipes-perl/libhtml/libhtml-tagset-perl_3.24.bb
  meta-perl/recipes-perl/libnet/libnet-dns-perl_1.35.bb
  meta-perl/recipes-perl/libnet/libnet-dns-sec-perl_1.10.bb
  meta-perl/recipes-perl/libproc/
  meta-perl/recipes-perl/libmime/files/
- meta-perl/recipes-perl/libmime/libmime-types-perl_2.28.bb
+ meta-perl/recipes-perl/libmime/libmime-types-perl_2.29.bb
  meta-perl/recipes-perl/libipc/
  meta-perl/recipes-perl/libnet/
  
@@ -467,7 +467,7 @@ FILES=meta-oe/conf
 [meta-freescale]
 GITURL=https://git.yoctoproject.org/git/meta-freescale
 BRANCH=master
-HEADID=b7287efdc47d5c8f0cb53dfb6a4ba66a8a8eb7ba
+HEADID=ed8abb65bbb6933b7751bd11fbeabc19f5b849c3
 FILES=conf/layer.conf
  custom-licenses/
  classes/
@@ -485,7 +485,7 @@ FILES=conf/layer.conf
 [meta-cgl]
 GITURL=https://git.yoctoproject.org/git/meta-cgl
 BRANCH=master
-HEADID=b6b8fbf80b3e5c2f950ab8d203403887bd76435d
+HEADID=efbec7502e8027d350c05997678c12aa35662f0e
 FILES=meta-cgl-common/conf/layer.conf
  meta-cgl-common/conf/distro/include/cgl_common_security_flags.inc
  meta-cgl-common/recipes-cgl/cluster-glue/
@@ -562,7 +562,7 @@ FILES=conf/layer.conf
 [meta-virtualization]
 GITURL=http://git.yoctoproject.org/git/meta-virtualization
 BRANCH=master
-HEADID=8f15c45f7d9cf5d6b25ab7c5865496e4ce3eb6d0
+HEADID=437efd9259c1786c130c724290cb1e46d50edcb2
 FILES=conf/layer.conf
  classes/
  files/
@@ -577,13 +577,13 @@ FILES=conf/layer.conf
 [meta-selinux]
 GITURL=http://git.yoctoproject.org/git/meta-selinux
 BRANCH=master
-HEADID=db37a0b841adddd9e6aa43bf40b3a9e418bb0396
+HEADID=91bf2937722476fe2b8f9d787300cfcd04670c5e
 FILES=conf/layer.conf
 
 [meta-security]
 GITURL=http://git.yoctoproject.org/git/meta-security
 BRANCH=master
-HEADID=1b1028e35b0b7c280bc5e72e17df666d150e4aeb
+HEADID=730ebbddc121016151a72d3e0bce61351a0ad365
 FILES=conf
  classes/sanity-meta-security.bbclass
  meta-tpm/classes/sanity-meta-tpm.bbclass
@@ -645,12 +645,12 @@ FILES=meta-xilinx-core/conf
 [meta-erlang]
 GITURL=https://github.com/joaohf/meta-erlang
 BRANCH=master
-HEADID=ba5443715f01136bd6b203a82ee81b5f594fa22a
+HEADID=b2ab632f7774852203695a825ce9d3bc24f5b2a1
 FILES=conf
 
 [meta-arm]
 GITURL=https://git.yoctoproject.org/meta-arm
 BRANCH=master
-HEADID=84b96041d393a71d085b967e57431d8674c314cd
+HEADID=7206f9c9f93a4664632c2cdac02994a646d00b29
 FILES=meta-arm/conf
  meta-arm-toolchain/conf

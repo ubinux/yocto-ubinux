@@ -39,7 +39,6 @@ C = "3"
         os.chdir(self.origdir)
 
     def parsehelper(self, content, suffix = ".bb"):
-
         f = tempfile.NamedTemporaryFile(suffix = suffix)
         f.write(bytes(content, "utf-8"))
         f.flush()
@@ -47,17 +46,17 @@ C = "3"
         return f
 
     def test_parse_simple(self):
-        f = self.parsehelper(self.testfile)
-        d = bb.parse.handle(f.name, self.d)['']
+        with self.parsehelper(self.testfile) as f:
+            d = bb.parse.handle(f.name, self.d)['']
         self.assertEqual(d.getVar("A"), "1")
         self.assertEqual(d.getVar("B"), "2")
         self.assertEqual(d.getVar("C"), "3")
 
     def test_parse_incomplete_function(self):
         testfileB = self.testfile.replace("}", "")
-        f = self.parsehelper(testfileB)
-        with self.assertRaises(bb.parse.ParseError):
-            d = bb.parse.handle(f.name, self.d)['']
+        with self.parsehelper(testfileB) as f:
+            with self.assertRaises(bb.parse.ParseError):
+                d = bb.parse.handle(f.name, self.d)['']
 
     unsettest = """
 A = "1"
@@ -69,8 +68,8 @@ unset B[flag]
 """
 
     def test_parse_unset(self):
-        f = self.parsehelper(self.unsettest)
-        d = bb.parse.handle(f.name, self.d)['']
+        with self.parsehelper(self.unsettest) as f:
+            d = bb.parse.handle(f.name, self.d)['']
         self.assertEqual(d.getVar("A"), None)
         self.assertEqual(d.getVarFlag("A","flag"), None)
         self.assertEqual(d.getVar("B"), "2")
@@ -113,8 +112,8 @@ A[flag_default_twice] ??= "default flag first"
 A[flag_default_twice] ??= "default flag second"
 """
     def test_parse_defaulttest(self):
-        f = self.parsehelper(self.defaulttest)
-        d = bb.parse.handle(f.name, self.d)['']
+        with self.parsehelper(self.defaulttest) as f:
+            d = bb.parse.handle(f.name, self.d)['']
         self.assertEqual(d.getVar("A"), "set value")
         self.assertEqual(d.getVarFlag("A","flag_set_vs_question"), "set flag")
         self.assertEqual(d.getVarFlag("A","flag_set_vs_default"), "set flag")
@@ -136,8 +135,8 @@ exportD = "d"
 """
 
     def test_parse_exports(self):
-        f = self.parsehelper(self.exporttest)
-        d = bb.parse.handle(f.name, self.d)['']
+        with self.parsehelper(self.exporttest) as f:
+            d = bb.parse.handle(f.name, self.d)['']
         self.assertEqual(d.getVar("A"), "a")
         self.assertIsNone(d.getVarFlag("A", "export"))
         self.assertEqual(d.getVar("B"), "b")
@@ -149,7 +148,6 @@ exportD = "d"
         self.assertEqual(d.getVar("exportD"), "d")
         self.assertIsNone(d.getVarFlag("exportD", "export"))
 
-
     overridetest = """
 RRECOMMENDS:${PN} = "a"
 RRECOMMENDS:${PN}:libc = "b"
@@ -158,8 +156,8 @@ PN = "gtk+"
 """
 
     def test_parse_overrides(self):
-        f = self.parsehelper(self.overridetest)
-        d = bb.parse.handle(f.name, self.d)['']
+        with self.parsehelper(self.overridetest) as f:
+            d = bb.parse.handle(f.name, self.d)['']
         self.assertEqual(d.getVar("RRECOMMENDS"), "b")
         bb.data.expandKeys(d)
         self.assertEqual(d.getVar("RRECOMMENDS"), "b")
@@ -173,8 +171,8 @@ EXTRA_OECONF:append = " c"
 """
 
     def test_parse_overrides2(self):
-        f = self.parsehelper(self.overridetest2)
-        d = bb.parse.handle(f.name, self.d)['']
+        with self.parsehelper(self.overridetest2) as f:
+            d = bb.parse.handle(f.name, self.d)['']
         d.appendVar("EXTRA_OECONF", " d")
         d.setVar("OVERRIDES", "class-target")
         self.assertEqual(d.getVar("EXTRA_OECONF"), "b c d")
@@ -186,15 +184,14 @@ PN = "bc"
 """
 
     def test_parse_combinations(self):
-        f = self.parsehelper(self.overridetest3)
-        d = bb.parse.handle(f.name, self.d)['']
+        with self.parsehelper(self.overridetest3) as f:
+            d = bb.parse.handle(f.name, self.d)['']
         bb.data.expandKeys(d)
         self.assertEqual(d.getVar("DESCRIPTION:bc-dev"), "A B")
         d.setVar("DESCRIPTION", "E")
         d.setVar("DESCRIPTION:bc-dev", "C D")
         d.setVar("OVERRIDES", "bc-dev")
         self.assertEqual(d.getVar("DESCRIPTION"), "C D")
-
 
     classextend = """
 VAR_var:override1 = "B"
@@ -218,15 +215,15 @@ python () {
     #
     def test_parse_classextend_contamination(self):
         self.d.setVar("__bbclasstype", "recipe")
-        cls = self.parsehelper(self.classextend_bbclass, suffix=".bbclass")
-        #clsname = os.path.basename(cls.name).replace(".bbclass", "")
-        self.classextend = self.classextend.replace("###CLASS###", cls.name)
-        f = self.parsehelper(self.classextend)
-        alldata = bb.parse.handle(f.name, self.d)
-        d1 = alldata['']
-        d2 = alldata[cls.name]
-        self.assertEqual(d1.getVar("VAR_var"), "B")
-        self.assertEqual(d2.getVar("VAR_var"), None)
+        with self.parsehelper(self.classextend_bbclass, suffix=".bbclass") as cls:
+            #clsname = os.path.basename(cls.name).replace(".bbclass", "")
+            self.classextend = self.classextend.replace("###CLASS###", cls.name)
+            with self.parsehelper(self.classextend) as f:
+                alldata = bb.parse.handle(f.name, self.d)
+            d1 = alldata['']
+            d2 = alldata[cls.name]
+            self.assertEqual(d1.getVar("VAR_var"), "B")
+            self.assertEqual(d2.getVar("VAR_var"), None)
 
     addtask_deltask = """
 addtask do_patch after do_foo after do_unpack before do_configure before do_compile
@@ -250,10 +247,8 @@ deltask do_fetch ${MYVAR} ${EMPTYVAR}
 deltask ${EMPTYVAR}
 """
     def test_parse_addtask_deltask(self):
-
-        f = self.parsehelper(self.addtask_deltask)
-        d = bb.parse.handle(f.name, self.d)['']
-
+        with self.parsehelper(self.addtask_deltask) as f:
+            d = bb.parse.handle(f.name, self.d)['']
         self.assertSequenceEqual(['do_fetch2', 'do_patch2', 'do_myplaintask', 'do_mytask', 'do_mytask2', 'do_mytask5'], bb.build.listtasks(d))
         self.assertEqual(['do_mytask'], d.getVarFlag("do_mytask5", "deps"))
 
@@ -263,10 +258,9 @@ deltask ${EMPTYVAR}
 
 """
     def test_parse_broken_multiline_comment(self):
-        f = self.parsehelper(self.broken_multiline_comment)
-        with self.assertRaises(bb.BBHandledException):
-            d = bb.parse.handle(f.name, self.d)['']
-
+        with self.parsehelper(self.broken_multiline_comment) as f:
+            with self.assertRaises(bb.BBHandledException):
+                d = bb.parse.handle(f.name, self.d)['']
 
     comment_in_var = """
 VAR = " \\
@@ -276,10 +270,9 @@ VAR = " \\
 "
 """
     def test_parse_comment_in_var(self):
-        f = self.parsehelper(self.comment_in_var)
-        with self.assertRaises(bb.BBHandledException):
-            d = bb.parse.handle(f.name, self.d)['']
-
+        with self.parsehelper(self.comment_in_var) as f:
+            with self.assertRaises(bb.BBHandledException):
+                d = bb.parse.handle(f.name, self.d)['']
 
     at_sign_in_var_flag = """
 A[flag@.service] = "nonet"
@@ -289,8 +282,8 @@ C[f] = "flag"
 unset A[flag@.service]
 """
     def test_parse_at_sign_in_var_flag(self):
-        f = self.parsehelper(self.at_sign_in_var_flag)
-        d = bb.parse.handle(f.name, self.d)['']
+        with self.parsehelper(self.at_sign_in_var_flag) as f:
+            d = bb.parse.handle(f.name, self.d)['']
         self.assertEqual(d.getVar("A"), None)
         self.assertEqual(d.getVar("B"), None)
         self.assertEqual(d.getVarFlag("A","flag@.service"), None)
@@ -299,9 +292,9 @@ unset A[flag@.service]
 
     def test_parse_invalid_at_sign_in_var_flag(self):
         invalid_at_sign = self.at_sign_in_var_flag.replace("B[f", "B[@f")
-        f = self.parsehelper(invalid_at_sign)
-        with self.assertRaises(bb.parse.ParseError):
-            d = bb.parse.handle(f.name, self.d)['']
+        with self.parsehelper(invalid_at_sign) as f:
+            with self.assertRaises(bb.parse.ParseError):
+                d = bb.parse.handle(f.name, self.d)['']
 
     export_function_recipe = """
 inherit someclass
@@ -356,14 +349,11 @@ EXPORT_FUNCTIONS do_compile do_compilepython
             os.makedirs(tempdir + "/classes")
             with open(tempdir + "/classes/someclass.bbclass", "w") as f:
                 f.write(self.export_function_class)
-                f.flush()
             with open(tempdir + "/classes/secondclass.bbclass", "w") as f:
                 f.write(self.export_function_class2)
-                f.flush()
 
             with open(recipename, "w") as f:
                 f.write(self.export_function_recipe)
-                f.flush()
             os.chdir(tempdir)
             d = bb.parse.handle(recipename, bb.data.createCopy(self.d))['']
             self.assertIn("someclass_do_compile", d.getVar("do_compile"))
@@ -373,7 +363,6 @@ EXPORT_FUNCTIONS do_compile do_compilepython
             recipename2 = tempdir + "/recipe2.bb"
             with open(recipename2, "w") as f:
                 f.write(self.export_function_recipe2)
-                f.flush()
 
             d = bb.parse.handle(recipename2, bb.data.createCopy(self.d))['']
             self.assertNotIn("someclass_do_compile", d.getVar("do_compile"))
@@ -384,10 +373,8 @@ EXPORT_FUNCTIONS do_compile do_compilepython
 
             with open(recipename, "a+") as f:
                 f.write("\ninherit secondclass\n")
-                f.flush()
             with open(recipename2, "a+") as f:
                 f.write("\ninherit secondclass\n")
-                f.flush()
 
             d = bb.parse.handle(recipename, bb.data.createCopy(self.d))['']
             self.assertIn("secondclass_do_compile", d.getVar("do_compile"))
@@ -425,7 +412,6 @@ include \\
                 recipename = tempdir + "/recipe_unclosed.bb"
                 with open(recipename, "w") as f:
                     f.write(content)
-                    f.flush()
                 os.chdir(tempdir)
                 with self.assertRaises(bb.parse.ParseError) as error:
                     bb.parse.handle(recipename, bb.data.createCopy(self.d))
@@ -441,7 +427,6 @@ include \\
                 lines = self.export_function_unclosed_tab.split("\n")
                 lines[3] = "}"
                 in_file.write("\n".join(lines))
-                in_file.flush()
             bb.parse.handle(recipename_closed, bb.data.createCopy(self.d))
 
     special_character_assignment = """
@@ -453,13 +438,73 @@ A+ = "b"
 += "d"
 """
     def test_parse_special_character_assignment(self):
-        f = self.parsehelper(self.special_character_assignment)
-        d = bb.parse.handle(f.name, self.d)['']
+        with self.parsehelper(self.special_character_assignment) as f:
+            d = bb.parse.handle(f.name, self.d)['']
         self.assertEqual(d.getVar("A"), " a")
         self.assertEqual(d.getVar("A+"), "b")
         self.assertEqual(d.getVar("+"), "c")
 
-        f = self.parsehelper(self.ambigous_assignment)
-        with self.assertRaises(bb.parse.ParseError) as error:
-            bb.parse.handle(f.name, self.d)
+        with self.parsehelper(self.ambigous_assignment) as f:
+            with self.assertRaises(bb.parse.ParseError) as error:
+                bb.parse.handle(f.name, self.d)
         self.assertIn("Empty variable name in assignment", str(error.exception))
+
+    someconf1 = """
+EXTRA_OECONF:append = " foo"
+"""
+
+    someconf2 = """
+EXTRA_OECONF:append = " bar"
+"""
+
+    someconf3 = """
+EXTRA_OECONF:append = " foobar"
+"""
+
+    def test_include_and_require(self):
+        def test_helper(content, result):
+            with self.parsehelper(content) as f:
+                if isinstance(result, type) and issubclass(result, Exception):
+                    with self.assertRaises(result):
+                        d = bb.parse.handle(f.name, bb.data.createCopy(self.d))['']
+                else:
+                    d = bb.parse.handle(f.name, bb.data.createCopy(self.d))['']
+                    self.assertEqual(d.getVar("EXTRA_OECONF"), result)
+
+        with tempfile.TemporaryDirectory() as tempdir:
+            os.makedirs(tempdir + "/conf1")
+            os.makedirs(tempdir + "/conf2")
+
+            with open(tempdir + "/conf1/some.conf", "w") as f:
+                f.write(self.someconf1)
+            with open(tempdir + "/conf2/some.conf", "w") as f:
+                f.write(self.someconf2)
+            with open(tempdir + "/conf2/some3.conf", "w") as f:
+                f.write(self.someconf3)
+
+            self.d.setVar("BBPATH", tempdir + "/conf1" + ":" + tempdir + "/conf2")
+
+            test_helper("include some.conf", " foo")
+            test_helper("include someother.conf", None)
+            test_helper("include some3.conf", " foobar")
+            test_helper("include ${@''}", None)
+            test_helper("include " + tempdir + "/conf2/some.conf", " bar")
+
+            test_helper("require some.conf", " foo")
+            test_helper("require someother.conf", bb.parse.ParseError)
+            test_helper("require some3.conf", " foobar")
+            test_helper("require ${@''}", None)
+            test_helper("require " + tempdir + "/conf2/some.conf", " bar")
+
+            test_helper("include_all some.conf", " foo bar")
+            test_helper("include_all someother.conf", None)
+            test_helper("include_all some3.conf", " foobar")
+
+            self.d.setVar("BBPATH", tempdir + "/conf2" + ":" + tempdir + "/conf1")
+
+            test_helper("include some.conf", " bar")
+            test_helper("include some3.conf", " foobar")
+            test_helper("require some.conf", " bar")
+            test_helper("require some3.conf", " foobar")
+            test_helper("include_all some.conf", " bar foo")
+            test_helper("include_all some3.conf", " foobar")

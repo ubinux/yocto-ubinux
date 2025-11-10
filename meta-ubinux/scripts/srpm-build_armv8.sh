@@ -3,7 +3,6 @@ recipes=(
   libevent
   swupdate
   restool
-  giflib
   libiodbc
   pgpool2
   psqlodbc
