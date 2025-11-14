@@ -188,7 +188,6 @@ UBINUX_PKGS_NOCONFLICT = " \
 	novnc \
 	openhpi \
 	openssh \
-	paxctl \
 	paho-mqtt-c \
 	pango \
 	pbzip2 \

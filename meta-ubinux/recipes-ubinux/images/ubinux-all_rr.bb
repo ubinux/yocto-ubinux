@@ -196,7 +196,6 @@ UBINUX_PKGS = " \
 	novnc \
 	openhpi \
 	openssh \
-	paxctl \
 	paho-mqtt-c \
 	pango \
 	pbzip2 \
