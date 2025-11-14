@@ -392,8 +392,19 @@ file for details about how to enable this mechanism in your configuration
 file, how to disable it for specific recipes, and how to share ``ccache``
 files between builds.
 
-However, using the class can lead to unexpected side-effects. Thus, using
-this class is not recommended.
+Recipes (including :ref:`ref-classes-native` ones) can make use of the host's
+``ccache`` binary (via :term:`HOSTTOOLS`) if the following configuration
+statements are provided in a :term:`configuration file`::
+
+   ASSUME_PROVIDED += "ccache-native"
+   HOSTTOOLS += "ccache"
+
+Recipes can also explicitly disable `Ccache` support even when the
+:ref:`ref-classes-ccache` class is enabled, by setting the
+:term:`CCACHE_DISABLE` variable to "1".
+
+Using the :ref:`ref-classes-ccache` class can lead to unexpected side-effects.
+Using this class is not recommended.
 
 .. _ref-classes-chrpath:
 
@@ -954,6 +965,14 @@ The :ref:`ref-classes-gettext` class provides support for building
 software that uses the GNU ``gettext`` internationalization and localization
 system. All recipes building software that use ``gettext`` should inherit this
 class.
+
+This class will configure recipes to build translations *unless*:
+
+-  the :term:`USE_NLS` variable is set to ``no``, or
+
+-  the :term:`INHIBIT_DEFAULT_DEPS` variable is set and the recipe inheriting
+   the :ref:`ref-classes-gettext` class does not also inherit the
+   :ref:`ref-classes-cross-canadian` class.
 
 .. _ref-classes-github-releases:
 
@@ -2174,6 +2193,19 @@ meson-python build system.
 
 Internally this uses the :ref:`ref-classes-python_pep517` class.
 
+.. _ref-classes-python_pdm:
+
+``python_pdm``
+=================
+
+The :ref:`ref-classes-python_pdm` class adds support for building Python
+packages with the `PDM <https://pdm-project.org/>`__ package and dependency manager.
+
+This class adds  ``python3-pdm-backend-native`` to the recipe's build-time
+dependencies.
+
+Internally this uses the :ref:`ref-classes-python_pep517` class.
+
 .. _ref-classes-python_pep517:
 
 ``python_pep517``
@@ -2466,6 +2498,25 @@ The :ref:`ref-classes-recipe_sanity` class checks for the presence of any host s
 recipe prerequisites that might affect the build (e.g. variables that
 are set or software that is present).
 
+.. _ref-classes-relative_symlinks:
+
+``relative_symlinks``
+=====================
+
+The :ref:`ref-classes-relative_symlinks` class walks the symbolic links in the
+:term:`D` directory and replaces links pointing to absolute paths to relative
+paths. This is occasionally used in some recipes that create wrong symbolic
+links when their :ref:`ref-classes-native` version is built, and/or would cause
+breakage in the :ref:`overview-manual/concepts:shared state cache`.
+
+For example, if the following symbolic link is found in :term:`D`::
+
+   /usr/bin/foo -> /sbin/bar
+
+It is replaced by::
+
+   /usr/bin/foo -> ../../sbin/bar
+
 .. _ref-classes-relocatable:
 
 ``relocatable``
@@ -2605,6 +2656,19 @@ library. Except for this recipe, it is not intended to be used directly.
 The :ref:`ref-classes-rust-common` class is an internal class to the
 :ref:`ref-classes-cargo_common` and :ref:`ref-classes-rust` classes and is not
 intended to be used directly.
+
+.. _ref-classes-rust-target-config:
+
+``rust-target-config``
+======================
+
+The :ref:`ref-classes-rust-target-config` class is an internal class to the
+:ref:`ref-classes-cargo_common` and :ref:`ref-classes-rust` classes and is not
+intended to be used directly.
+
+It is used to generate a JSON specification file from the features listed in
+:term:`TUNE_FEATURES`, which is used for cross-compiling. The logic is done in a
+``do_rust_gen_targets`` task.
 
 .. _ref-classes-sanity:
 
@@ -3169,15 +3233,65 @@ variable using the "type" varflag. Here is an example::
 ``uboot-config``
 ================
 
-The :ref:`ref-classes-uboot-config` class provides support for U-Boot configuration for
-a machine. Specify the machine in your recipe as follows::
+The :ref:`ref-classes-uboot-config` class provides support for configuring one
+or more U-Boot build configurations.
 
-   UBOOT_CONFIG ??= <default>
-   UBOOT_CONFIG[foo] = "config,images,binary"
+There are two ways to configure the recipe for your machine:
 
-You can also specify the machine using this method::
+-  Using :term:`UBOOT_CONFIG` variable. For example::
 
-   UBOOT_MACHINE = "config"
+      UBOOT_CONFIG ??= "foo bar"
+      UBOOT_CONFIG[foo] = "config,images,binary,makeopts"
+      UBOOT_CONFIG[bar] = "config2,images2,binary2,makeopts2"
+
+   In this example, all possible configurations are selected (``foo`` and
+   ``bar``), but it is also possible to build only ``foo`` or ``bar`` by
+   changing the value of :term:`UBOOT_CONFIG` to include either one or the
+   other.
+
+   Each build configuration is associated to a variable flag definition of
+   :term:`UBOOT_CONFIG`, that can take up to three comma-separated options
+   (``config,images,binary``):
+
+   -  ``config``: defconfig file selected for this build configuration.
+      These files are found in the source tree's ``configs`` folder of U-Boot.
+
+      *This option is mandatory.*
+
+   -  ``images``: image types to append to the :term:`IMAGE_FSTYPES` variable
+      for image generation for this build configuration.
+
+      This can allow building an extra image format that uses the binary
+      generated by this build configuration.
+
+      This option is not mandatory and can be left empty.
+
+   -  ``binary``: binary to select as the one to deploy in
+      :term:`DEPLOY_DIR_IMAGE`. The output of a U-Boot build may be more than
+      one binary, for example::
+
+         u-boot.bin
+         u-boot-with-spl.bin
+
+      Setting the ``binary`` value to ``u-boot-with-spl.bin`` will make this
+      binary the one deployed in :term:`DEPLOY_DIR_IMAGE`. It is renamed to
+      include the build configuration name in the process (``foo`` or ``bar`` in
+      the above example).
+
+      This option defaults to :term:`UBOOT_BINARY` if unset.
+
+   -  ``makeopts``: the additional options passed to ``make`` when configuring
+      and compiling U-Boot for this configuration entry. The options in this
+      entry are added before the options in :term:`UBOOT_MAKE_OPTS`.
+
+-  Or, using the :term:`UBOOT_MACHINE` variable (and its companion variable
+   :term:`UBOOT_BINARY`). For example::
+
+      UBOOT_MACHINE = "config"
+      UBOOT_BINARY = "u-boot.bin"
+
+Using :term:`UBOOT_MACHINE` and :term:`UBOOT_CONFIG` at the same time is not
+possible.
 
 See the :term:`UBOOT_CONFIG` and :term:`UBOOT_MACHINE` variables for additional
 information.
@@ -3293,22 +3407,51 @@ buildtime via :term:`UKI_FILENAME`.
 ``uninative``
 =============
 
-Attempts to isolate the build system from the host distribution's C
-library in order to make re-use of native shared state artifacts across
-different host distributions practical. With this class enabled, a
-tarball containing a pre-built C library is downloaded at the start of
-the build. In the Poky reference distribution this is enabled by default
-through ``meta/conf/distro/include/yocto-uninative.inc``. Other
-distributions that do not derive from poky can also
-"``require conf/distro/include/yocto-uninative.inc``" to use this.
-Alternatively if you prefer, you can build the uninative-tarball recipe
-yourself, publish the resulting tarball (e.g. via HTTP) and set
-``UNINATIVE_URL`` and ``UNINATIVE_CHECKSUM`` appropriately. For an
-example, see the ``meta/conf/distro/include/yocto-uninative.inc``.
+The :ref:`ref-classes-uninative` class allows binaries to run on systems with
+older or newer :wikipedia:`Glibc <Glibc>` versions. This means
+:ref:`ref-classes-native` recipe :ref:`overview-manual/concepts:shared state
+cache` can be shared among different host distributions of different versions,
+i.e. the :ref:`overview-manual/concepts:shared state cache` is "universal".
 
-The :ref:`ref-classes-uninative` class is also used unconditionally by the extensible
-SDK. When building the extensible SDK, ``uninative-tarball`` is built
-and the resulting tarball is included within the SDK.
+To allow this to work, the dynamic loader is changed to our own :manpage:`ld.so
+<ld.so.8>` when binaries are compiled using the
+``--dynamic-linker`` option. This means when the binary is executed, it finds
+our own :manpage:`ld.so <ld.so.8>` and that loader has a modified search path
+which finds a newer Glibc version.
+
+The linking of the binaries is not changed at link time since the
+headers on the system wouldn't match the newer Glibc and this causes
+obtuse failures. Changing the loader is effectively the same as if the
+system had a Glibc upgrade after the binary was compiled, so it is a
+mechanism supported by upstream.
+
+One caveat to this approach is that the uninative Glibc binary must be
+equal to or newer in version to the versions on all the systems using
+the common :ref:`overview-manual/concepts:shared state cache`. This is why
+:ref:`ref-classes-uninative`  is regularly changed on the development and stable
+branches.
+
+Another potential issue is static linking: static libraries created on
+a system with a new Glibc version may have symbols not present in older
+versions, which would then fail during linking on older systems. This
+is one reason we don't use static linking for our :ref:`ref-classes-native`
+binaries.
+
+With this class enabled, a tarball containing a pre-built C library is
+downloaded at the start of the build. In the Poky reference distribution this is
+enabled by default through :oe_git:`meta/conf/distro/include/yocto-uninative.inc
+</openembedded-core/tree/meta/conf/distro/include/yocto-uninative.inc>`. Other distributions that do
+not derive from Poky can also "``require conf/distro/include/yocto-uninative.inc``"
+to use this. Alternatively if you prefer, you can build the uninative-tarball
+recipe yourself, publish the resulting tarball (e.g. via HTTP) and set
+:term:`UNINATIVE_URL` and :term:`UNINATIVE_CHECKSUM` appropriately. For an
+example, see :oe_git:`meta/conf/distro/include/yocto-uninative.inc
+</openembedded-core/tree/meta/conf/distro/include/yocto-uninative.inc>`.
+
+The :ref:`ref-classes-uninative` class is also used unconditionally by the
+:doc:`extensible SDK </sdk-manual/extensible>`. When building the extensible
+SDK, ``uninative-tarball`` is built and the resulting tarball is included within
+the SDK.
 
 .. _ref-classes-update-alternatives:
 

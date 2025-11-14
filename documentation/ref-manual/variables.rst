@@ -1526,6 +1526,11 @@ system and gives an overview of their function and contents.
    :term:`CC`
       The minimal command and arguments used to run the C compiler.
 
+   :term:`CCACHE_DISABLE`
+      When inheriting the :ref:`ref-classes-ccache` class, the
+      :term:`CCACHE_DISABLE` variable can be set to "1" in a recipe to disable
+      `Ccache` support. This is useful when the recipe is known to not support it.
+
    :term:`CCLD`
       The minimal command and arguments used to run the linker when the C
       compiler is being used as the linker.
@@ -3956,6 +3961,70 @@ system and gives an overview of their function and contents.
       material for Wic is located in the
       ":doc:`/ref-manual/kickstart`" chapter.
 
+   :term:`IMAGE_EXTRA_PARTITION_FILES`
+      A space-separated list of files installed into the extra partition(s)
+      when preparing an image using the Wic tool with the
+      ``extra_partition`` source plugin. By default,
+      the files are
+      installed under the same name as the source files. To change the
+      installed name, separate it from the original name with a semi-colon
+      (;). Source files need to be located in
+      :term:`DEPLOY_DIR_IMAGE`. Here is an
+      example::
+
+         IMAGE_EXTRA_PARTITION_FILES = "foobar file.conf;config"
+
+      In the above example, the file ``foobar`` is installed with its original name
+      ``foobar``, while the file ``file.conf`` is installed and renamed to ``config``.
+
+      Alternatively, source files can be picked up using a glob pattern.
+      However, hidden files are ignored, and the pattern is non-recursive
+      (subdirectories are ignored).
+      The destination file will have the same name as the base
+      name of the source file path. To install files into a renamed directory
+      within the target location, pass its name after a semi-colon (;).
+      Here are two examples::
+
+         IMAGE_EXTRA_PARTITION_FILES = "foo/*"
+         IMAGE_EXTRA_PARTITION_FILES = "foo/*;bar/"
+
+      The first line in this example
+      installs all files from ``foo`` directory
+      into the root of the target partition. The second line in this example installs
+      the same files into a ``bar`` directory within the target partition.
+      The ``bar/`` directory is automatically created if it does not exist.
+
+      You can also specify the target by label, UUID or partition name if multiple
+      extra partitions coexist. Let's take the following example. This would be
+      the WKS file for the image currently being built::
+
+         part --source extra_partition --fstype=ext4 --label foo
+         part --source extra_partition --fstype=ext4 --uuid e7d0824e-cda3-4bed-9f54-9ef5312d105d
+         part --source extra_partition --fstype=ext4 --part-name config
+
+      And the following configuration::
+
+         IMAGE_EXTRA_PARTITION_FILES_label-foo = "foo/*"
+         IMAGE_EXTRA_PARTITION_FILES_uuid-e7d0824e-cda3-4bed-9f54-9ef5312d105d = "foo/*;bar/"
+         IMAGE_EXTRA_PARTITION_FILES_part-name-config = "config"
+
+      Then:
+
+      -  The partition labeled "foo" would get all files from the ``foo``
+         directory.
+
+      -  The partition whose UUID is "e7d0824e-cda3-4bed-9f54-9ef5312d105d"
+         would get all files from the ``foo`` directory, installed into a
+         ``bar`` directory.
+
+      -  The partition named "config" would get the file ``config``.
+
+      You can find information on how to use the Wic tool in the
+      ":ref:`dev-manual/wic:creating partitioned images using wic`"
+      section of the Yocto Project Development Tasks Manual. Reference
+      material for Wic is located in the
+      ":doc:`/ref-manual/kickstart`" chapter.
+
    :term:`IMAGE_FEATURES`
       The primary list of features to include in an image. Typically, you
       configure this variable in an image recipe. Although you can use this
@@ -5454,7 +5523,7 @@ system and gives an overview of their function and contents.
       information on how this variable is used.
 
    :term:`LAYERDEPENDS`
-      Lists the layers, separated by spaces, on which this recipe depends.
+      Lists the layers, separated by spaces, on which this layer depends.
       Optionally, you can specify a specific layer version for a dependency
       by adding it to the end of the layer name. Here is an example::
 
@@ -7567,7 +7636,9 @@ system and gives an overview of their function and contents.
       by pseudo when monitoring and recording file operations, in order to avoid
       problems with files being written to outside of the pseudo context and
       reduce pseudo's overhead. A path is ignored if it matches any prefix in the list
-      and can include partial directory (or file) names.
+      and can include partial directory (or file) names. In case a path prefix is
+      present in both :term:`PSEUDO_IGNORE_PATHS` and in :term:`PSEUDO_INCLUDE_PATHS`,
+      :term:`PSEUDO_INCLUDE_PATHS` takes precedence.
 
    :term:`PSEUDO_INCLUDE_PATHS`
       A comma-separated (without spaces) list of path prefixes that should be included
@@ -7575,7 +7646,10 @@ system and gives an overview of their function and contents.
       problems with files being written to outside of the pseudo context and
       reduce :ref:`pseudo <overview-manual/concepts:Fakeroot and Pseudo>`'s overhead.
       A path is included if it matches any prefix in the list and can include
-      partial directory (or file) names.
+      partial directory (or file) names. In case a path prefix is present in both
+      :term:`PSEUDO_IGNORE_PATHS` and in :term:`PSEUDO_INCLUDE_PATHS`,
+      :term:`PSEUDO_INCLUDE_PATHS` takes precedence.
+
 
    :term:`PTEST_ENABLED`
       Specifies whether or not :ref:`Package
@@ -7866,6 +7940,16 @@ system and gives an overview of their function and contents.
    :term:`REPODIR`
       See :term:`bitbake:REPODIR` in the BitBake manual.
 
+   :term:`REQUIRED_COMBINED_FEATURES`
+      When inheriting the :ref:`ref-classes-features_check` class, this variable
+      identifies combined features (the intersection of :term:`MACHINE_FEATURES`
+      and :term:`DISTRO_FEATURES`) that must exist in the current configuration
+      in order for the :term:`OpenEmbedded Build System` to build the recipe. In
+      other words, if the :term:`REQUIRED_COMBINED_FEATURES` variable lists a
+      feature that does not appear in :term:`COMBINED_FEATURES` within the
+      current configuration, then the recipe will be skipped, and if the build
+      system attempts to build the recipe then an error will be triggered.
+
    :term:`REQUIRED_DISTRO_FEATURES`
       When inheriting the :ref:`ref-classes-features_check`
       class, this variable identifies distribution features that must exist
@@ -7875,6 +7959,41 @@ system and gives an overview of their function and contents.
       appear in :term:`DISTRO_FEATURES` within the current configuration, then
       the recipe will be skipped, and if the build system attempts to build
       the recipe then an error will be triggered.
+
+   :term:`REQUIRED_IMAGE_FEATURES`
+      When inheriting the :ref:`ref-classes-features_check` class, this variable
+      identifies image features that must exist in the current
+      configuration in order for the :term:`OpenEmbedded Build System` to build
+      the recipe. In other words, if the :term:`REQUIRED_IMAGE_FEATURES` variable
+      lists a feature that does not appear in :term:`IMAGE_FEATURES` within the
+      current configuration, then the recipe will be skipped, and if the build
+      system attempts to build the recipe then an error will be triggered.
+
+      Compared to other ``REQUIRED_*_FEATURES`` variables, the
+      :term:`REQUIRED_IMAGE_FEATURES` varible only targets image recipes, as the
+      :term:`IMAGE_FEATURES` variable is handled by the :ref:`ref-classes-core-image`
+      class). However, the :term:`REQUIRED_IMAGE_FEATURES` varible can also be
+      set from a :term:`Configuration File`, such as a distro
+      configuration file, if the list of required image features should apply to
+      all images using this :term:`DISTRO`.
+
+   :term:`REQUIRED_MACHINE_FEATURES`
+      When inheriting the :ref:`ref-classes-features_check` class, this variable
+      identifies :term:`MACHINE_FEATURES` that must exist in the current
+      configuration in order for the :term:`OpenEmbedded Build System` to build
+      the recipe. In other words, if the :term:`REQUIRED_MACHINE_FEATURES` variable
+      lists a feature that does not appear in :term:`MACHINE_FEATURES` within the
+      current configuration, then the recipe will be skipped, and if the build
+      system attempts to build the recipe then an error will be triggered.
+
+   :term:`REQUIRED_TUNE_FEATURES`
+      When inheriting the :ref:`ref-classes-features_check` class, this variable
+      identifies tune features that must exist in the current configuration in
+      order for the :term:`OpenEmbedded Build System` to build the recipe. In
+      other words, if the :term:`REQUIRED_TUNE_FEATURES` variable lists a
+      feature that does not appear in :term:`TUNE_FEATURES` within the current
+      configuration, then the recipe will be skipped, and if the build system
+      attempts to build the recipe then an error will be triggered.
 
    :term:`REQUIRED_VERSION`
       If there are multiple versions of a recipe available, this variable
@@ -10787,6 +10906,12 @@ system and gives an overview of their function and contents.
       Please see the "Selection of Processor Architecture and Board Type"
       section in the U-Boot README for valid values for this variable.
 
+   :term:`UBOOT_MAKE_OPTS`
+      The :term:`UBOOT_MAKE_OPTS` variable can be used to pass extra options to
+      ``make`` when U-Boot is configured and compiled.
+
+      See the :ref:`ref-classes-uboot-config` class for more information.
+
    :term:`UBOOT_MAKE_TARGET`
       Specifies the target called in the ``Makefile``. The default target
       is "all".
@@ -10909,6 +11034,22 @@ system and gives an overview of their function and contents.
       `Unified Kernel Image (UKI) <https://uapi-group.org/specifications/specs/unified_kernel_image/>`__.
       Defaults to ``ukify build``.
 
+   :term:`UNINATIVE_CHECKSUM`
+      When inheriting the :ref:`ref-classes-uninative` class, the
+      :term:`UNINATIVE_CHECKSUM` variable flags contain the checksums of the
+      uninative tarball as specified by the :term:`UNINATIVE_URL` variable.
+      There should be one checksum per tarballs published at
+      :term:`UNINATIVE_URL`, which match architectures. For example::
+
+         UNINATIVE_CHECKSUM[aarch64] ?= "812045d826b7fda88944055e8526b95a5a9440bfef608d5b53fd52faab49bf85"
+         UNINATIVE_CHECKSUM[i686] ?= "5cc28efd0c15a75de4bcb147c6cce65f1c1c9d442173a220f08427f40a3ffa09"
+         UNINATIVE_CHECKSUM[x86_64] ?= "4c03d1ed2b7b4e823aca4a1a23d8f2e322f1770fc10e859adcede5777aff4f3a"
+
+   :term:`UNINATIVE_URL`
+      When inheriting the :ref:`ref-classes-uninative` class, the
+      :term:`UNINATIVE_URL` variable contains the URL where the uninative
+      tarballs are published.
+
    :term:`UNKNOWN_CONFIGURE_OPT_IGNORE`
       Specifies a list of options that, if reported by the configure script
       as being invalid, should not generate a warning during the
@@ -10928,7 +11069,7 @@ system and gives an overview of their function and contents.
 
    :term:`UNPACKDIR`
       This variable, used by the :ref:`ref-classes-base` class,
-      specifies where fetches sources should be unpacked by the
+      specifies where fetched sources should be unpacked by the
       :ref:`ref-tasks-unpack` task.
 
    :term:`UPDATERCPN`
@@ -11003,6 +11144,18 @@ system and gives an overview of their function and contents.
       See the ":ref:`dev-manual/device-manager:selecting a device manager`" section in
       the Yocto Project Development Tasks Manual for information on how to
       use this variable.
+
+   :term:`USE_NLS`
+      Determine if language translations should be built for recipes that can
+      build them. This variable can be equal to:
+
+      -  ``yes``: translations are enabled.
+      -  ``no``: translation are disabled.
+
+      Recipes can use the value of this variable to enable language
+      translations in their build. Classes such as :ref:`ref-classes-gettext`
+      use the value of this variable to enable :wikipedia:`Gettext <Gettext>`
+      support.
 
    :term:`USE_VT`
       When using

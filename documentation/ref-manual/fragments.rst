@@ -90,20 +90,12 @@ value, for example::
 
    bitbake-config-build enable-fragment machine/qemux86-64
 
-Note that in this case, the fragment will be defined twice in
-:term:`OE_FRAGMENTS`, and the last value is taken into account:
-
-.. code-block::
-   :caption: build/conf/auto.conf
-
-   OE_FRAGMENTS += " ... machine/qemuarm64 machine/qemux86-64"
-
-In the above example, the value of :term:`MACHINE` is thus equal to
+In the above example, the new value of :term:`MACHINE` is now equal to
 ``qemux86-64``.
 
 When a fragment is enabled with :ref:`ref-bitbake-config-build-enable-fragment`,
 its name is automatically appended to the :term:`OE_FRAGMENTS` variable in
-:ref:`structure-build-conf-auto.conf`.
+:ref:`structure-build-conf-toolcfg.conf`.
 
 .. note::
 
@@ -200,6 +192,15 @@ artifacts at the start of builds, which does slow it down initially but it will
 then speed up the builds by not having to build things if they are present in
 the cache. It assumes you can download something faster than you can build it
 which will depend on your network configuration.
+
+.. _ref-fragments-root-login-with-empty-password:
+
+``core/yocto/root-login-with-empty-password``
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The ``core/yocto/root-login-with-empty-password`` :term:`configuration fragment`
+can be used to allow to login as the ``root`` user to login without a password
+on the serial console and over SSH.
 
 Yocto Project Autobuilder Fragments
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

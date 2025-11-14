@@ -35,6 +35,10 @@ do_configure[noexec] = "1"
 UBOOT_MKIMAGE_KERNEL_TYPE ?= "kernel"
 KERNEL_IMAGEDEST ?= "/boot"
 
+FIT_KERNEL_SIGN_ENABLE ?= "${UBOOT_SIGN_ENABLE}"
+FIT_KERNEL_SIGN_KEYNAME ?= "${UBOOT_SIGN_KEYNAME}"
+FIT_KERNEL_SIGN_KEYDIR ?= "${UBOOT_SIGN_KEYDIR}"
+
 python do_compile() {
     import shutil
     import oe.fitimage
@@ -50,23 +54,21 @@ python do_compile() {
     root_node = oe.fitimage.ItsNodeRootKernel(
         d.getVar("FIT_DESC"), d.getVar("FIT_ADDRESS_CELLS"),
         d.getVar('HOST_PREFIX'), d.getVar('UBOOT_ARCH'),  d.getVar("FIT_CONF_PREFIX"),
-        oe.types.boolean(d.getVar('UBOOT_SIGN_ENABLE')), d.getVar("UBOOT_SIGN_KEYDIR"),
+        oe.types.boolean(d.getVar('FIT_KERNEL_SIGN_ENABLE')), d.getVar("FIT_KERNEL_SIGN_KEYDIR"),
         d.getVar("UBOOT_MKIMAGE"), d.getVar("UBOOT_MKIMAGE_DTCOPTS"),
         d.getVar("UBOOT_MKIMAGE_SIGN"), d.getVar("UBOOT_MKIMAGE_SIGN_ARGS"),
         d.getVar('FIT_HASH_ALG'), d.getVar('FIT_SIGN_ALG'), d.getVar('FIT_PAD_ALG'),
-        d.getVar('UBOOT_SIGN_KEYNAME'),
+        d.getVar('FIT_KERNEL_SIGN_KEYNAME'),
         oe.types.boolean(d.getVar('FIT_SIGN_INDIVIDUAL')), d.getVar('UBOOT_SIGN_IMG_KEYNAME')
     )
 
     # Prepare a kernel image section.
-    linux_bin = d.getVar('FIT_LINUX_BIN')
-    if linux_bin:
-        shutil.copyfile(os.path.join(kernel_deploydir, "linux.bin"), "linux.bin")
-        with open(os.path.join(kernel_deploydir, "linux_comp")) as linux_comp_f:
-            linux_comp = linux_comp_f.read()
-        root_node.fitimage_emit_section_kernel("kernel-1", "linux.bin", linux_comp,
-            d.getVar('UBOOT_LOADADDRESS'), d.getVar('UBOOT_ENTRYPOINT'),
-            d.getVar('UBOOT_MKIMAGE_KERNEL_TYPE'), d.getVar("UBOOT_ENTRYSYMBOL"))
+    shutil.copyfile(os.path.join(kernel_deploydir, "linux.bin"), "linux.bin")
+    with open(os.path.join(kernel_deploydir, "linux_comp")) as linux_comp_f:
+        linux_comp = linux_comp_f.read()
+    root_node.fitimage_emit_section_kernel("kernel-1", "linux.bin", linux_comp,
+        d.getVar('UBOOT_LOADADDRESS'), d.getVar('UBOOT_ENTRYPOINT'),
+        d.getVar('UBOOT_MKIMAGE_KERNEL_TYPE'), d.getVar("UBOOT_ENTRYSYMBOL"))
 
     # Prepare a DTB image section
     kernel_devicetree = d.getVar('KERNEL_DEVICETREE')

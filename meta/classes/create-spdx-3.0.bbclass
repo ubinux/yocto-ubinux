@@ -133,9 +133,10 @@ oe.spdx30_tasks.collect_dep_objsets[vardepsexclude] = "SPDX_MULTILIB_SSTATE_ARCH
 # SPDX library code makes heavy use of classes, which bitbake cannot easily
 # parse out dependencies. As such, the library code files that make use of
 # classes are explicitly added as file checksum dependencies.
-SPDX3_LIB_DEP_FILES = "\
+SPDX3_DEP_FILES = "\
     ${COREBASE}/meta/lib/oe/sbom30.py:True \
     ${COREBASE}/meta/lib/oe/spdx30.py:True \
+    ${SPDX_LICENSES}:True \
     "
 
 python do_create_spdx() {
@@ -159,7 +160,7 @@ addtask do_create_spdx after \
 SSTATETASKS += "do_create_spdx"
 do_create_spdx[sstate-inputdirs] = "${SPDXDEPLOY}"
 do_create_spdx[sstate-outputdirs] = "${DEPLOY_DIR_SPDX}"
-do_create_spdx[file-checksums] += "${SPDX3_LIB_DEP_FILES}"
+do_create_spdx[file-checksums] += "${SPDX3_DEP_FILES}"
 
 python do_create_spdx_setscene () {
     sstate_setscene(d)
@@ -183,7 +184,7 @@ addtask do_create_package_spdx after do_create_spdx before do_build do_rm_work
 SSTATETASKS += "do_create_package_spdx"
 do_create_package_spdx[sstate-inputdirs] = "${SPDXRUNTIMEDEPLOY}"
 do_create_package_spdx[sstate-outputdirs] = "${DEPLOY_DIR_SPDX}"
-do_create_package_spdx[file-checksums] += "${SPDX3_LIB_DEP_FILES}"
+do_create_package_spdx[file-checksums] += "${SPDX3_DEP_FILES}"
 
 python do_create_package_spdx_setscene () {
     sstate_setscene(d)
