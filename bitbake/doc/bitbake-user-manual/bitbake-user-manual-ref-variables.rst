@@ -36,6 +36,14 @@ overview of their function and contents.
       when specified allows for the Git binary from the host to be used
       rather than building ``git-native``.
 
+   :term:`AUTOREV`
+      This is a special variable used during fetching. When :term:`SRCREV` is
+      set to the value of this variable, the latest revision from the version
+      controlled source code repository is used.
+      It should be set as follows::
+
+         SRCREV = "${AUTOREV}"
+
    :term:`AZ_SAS`
       Azure Storage Shared Access Signature, when using the
       :ref:`Azure Storage fetcher <bitbake-user-manual/bitbake-user-manual-fetching:fetchers>`
@@ -1200,9 +1208,17 @@ overview of their function and contents.
 
    :term:`INHERIT`
       Causes the named class or classes to be inherited globally. Anonymous
-      functions in the class or classes are not executed for the base
-      configuration and in each individual recipe. The OpenEmbedded build
-      system ignores changes to :term:`INHERIT` in individual recipes.
+      functions in the class or classes are executed in two disjoint situations:
+
+      -  When only the
+         :ref:`base configuration <bitbake-user-manual/bitbake-user-manual-execution:parsing the base configuration metadata>`
+         is parsed. For example as a result of the following BitBake invocation::
+
+            $ bitbake -e
+
+      -  When recipes are parsed - then for each parsed recipe.
+
+      Bitbake ignores changes to :term:`INHERIT` in individual recipes.
 
       For more information on :term:`INHERIT`, see the
       ":ref:`bitbake-user-manual/bitbake-user-manual-metadata:\`\`inherit\`\` configuration directive`"
@@ -1313,8 +1329,13 @@ overview of their function and contents.
    :term:`PERSISTENT_DIR`
       Specifies the directory BitBake uses to store data that should be
       preserved between builds. In particular, the data stored is the data
-      that uses BitBake's persistent data API and the data used by the PR
-      Server and PR Service.
+      that uses BitBake's persistent data API, the data used by the PR
+      Server and PR Service, and the default location of the Hash Equivalence
+      database (when :term:`BB_HASHSERVE` is set to ``auto``).
+
+      This directory should not be shared between different builds. If you need
+      to share the Hash Equivalence database, you should setup a Hash
+      Equivalence server instead.
 
    :term:`PF`
       Specifies the recipe or package name and includes all version and
@@ -1622,7 +1643,8 @@ overview of their function and contents.
 
       -  ``name``: Specifies a name to be used for association with
          :term:`SRC_URI` checksums or :term:`SRCREV` when you have more than one
-         file or git repository specified in :term:`SRC_URI`. For example::
+         file or source control repository specified in :term:`SRC_URI`.
+         For example::
 
             SRC_URI = "git://example.com/foo.git;branch=main;name=first \
                        git://example.com/bar.git;branch=main;name=second \
@@ -1635,7 +1657,8 @@ overview of their function and contents.
       -  ``subdir``: Places the file (or extracts its contents) into the
          specified subdirectory. This option is useful for unusual tarballs
          or other archives that do not have their files already in a
-         subdirectory within the archive.
+         subdirectory within the archive. This path can be further modified
+         by fetcher specific parameters.
 
       -  ``subpath``: Limits the checkout to a specific subpath of the
          tree when using the Git fetcher is used.
@@ -1657,11 +1680,11 @@ overview of their function and contents.
       identifier and not just a tag.
 
    :term:`SRCREV_FORMAT`
-      Helps construct valid :term:`SRCREV` values when
+      Helps construct a valid package version string when
       multiple source controlled URLs are used in
       :term:`SRC_URI`.
 
-      The system needs help constructing these values under these
+      The system needs help constructing this value under these
       circumstances. Each component in the :term:`SRC_URI` is assigned a name
       and these are referenced in the :term:`SRCREV_FORMAT` variable. Consider
       an example with URLs named "machine" and "meta". In this case,
@@ -1669,6 +1692,12 @@ overview of their function and contents.
       would have the SCM versions substituted into each position. Only one
       ``AUTOINC`` placeholder is added and if needed. And, this placeholder
       is placed at the start of the returned string.
+
+      The :term:`SRCREV_FORMAT` can also take the form "_component2".
+      This assumes that there is a component in the :term:`SRC_URI` that does not
+      have a name assigned. While this is not considered good practice, it can be
+      usefull if a ``.bbappend`` file needs to extend the :term:`SRC_URI` with
+      an additional repository.
 
    :term:`STAMP`
       Specifies the base path used to create recipe stamp files. The path

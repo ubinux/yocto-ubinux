@@ -999,7 +999,7 @@ This directive allows fine-tuning local configurations with configuration
 snippets contained in layers in a structured, controlled way. Typically it would
 go into ``bitbake.conf``, for example::
 
-   addfragments conf/fragments OE_FRAGMENTS OE_FRAGMENTS_METADATA_VARS OE_BUILTIN_FRAGMENTS
+   addfragments conf/fragments OE_FRAGMENTS OE_FRAGMENTS_METADATA_VARS OE_FRAGMENTS_BUILTIN
 
 ``addfragments`` takes four parameters:
 
@@ -1040,7 +1040,7 @@ each other when several fragments are enabled.
 
 The variable containing a built-in fragment definitions could look like this::
 
-   OE_BUILTIN_FRAGMENTS = "someprefix:SOMEVARIABLE anotherprefix:ANOTHERVARIABLE"
+   OE_FRAGMENTS_BUILTIN = "someprefix:SOMEVARIABLE anotherprefix:ANOTHERVARIABLE"
 
 and then if 'someprefix/somevalue' is added to the variable that holds the list
 of enabled fragments:
@@ -2228,12 +2228,12 @@ OpenEmbedded metadata-based example.
 These checksums are stored in :term:`STAMP`. You can
 examine the checksums using the following BitBake command::
 
-   $ bitbake-dumpsigs
+   $ bitbake-dumpsig
 
 This command returns the signature data in a readable
 format that allows you to examine the inputs used when the OpenEmbedded
 build system generates signatures. For example, using
-``bitbake-dumpsigs`` allows you to examine the ``do_compile`` task's
+``bitbake-dumpsig`` allows you to examine the ``do_compile`` task's
 "sigdata" for a C application (e.g. ``bash``). Running the command also
 reveals that the "CC" variable is part of the inputs that are hashed.
 Any changes to this variable would invalidate the stamp and cause the

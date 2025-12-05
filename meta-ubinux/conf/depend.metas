@@ -16,7 +16,7 @@ metas=meta-oe
 [meta-oe]
 GITURL=http://git.openembedded.org/meta-openembedded
 BRANCH=master
-HEADID=d1b67ac99e023f9abc34f215caba770a46af5723
+HEADID=cbb21524e13fac434aa5e13b75e23b7f69a72663
 FILES=meta-oe/conf
  meta-oe/COPYING.MIT
  meta-oe/licenses/
@@ -53,7 +53,7 @@ FILES=meta-oe/conf
  meta-oe/recipes-graphics/tslib/
  meta-oe/recipes-graphics/xorg-app/xlsfonts_1.0.8.bb
  meta-oe/recipes-graphics/xorg-app/xrdb_1.2.0.bb
- meta-oe/recipes-graphics/xorg-app/xterm_402.bb
+ meta-oe/recipes-graphics/xorg-app/xterm_403.bb
  meta-oe/recipes-graphics/xorg-app/xterm/
  meta-oe/recipes-graphics/xorg-app/xwd_1.0.9.bb
  meta-oe/recipes-graphics/xorg-app/iceauth_1.0.10.bb
@@ -450,13 +450,14 @@ FILES=meta-oe/conf
  meta-oe/recipes-devtools/perl/libdev-checklib-perl/
  meta-perl/recipes-perl/libdigest/files/
  meta-perl/recipes-perl/libdigest/
- meta-perl/recipes-perl/libhtml/libhtml-parser-perl_3.75.bb
+ meta-perl/recipes-perl/libhtml/libhtml-parser-perl_3.83.bb
  meta-perl/recipes-perl/libhtml/libhtml-tagset-perl_3.24.bb
  meta-perl/recipes-perl/libnet/libnet-dns-perl_1.35.bb
  meta-perl/recipes-perl/libnet/libnet-dns-sec-perl_1.10.bb
  meta-perl/recipes-perl/libproc/
  meta-perl/recipes-perl/libmime/files/
  meta-perl/recipes-perl/libmime/libmime-types-perl_2.29.bb
+ meta-perl/recipes-perl/libmime/libmime-base32-perl_1.303.bb
  meta-perl/recipes-perl/libipc/
  meta-perl/recipes-perl/libnet/
  
@@ -467,7 +468,7 @@ FILES=meta-oe/conf
 [meta-freescale]
 GITURL=https://git.yoctoproject.org/git/meta-freescale
 BRANCH=master
-HEADID=ed8abb65bbb6933b7751bd11fbeabc19f5b849c3
+HEADID=1f1dd28237aeaf07604a7f5d3c09819339c7be94
 FILES=conf/layer.conf
  custom-licenses/
  classes/
@@ -562,7 +563,7 @@ FILES=conf/layer.conf
 [meta-virtualization]
 GITURL=http://git.yoctoproject.org/git/meta-virtualization
 BRANCH=master
-HEADID=437efd9259c1786c130c724290cb1e46d50edcb2
+HEADID=c2185cd5ef225c6606341745ad9ffb02efe364d9
 FILES=conf/layer.conf
  classes/
  files/
@@ -577,13 +578,13 @@ FILES=conf/layer.conf
 [meta-selinux]
 GITURL=http://git.yoctoproject.org/git/meta-selinux
 BRANCH=master
-HEADID=91bf2937722476fe2b8f9d787300cfcd04670c5e
+HEADID=5776ff1a930d383e641bb3889ef3b5f42363e5c4
 FILES=conf/layer.conf
 
 [meta-security]
 GITURL=http://git.yoctoproject.org/git/meta-security
 BRANCH=master
-HEADID=730ebbddc121016151a72d3e0bce61351a0ad365
+HEADID=9f1d763bb17bf105cc313a95eb3b07496b34bacc
 FILES=conf
  classes/sanity-meta-security.bbclass
  meta-tpm/classes/sanity-meta-tpm.bbclass
@@ -595,7 +596,6 @@ FILES=conf
  recipes-scanners/checksec/
  recipes-security/fscryptctl/
  recipes-compliance/lynis/
- recipes-security/paxctl/
  recipes-mac/smack/
  meta-tpm/conf
  meta-tpm/recipes-tpm1/trousers/
@@ -645,12 +645,12 @@ FILES=meta-xilinx-core/conf
 [meta-erlang]
 GITURL=https://github.com/joaohf/meta-erlang
 BRANCH=master
-HEADID=b2ab632f7774852203695a825ce9d3bc24f5b2a1
+HEADID=452e3aa3226dece659cd9c3a19fd3fac44a077ed
 FILES=conf
 
 [meta-arm]
 GITURL=https://git.yoctoproject.org/meta-arm
 BRANCH=master
-HEADID=7206f9c9f93a4664632c2cdac02994a646d00b29
+HEADID=afd6f76b09709e3104e9c521fa6325405a198043
 FILES=meta-arm/conf
  meta-arm-toolchain/conf

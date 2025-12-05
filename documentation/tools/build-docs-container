@@ -24,6 +24,7 @@ SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
 CONTAINERCMD=${CONTAINERCMD:-docker}
 DOCS_DIR="$SCRIPT_DIR/../.."
 SH_DIR="$SCRIPT_DIR/host_packages_scripts"
+INCLUDE_ESSENTIAL_PACKAGES=${INCLUDE_ESSENTIAL_PACKAGES:-0}
 
 function usage()
 {
@@ -49,6 +50,16 @@ $0 OCI_IMAGE [make arguments...]
    documentation/Makefile, see that file for what's supported. This is typically
    intended to be used to provide specific make targets.
    Default: publish
+
+   Environment variables:
+
+   - CONTAINERCMD can be set to 'docker' or 'podman' to select the
+     container engine (default: 'docker').
+
+   - INCLUDE_ESSENTIAL_PACKAGES can be set to 0 or 1 to also include essential
+     packages listed in documentation/tools/host_packages_scripts/*_essential.sh.
+     This is not required to build the documentation but can be useful to validate
+     the installation of packages listed in these files (default: 0).
 "
 }
 
@@ -85,6 +96,7 @@ main ()
     "debian:12"*|\
     "debian:13"*)
       containerfile=Containerfile.debian
+      essential=ubuntu_essential.sh
       docs=ubuntu_docs.sh
       docs_pdf=ubuntu_docs_pdf.sh
       ;;
@@ -93,42 +105,25 @@ main ()
     "fedora:41"*|\
     "fedora:42"*)
       containerfile=Containerfile.fedora
+      essential=fedora_essential.sh
       docs=fedora_docs.sh
       docs_pdf=fedora_docs_pdf.sh
       pip3=pip3_docs.sh
       ;;
     "leap:15.5"*|\
     "leap:15.6"*)
-    # Seems like issue with permissions package, c.f.
-    #
-    # Updating /etc/sysconfig/security ...
-    # /dev/zero: chown: Permission denied
-    # /dev/null: chown: Permission denied
-    # /dev/full: chown: Permission denied
-    # ERROR: not all operations were successful.
-    # Checking permissions and ownerships - using the permissions files
-    # 	/etc/permissions
-    # 	/etc/permissions.easy
-    # 	/etc/permissions.local
-    # setting / to root:root 0755. (wrong permissions 0555)
-    # setting /dev/zero to root:root 0666. (wrong owner/group 65534:65534)
-    # setting /dev/null to root:root 0666. (wrong owner/group 65534:65534)
-    # setting /dev/full to root:root 0666. (wrong owner/group 65534:65534)
-    # warning: %post(permissions-20240826-150600.10.12.1.x86_64) scriptlet failed, exit status 1
-    #
-    # "leap:15.6"*)
       image=opensuse/leap:$version
       containerfile=Containerfile.zypper
+      essential=opensuse_essential.sh
       docs=opensuse_docs.sh
       docs_pdf=opensuse_docs_pdf.sh
       pip3=pip3_docs.sh
       ;;
-    # Cannot fetch packages anymore
-    # "ubuntu:23.04"*|\
     "ubuntu:22.04"*|\
     "ubuntu:24.04"*|\
     "ubuntu:25.04"*)
       containerfile=Containerfile.ubuntu
+      essential=ubuntu_essential.sh
       docs=ubuntu_docs.sh
       docs_pdf=ubuntu_docs_pdf.sh
       ;;
@@ -142,6 +137,8 @@ main ()
   $OCI build \
     --tag "yocto-docs-$sanitized_dockername:latest" \
     --build-arg ARG_FROM="docker.io/$image" \
+    --build-arg INCLUDE_ESSENTIAL_PACKAGES="${INCLUDE_ESSENTIAL_PACKAGES}" \
+    --build-arg ESSENTIAL="$essential" \
     --build-arg DOCS="$docs" \
     --build-arg DOCS_PDF="$docs_pdf" \
     --build-arg PIP3="${pip3:-}" \
@@ -157,11 +154,11 @@ main ()
     --security-opt label=disable
   )
 
-  if [ "$OCI" = "docker" ]; then
+  if [ "$(basename "$OCI")" = "docker" ]; then
     args_run+=(
       --user="$(id -u)":"$(id -g)"
     )
-  elif [ "$OCI" = "podman" ]; then
+  elif [ "$(basename "$OCI")" = "podman" ]; then
     # we need net access to fetch bitbake terms
     args_run+=(
       --cap-add=NET_RAW

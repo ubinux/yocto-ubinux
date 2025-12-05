@@ -102,8 +102,9 @@ class RustSelfTestSystemEmulated(OESelftestTestCase, OEPTestResultTestCase):
         testargs =  exclude_fail_tests + " --no-doc --no-fail-fast --bless"
 
         # wrap the execution with a qemu instance.
-        # Tests are run with 512 tasks in parallel to execute all tests very quickly
-        with runqemu("core-image-minimal", runqemuparams = "nographic", qemuparams = "-m 512") as qemu:
+        # Set QEMU RAM to 1024MB to support running unit tests for the compiler crate, including larger
+        # test cases and parallel execution in the test environment.
+        with runqemu("core-image-minimal", runqemuparams = "nographic", qemuparams = "-m 1024") as qemu:
             # Copy remote-test-server to image through scp
             host_sys = get_bb_var("RUST_BUILD_SYS", "rust")
             ssh = SSHControl(ip=qemu.ip, logfile=qemu.sshlog, user="root")
@@ -121,6 +122,9 @@ class RustSelfTestSystemEmulated(OESelftestTestCase, OEPTestResultTestCase):
             cmd = "export TARGET_VENDOR=\"-poky\";"
             cmd = cmd + " export PATH=%s/recipe-sysroot-native/usr/bin/python3-native:%s/recipe-sysroot-native/usr/bin:%s/recipe-sysroot-native/usr/bin/%s:%s/hosttools:$PATH;" % (rustlibpath, rustlibpath, rustlibpath, tcpath, tmpdir)
             cmd = cmd + " export RUST_TARGET_PATH=%s/rust-targets;" % rustlibpath
+            # Strip debug symbols from test binaries to reduce size (300+ MB -> ~140 MB)
+            # PowerPC mac99 QEMU has 768MB RAM limit, so we need to minimize test binary sizes
+            cmd = cmd + " export RUSTFLAGS='-C strip=debuginfo';"
             # Trigger testing.
             cmd = cmd + " export TEST_DEVICE_ADDR=\"%s:12345\";" % qemu.ip
             cmd = cmd + " cd %s; python3 src/bootstrap/bootstrap.py test %s --target %s" % (builddir, testargs, targetsys)

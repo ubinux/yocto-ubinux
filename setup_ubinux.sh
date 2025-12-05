@@ -18,7 +18,7 @@ export TEMPLATECONF="meta-ubinux/conf/templates/default/"
 #. trunk/poky-ubinux/oe-init-build-env ${BUILD}
 . ./oe-init-build-env ${BUILD}
 
-DOWNLOADS=$(readlink -f $2)/../downloads/downloads-ubinux202511
+DOWNLOADS=$(readlink -f $2)/../downloads/downloads-ubinux202512
 add_conf_append ()
 {
 cat << EOF >> conf/local.conf
@@ -30,7 +30,7 @@ INHERIT += "own-mirrors"
 BB_GENERATE_MIRROR_TARBALLS = "1"
 DL_DIR ?= "${DOWNLOADS}"
 INHERIT:remove = "create-spdx"
-REALASE_DATE = "2025-11-18"
+REALASE_DATE = "2025-12-16"
 SAVE_SPDX_ACHIVE = "1"
 EOF
 }
