@@ -1,4 +1,4 @@
-# ubinux-2025.11 Release Notes
+# ubinux-2025.12 Release Notes
 
 OSS x AI Technology Div.  
 Fujitsu Limited  
@@ -6,7 +6,7 @@ Fujitsu Limited
 ## 1. Basic Information
 ### 1.1 Version Information
 - Yocto: 5.3
-- Kernel: 6.12.53
+- Kernel: 6.12.58
 - Toolchain
   - GCC: 15.2.0
   - Binutils: 2.45
@@ -21,7 +21,6 @@ Fujitsu Limited
 ### 1.3 Tested reference boards
 - NXP FRWY-LS1046A
 - NXP Layerscape LS1088A-RDB
-- NXP Layerscape LX2160A-RDB
 - Lenovo QiTian M4550 (Processor: Core i5-4570)
 
 ### 1.4 Host OS Support
@@ -32,65 +31,53 @@ Fujitsu Limited
 
 ## 2. Features
 ### 2.1 Security Fixes
-Following security issues have been fixed from ubinux-2025.10.
+Following security issues have been fixed from ubinux-2025.11.
 
-cups:
-- CVE-2025-58060
-- CVE-2025-58364
+binutils:
+- CVE-2025-11081
+- CVE-2025-11082
+- CVE-2025-11083
+- CVE-2025-11412
+- CVE-2025-11413
+- CVE-2025-11414
+- CVE-2025-11495
 
-dovecot:
-- CVE-2022-30550
+hdf5:
+- CVE-2025-2153
+- CVE-2025-2310
+- CVE-2025-2914
+- CVE-2025-2924
+- CVE-2025-2925
+- CVE-2025-6750
 
-exiv2:
-- CVE-2025-26623
-- CVE-2025-54080
-- CVE-2025-55304
+hostapd:
+- CVE-2025-24912
 
-jasper:
-- CVE-2025-8835
-- CVE-2025-8836
-- CVE-2025-8837
-
-	
-libpcre2:
-- CVE-2025-58050
-
-libraw:
-- CVE-2025-43961
-- CVE-2025-43962
-- CVE-2025-43963
-- CVE-2025-43964
-
-libssh:
-- CVE-2025-8114
-
-libxslt:
-- CVE-2025-7424
-
-php:
-- CVE-2024-3566
-
-	
-tiff:
-- CVE-2025-8851
-- CVE-2025-8961
-- CVE-2025-9165
+qemu:
+- CVE-2024-8354
 
 ubinux-kernel:
-- CVE-2025-21751
+- CVE-2025-40014
+
+zabbix
+- CVE-2024-45700
+- CVE-2025-27231
+- CVE-2025-27236
+- CVE-2025-27238
+- CVE-2025-49641
 
 ### 2.2 Added packages
 
-- llvm (renamed from clang)
+- libmime-base32-perl
 
 ### 2.3 Removed packages
 
-- clang
-- gtk-doc
+- paxctl
+- python3-pyopenssl
 
 ## 3. Installation guide
 ### 3.1 Install Toolchain
-Run as root privilege the Toolchain installer at arbitrary directory, and Toolchain will be installed into /opt/ubinux/2025.11 directory.
+Run as root privilege the Toolchain installer at arbitrary directory, and Toolchain will be installed into /opt/ubinux/2025.12 directory.
 
 
 [TYPE1] in the description, please read as shown below.
@@ -102,7 +89,7 @@ Run as root privilege the Toolchain installer at arbitrary directory, and Toolch
 |Armv8 (32bit EL, 64bit EL)|aarch64-ubinux-armv8|
 
 
-`$ sudo sh ubinux-glibc-x86_64-meta-toolchain-[TYPE1]-toolchain-2025.11.sh`
+`$ sudo sh ubinux-glibc-x86_64-meta-toolchain-[TYPE1]-toolchain-2025.12.sh`
 
 
 ### 3.2 Set up Environment Variables
@@ -119,7 +106,7 @@ Run the following commands.
 |Armv8 (32bit EL)|armv7ahf-neon-ubinuxmllib32-linux-gnueabi|
 
 
-`$ . /opt/ubinux/2025.11/environment-setup-[TYPE2]`
+`$ . /opt/ubinux/2025.12/environment-setup-[TYPE2]`
 
 ### 3.3 Create rootfs from Userland Packages
 To create rootfs, see Section 3.1.2 and 3.1.3 of the dnf-plugin-tui documentation.  
@@ -172,14 +159,7 @@ The following objects are not validated because the hardware of the test environ
 ## 5. Known Security Issues
 The following security issues were known in this release:  
 binutils:
-- CVE-2025-11081
-- CVE-2025-11082
-- CVE-2025-11083
-- CVE-2025-11412
-- CVE-2025-11413
-- CVE-2025-11414
 - CVE-2025-11494
-- CVE-2025-11495
 - CVE-2025-11839
 - CVE-2025-11840
 
@@ -190,6 +170,17 @@ db:
 - CVE-2016-0694
 - CVE-2016-3418
 
+frr:
+- CVE-2025-61099
+- CVE-2025-61100
+- CVE-2025-61101
+- CVE-2025-61102
+- CVE-2025-61103
+- CVE-2025-61104
+- CVE-2025-61105
+- CVE-2025-61106
+- CVE-2025-61107
+
 glibc:
 - CVE-2010-4756
 
@@ -199,24 +190,18 @@ hdf5:
 - CVE-2019-8396
 - CVE-2020-10809
 - CVE-2020-10812
-- CVE-2025-2153
 - CVE-2025-2308
 - CVE-2025-2309
-- CVE-2025-2310
 - CVE-2025-2912
 - CVE-2025-2913
-- CVE-2025-2914
 - CVE-2025-2915
 - CVE-2025-2923
-- CVE-2025-2924
-- CVE-2025-2925
 - CVE-2025-2926
 - CVE-2025-44904
 - CVE-2025-44905
 - CVE-2025-6269
 - CVE-2025-6270
 - CVE-2025-6516
-- CVE-2025-6750
 - CVE-2025-6816
 - CVE-2025-6817
 - CVE-2025-6818
@@ -226,9 +211,6 @@ hdf5:
 - CVE-2025-7067
 - CVE-2025-7068
 - CVE-2025-7069
-
-hostapd:
-- CVE-2025-24912
 
 libsndfile1:
 - CVE-2024-50613
@@ -318,12 +300,35 @@ ubinux-kernel:
 - CVE-2024-52560
 - CVE-2024-57995
 - CVE-2024-58015
+- CVE-2024-58074
+- CVE-2024-58093
+- CVE-2024-58094
+- CVE-2024-58095
+- CVE-2024-58096
 - CVE-2024-58097
 - CVE-2025-21709
+- CVE-2025-21752
+- CVE-2025-21807
 - CVE-2025-21833
 - CVE-2025-21949
+- CVE-2025-22104
+- CVE-2025-22107
+- CVE-2025-22108
+- CVE-2025-22109
+- CVE-2025-22111
+- CVE-2025-22116
+- CVE-2025-22117
+- CVE-2025-22121
+- CVE-2025-22127
+- CVE-2025-23129
+- CVE-2025-23131
+- CVE-2025-23132
+- CVE-2025-23135
+- CVE-2025-37743
+- CVE-2025-37746
 - CVE-2025-37860
-- CVE-2025-40014
+- CVE-2025-37880
+- CVE-2025-40325
 
 xrdp:
 - CVE-2022-23468
@@ -342,13 +347,6 @@ xrdp:
 
 xserver-xorg:
 - CVE-2023-1393
-
-zabbix:
-- CVE-2024-45700
-- CVE-2025-27231
-- CVE-2025-27236
-- CVE-2025-27238
-- CVE-2025-49641
 
 ## 6. Contact us
 If you find an issue in ubinux, you should report it in the issue tracker on GitHub.
